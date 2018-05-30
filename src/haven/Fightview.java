@@ -145,7 +145,7 @@ public class Fightview extends Widget {
                 }
                 String cd = Utils.fmt1DecPlace(atkct - lastuse);
                 double cdadvantage = checkcd(cd,tt);
-              //  unarmed = getUnarmed();
+                unarmed = getUnarmed();
                 if(cdadvantage != 0.0)
                     gameui().syslog.append(String.format("me: %s, ip %d - %d, cd %ss, Agi Delta %s", tt.t, current.ip, current.oip, cd,cdadvantage), combatLogMeClr);
                 else

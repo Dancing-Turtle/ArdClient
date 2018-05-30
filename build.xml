@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" ?>
 
 <project name="hafen" default="deftgt">
-  <property name="name" value="amber"/>
+  <property name="name" value="ArdClient"/>
   <property name="version" value=""/>
 
   <target name="build-env">
@@ -149,19 +149,4 @@
       </java>
   </target>
 
-  <target name="test" depends="jars">
-    <junit showoutput="true" printsummary="true">
-      <classpath>
-        <pathelement location="lib/junit.jar" />
-        <pathelement location="lib/hamcrest/core.jar" />
-        <pathelement location="build/hafen.jar" />
-      </classpath>
-      <formatter usefile="false" type="plain" />
-      <batchtest fork="true" >
-        <fileset dir="src">
-          <include name="haven/pathfinder/test/PathfinderIsInsideBoundBoxTest.java" />
-        </fileset>
-      </batchtest>
-    </junit>
-  </target>
 </project>

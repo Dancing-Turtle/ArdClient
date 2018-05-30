@@ -5,7 +5,7 @@ import java.awt.event.KeyEvent;
 import java.net.URI;
 
 public class UpdateWnd extends Window {
-    private static final String dwnurl = "https://github.com/romovs/amber/releases/download/";
+    private static final String dwnurl = "https://github.com/Ardenneslol/ArdClient/releases/download/";
 
     public UpdateWnd(final String version) {
         super(Coord.z, "Update");
@@ -18,7 +18,7 @@ public class UpdateWnd extends Window {
                 Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
                 if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
                     try {
-                        desktop.browse(new URI(dwnurl + version + "/amber-" + version + "-upd.zip"));
+                        desktop.browse(new URI(dwnurl + version + "/ArdClient-" + version + "-upd.zip"));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

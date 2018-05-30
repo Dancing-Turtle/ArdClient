@@ -215,22 +215,28 @@ public class Fightsess extends Widget {
     }
     private Double checkdelta() {
         Double delta = 0.0;
+        Double delta2 = 0.0;
+        Double baseopener;
         unarmedcombat = Fightview.unarmed;
         String lastactused = Fightview.ttretain;
         Double dblblue = (double) oldblue;
         Double dblred = (double) oldred;
-        if (lastactused.contains("Flex"))
+        if (lastactused.contains("Flex")) {
             expected = ((1 - (dblblue / 100)) * 15.0);
-        else if (lastactused.contains("Teeth"))
+            baseopener = 15.0;
+        }
+        else if (lastactused.contains("Teeth")) {
             expected = ((1 - (dblred / 100)) * 20.0);
+            baseopener = 20.0;
+        }
         else
             return null;
-        openingratio = (expected / lastactopened);
-            if (expected < lastactopened)
-            delta = Math.abs(curvehigher - (expected/lastactopened)) * unarmedcombat;
-            else
-                delta = Math.abs(curvelower+(expected/lastactopened)) * unarmedcombat;
-BotUtils.gui.error("Expected Opening : "+expected+" Actual Opening : "+((double)expected/lastactopened)+" "+lastactopened+" Estimated target combat weight : "+delta.intValue());
+
+        delta = ((Math.pow(expected,4.0) * unarmedcombat))/(Math.pow((lastactopened-0.5),4.0));
+        delta2 = ((Math.pow(expected,4.0) * unarmedcombat))/(Math.pow((lastactopened+0.4),4.0));
+
+BotUtils.gui.error("Estimated target combat weight : "+delta.intValue()+"-"+delta2.intValue());
+
         return delta;
     }
 
@@ -241,11 +247,11 @@ BotUtils.gui.error("Expected Opening : "+expected+" Actual Opening : "+((double)
         currentopeningred();
         if (blue-oldblue > 1) {
             lastactopened = (double)blue - (double)oldblue;
-          //  delta = checkdelta();
+           delta = checkdelta();
         }
         if (red-oldred > 1) {
             lastactopened = (double)red - (double)oldred;
-          //  delta = checkdelta();
+           delta = checkdelta();
         }
 
         double now = Utils.rtime();
