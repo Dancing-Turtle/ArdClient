@@ -243,7 +243,7 @@ public class CoalToSmelters extends Window implements GobSelectCallback {
                 this.hide();
                 terminate = true;
                 terminate2 = true;
-                terminate();
+                //terminate();
                 runbtn.show();
                 runbtn2.show();
                 runbtn3.show();
@@ -666,6 +666,7 @@ public class CoalToSmelters extends Window implements GobSelectCallback {
         @Override
         public void wdgmsg (Widget sender, String msg, Object...args){
             if (sender == cbtn) {
+                terminate();
                 terminate = true;
                 terminate2 = true;
                 reqdestroy();

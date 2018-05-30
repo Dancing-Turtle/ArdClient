@@ -1,6 +1,5 @@
-## Purus Pasta Hafen Client
+## Ardennes Hafen Client
 
-Version 2 of Purus Pasta HnH client
+Based on Amber and Purus Clients
 
-Please use Pasta-Launcher to launch the client.
-https://github.com/puruscor/Pasta-Launcher/releases
+https://github.com/Ardenneslol/ArdClient/releases
