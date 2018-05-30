@@ -1,0 +1,163 @@
+// Carrot farming bot made to demonstrate Purus Pasta client botting API
+// Made by Purus Cor
+// More information also at Purus Pasta forum thread
+
+// Client uses Nashorn for running Javascript
+// For more information about how to call java functions etc. see
+// http://winterbe.com/posts/2014/04/05/java8-nashorn-tutorial/
+
+// Initialize PBot API
+var PBot = Java.type("haven.purus.pbot.PBotAPI");
+var a, b;
+
+var stop = false;
+
+// We can use javacript functions normally
+print("Hello World!");
+
+// To call PBot API functions we can use PBot.functionName(arguments);
+
+// Create a window with some buttons
+// scriptID is a variable that exists by default on all scripts started, used to uniquely identify the script. Used for example when making new windows
+var PBotWindow = PBot.PBotWindow("Carrot Farmer", 50, 150, scriptID);
+PBotWindow.addButton("selectArea", "Select Area", 25, 26, 5)
+PBotWindow.addButton("startBtn", "Start", 25, 49, 35);
+
+// Farming loop
+function startFarming() {
+	PBot.sysMsg("Starting to farm carrots!", 255, 102, 0);
+
+	// List of gobs inside the area selected
+	var bigX = Math.max(a.x, b.x);
+	var smallX = Math.min(a.x, b.x);
+	var bigY = Math.max(a.y, b.y);
+	var smallY = Math.min(a.y, b.y);
+	var allGobs = PBot.getGobs();
+	var carrotGobs = [];
+	// Iterate through all of the gobs
+	for(var i=0; i<allGobs.length; i++) {
+		// Add only gobs that are fully-grown carrots from inside of the selected area,
+		var gobCoords = PBot.getCoords(allGobs[i]);
+		if(gobCoords.x <= bigX && gobCoords.x >= smallX
+		&& gobCoords.y <= bigY && gobCoords.y >= smallY) {
+			if(PBot.getGobName(allGobs[i]) == "gfx/terobjs/plants/carrot" && PBot.getCropStage(allGobs[i]) == 4)
+				carrotGobs.push(allGobs[i]);
+			}
+	}
+
+	while(carrotGobs.length > 0) {
+		if(stop)
+			return;
+		
+		if(PBot.getStamina() <= 35) {
+			drink();
+		}
+
+		var gob = carrotGobs[carrotGobs.length-1];
+		
+		if(stop)
+			return;
+
+		PBot.pfRightClick(gob, 0);
+
+		PBot.waitForFlowerMenu();
+
+		if(stop)
+			return;
+
+		PBot.choosePetal("Harvest");
+
+		// By finding the gob by id, we no longer can find it when it has been harvested
+		while(PBot.findObjectById(PBot.getGobId(gob))!=null)
+			PBot.sleep(50);
+
+		carrotGobs.pop();
+
+		var carrotNames = ["gfx/invobjs/carrot"];
+		var carrotItems = PBot.getInventoryItemsByNames(PBot.playerInventory(), carrotNames);
+
+		// Carrots might not instantly appear in our inventory, because of ping and server lag. We must keep on checking until some carrots appear in the inventory.
+		while(carrotItems.length == 0) {
+			carrotItems = PBot.getInventoryItemsByNames(PBot.playerInventory(), carrotNames)
+			PBot.sleep(50);
+1		}
+
+		if(stop)
+			return;
+
+		if(PBot.getItemAtHand() == null) {
+			PBot.takeItem(carrotItems[0]);
+		}
+
+		if(stop)
+			return;
+
+		// Right click under the player with the carrot
+		PBot.mapInteractClick();
+		// Wait until we can find the carrot plant planted
+		while(PBot.findObjectByNames(0.2, "gfx/terobjs/plants/carrot") == null) {
+			PBot.sleep(50);
+		}
+
+		if(stop)
+			return;
+
+		// Drop harvested carrots from players inventory and hand
+		PBot.dropItem(0);
+		var carrotsInInventory = PBot.getInventoryItemsByNames(PBot.playerInventory(), carrotNames);
+		for(var i=0; i<carrotsInInventory.length; i++) {
+			if(stop)
+				return;
+			PBot.dropItemFromInventory(carrotsInInventory[i]);
+		}
+	}
+	PBot.closeWindow(PBotWindow);
+	PBot.sysMsg("Finished farming carrots!", 255, 102, 0);
+}
+
+function drink() {
+	// Array of items in player inventory
+	var containers = ["invobj"];
+	var items = PBot.getInventoryItemsByNames(PBot.playerInventory(), containers);
+	for(var i=0; i<items.length; i++) {
+		if(PBot.canDrinkFrom(items[i])) {
+			// Right click the container
+			PBot.activateItem(items[i]);
+			// Wait for flower menu to appear
+			PBot.waitForFlowerMenu();
+			// Choose drink
+			PBot.choosePetal("Drink");
+			// Wait for the drinking to finish
+			PBot.waitForHourglass();
+			break;
+		}
+	}
+}
+
+// This function will be called when the start button is clicked
+function startBtn() {
+	if(a == null || b == null) {
+		PBot.sysMsg("Please select an area to farm first!", 255, 102, 0);
+		return;
+	}
+	// Close the current window
+	PBot.closeWindow(PBotWindow);
+	// New window with a stop button
+	PBotWindow = PBot.PBotWindow("Carrot Farmer", 50, 125, scriptID);
+	PBotWindow.addButton("stopBtn", "Stop", 50, 40, 15);
+
+	startFarming();
+}
+
+function selectArea() {
+	PBot.selectArea();
+	a = PBot.getSelectedAreaA();
+	b = PBot.getSelectedAreaB();
+}
+
+// This function will be called when the stop button is clicked
+// You should make sure that what script is doing in other loops is also properly stopped
+function stopBtn() {
+	stop = true;
+	PBotWindow.closeWindow();
+}

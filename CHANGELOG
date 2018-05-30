@@ -1,0 +1,1778 @@
+Version 1.67.6
+    Fixed:
+        * (hopefully) issues with ore dropping.
+
+    Misc:
+        * JVM argument for specifying whether to dump l10n strings.
+        * Better handling of bounding boxes for rlink-ed resources.
+
+
+Version 1.67.5
+    New: 
+        * Added hitbox for pig and goat (ported from Clenda's client).
+        * Added goat to the Shoo command (ported from Clenda's client).
+        * Added goat to the LeashAnimal command (ported from Clenda's client).
+        * Added lizards and snails to icons list.
+        * Added sound effect for eagles.
+
+    Fixed:
+        * Nanny avatar in livestock manager.
+
+    Misc:
+        * Changed key binding for taking screenshots and saving them locally to Ctrl+S.
+        * Upstream code merge.
+
+
+Version 1.67.4
+    New:
+        * Added goats to the livestock manager.
+
+    Misc:
+        * Re-enable alternative openings option.
+        * Revert last ko l10n update due to reverted combat.
+
+
+Version 1.67.3
+    New:
+        * Option to use F1-F10 for combat (Clenda).
+
+    Misc:
+        * Added goats to the clover feeder.
+        * Update ko l10n.
+        * Upstream code merge.
+
+
+Version 1.67.2
+    Fixed:
+        * Wear & armor tooltips
+
+
+Version 1.67.1
+    Fixed:
+        * Crash when viewing barter-stands with price set to gems.
+        * Wound treatments for wretched gore and sever mauling.
+
+    Misc:
+        * Added sound effect for seals.
+        * Added peer into to the menu list.
+        * Added cattail to the icons list.
+        * Upstream code merge.
+
+
+Version 1.67.0
+    Fixed:
+        * Troll belt.
+
+    Misc:
+        * Updated wound treatments lists.
+        * Allow selecting foregables for which to sound the 'aww yeah' alarm.
+
+
+Version 1.66.4
+    Fixed:
+        * Actions selected in the search window not being added to the craft history bar.
+        * Cooldown value in combat log.
+
+    Misc:
+        * Added treatments for nasty laceration.
+        * Don't show next button in the menu grid if not needed.
+        * Localization improvements.
+
+
+Version 1.66.3
+    Misc:
+        * Upstream code merge.
+
+
+Version 1.66.2
+    Fixed:
+        * Tracking toggle.
+
+    Misc:
+        * Upstream code merge.
+
+
+Version 1.66.1
+    Fixed:
+        * Timers.
+
+    Misc:
+        * Upstream code merge.
+
+
+Version 1.66.0
+    Misc:
+        * Upstream code merge.
+
+
+Version 1.65.5
+    Misc:
+        * Russian localization updates.
+        * Upstream code merge.
+
+
+Version 1.65.4
+    Fixed:
+        * Barter stands crash.
+
+
+Version 1.65.3
+    Misc:
+        * Russian localization updates.
+        * Korean localization updates.
+        * Synchronized with current server version.
+
+
+Version 1.65.2
+    Misc:
+        * Open containers while having an item on the cursor with alt+rmb.
+        * Added radius for mine beam.
+        * Added Uncommon Snapdragon to hide icons list.
+        * Russian localization updates.
+        * Upstream code merge.
+
+
+Version 1.65.1
+    Fixed:
+        * Pony power sound alert.
+        * Issue with scroller in the menu search window.
+        * Mining area selector remaining indefinitely under certain conditions.
+        * Trellis harvester not working when crop stages are not enabled.
+
+
+Version 1.65.0
+    New:
+        * Extension for filling smelters with 8 an 9 coal.
+        * Extension for equipping sword, battleaxe, or axe from the inventory or a belt.
+        * Extension for dismounting nearest rider.
+
+    Fixed:
+        * Crash on broken gemstone display signs from previous server update.
+
+    Misc:
+        * Don't navigate backward when selecting action in menu grid.
+
+
+Version 1.64.4
+    Fixed:
+        * Temporary workaround for gemstone display signs.
+
+
+Version 1.64.3
+    Fixed:
+        * Crash on studying gems when study history is turned on.
+        * Extensions menu gets opened when using alt+x.
+        * Cheese tray filler not recognizing mixed curd.
+
+
+Version 1.64.2
+    New:
+        * Options for selecting which items to auto-drop when mining.
+
+
+Version 1.64.1
+    Fixed:
+        * Gilding slots.
+
+
+Version 1.64.0
+    New:
+        * Ctrl+U for hiding the UI.
+
+    Fixed:
+        * Speech bubble showing when highlighting objects.
+
+    Misc:
+        * Added hornblende to boulders list.
+        * Made opium dragon pickable with the Q key.
+        * Temporary fix for Oct 5 patch.
+
+
+Version 1.63.0
+    New:
+        * Extension to fill cheese trays with curd from inventory.
+        * Extension to harvest/remove plants from nearest trellis.
+
+    Fixed:
+        * Finished curios alarm not working.
+
+    Misc:
+        * Added opium to relevant wound descriptions.
+        * Cave clay added to aww yeah alarm.
+        * Lore events are now sorted by last seen time instead of alphabetically.
+        * Updated Korean and Russian localizations.
+
+
+Version 1.62.0
+    Misc:
+        * Added grasshopper and irrlight to icons list.
+        * Upstream code merge.
+
+
+Version 1.61.6
+    Misc:
+        * Upstream code merge.
+
+
+Version 1.61.5
+    Fixed:
+        * Mining.
+
+
+Version 1.61.4
+    Misc:
+        * Upstream code merge.
+
+
+Version 1.61.3
+    Fixed:
+        * Remaining study time.
+
+
+Version 1.61.2
+    Fixed:
+        * Item's progress percentage.
+        * Possible crash when transferring multiple items with Alt+Mouse Click.
+
+    Misc:
+        * Updated localization.
+        * Upstream code merge.
+
+
+Version 1.61.1
+    New:
+        * Option for aggroing players in proximity to the mouse cursor.
+
+    Fixed:
+        * Issues with alternative belts window when interacting with wardrobes and other players' equipments.
+
+    Misc:
+        * Save positions of all windows instead of only those in a predefined list.
+        * Add Study to auto-menus list.
+        * Make "light object with a torch" extension to work with torches already carried in hand.
+        * Localization improvements.
+
+
+Version 1.61.0
+    Fixed:
+        * Alternative belt window not working with Exquisite Belts.
+
+    Misc:
+        * Added clover and lady's mantles to icons list.
+        * Right-clicking entry in the livestock manager will simulate right-click on the animal.
+        * Upstream code merge.
+
+
+Version 1.60.0
+    New:
+        * Option to change interface font.
+        * Dream harvester.
+
+    Fixed:
+        * Unable to hang items on walls at different heights.
+
+    Misc:
+        * Upstream code merge.
+
+
+Version 1.59.2
+    Misc:
+        * Reverted to system supplied fonts.
+
+
+Version 1.59.1
+    Fixed:
+        * Missing Latin script in Korean/Chinese localization.
+
+
+Version 1.59.0
+    New:
+        * Korean localization.
+
+    Fixed:
+        * Crash when accessing wardrobes while alternative belt window is toggled on.
+
+    Misc:
+        * Bundle all the required fonts with the client instead of using system defined fonts.
+        * Improvements to localization support.
+
+
+Version 1.58.0
+    New:
+        * Alternative belt window. See UI Settings.
+
+    Fixed:
+        * Crash when running multiple clients on Windows.
+
+    Misc:
+        * Login list is now scrollable.
+        * Timers list is also scrollable (once you have more than 13 timers).
+        * Shift+Z+Right Click used to automatically place items into containers has been changed to Shift+Alt.
+          And also no longer needs to be held all the time to work.
+        * Added crabs to hide icons list. They can be picked with the Q key now.
+        * Improvements to localization support.
+
+
+Version 1.57.5
+    Misc:
+        * Upstream code merge.
+
+
+Version 1.57.4
+    New:
+        * Option to restrict dropping mouse held items (by lichengyu).
+
+    Fixed:
+        * Shoo extensions triggering on dead animals.
+        * Player alarms triggering on mannequins.
+
+    Misc:
+        * Dead adders are now pickable with the Q key.
+        * Upstream code merge.
+
+
+Version 1.57.3
+    Fixed:
+        * Possible crash when toggling grid overlay.
+
+    Misc:
+        * Added Chip stone to auto flower menus.
+        * Upstream code merge.
+
+
+Version 1.57.2
+    Fixed:
+        * Crash when running multiple clients.
+        * Invalid softcap value on high stats.
+
+    Misc:
+        * Display system specs in error reports.
+        * Updated wound treatments.
+        * Show warning radius around adders.
+
+
+Version 1.57.1
+    New:
+        * Shoo animals extension.
+
+    Misc:
+        * Added camomile to foragables alarm.
+        * Upstream code merge.
+
+
+Version 1.57.0
+    New:
+        * Draw gilding number in blue for items with available gilding slots (by Jynx). 
+
+    Fixed:
+        * Leashing extension not working with domesticated horses. 
+        * Last entry in livestock manager not displaying properly.
+
+    Misc:
+        * Russian localization has been significantly improved (by mdsanta, not_a_cat, North Grey).
+        * Hide bushes in addition to trees on Ctrl+H.
+        * Updated wound treatments.
+        * Some other minor changes.
+        * Upstream code merge.
+
+
+Version 1.56.0
+    New:
+        * Livestock manager.
+        * Animal leashing extension.
+        * Option to highlight finished pots.
+
+    Fixed:
+        * Incorrect error message when geolocation fails.
+        * Show container's content quality instead that of container in barterstands.
+
+    Misc:
+        * More sensible settings defaults
+        * Update treatments for Black-Eyed and Blade Kiss wounds.
+        * Some other minor changes...
+        * Upstream code merge.
+
+
+Version 1.55.4
+    Fixed:
+        * Crash in timers thread.
+
+
+Version 1.55.3
+    Fixed:
+        * Various timers issues.
+        * Charter secrets list erroneously displayed in charter/portico build windows.
+
+    Misc:
+        * Restored auto-logout option.
+        * Added harvest wax to menu options.
+        * Added rustroot to icons list.
+        * Added takedown to attacks filter.
+
+
+Version 1.55.2
+    Fixed:
+        * F-key bar related crashes yet again.
+
+
+Version 1.55.1
+    Fixed:
+        * F-key bar related crashes.
+
+
+Version 1.55.0
+    New:
+        * Geolocation using odditown world map.
+        * Add buff icon for party permissions.
+
+    Fixed:
+        * Ping incorrectly displayed on Windows.
+        * Various F-key bar issues. 
+
+    Misc:
+        * Removed auto-logout option since it doesn't provide any benefits over auto-hearth anymore.
+        * Added yellowfoot and chives to icons list.
+        * Upstream code merge.
+
+
+Version 1.54.3
+    Fixed:
+        * Crime/tracking/swimming icons not showing.
+        * Crash related to baseq console command.
+        * Ping time not displayed for IPv6 routes.
+
+    Misc:
+        * Upstream code merge.
+        * Removed auto-leveler since it's implemented server-side now.
+
+
+Version 1.54.2
+    Fixed:
+        * Aggro radius erroneously shown around mammoths.
+        * A couple of issues with world map.
+        * Mirkwood log highlight not working.
+        * Auto-mussel picker not working with Q key.
+
+    Misc:
+        * Restored automatic map tiles dumper.
+
+
+Version 1.54.1
+    Fixed:
+        * Regression introduced in v1.54.0
+
+
+Version 1.54.0
+    New:
+        * Allow removing resource markers.
+        * Console command 'savemap' for dumping world map tiles.
+        * Highlight intermediate harvestable stages for carrots and hemp.
+        * Add option to disable dropping tubers in auto-leveler.
+
+    Fixed:
+        * Raven's Bite not being listed and Attacks filter.
+        * Map highlight settings (trees, icons. etc) not being cleared when switching chars.
+        * Black eye didn't list available cures.
+        * Water vortex missing from world map filters.
+        * Auto-leveler for people having high ping.
+        
+    Misc:
+        * Added grub to icons list
+        * Tweaked blue kin color.
+
+
+Version 1.53.0
+    New:
+        * Separate Placed and Natural lists in worldmap replaced by single filterable list.
+        * Holding Alt while right clicking things will prevent automatic menu selection if such is defined.
+        * Extension for automatically filleting all the fish in inventory.
+        * Option to change the color of tree bounding boxes.
+
+    Fixed:
+        * Auto-leveler bug (probably..)
+
+    Misc:
+        * Changed Oldrtunk to Mirkwood Log in trees list and added Lingonberies to icons list.
+        * Refactored auto-menu options - old settings were not preserved.
+
+
+Version 1.52.3
+    Fixed:
+        * Missing dead wolverine icon.
+
+
+Version 1.52.2
+    Fixed:
+        * Crash in menu search.
+
+    Misc:
+        * Add radius to wolverines.
+
+
+Version 1.52.1
+    Fixed:
+        * Crime and tracking automatic toggle not working.
+
+    Misc:
+        * Use server provided values for everything that uses study times. 
+        * Display remaining study time using real time.
+
+
+Version 1.52.0
+    Misc:
+        * Upstream code merge.
+
+
+Version 1.51.0
+    New:
+        * Added study time and LP/H to curio tooltip (by Xcom).
+        * Added kin search.
+
+    Fixed:
+        * Miscellaneous crashes.
+
+    Misc:
+        * Use single smoke source for tarkilns.
+        * Added boars to clover feeder.
+        * Added giddyup and shear wool to auto-menu options.
+        * Restored auto-hearth option.
+
+
+Version 1.50.1
+    Fixed:
+        * Auto-miner issues due to server-side drinking.
+        * Barterstand crash.
+
+    Misc:
+        * Added icon for nidbanes.
+        * Increase Q forage distance to 20 tiles.
+        * Removed auto-hearth since auto-logout is more practical (and having both options is confusing).
+
+
+Version 1.50.0
+    New:
+        * Worldmap zoom.
+
+    Fixed:
+        * Local minimap borking sometimes.
+
+    Misc:
+        * Limited auto-picker (Q key) to 10 tiles
+        * Added ladybug, moths, etc to hide icons list thus allowing them to be picked with the Q key.
+
+
+Version 1.49.2
+    Fixed:
+        * Crash in PickForagable.
+
+    Misc:
+        * Add radius for walruses.
+        * Upstream code merge.
+        * Updated Russian localization.
+
+
+Version 1.49.1
+    Misc:
+        * Enable terrain elevation by default.
+
+
+Version 1.49.0
+    New:
+        * Option to disable terrain elevation.
+        * Pressing Q key will pick nearest forageable or the stuff from the icons list which is not currently hidden.
+
+    Fixed:
+        * Auto-lever stop button not working.
+
+
+Version 1.48.1
+    Fixed:
+        * Missing icon for dead walruses.
+
+
+Version 1.48.0
+    New:
+        * Clover feeder.
+        * Walrus sound alarm (controlled by same option as bear and lynx alarms).
+
+    Fixed:
+        * Search window filter not being cleared when closing the window with shift+s.
+        * Bush and tree icon positions being slightly off.
+
+    Misc:
+        * Updated curio timings (thanks to NicholasSavard).
+        * Added Toad Butter to relevant wound descriptions.
+        * Add timers to extensions menu.
+        * Upstream code merge.
+        * Updated Russian localization.
+
+
+Version 1.47.1
+    Fixed:
+        * Map tile dumper saving tiles into wrong session under certain conditions.
+
+    Misc:
+        * Added new trees to tree list.
+        * Removed ore boulders from boulders list.
+        * Clear Search window's filter when reopening it.
+        * Updated Russian localization.
+
+
+Version 1.47.0
+    New:
+        * Option to disable terrain smoothing (by ghandhikus). See Video settings.
+
+    Fixed:
+        * Map tile dumper not creating new session when entering/leaving caves.
+        * Local minimap not refreshing properly under certain conditions.
+
+    Misc:
+        * Dropped triple-quality related modifications.
+        * Upstream code merge.
+
+
+Version 1.46.1
+    Fixed:
+        * Crash when storing resource and the destination file is locked. 
+
+
+Version 1.46.0
+    New:
+        * Object marking.
+        * Added Flay action to Menu Settings.
+        * Added ducks to hide icons list.
+        * Added cauldron to the objects which can be lighted using torch extension.
+        * Ctlr+A for opening the world map window.
+
+    Fixed:
+        * Wound description for bruises not showing.
+        * Remaining time formatting.
+
+    Misc:
+        * Updated Russian localization.
+
+
+Version 1.45.1
+    Fixed:
+        * Craft/build window issues: actions not being saved to history bar, list of actions not 
+          updating when discovering new items.
+        * Auto-leveler.
+        * Auto-miner not working under certain conditions.
+
+    Misc:
+        * Updated Russian localization.
+
+
+Version 1.45.0
+    New:
+        * Craft/Build search window.
+        * Visited charter stones list.
+        * Added Skin option to Menu Settings.
+
+    Fixed:
+        * Client locking up during "Waiting for map data..." under certain conditions.
+        * Auto-miner.
+        * Multiple player's movement vector issues.
+        * Local minimap disappearing while using cross-roads/charters under certain conditions.
+        * Remaining study time erroneously displayed instead of percentage for curios placed in cauldrons etc.
+        * kbd console command not being preserved across client restarts.
+
+    Misc:
+        * Extended localization support.
+        * Updated Russian localization.
+
+
+Version 1.44.0
+    New:
+        * Added pluck, clean, and butcher options to Menu Settings.
+        * Wound description now shows remedies which can be used to cure it.
+
+    Fixed:
+        * Crash when changing some video related settings before loging into a character.
+
+    Misc:
+        * Option to show animals paths was removed and option to show other players paths was changed 
+          to show only the path of your character.
+        * Removed "Alternative" minimap controls option.
+        * Alt+click to transfer all items from stockpile instead of shift+rmb.
+        * Toned-down drying rack highlight colors.
+        * Updated Russian localization.
+
+
+Version 1.43.1
+    Fixed:
+        * Movement vectors.
+        * Tile centering.
+        * Crash while clearing up minimap cache.
+        * Mussel picker, branch/coal fuelers.
+
+
+Version 1.43.0
+    Misc:
+        * Upstream merge.
+
+
+Version 1.42.1
+    New:
+        * Switch between currently selected quality mode and 'all' mode with alt+q.
+
+    Fixed:
+        * Belt hotkeys being invoked when typing into stockpile window.
+        * Hitbox not shown for domestic horses.
+
+    Misc:
+        * Take one item from stockpile when clicking take without entering an amount.
+        * Changed extensions menu icon.
+        * Updated Russian localization.
+        * Upstream merge.
+
+
+Version 1.42.0
+    New:
+        * Option to show previously studied curiosities in study window.
+        * Option to show buff icon if study window is not fully occupied.
+        * Added minimap icons for dead hedgehogs and squirrels.
+
+    Fixed:
+        * Automatic ground leveler not taking dirt from stockpiles.
+        * F-hotkeys not working when stockpile window is open.
+        * Various small fixes.
+
+    Misc:
+        * Option to aggro closest player on Tab key has been replaced by shift+tab.
+        * Localization improvements.
+
+
+Version 1.41.1
+    Misc:
+        * Upstream code merge.
+
+
+Version 1.41.0
+    Misc:
+        * Reverted back to AWT.
+
+
+Version 1.40.0
+    New:
+        * Full-screen mode with support for resolution changing.
+        * Support for hardware mouse cursors on Linux and Mac OS X.
+
+    Fixed:
+        * Tile centering bug.
+        * Localized resource alarm not firing on rock crystals.
+
+    Misc:
+        * Updated Chinese translation.
+        * Updated curio study times.
+        * Changed screenshot file type to PNG.
+
+
+Version 1.39.1
+    Fixed:
+        * Rockcrystal not being recognized for sound alarm
+        * Crash while viewing a barterstand with no buy button.
+
+
+Version 1.39.0
+    New:
+        * Show item quality in barter stand windows.
+        * Simplified opening indicators.
+        * Option to show current keybindings for combat actions.
+        * Grayed out icons for dead animals (except aurochs).
+        * Alarm for localized resources.
+
+    Fixed:
+        * Animal radius not being removed after killing the animal.
+
+
+Version 1.38.1
+    New:
+        * Highlight Travel menu options.
+
+    Fixed:
+        * Combat school not switching without pressing save.
+        * Mussel picker not working with minimap.
+
+    Misc:
+        * Localization support improvements.
+        * Updated Russian localization.
+        * Code cleanup.
+
+
+Version 1.38.0
+    New:
+        * Alternative combat UI.
+
+    Fixed:
+        * Fixed circular progress indicators.
+
+
+Version 1.37.0
+    New:
+        * Automatic picking of clustered mussels.
+        * Confirmation dialog for magic actions.
+        * Walk while having an item on the cursor with alt+lmb.
+        * Allow taking specific number of items from stockpiles.
+
+    Fixed:
+        * Aiming vectors not working on ATI/AMD GPUs.
+        * Overlapping flower menus (e.g. cross roads).
+        * Using branches with steel refueler.
+        * Incoming party messages not being saved to file (log chats option).
+        * Buff tooltips not working when pointing at the lower half of buff icons.
+        * Combat moves were mistakenly placed under maneuvers filters and vise versa.
+
+    Misc:
+        * Chinese translation updated by raislin_mage.
+        * Russian translation updated by zebratul.
+        * Settings window was reorganized.
+        * Changed colors of beehive and trough radiuses.
+        * Large window close button is now embedded into the client.
+        * Different sound for lynx alarm.
+
+
+Version 1.36.4
+    Fixed:
+        * ctrl+tab for switching opponents not working on Windows.
+
+    Misc:
+        * Merged upstream changes.
+        * Updated en/ru l10n.
+
+
+Version 1.36.3
+    Misc:
+        * Combat settings UI redesing + action filters.
+
+
+Version 1.36.2
+    Fixed:
+        * Combat settings UI overlapping issues on Windows.
+
+
+Version 1.36.1
+    New:
+        * Option to change combat key bindings.
+        * Option to log combat actions to system log.
+
+
+Version 1.36.0
+    New:
+        * Load indicator for ovens, smelters, forges.
+
+    Fixed:
+        * Rare crash in fill oven/smelters task.
+
+    Misc:
+        * shift+wheel for switching combat opponents has been replaced with ctrl+tab
+        * Display human readable names in map settings instead of resource names.
+
+
+Version 1.35.3
+    Fixed:
+        * Last stage indicator flickering on some crops. 
+
+    Misc:
+        * Updated curio study times.
+        * Standardized controls for moving the F-bar, history bar, and hand slots.
+        * Improved localization support.
+        * Updated Russian localization and English strings.
+        * Various code cleanups.
+
+
+Version 1.35.2
+    Fixed:
+        * Slow auto-mining.
+        * Crash when having non existent resources (e.g. from another client) on the F-belt.
+
+    Misc:
+        * Added windweed to hide icons list.
+        * Open system log by default.
+        * Updated russian localization and english strings.
+
+
+Version 1.35.0
+    Fixed:
+        * Pathfinding issues (by elsid).
+        * Russian localization (by elsid).
+
+    Misc:
+        * Option to set transparency of the quality background (by elsid).
+        * Optimized grid overlay rendering.
+        * Merged vanilla changes.
+
+
+Version 1.34.2
+    Misc:
+        * Various improvements to localization support.
+        * Various code cleanups.
+        * Merged vanilla changes.
+
+
+Version 1.34.1
+    New:
+        * [Preliminary] Chinese translation (by forsaken628).
+        * Option to disallow aggroing of partied/village members/non-red kins.
+        * Added option for geometric average.
+
+    Fixed:
+        * Construction health not being updated after fixing it.
+        * Various minor things.
+
+    Misc:
+        * Updated Russian localization (by elsid).
+        * Adjustments to options and character sheet window layout.
+
+
+Version 1.34.0
+    New:
+        * Show character direction on the minimap (by elsid).
+        * Option to auto logout on unknown/red players.
+
+    Fixed:
+        * Food satiation type text no showing in the tooltip.
+        * Buckets/flask/etc bars not showing when using Russian language.
+        * Various crashes.
+
+    Misc:
+        * Updated Russian localization (by InGodWeTrust and elsid).
+        * Preserve :audiobuf setting across restarts.
+        * Show mining support radius for ladders.
+        * Show average quality when inspecting objects.
+        * Completely removed ui hiding using space-bar together with the old setting for disabling it.
+
+
+Version 1.33.1
+    New:
+        * Wrecking ball icon.
+        * Option to disable the hotkey for drinking.
+
+    Fixed:
+        * Arrow vectors when ridding horses.
+        * Misc. crashes.
+
+    Misc:
+        * Update Russian localization (on behalf of InGodWeTrust)
+
+
+Version 1.33.0
+    New:
+        * Arrow vectors.
+        * Attack cooldown delta.
+
+
+Version 1.32.8
+    Fixed:
+        * change was erroneously called for linstep event.
+        * NPE in OCache.cmppose
+
+
+Version 1.32.7
+    New:
+        * Cart icon.
+        * Volume slider for wagon whip sound.
+
+    Fixed:
+        * Floating hearth fire names when fire animation are disabled.
+
+    Misc:
+        * Merged upstream changes.
+
+
+Version 1.32.6
+    Fixed:
+        * Custom gfx/hud/drop resource conflict with other clients.
+        * Crash in F-belt
+        * Crash on alt+rbm equipory items.
+        * Back-quote/tilde key not working on non English locales on Windows.
+        * Misc. fixes related to optimization merge.
+
+    Misc:
+        * Updated curio list.
+
+
+Version 1.32.5
+    Fixed:
+        * Fixed crash when auto-mining.
+
+    Misc:
+        * Merge optimization related changes from upstream.
+
+
+Version 1.32.4
+    Misc:
+        * Moved W hotkey to use back-quote key and fixed everything related to auto-drinking.
+
+
+Version 1.32.3
+    New:
+        * Drink water from any container in the inventory on W key.
+
+    Misc:
+        * Updated resources jar.
+
+
+Version 1.32.2
+    New:
+        * Instant flower menus option.
+
+    Fixed:
+        * Possible crash in F-belt.
+        * Crash in History belt.
+
+
+Version 1.32.1
+    Fixed:
+        * Crash when studying curios with less than 1 hour study time.
+        * alt+z/x not working.
+        * Re-enabled shift+alt+lmb.
+
+
+Version 1.32.0
+    New:
+        * Craft/build history hotbelt.
+        * LP/hour in character sheet.
+        * Option to disable animations.
+
+    Fixed:
+        * Wikipedia hotkey not working for non English localizations.
+
+    Misc:
+        * alt+lmb to transfer identical items in descending order, alt+rmb for ascending.
+          alt+shift+lmb was removed together with the old ordering option in settings window.
+        * shift+d to toggle beehive/trough radius. Old setting in the settings window was removed.
+        * Updates to localization support and Russian translation.
+
+
+Version 1.31.1
+    New:
+        * Battering ram and catapult alarm.
+
+    Misc:
+        * Terminate auto-leveler when out of water.
+        * Merged vanilla changes.
+        * Misc smaller fixes.
+
+
+Version 1.31.0
+    New:
+        * Task for lighting kilns/smelters/ovens/steelbxoes using a torch.
+
+    Fixed:
+        * Animal radiuses being shown for dead animals.
+        * Crash when dragging and switching camera at the same time.
+        * Possible fix for UnknownHostException when fetching resources using flaky DNS.
+        * Other smaller fixes and adjustments...
+
+    Misc:
+        * Actions from extended menu can be used from F-key hotbar now.
+        * Updates to localization support and Russian translation (on behalf of InGodWeTrust).
+
+
+Version 1.30.3
+    Fixed:
+        * Crash when using catapult.
+
+    Misc:
+        * Localization support for food items, curios, etc, tooltips.
+
+
+Version 1.30.2
+    New:
+        * Mammoths alarm.
+        * Wheelbarrow icon.
+
+    Fixed:
+        * Crash when using ctrl+g during map load.
+        * Crash on map load.
+        * Crash in pathfinder.
+        * Number of issues with auto-leveler (by Arcanist).
+        * Flower menu in kin window not working for non English languages.
+
+    Misc:
+        * Updated Russian localization (by InGodWeTrust).
+        * Moved quality related settings from Display Settings to separate tab.
+        * Localization support for hardcoded strings.
+
+
+Version 1.30.1
+    Fixed:
+        * Temporary BufferBGL fix.
+        * Pathfinder issues.
+        * Auto-leveler issues.
+
+
+Version 1.30.0
+    New:
+        * Russian localization.
+        * Automatic ground leveler.
+        * Party members highlight (from shubla's client) .
+
+    Fixed:
+        * Possible crash when switching characters. 
+        * Pathfinder issues.
+
+    Misc:
+        * Merged vanilla changes.
+        * Misc. code cleanups and improvements to localization support.
+
+
+Version 1.29.2
+    Misc:
+        * Restored alternative minimap controls.
+
+
+Version 1.29.1
+    Misc:
+        * Updated English localization files and added support for labels and system messages 
+          localization.
+        * Changed troll alarm sound.
+        * Reorganized options menu.
+        * Merged vanilla changes.
+
+
+Version 1.29.0
+    New:
+        * Localization support.
+        * Troll alarm.
+        * Task for filling oven with 4 branches.
+        * Option to sort items in ascending order instead of the default descending when transferring.
+
+    Fixed:
+        * Rare crash when teleporting.
+        * Fixed 11/12 coal task occasionally using wrong amount of fuel.
+        * Curio alarm triggered by bat wings drying on a herbalist table.
+        * Assortment of other small issues.
+
+    Misc:
+        * Terminate autominer on troll spawn.
+        * Changed Ctrl+I to Shift+I.
+
+
+Version 1.28.3
+    Misc:
+        * Updated resources.
+
+
+Version 1.28.2
+    Misc:
+        * Merged vanilla changes.
+        * Added glimmermoss and bloated bolete to curios alarm.
+
+
+Version 1.28.1
+    Fixed:
+        * Tree stages not showing.
+
+
+Version 1.28.0
+    New:
+        * Steel crucibles refueler.
+        * Option to hide extensions menu.
+
+    Fixed:
+        * Drying frame invalidly highlighted when drying wind weed.
+
+    Misc:
+        * Merged vanilla changes.
+
+
+Version 1.27.0
+    New:
+        * Option to highlight empty and finished drying frames.
+        * Tasks for adding 11 and 12 coal into smelters.
+        * Option to allow full zoom-out in Ortho cam.
+
+    Fixed:
+        * Bear alarm.
+
+    Misc:
+        * Auto-miner: allow mining cave walls & option to not drop mined ore.
+        * Don't display damage of 1 (from scents and such) in the damage overlay.
+
+
+Version 1.26.0
+    New:
+        * F-key toolbar.
+        * Animal radius.
+
+    Fixed:
+        * Auto-miner issues.
+        * Pathfinder issues.
+        * Bear/lynx alarm firing off on dead animals.
+
+
+Version 1.25.0
+    New:
+        * Alarm on bluebells, flotsams, and edelweiss.
+        * Alarm on bears and lynx.
+        * Slider for adjusting fireplace sound volume.
+        * Option to show cooldown time.
+        * Option to disable dropping items over water (overridable with Ctrl).
+
+    Fixed:
+        * Exception in chat window.
+
+    Misc:
+        * Improved auto-miner.
+
+
+Version 1.24.6
+    Misc:
+        * Merged vanilla changes.
+
+
+Version 1.24.5
+    Fixed:
+        * Fixed NPE in ChatUI.
+
+    Misc:
+        * Merged vanilla changes.
+
+
+Version 1.24.4
+    Fixed:
+        * Position of server time, horizon and status widgets.
+        * Hide icons list being partially hidden.
+
+    Misc:
+        * By default leave "Disable UI hiding.." option enabled.
+
+
+Version 1.24.3
+    Fixed:
+        * Broken server time and timers.
+
+
+Version 1.24.2
+    New:
+        * Show total sofcap in craft window.
+        * Option to disable space-bar hiding the UI.
+
+    Misc:
+        * Removed account status info from status widget since accounts are not time bound anymore.
+        * Map settings (trees/boulders/etc) are stored per character now.
+        * Merged vanilla changes.
+
+
+Version 1.24.1
+    Fixed:
+        * Movement vectors not showing for vehicles.
+
+    Misc:
+        * Added stalagmite to boulders list.
+        * Merged latest changes from the vanilla client.
+
+
+Version 1.24.0
+    New:
+        * Show bounding boxes with shift+b.
+        * Sound alarm on new party chat message (if no message was received in 3 minutes).
+
+    Misc:
+        * Merged latest changes from the vanilla client.
+
+
+Version 1.23.5
+    Fixed:
+        * Potential issue with timers when restarting the client.
+
+    Misc:
+        * Remember position for Stone Casket, Chicken Coop, Extraction Press, Oven, Large Chest.
+        * Changed ctrl+d to toggle only mine support radius and moved trough/beehive radius toggle 
+          to settings window.
+        * Vanilla changes merge.
+
+
+Version 1.23.4
+    Fixed:
+        * NPE when resizing the chat.
+
+
+Version 1.23.3
+    Fixed:
+        * Quest log position.
+
+
+Version 1.23.2
+    Fixed:
+        * Updated builtin-res.jar
+
+
+Version 1.23.1
+    Misc:
+        * Auto miner: stop drinking when stamina reaches ~90%. 
+        * Moved option to force hardware cursor from command line switch to settings window.
+        * Merged changes from the vanilla client.
+
+
+Version 1.23.0
+    New:
+        * Option to activate System log on login (dev. by b0r3d0m).
+        * Option to auto select 'Split' action.
+    
+    Fixed:
+        * Crime/tracking toggles behavior when switching chars. 
+        * Minimap not updating on tiles change.
+
+    Misc:
+        * Resource/tile info on shift/shift+ctrl functionality can be switched off and on with ctrl+i now. 
+        * Added wagon icon to Hide icons list.
+        * Merged changes from the vanilla client which supposedly fix mouse issues on Mac OS X Java 8.
+
+
+Version 1.22.0
+    New:
+        * Show distance and relative location of party members.
+        * Option to show buff icons when swimming/tracking/crime is toggled on.
+        * Option to activate tracking/criminal acts on login.
+        * Rotate between combat opponents with shift + mouse wheel.
+        * Option to show server time on the screen (removed from status widget).
+        * Option to disable metallic mining sound.
+
+    Misc:
+        * Show last stage for crops as a red dot instead of a number.
+        * Display container (buckets, etc.) content quality instead of the container's quality.
+        * Added frogs to hide icons list.
+
+
+Version 1.21.2
+    New:
+        * Sound alarm when pony power drops below 10%.
+        * Option to reverse bad cam's middle mouse button axes.
+
+    Fixed:
+        * Interaction with minimap if Hide icons menu hasn't been ever used.
+         
+    Misc:
+        * Upstream changes merge.
+        * Auto mining is stable now.
+
+
+Version 1.21.1
+    New:
+        * [WIP] Automatic mining.
+
+    Misc:
+        * Upstream changes merge.
+
+
+Version 1.21.0
+    New:
+        * Item wear bars.
+        * Option to automatically select Eat action.
+        * Perform right clicks at the center of a tile when ctrl+x is toggled.
+        * Transfer single item to a stockpile on shift+lmb.
+        * Show arrows and boar spears on minimap.
+        * Items with custom icons (arrows, toads, etc) can be picked from minimap.
+        * Option to to use AZERTY (French) keyboard layout instead of QWERTY.
+        * Highlight current combat opponent.
+        * Aggro closest unknown/red player on Tab key.
+
+    Misc:
+        * Removed seeds dropping on shift+d.
+
+
+Version 1.20.8
+    Fixed:
+        * Updates checker buttons not leading to the right URLs.
+
+
+Version 1.20.7
+    Fixed:
+        * Crash when drawing hostile animal icons.
+
+
+Version 1.20.6
+    Fixed:
+        * Minimap flicker when changing locations.
+
+    Misc:
+        * Render icons for hostile animals on top of all other icons.
+        * Button in updates checker for downloading reduced size update archive.
+
+
+Version 1.20.5
+    Misc:
+        * Upstream changes merge.
+
+
+Version 1.20.4
+    Fixed:
+        * Fixed qualities not being displayed due to recent server update.
+
+
+Version 1.20.3
+    New:
+        * Added option to draw backgrounds for quality values.
+
+    Fixed:
+        * Freezing when switching characters with enabled status display (ctrl+m).
+
+    Misc:
+        * Changed quick filling hotkey (shift+ctrl) to shift+z. 
+        * Changed hotkey for tile name tooltip (shift) to shift+ctrl.
+
+
+Version 1.20.2
+    Misc:
+        * Upstream changes merge.
+
+
+Version 1.20.1
+    Fixed:
+        * Seeds drop hotkey changed to shift+d to prevent conflict with radius toggling.
+
+
+Version 1.20.0
+    New:
+        * Hotkey for taking screenshots.
+        * Option to use arithmetic mean when calculating average quality.
+        * Option to display cumulative damage for players/animals.
+        * Quick filling of troughs/smelters/etc.
+        * Tree hiding.
+        * Player position streaming to external mapping tools.
+
+    Fixed:
+        * Contents bars not calculated correctly for buckets containing seeds. 
+        * Quality not being updated when stacking items.
+
+    Misc:
+        * Contents bars are shown on quicklosts as well now.
+        * Shift + pointing at a ground tile will show its resource name similarly to objects.
+        * Display base and buffed values for base attributes separately.  
+        * Option for auto dropping seeds in options window has been removed in favor of a hotkey.
+
+
+Version 1.19.0
+    New:
+        * Object highlighting with Alt+LMB.
+        * Option to set running speed on login.
+        * Option to show inventory on login.
+        * Option to display FPS.
+        * Option to show contents bars for buckets, flasks, and waterskins.
+        * Combat schools renaming.
+        * Slider for adjusting Quern sound volume.
+        * Option to automatically drop seeds from inventory.
+
+    Fixed:
+        * Armor class summary not being recalculated under certain conditions.
+
+    Misc:
+        * Reset Windows button will reset hidden UI in addition to windows positions.
+        * Status widget displays server time now in addition to previous information.
+        * Cupboards support in auto study.
+
+
+Version 1.18.1
+    New:
+        * Option to completely hide crops.
+        * Ctrl+Up/Right/Down/Left snaps the ortho camera to N, E, S, W respectively.
+        * Option to automatically select the 'Harvest' action.
+
+    Fixed:
+        * Average quality calculation.
+        * Growth stages for bushes not showing.
+
+
+Version 1.18.0
+    New:
+        * Option to show remaining study time for curios.
+        * Shift+Ctrl+LMB on an item in inventory/container opens relevant wiki page.
+        * Auto study.
+        * Icons for dead rabbits and chicken.
+        * Additional quality option: lowest of E/S/V.
+        * Tree growth stages.
+
+    Fixed:
+        * Do not allow dropping over existing curios when study is locked.
+        * Fixed map tiles not rendering under certain conditions when minimap window was maximized.
+        * Don't save map tiles for houses and cellars.
+        * When mass transferring to a full stockpile last item would hang on the cursor.
+
+    Misc:
+        * Command line argument '-c' for forcing hardware cursor.
+        * Value set with :bghz is now remembered across restarts.
+
+
+Version 1.17.2
+    Fixed:
+        * Alt+1/2 hotkeys for quickslots changed to Alt+Z/X.
+        * Issue with status widget attempting to connect with null username.
+
+
+Version 1.17.1
+    Fixed:
+        * Fixed crash in equipment window drawing routine.
+
+
+Version 1.17.0
+    New:
+        * Show overall armor class in the equipment window.
+        * Simulate left mouse click on quick slots with alt+1/2.
+        * Option to automatically select Pick action.
+        * Player and animal paths.
+        * Status widget.
+        * Option for alternative controls for minimap using MMB for dragging and L/RMB for moving.
+
+    Fixed:
+        * Gob radius not showing when loading new area. 
+        * Mine support radius expanding below ground level.
+        * Mass transfer from inventory to kiln/smelter instead of stockpile if both windows are open.
+        * Timers re-initializing multiple times during re-logging.
+        * Minimap not rendering under certain conditions when the window is set to minimal width.
+        * Potential hang when entering or leaving houses/cellars.
+
+    Misc:
+        * Slightly reduced the duration of player alarm sound. 
+        * Optimization related to quick slots rendering.
+        * Render player dots on top of all other icons.
+        * Save Quiver window position.
+
+
+Version 1.16.0
+    New:
+        * Horizontally resizable chat.
+        * Transfer all items to and from a stockpile with shift+atl/ctrl+rmb and shift+rmb.
+        * Auto hearth.
+        * Show boats on minimap.
+        * Option to show quality as average of substance and vitality.
+        * Print server time to System log.
+        * Beehive radius.
+
+    Fixed:
+        * Click on an icon didn't work if object with a hidden icon was overlapping it.
+        * Show grid button erroneously modified map dragging lock when clicked.
+        * Map was partially hidden when window is resized to minimal size.
+
+    Misc:
+        * Optimizations related to map rendering.
+        * Optimizations related to percentage text rendering.
+
+
+Version 1.15.1
+    Fixed:
+        * Crash when right clicking instruments.
+
+
+Version 1.15.0
+    New:
+        * Simplified crops.
+        * Icons for battering rams and toads.
+        * Add message to system log when curio finishes studying.
+
+    Fixed:
+        * Radius for stone supports not showing.
+        * Different types of meat were considered as same item when mass transferring/dropping.
+
+
+Version 1.14.0
+    New:
+        * Show mine support radius with ctrl+d.
+        * Change between bad and ortho camera with shift+c.
+        * Option for hiding flavor objects but keeping the ambient sounds.
+        * Option for hiding weather.
+
+    Fixed:
+        * 'alarm on unknown' volume slider not being preserved between restarts.
+        * 'save map tiles to disk' option not disabling tile dumps when unchecked.
+        * Prevent clicking on hidden icons.
+        * Don't log attribute changes with 0 change.
+        * Render item percentage on top so it won't be hidden behind quality.
+
+
+Version 1.13.3
+    Fixed:
+        * Crash when partying characters located in different worlds.
+
+
+Version 1.13.2
+    New:
+        * Notify when kin comes online
+        * Log changes to base attributes.
+        * Shift+Alt+LMB for mass transferring. Old combination Alt + RMB still works too.
+
+    Misc:
+        * All-around optimizations.
+
+
+Version 1.13.1
+    Fixed:
+        * Shift+Q/W/E/R not working on non english keyboard layouts.
+        * LP gain multiplier for curios is now optional.
+        * Issue with crop stage routine taking into account trellis objects.
+        * Significant performance hit when show crop stage option is turned on.
+        * Changed crop stage display to be togglable using Ctrl+P.
+
+
+Version 1.13.0
+    New:
+        * Show plants growth stage.
+        * Change speed using Shift+Q/W/E/R.
+        * Option to show all three elements substance/essence/vitality as quality.
+        * Quality for curiosities is shown now as LP gain multiplier.
+
+    Fixed:
+        * Mirkwood map highlighting.
+
+
+Version 1.12.0
+    New:
+        * Slider for reducing volume of stone chipping and boat squeaking sounds.
+        * Custom resurces override support.
+        * Show attribute/ability values in craft window. 
+        * Show object health.
+
+    Misc:
+        * Write dates in chat logs.
+        * Preserve show pclaims/vclaims selection between restarts.
+
+
+Version 1.11.1
+    Fixed:
+        * Crash on log out.
+        * Java 7 compatibility.
+        * Chat logs encoding for non Lating letters.
+
+    Misc:
+        * Preserve Stockpile, Tub, and Cauldron window positions.
+
+
+Version 1.11.0
+    New:
+        * Option to display view distance box and minimap grid.
+        * Sound alarm when curiosity finishes studying.
+        * Option to show average quality without rounding to a whole number.
+        * List for hiding some of the default minimap icons.
+
+
+    Fixed:
+        * Quick slots widget dragging.
+        * Daylight cycle.
+        * Draw 'x' instead of a circle for party members when 'show players' option is enabled.
+        * Slightly more visible xfor party memebers.
+
+
+Version 1.10.0
+    New:
+        * Quick hand equipment slots.
+        * Optional sound notification on new private chats.
+        * Preserve window positions.
+        * Slider for adjusting timer alarm volume.
+
+    Fixed:
+        * Persist timers across client restarts.
+
+
+Version 1.9.0
+    New:
+        * Grid overlay.
+
+    Fixed:
+        * Issue with map tile dumps being saved to new folder each time.
+
+
+Version 1.8.0
+    New:
+        * Timers.
+        * Configurable chat font size.
+        * Option to show hourglass percentage. 
+        * Option to display item completion as percentage.
+        * Camera zoom using numpad +/-.
+        * Updated boulders/bushes/trees lists.
+
+    Fixed:
+        * Issue with map tiles inside the minimap window not being drawn sometimes when dragging.
+        * Map tiles compatibility with TP mapping tool.
+        * Calculate average quality using root mean square instead of arithmetic mean.
+
+
+Version 1.7.1
+    New:
+        * Updated boulders and trees list.
+
+
+Version 1.7.0
+    New:
+        * Option to show boulder/bushes/trees on minimap.
+        * Show Gob resource name when pointing at it and holding Shift.
+        * Option to display item completion progress as bar.
+        * Option to choose between the type of quality to show - highest or average.
+
+    Fixed:
+        * Fixed item quality text position for items taking more than one slot.
+        * Changed mass transfer key combination to use Alt.
+
+
+Version 1.6.3
+    New:
+        * Cleaner minimap window.
+        * Button for disabling map dragging.
+        * Option to disable biome edge transitions. 
+
+    Fixed:
+        * Map size not being preserved between restarts.
+        * Crash when Shift+right clicking items in the character screen.
+
+
+Version 1.6.2
+    New:
+        * Nightvision can be toggled now using Ctrl+N.
+        * Option to set "bad" camera scrolling sensitivity.
+
+    Fixed:
+        * Restored minimap clicking.
+
+
+Version 1.6.1
+    Fixed:
+        * Alarm on unknown player setting not being preserved.
+        * Crash in item quality retrieval.
+
+
+Version 1.6.0
+    New:
+        * Persistent, resizable, and movable map.
+        * Account management.
+        * Option to show item quality.
+
+
+Version 1.5.0
+    New:
+        * Alarm sounds on unknown and red players.
+        * Save chat logs to disk and optionally show timestamps.
+
+    Fixed:
+        * Fixed possible rare crash when logging out.
+
+
+Version 1.4.0
+    New:
+        * Automatic check for updates. 
+        * Study box locking.
+        * Free camera rotation.
+
+
+Version 1.3.0
+    New:
+        * Option to always show kin names.
+        * Option to show players on minimap.
+
+    Fixed:
+        * Another hotfix for ArrayIndexOutOfBoundsException in the vanilla code.
+
+
+Version 1.2.0
+    New:
+        * Floating minimap.
+        * Dropping/transferring identical items.
+
+    Fixed:
+        * Hotfix for ArrayIndexOutOfBoundsException in the vanilla code.
+
+
+Version 1.1.0
+    New:
+        * Daylight mode.
+        * Better font.

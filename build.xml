@@ -1,0 +1,167 @@
+﻿<?xml version="1.0" ?>
+
+<project name="hafen" default="deftgt">
+  <property name="name" value="amber"/>
+  <property name="version" value=""/>
+
+  <target name="build-env">
+    <mkdir dir="build" />
+    <mkdir dir="build/classes" />
+    <available property="has-res-jar" file="build/hafen-res.jar" />
+    <available property="has-buildinfo" file="build/classes/buildinfo" />
+    <available property="unpacked-lib" file="build/classes-lib" />
+  </target>
+  
+  <target name="buildinfo" depends="build-env" unless="has-buildinfo">
+    <exec executable="git" outputproperty="gitrev" failifexecutionfails="false">
+      <arg line="rev-parse HEAD" />
+    </exec>
+    <echo file="build/classes/buildinfo" xml:space="default">${version},${gitrev}</echo>
+  </target>
+
+  <target name="hafen-client" depends="build-env">
+    <javac srcdir="src" destdir="build/classes" debug="on"
+	   source="1.8" target="1.8" includeantruntime="no" encoding="UTF-8">
+      <classpath>
+	<pathelement path="lib/jogl.jar" />
+	<pathelement path="lib/gluegen-rt.jar" />
+	<pathelement path="lib/jglob.jar" />
+        <pathelement path="lib/junit.jar" />
+      </classpath>
+      <compilerarg value="-Xlint:unchecked" />
+      <compilerarg value="-Xlint:-options" />
+      <!-- <compilerarg value="-Xbarda" /> -->
+    </javac>
+    <copy todir="build/classes">
+      <fileset dir="src" excludes="**/*.java" />
+    </copy>
+    <copy todir="build/classes/haven" file="etc/ressrv.crt" />
+    <copy todir="build/classes/haven" file="etc/authsrv.crt" />
+    <copy todir="build/classes/haven" file="etc/res-preload" />
+    <copy todir="build/classes/haven" file="etc/res-bgload" />
+    <copy todir="build/classes/haven" file="etc/icon.png" />
+    <copy todir="build" file="etc/grid_ids.txt" />
+  </target>
+
+  <target name="lib-classes" depends="build-env" unless="unpacked-lib">
+    <mkdir dir="build/classes-lib" />
+    <unjar src="lib/jglob.jar" dest="build/classes-lib">
+      <patternset excludes="META-INF/**" />
+    </unjar>
+  </target>
+
+  <target name="jar" depends="hafen-client,buildinfo,lib-classes">
+    <jar destfile="build/hafen.jar" update="true">
+      <fileset dir="build/classes" />
+      <fileset dir="build/classes-lib" />
+      <manifest>
+	<attribute name="Main-Class" value="haven.MainFrame" />
+	<attribute name="Class-Path" value="jogl.jar gluegen-rt.jar amber-res.jar builtin-res.jar hafen-res.jar l10n.jar" />
+      </manifest>
+    </jar>
+    <chmod file="build/hafen.jar" perm="a+x" />
+  </target>
+  
+  <target name="res-jar" depends="build-env" unless="has-res-jar">
+    <get src="http://game.havenandhearth.com/java/builtin-res.jar" dest="lib/builtin-res.jar"
+	 usetimestamp="true" />
+    <get src="http://game.havenandhearth.com/java/hafen-res.jar" dest="lib/hafen-res.jar"
+	 usetimestamp="true" />
+  </target>
+
+  <target name="l10n-jar" depends="build-env">
+    <jar destfile="build/l10n.jar">
+      <fileset dir="." includes="l10n/*.properties" excludes="l10n/*_new.properties"/>
+    </jar>
+  </target>
+
+	<target name="custom-encode" depends="build-env">
+		<mkdir dir ="build/custom-res"/>
+		<java jar="lib/LayerUtil.jar" fork="true">
+			<arg line="-re custom-res build/custom-res"/>
+		</java>
+	</target>
+
+	<target name="custom-jar" depends="custom-encode">
+		<jar basedir="build/custom-res" destfile="build/lib/pasta-res.jar"/>
+		<delete dir="build/custom-res"/>
+	</target>
+
+    <target name="scripts" depends="build-env">
+        <mkdir dir="build/scripts"/>
+        <copy todir="build/scripts">
+            <fileset dir="scripts/" includes="*">
+            </fileset>
+        </copy>
+    </target>
+
+  <target name="jars" depends="build-env, jar, res-jar, l10n-jar, custom-jar, scripts">
+    <copy todir="build/lib">
+      <fileset dir="lib">
+	<include name="jogl.jar" />
+	<include name="gluegen-rt.jar" />
+	<include name="hafen-res.jar" />
+	<include name="builtin-res.jar" />
+	<include name="amber-res.jar" />
+      </fileset>
+      <fileset dir="lib/jogl-natives" includes="*.jar">
+      </fileset>
+    </copy>
+  </target>
+
+ <target name="dist" depends="rebuild">
+    <zip destfile="${basedir}/${name}-${version}.zip" update="false">
+        <fileset dir="build" includes="*.jar,grid_ids.txt" excludes="*natives*.jar"/>
+        <fileset dir="${basedir}" includes="README, CHANGELOG"/>
+        <fileset dir="lib/jogl-natives" includes="*.jar"/>
+        <fileset dir="etc" includes="*.bat,run.sh,run.command"/>
+    </zip>
+    <zip destfile="${basedir}/${name}-${version}-upd.zip" update="false">
+        <fileset dir="build" includes="amber-res.jar, hafen.jar, l10n.jar, builtin-res.jar, grid_ids.txt" />
+        <fileset dir="${basedir}" includes="CHANGELOG"/>
+    </zip>
+  </target>
+
+  <target name="deftgt" depends="jars" />
+
+  <target name="run" depends="jars">
+    <java jar="build/hafen.jar" fork="true" />
+  </target>
+  
+  <target name="clean">
+    <delete dir="build" />
+  </target>
+
+  <target name="rebuild" depends="clean, jars">
+    <copy todir="build/res">
+        <fileset dir="custom_res/"/>
+    </copy>
+  </target>
+  
+  <target name="profile" depends="jars">
+    <nbprofiledirect>
+    </nbprofiledirect>
+      <java fork="true" jar="build/hafen.jar">
+        <jvmarg value="${profiler.info.jvmargs.agent}" />
+        <sysproperty key="haven.dbtext" value="on" />
+        <sysproperty key="haven.defserv" value="sh.seatribe.se" />
+        <sysproperty key="haven.resdir" value="/home/fredrik/src/hafen/res" />
+      </java>
+  </target>
+
+  <target name="test" depends="jars">
+    <junit showoutput="true" printsummary="true">
+      <classpath>
+        <pathelement location="lib/junit.jar" />
+        <pathelement location="lib/hamcrest/core.jar" />
+        <pathelement location="build/hafen.jar" />
+      </classpath>
+      <formatter usefile="false" type="plain" />
+      <batchtest fork="true" >
+        <fileset dir="src">
+          <include name="haven/pathfinder/test/PathfinderIsInsideBoundBoxTest.java" />
+        </fileset>
+      </batchtest>
+    </junit>
+  </target>
+</project>
