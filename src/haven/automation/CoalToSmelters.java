@@ -549,7 +549,7 @@ public class CoalToSmelters extends Window implements GobSelectCallback {
                 lblc2.settext(list2.size() + "");
                 if (bankselected == 3)
                     bankselected = 1;
-                activelist= null;
+                activelist.clear();
                 lblc4.settext(bankselected + "");
                 stopbtn.click();
             }
@@ -624,14 +624,14 @@ public class CoalToSmelters extends Window implements GobSelectCallback {
                     }
                     BotUtils.sysMsg("Done", Color.white);
                     torchselected =1;
-                    torchlist = null;
+                    torchlist.clear();
                     lblc.settext(list.size() + "");
                     lblc2.settext(list2.size() + "");
                     stopbtn.click();
                 }
             }
         }
-
+//test
 
         private void registerGobSelect () {
             synchronized (GobSelectCallback.class) {
