@@ -97,6 +97,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     public Thread pfthread;
     public SteelRefueler steelrefueler;
     public LightWithTorch torchlight;
+    public static Gob shooanimal;
     public CoalToSmelters coaltosmelters;
     public MinerAlert mineralert;
     public CraftAllBot craftbot;
@@ -1827,7 +1828,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                 synchronized (glob.oc) {
                     for (Gob gob : glob.oc) {
                         if (gob.type == Gob.Type.PLAYER || gob.type == Gob.Type.MOB || gob.type == gob.type.EAGLE || gob.type == Gob.Type.BEAR || gob.type == Gob.Type.LYNX || gob.type == Gob.Type.WALRUS
-                                || gob.type == Gob.Type.MAMMOTH || gob.type == Gob.Type.BAT || gob.type == Gob.Type.SLIME || gob.type == Gob.Type.SEAL || gob.type == Gob.Type.TROLL && !gob.isplayer()) {
+                                || gob.type == Gob.Type.MAMMOTH || gob.type == Gob.Type.BAT || gob.type == Gob.Type.SLIME || gob.type == Gob.Type.SEAL || gob.type == Gob.Type.TROLL || gob.getres().name.contains("kritter") && !gob.isplayer()) {
                             double dist = gob.rc.dist(mc);
                             if ((target == null || dist < target.rc.dist(mc)) && dist <= 5 * tilesz.x)
                                 target = gob;
@@ -1860,7 +1861,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                 synchronized (glob.oc) {
                     for (Gob gob : glob.oc) {
                         if (gob.type == Gob.Type.MOB || gob.type == gob.type.EAGLE || gob.type == Gob.Type.BEAR || gob.type == Gob.Type.SLIME || gob.type == Gob.Type.LYNX || gob.type == Gob.Type.WALRUS
-                                || gob.type == Gob.Type.MAMMOTH || gob.type == Gob.Type.BAT || gob.type == Gob.Type.SEAL || gob.type == Gob.Type.TROLL && !gob.isplayer()) {
+                                || gob.type == Gob.Type.MAMMOTH || gob.type == Gob.Type.BAT || gob.type == Gob.Type.SEAL || gob.type == Gob.Type.TROLL || gob.getres().name.contains("kritter") && !gob.isplayer()) {
                             double dist = gob.rc.dist(mc);
                             if ((target == null || dist < target.rc.dist(mc)) && dist <= 5 * tilesz.x)
                                 target = gob;
@@ -1896,9 +1897,23 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                         markedGobs.remove(gob.id);
                     else
                         markedGobs.add(gob.id);
-
                     glob.oc.changed(gob);
+
                 }
+                else
+                if(ui.modctrl && clickb == 1 && gob != null && Config.shooanimals){
+                    Resource res = gob.getres();
+                    if (res != null && (res.name.startsWith("gfx/kritter/horse") ||
+                            res.name.startsWith("gfx/kritter/sheep") ||
+                            res.name.startsWith("gfx/kritter/cattle") ||
+                            res.name.startsWith("gfx/kritter/pig") ||
+                            res.name.startsWith("gfx/kritter/goat"))) {
+                        shooanimal = gob;
+                        GameUI gui = gameui();
+                        new Thread(new ShooTargeted(gui), "ShooTargeted").start();
+                    }
+                }
+                else
                 if (ui.modmeta && ui.modctrl && clickb == 1 && gob != null) {
                     if (markedGobs.contains(gob.id))
                         markedGobs.remove(gob.id);

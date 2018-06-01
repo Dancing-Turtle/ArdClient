@@ -68,6 +68,7 @@ public class Config {
     public static boolean qualitywhole = Utils.getprefb("qualitywhole", true);
     public static int badcamsensitivity = Utils.getprefi("badcamsensitivity", 5);
     public static List<LoginData> logins = new ArrayList<LoginData>();
+    public static boolean shooanimals = Utils.getprefb("shooanimals",false);
     public static boolean mapshowgrid = Utils.getprefb("mapshowgrid", false);
     public static boolean mapshowviewdist = Utils.getprefb("mapshowviewdist", false);
     public static boolean disabletiletrans = Utils.getprefb("disabletiletrans", false);

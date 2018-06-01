@@ -241,9 +241,9 @@ public class CoalToSmelters extends Window implements GobSelectCallback {
                 BotUtils.sysMsg("Stopping", Color.white);
                 // terminate();
                 this.hide();
-                terminate = true;
-                terminate2 = true;
-                //terminate();
+               // terminate = true;
+               // terminate2 = true;
+                terminate();
                 runbtn.show();
                 runbtn2.show();
                 runbtn3.show();
@@ -694,7 +694,7 @@ public class CoalToSmelters extends Window implements GobSelectCallback {
                 runner.interrupt();
             if (light != null)
                 light.interrupt();
-            this.destroy();
+          //  this.destroy();
         }
         private List<WItem> getstones (Inventory inv){
         List<WItem> getstones = inv.getItemsPartial("Gneiss");

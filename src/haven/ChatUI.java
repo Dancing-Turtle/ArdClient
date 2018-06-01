@@ -93,6 +93,7 @@ public class ChatUI extends Widget {
         resize(this.sz);
     }
 
+
     public static class ChatAttribute extends Attribute {
         private ChatAttribute(String name) {
             super(name);

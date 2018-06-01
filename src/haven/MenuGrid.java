@@ -296,6 +296,7 @@ public class MenuGrid extends Widget {
             p.add(paginafor(Resource.local().load("paginae/amber/SliceCheese")));
             p.add(paginafor(Resource.local().load("paginae/amber/OpenRacks")));
             p.add(paginafor(Resource.local().load("paginae/amber/CountGobs")));
+            p.add(paginafor(Resource.local().load("paginae/amber/PepperPickerUpper")));
             p.add(paginafor(Resource.local().load("paginae/amber/TakeTrays")));
             p.add(paginafor(Resource.local().load("paginae/amber/CraftAllBot")));
             p.add(paginafor(Resource.local().load("paginae/amber/PepperFood")));
@@ -531,6 +532,8 @@ public class MenuGrid extends Widget {
             gui.livestockwnd.raise();
         } else if (ad[1].equals("shoo")) {
             new Thread(new Shoo(gui), "Shoo").start();
+        } else if (ad[1].equals("PepperPickerUpper")) {
+            new Thread(new PepperPickerUpper(gui), "PepperPickerUpper").start();
         } else if (ad[1].equals("dream")) {
             new Thread(new DreamHarvester(gui), "DreamHarvester").start();
         } else if (ad[1].equals("trellis-harvest")) {
@@ -683,6 +686,24 @@ public class MenuGrid extends Widget {
             if (Config.enablecrime && !GameUI.crimeon) {
                 gui.crimeautotgld = true;
                 wdgmsg("act", new Object[]{"crime"});
+            }
+            for (Widget w = gameui().chat.lchild; w != null; w = w.prev) {
+                if (w instanceof ChatUI.MultiChat) {
+                    ChatUI.MultiChat chat = (ChatUI.MultiChat) w;
+                    if(Config.chatalert != null) {
+                        if (chat.name().equals(Resource.getLocString(Resource.BUNDLE_LABEL, Config.chatalert))) {
+                            chat.select();
+                            chat.getparent(ChatUI.class).expand();
+                            break;
+                        }
+                    }
+                    else
+                    if (chat.name().equals(Resource.getLocString(Resource.BUNDLE_LABEL, "Area Chat"))) {
+                        chat.select();
+                        chat.getparent(ChatUI.class).expand();
+                        break;
+                    }
+                }
             }
             togglestuff = false;
         }

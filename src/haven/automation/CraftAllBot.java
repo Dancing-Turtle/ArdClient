@@ -126,25 +126,27 @@ public class Runner implements Runnable {
                         gui.map.wdgmsg("click", cauldron.sc, cauldron.rc.floor(posres), 3, 0, 0, (int) cauldron.id, cauldron.rc.floor(posres), 0, -1);
                         BotUtils.sleep(500);
                         ((Button) craftall).click();
+                        BotUtils.sleep(500);
+                        gui.map.wdgmsg("click", cauldron.sc, cauldron.rc.floor(posres), 3, 0, 0, (int) cauldron.id, cauldron.rc.floor(posres), 0, -1);
                     }
                 }
-                IMeter.Meter stam = gui.getmeter("stam", 0);
-                if (gui.prog == -1) {
-                    BotUtils.sleep(1000);
-                    Thread i = new Thread(new BeltDrink(gui), "BeltDrink");
-                    i.start();
-                    BotUtils.sleep(1000);
+             //   IMeter.Meter stam = gui.getmeter("stam", 0);
+               // if (gui.prog == -1) {
+                  //  BotUtils.sleep(1000);
+                  //  Thread i = new Thread(new BeltDrink(gui), "BeltDrink");
+                  //  i.start();
+                  //  BotUtils.sleep(1000);
+              //  }
+              //  while(gui.prog >= 0) {
+                  //  BotUtils.sleep(10);
+              //  }
+               // if(stam.a > 50)
+              //  ((Button) craftall).click();
+               // else{
+                   // Thread i = new Thread(new BeltDrink(gui), "BeltDrink");
+                   // i.start();
                 }
-                while(gui.prog >= 0) {
-                    BotUtils.sleep(10);
-                }
-                if(stam.a > 50)
-                ((Button) craftall).click();
-                else{
-                    Thread i = new Thread(new BeltDrink(gui), "BeltDrink");
-                    i.start();
-                }
-            }
+
 
 
 

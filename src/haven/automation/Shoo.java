@@ -3,12 +3,11 @@ package haven.automation;
 
 import static haven.OCache.posres;
 
-import haven.Coord2d;
-import haven.FlowerMenu;
-import haven.GameUI;
-import haven.Gob;
-import haven.Loading;
-import haven.Resource;
+import haven.*;
+import haven.pathfinder.Map;
+import haven.purus.BotUtils;
+
+import java.awt.*;
 
 public class Shoo implements Runnable {
     private GameUI gui;
@@ -19,7 +18,7 @@ public class Shoo implements Runnable {
 
     @Override
     public void run() {
-        Gob animal = null;
+Gob animal = null;
         synchronized (gui.map.glob.oc) {
             for (Gob gob : gui.map.glob.oc) {
                 try {

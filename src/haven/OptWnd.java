@@ -1012,6 +1012,17 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
+        appender.add(new CheckBox("Shoo animals with Ctrl+Left Click") {
+            {
+                a = Config.shooanimals;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("shooanimals", val);
+                Config.shooanimals = val;
+                a = val;
+            }
+        });
         general.add(new PButton(200, "Back", 27, main), new Coord(210, 360));
         general.pack();
     }
