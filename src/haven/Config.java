@@ -26,17 +26,16 @@
 
 package haven;
 
-import static haven.Utils.getprop;
+import haven.error.ErrorHandler;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.awt.event.KeyEvent;
 import java.io.*;
 import java.net.URL;
 import java.util.*;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import haven.error.ErrorHandler;
+import static haven.Utils.getprop;
 
 public class Config {
     public static final boolean iswindows = System.getProperty("os.name").startsWith("Windows");
@@ -180,6 +179,9 @@ public class Config {
     public static byte[] authck = null;
     public static String prefspec = "hafen";
     public static String version;
+    public static String Changelog;
+    public static String[] Changelogarray;
+    public static StringBuffer Changelogbuffer;
     public static String gitrev;
     public static boolean fepmeter = Utils.getprefb("fepmeter", true);
     public static boolean hungermeter = Utils.getprefb("hungermeter", true);
@@ -617,6 +619,23 @@ public class Config {
                     String[] binfo = s.next().split(",");
                     version = binfo[0];
                     gitrev = binfo[1];
+                }
+            } finally {
+                in.close();
+            }
+        } catch (Exception e) {}
+        try {
+            InputStream in = ErrorHandler.class.getResourceAsStream("/CHANGELOG");
+            try {
+                if (in != null) {
+                    java.util.Scanner s = new java.util.Scanner(in);
+                    Changelogbuffer = new StringBuffer();
+                    while(s.hasNextLine()) {
+                            Changelogbuffer.append("-");
+                            Changelogbuffer.append(s.nextLine());
+                    }
+                //  }
+                   Changelog = Changelogbuffer.toString();
                 }
             } finally {
                 in.close();

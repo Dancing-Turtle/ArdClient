@@ -3,6 +3,8 @@ package haven;
 import haven.purus.BotUtils;
 import haven.Fightsess;
 import haven.Fightview;
+import haven.purus.pbot.PBotAPI;
+
 import java.awt.Color;
 
 public class DamageSprite extends Sprite implements PView.Render2D {
@@ -81,15 +83,15 @@ public class DamageSprite extends Sprite implements PView.Render2D {
             int myred = Fightsess.myred;
             KinInfo kininfo = gob.getattr(KinInfo.class);
             if(kininfo != null)
-                BotUtils.sysMsg("Hit " + kininfo.name + " For " + dmg + " Damage and "+arm+" armor damage. Had "+blue+" blue opening and "+red+" red opening.", Color.white);
+                gui.syslog.append("Hit " + kininfo.name + " For " + dmg + " Damage and "+arm+" armor damage. Had "+blue+" blue opening and "+red+" red opening.",Color.white);
             else
             if (gob.isplayer())
-                BotUtils.sysMsg("I got hit for " + dmg + " Damage and "+arm+" armor damage. I had "+myblue+" blue opening and "+myred+" red opening.", Color.white);
+                gui.syslog.append("I got hit for " + dmg + " Damage and "+arm+" armor damage. I had "+myblue+" blue opening and "+myred+" red opening.",Color.red);
             else
                 if(gob.getres().basename().contains("Body"))
-                    BotUtils.sysMsg("Hit Unknown player For " + dmg + " Damage and "+arm+" armor damage. Had "+blue+" blue opening and "+red+" red opening.", Color.white);
+                    gui.syslog.append("Hit Unknown player For " + dmg + " Damage and "+arm+" armor damage. Had "+blue+" blue opening and "+red+" red opening.",Color.white);
                     else
-                BotUtils.sysMsg("Hit " + gob.getres().basename() + " For " + dmg + " Damage and "+arm+" armor damage. Had "+blue+" blue opening and "+red+" red opening.", Color.white);
+                gui.syslog.append("Hit " + gob.getres().basename() + " For " + dmg + " Damage and "+arm+" armor damage. Had "+blue+" blue opening and "+red+" red opening.",Color.white);
             this.dmg += dmg;
             this.dmgtex = dfrn.render(this.dmg + "").tex();
         }

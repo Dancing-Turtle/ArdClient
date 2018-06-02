@@ -1,24 +1,15 @@
 package haven.purus;
 
-import static haven.OCache.posres;
+import haven.Button;
+import haven.*;
+import haven.Label;
+import haven.Window;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-import haven.Button;
-import haven.Coord;
-import haven.FastMesh;
-import haven.FlowerMenu;
-import haven.GItem;
-import haven.GameUI;
-import haven.Gob;
-import haven.HavenPanel;
-import haven.IMeter;
-import haven.Inventory;
-import haven.Label;
-import haven.Widget;
-import haven.Window;
+import static haven.OCache.posres;
 
 public class TrellisFarmer extends Window implements Runnable {
 
@@ -37,14 +28,15 @@ public class TrellisFarmer extends Window implements Runnable {
 	private boolean harvest = false;
 	private boolean destroy = false;
 	private boolean replant = false;
-
-	public TrellisFarmer(Coord rc1, Coord rc2, boolean harvest, boolean destroy, boolean replant) {
+	private Gob chest;
+	public TrellisFarmer(Coord rc1, Coord rc2, boolean harvest, boolean destroy, boolean replant, Gob chest) {
 		super(new Coord(120, 65), "Trellis Farmer");
 		this.rc1 = rc1;
 		this.rc2 = rc2;
 		this.harvest = harvest;
 		this.destroy = destroy;
 		this.replant = replant;
+		this.chest = chest;
 
 		// Initialise arraylists
 		seedName.add("gfx/invobjs/peapod");
@@ -76,6 +68,7 @@ public class TrellisFarmer extends Window implements Runnable {
 	public void run() {
 		BotUtils.sysMsg("Trellis Farmer started!", Color.white);
 		if (harvest) {
+
 			// Initialise crop list
 			crops = Crops(true);
 
@@ -95,11 +88,13 @@ public class TrellisFarmer extends Window implements Runnable {
 					BotUtils.drink();
 				}
 
+
 				if (stopThread)
 					return;
 
 				int stageBefore = g.getStage();
-				
+
+
 				// Right click the crop
 				BotUtils.doClick(g, 3, 0);
 
@@ -131,25 +126,35 @@ public class TrellisFarmer extends Window implements Runnable {
 					if (stopThread)
 						return;
 				}
-
-				// Drop excess seeds
-				for (Widget w = BotUtils.playerInventory().child; w != null; w = w.next) {
-					if (w instanceof GItem && (seedName.contains(((GItem) w).res.get().name)
-							|| ((GItem) w).res.get().name.equals("gfx/invobjs/grapes"))) {
-						GItem item = (GItem) w;
+					if (BotUtils.invFreeSlots() < 4 && chest != null) {
+						BotUtils.pfRightClick(chest, 0);
 						try {
-							item.wdgmsg("drop", Coord.z);
-						} catch (Exception e) {
-							// Shouldnt matter
+							while (gui.getwnd("Exquisite Chest") == null) {
+								try {
+									Thread.sleep(10);
+								} catch (InterruptedException iqp) {
+								}
+							}
+						} catch (NullPointerException ipo) {
+						}
+						BotUtils.waitForWindow("Exquisite Chest");
+						for (Widget w = BotUtils.playerInventory().child; w != null; w = w.next) {
+							if (w instanceof GItem && ((GItem) w).res.get().name.contains("pepper")) {
+								GItem item = (GItem) w;
+								try {
+									item.wdgmsg("transfer", Coord.z);
+								} catch (NullPointerException qip) {
+									BotUtils.sysMsg("Null Pointer on line 142", Color.white);
+								}
+							}
 						}
 					}
+					// Update progression
+					cropsHarvested++;
+					lblProg.settext(cropsHarvested + "/" + totalCrops);
 				}
-
-				// Update progression
-				cropsHarvested++;
-				lblProg.settext(cropsHarvested + "/" + totalCrops);
 			}
-		} // End of harvest
+
 
 		if (destroy) {
 			crops = Crops(false);

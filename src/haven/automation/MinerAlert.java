@@ -1,23 +1,19 @@
 package haven.automation;
 
 
-import haven.*;
 import haven.Button;
+import haven.*;
 import haven.Label;
 import haven.Utils;
 import haven.Window;
-import haven.purus.BotUtils;
 import haven.purus.pbot.PBotAPI;
 
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.util.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-
-import static haven.OCache.posres;
+import java.util.List;
 
 public class MinerAlert extends Window {
     private GameUI gui;
@@ -245,7 +241,7 @@ public class MinerAlert extends Window {
                 if(countslimes>0) {
                     double now = Utils.rtime();
                     if(now-lasterror > 15) {
-                        gui.error("Slime number spawned : " + list.size());
+                        gui.syslog.append("Slime number spawned : " + list.size(),Color.white);
                         lasterror = now;
                     }
                 }

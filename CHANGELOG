@@ -1,10 +1,17 @@
+1.00.03
+Changed combat damage from a system message to a log append to get rid of the alert sound everytime you do or take damage. My bad, it made sense at the time.
+Fixed a crash caused by lack of cupboard opening sound in res file, woops.
+Added functionality to the Purus Farmer bot when doing trellis harvest for pepper. You can now use the select container button to select an exquisite chest that the script will go empty it's inventory of pepper into before going back to harvesting. If anybody actually uses this and wants to utilize other containers such as cupboards let me know and I'll change it, I built it for me mostly. I set the chest upbetween two long rows and use a second character to empty the chest into barter stands while the bot runs.
+Changed slime alert to syslog append instead of error to stop the constant error sound every 10 seconds.
+Added a changelog to the login screen, for reasons and stuff.
+~
 1.00.02
 Changes/Fixes:
 Fixed the coal script a bit, should no longer game crash with null pointer exceptions.
-Added the ability to Ctrl+Left click animals to shoo them. Can be turned off in options --> General at the bottom.
+Added the ability to Ctrl+Left click animals to shoo them. Can be turned off in options under General at the bottom.
 Added a PepperPickerUpper script, does what it sounds like. Tries to pick up peppercorn nearby. Times out after about 3 seconds of not being able to pick up a peppercorn.
 Made chat window by default have your village chat as focus on login IF you've entered your village name under Options --> UI Settings for chat alerts. Else, it defaults to area chat. Have a villager that accidentally talks in kingdom chat all the time.. So yeah. 
-
+~
 Version 1.00.00/1.00.01
 Initial Release
 

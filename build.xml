@@ -2,7 +2,7 @@
 
 <project name="hafen" default="deftgt">
   <property name="name" value="ArdClient"/>
-  <property name="version" value="1.00.02"/>
+  <property name="version" value="1.00.03"/>
 
   <target name="build-env">
     <mkdir dir="build" />
@@ -16,6 +16,9 @@
     <exec executable="git" outputproperty="gitrev" failifexecutionfails="false">
       <arg line="rev-parse HEAD" />
     </exec>
+      <copy todir="build/classes">
+          <fileset dir="${basedir}" includes="CHANGELOG"/>
+        </copy>
     <echo file="build/classes/buildinfo" xml:space="default">${version},${gitrev}</echo>
   </target>
 

@@ -27,6 +27,11 @@
 package haven;
 
 import haven.Resource.AButton;
+import haven.automation.*;
+import haven.purus.BarrelFiller;
+import haven.purus.Farmer;
+import haven.purus.StockpileFiller;
+import haven.purus.TroughFiller;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -34,17 +39,6 @@ import java.awt.font.TextAttribute;
 import java.awt.image.BufferedImage;
 import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.WeakHashMap;
-
-import haven.automation.*;
-
-import haven.purus.BarrelFiller;
-import haven.purus.Farmer;
-import haven.purus.StockpileFiller;
-import haven.purus.TroughFiller;
-import haven.automation.OpenRacks;
 
 public class MenuGrid extends Widget {
     public final static Coord bgsz = Inventory.invsq.sz().add(-1, -1);

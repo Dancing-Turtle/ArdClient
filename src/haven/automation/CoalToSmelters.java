@@ -26,7 +26,7 @@ public class CoalToSmelters extends Window implements GobSelectCallback {
     private Coord selectedAreaA, selectedAreaB;
     private Gob gob;
     private static final int TIMEOUT_ACT = 6000;
-    private Gob smelter;
+    private Gob smelter, chest;
     private ArrayList<Gob> smelters = new ArrayList<Gob>();
     private int count = 1;
     private final Label lblc, lblc2, LabelFuel, lblc4;
@@ -38,10 +38,12 @@ public class CoalToSmelters extends Window implements GobSelectCallback {
     private static final int HAND_DELAY = 8;
     private Thread runner;
     private Thread light;
+    private Thread testthread;
     private Thread selectingarea;
     private int bankselected = 1;
     private int countretain;
     private int torchselected = 1;
+    private static Window chestwind;
     public static int delay = 100;
 
 
@@ -327,15 +329,15 @@ public class CoalToSmelters extends Window implements GobSelectCallback {
         swapbtn = new Button(70, "AutoDrop") {
             @Override
             public void click() {
-                if (terminate2){
+                if (terminate2) {
                     terminate2 = false;
-                    BotUtils.sysMsg("Autodrop on",Color.white);
-                }
-                else {
+                    BotUtils.sysMsg("Autodrop on", Color.white);
+                } else {
                     terminate2 = true;
-                    BotUtils.sysMsg("Autodrop off",Color.white);
+                    BotUtils.sysMsg("Autodrop off", Color.white);
                 }
-
+                testthread = new Thread(new CoalToSmelters.testthread(), "Add Coal To Smelters");
+                testthread.start();
             }
         };
         add(swapbtn, new Coord(170, 195));
@@ -407,6 +409,34 @@ public class CoalToSmelters extends Window implements GobSelectCallback {
                     biglist = null;
         }
         }
+private class testthread implements Runnable{
+        @Override
+    public void run() {
+            if (BotUtils.invFreeSlots() < 3 && chest != null) {
+                BotUtils.pfRightClick(chest, 0);
+                try {
+                    while (gui.getwnd("Exquisite Chest") == null) {
+                        try {
+                            Thread.sleep(10);
+                        } catch (InterruptedException iqp) {
+                        }
+                    }
+                }catch(NullPointerException ipo){}
+                BotUtils.sysMsg("Found it", Color.white);
+                  BotUtils.waitForWindow("Exquisite Chest");
+                    for (Widget w = BotUtils.playerInventory().child; w != null; w = w.next) {
+                       if (w instanceof GItem && ((GItem) w).res.get().name.contains("pepper")) {
+                          GItem item = (GItem) w;
+                        try {
+                          item.wdgmsg("transfer", Coord.z);
+                    } catch (NullPointerException qip) {
+                      BotUtils.sysMsg("Null Pointer on line 142", Color.white);
+                }
+                }
+                 }
+            }
+        }
+}
 
         private class Runner implements Runnable {
             @Override
@@ -660,6 +690,10 @@ public class CoalToSmelters extends Window implements GobSelectCallback {
                         list2.add(gob);
                         lblc2.settext(list2.size() + "");
                     }
+                }
+                if (res.name.contains("chest")){
+                    chest = gob;
+                    BotUtils.sysMsg("Chest Selected",Color.white);
                 }
             }
         }
