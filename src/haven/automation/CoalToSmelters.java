@@ -336,8 +336,8 @@ public class CoalToSmelters extends Window implements GobSelectCallback {
                     terminate2 = true;
                     BotUtils.sysMsg("Autodrop off", Color.white);
                 }
-                testthread = new Thread(new CoalToSmelters.testthread(), "Add Coal To Smelters");
-                testthread.start();
+               // testthread = new Thread(new CoalToSmelters.testthread(), "Add Coal To Smelters");
+               // testthread.start();
             }
         };
         add(swapbtn, new Coord(170, 195));

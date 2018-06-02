@@ -28,12 +28,9 @@ package haven;
 
 import haven.purus.BotUtils;
 
-import static java.lang.Math.PI;
-import java.util.Date;
-import haven.UI;
-import haven.GameUI;
+import java.awt.*;
 
-import java.awt.Color;
+import static java.lang.Math.PI;
 
 public class FlowerMenu extends Widget {
     public static final Color pink = new Color(255, 0, 128);
@@ -41,6 +38,7 @@ public class FlowerMenu extends Widget {
     public static final IBox pbox = Window.wbox;
     public static final Tex pbg = Window.bg;
     public static final int ph = 30;
+    public Thread horsemounter;
     private static final int HORSE_DELAY = 1;
     private static final int TIMEOUT = 5000;
     public Petal[] opts;
@@ -105,6 +103,7 @@ public class FlowerMenu extends Widget {
         }
     }
 
+
     public class Opening extends NormAnim {
         Opening() {
             super(0);
@@ -121,17 +120,9 @@ public class FlowerMenu extends Widget {
                         nextAutoSel = null;
                         choose(p);
                         if (p.name.contains("Giddy")) {
-                            GameUI gui = getGUI();
-                            if (gui != null) {
-                                UI ui = gui.ui;
-                                long start = new Date().getTime();
-                                for (Widget widget : ui.rwidgets.keySet()) {
-                                    if (widget instanceof Speedget) {
-                                          // ((Speedget) widget).set(2);
-                                        }
-                                    }
+                                horsemounter = new Thread(new FlowerMenu.horsemounter());
+                                horsemounter.start();
                                 }
-                            }
                         break;
                     }
                 }
@@ -139,6 +130,29 @@ public class FlowerMenu extends Widget {
             }
         }
     }
+
+    public class horsemounter implements Runnable{
+        public void run(){
+            //BotUtils.sleep(500);
+            GameUI gui = getGUI();
+            while(gui.ui.root.findchild(FlowerMenu.class) != null) {
+               // BotUtils.sysLogAppend("flowermenu present","white");
+                BotUtils.sleep(10);
+            }
+          //  BotUtils.sysLogAppend("flowermenu not present","white");
+            Gob player = gui.map.player();
+            while(player.ols.size() == 1){}
+            BotUtils.sleep(50);
+                UI ui = gui.ui;
+                for (Widget widget : ui.rwidgets.keySet()) {
+                    if (widget instanceof Speedget) {
+                        ((Speedget) widget).set(2);
+                        horsemounter.interrupt();
+                }
+            }
+        }
+        }
+
 
 
     public GameUI getGUI()

@@ -1,15 +1,16 @@
 package haven.purus;
 
-import static haven.OCache.posres;
+import haven.*;
+import haven.FlowerMenu.Petal;
+import haven.automation.BeltDrink;
 
-import java.awt.Color;
+import java.awt.*;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import haven.*;
-import haven.FlowerMenu.Petal;
-import haven.automation.BeltDrink;
+import static haven.OCache.posres;
 
 public class BotUtils {
 
@@ -40,6 +41,10 @@ public class BotUtils {
 	// Returns null if not found
 	public static Coord getFreeInvSlot(Inventory inventory) {
 		return inventory.getFreeSlot();
+	}
+
+	public static List<Coord> getFreeInvSlots(Inventory inventory) {
+		return inventory.getFreeSlots();
 	}
 
 	// Finds nearest objects and returns closest one
@@ -345,5 +350,13 @@ public class BotUtils {
 		}
 		int allSlots = playerInventory().isz.x * playerInventory().isz.y;
 		return allSlots - takenSlots;
+	}
+
+	public static void sysLogAppend(String msg, String clr){
+		try {
+			Field field = Color.class.getField(clr);
+			Color clr2 = (Color)field.get(null);
+			gui.syslog.append(msg,clr2);
+		}catch(Exception e){}
 	}
 }

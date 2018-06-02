@@ -29,21 +29,14 @@ package haven;
 import haven.purus.BotUtils;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 public class OCache implements Iterable<Gob> {
     public static final int OD_REM = 0;
     public static final int OD_MOVE = 1;
     public static final int OD_RES = 2;
     public static final int OD_LINBEG = 3;
-    private GameUI gui;
     public static final int OD_LINSTEP = 4;
     public static final int OD_SPEECH = 5;
     public static final int OD_COMPOSE = 6;
@@ -62,6 +55,7 @@ public class OCache implements Iterable<Gob> {
     public static final int OD_ICON = 19;
     public static final int OD_RESATTR = 20;
     public static final int OD_END = 255;
+   public GameUI gui = getGUI();
     public static final Coord2d posres = new Coord2d(0x1.0p-10, 0x1.0p-10).mul(11, 11);
     /* XXX: Use weak refs */
     private Collection<Collection<Gob>> local = new LinkedList<Collection<Gob>>();
@@ -137,7 +131,6 @@ public class OCache implements Iterable<Gob> {
                             }
                             else {
                                 g.ols.add(new Gob.Overlay(DamageSprite.ID, new DamageSprite(dmgspr.dmg, dmgspr.arm, g)));
-                              //  gui.syslog.append(("me : "+ dmgspr.dmg+dmgspr.arm),Color.white);
                             }
                         }
                     }
@@ -627,17 +620,15 @@ public class OCache implements Iterable<Gob> {
                                 int myred = Fightsess.myred;
                                 KinInfo kininfo = g.getattr(KinInfo.class);
                                 if (g.isplayer())
-                                    BotUtils.sysMsg("I got hit for " + dmg + " Damage. I had "+myblue+" blue opening and "+myred+" red opening.", Color.white);
+                                    BotUtils.sysMsg("I got hit for " + dmg + " Damage. I had " + myblue + " blue opening and " + myred + " red opening.",Color.white);
                                 else
                                 if(kininfo != null)
-                                    BotUtils.sysMsg("Hit " + kininfo.name + " For " + dmg + " Damage. Had "+blue+" blue opening and "+red+" red opening.", Color.white);
+                                    BotUtils.sysMsg("Hit " + kininfo.name + " For " + dmg + " Damage. Had "+blue+" blue opening and "+red+" red opening.",Color.green);
                                 else
                                 if(g.getres().basename().contains("Body"))
-                                    BotUtils.sysMsg("Hit Unknown player For " + dmg + " Damage. Had "+blue+" blue opening and "+red+" red opening.", Color.white);
+                                   BotUtils.sysMsg("Hit Unknown player For " + dmg + " Damage. Had "+blue+" blue opening and "+red+" red opening.",Color.green);
                                 else
-                                    BotUtils.sysMsg("Hit " + g.getres().basename() + " For " + dmg + " Damage. Had "+blue+" blue opening and "+red+" red opening.", Color.white);
-
-
+                                    BotUtils.sysMsg("Hit " + g.getres().basename() + " For " + dmg + " Damage. Had "+blue+" blue opening and "+red+" red opening.",Color.green);
                                 gobdmgs.put(g.id, new DamageSprite(dmg, clr == 36751, g));
                             }
                             else
@@ -650,6 +641,10 @@ public class OCache implements Iterable<Gob> {
                 return null;
             }
         });
+    }
+    public GameUI getGUI()
+    {
+        return HavenPanel.lui.root.findchild(GameUI.class);
     }
 
     public void removedmgoverlay(long gobid) {

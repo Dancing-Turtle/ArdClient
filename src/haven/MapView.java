@@ -30,7 +30,7 @@ import haven.GLProgram.VarID;
 import haven.automation.*;
 import haven.pathfinder.PFListener;
 import haven.pathfinder.Pathfinder;
-import haven.purus.BotUtils;
+import haven.purus.pbot.PBotAPI;
 import haven.resutil.BPRadSprite;
 
 import javax.media.opengl.GL;
@@ -44,21 +44,6 @@ import java.util.*;
 
 import static haven.MCache.tilesz;
 import static haven.OCache.posres;
-import javax.media.opengl.GL;
-
-import haven.GLProgram.VarID;
-import haven.automation.AreaSelectCallback;
-import haven.automation.GobSelectCallback;
-import haven.automation.MusselPicker;
-import haven.automation.SteelRefueler;
-import haven.automation.LightWithTorch;
-import haven.automation.CoalToSmelters;
-import haven.automation.MinerAlert;
-import haven.automation.CraftAllBot;
-import haven.pathfinder.PFListener;
-import haven.pathfinder.Pathfinder;
-import haven.purus.pbot.PBotAPI;
-import haven.resutil.BPRadSprite;
 
 public class MapView extends PView implements DTarget, Console.Directory, PFListener {
     public static boolean clickdb = false;
@@ -99,6 +84,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     public LightWithTorch torchlight;
     public static Gob shooanimal;
     public CoalToSmelters coaltosmelters;
+    public DestroyArea destroyarea;
     public MinerAlert mineralert;
     public CraftAllBot craftbot;
     private Thread musselPicker;
@@ -1827,8 +1813,10 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                 Gob target = null;
                 synchronized (glob.oc) {
                     for (Gob gob : glob.oc) {
-                        if (gob.type == Gob.Type.PLAYER || gob.type == Gob.Type.MOB || gob.type == gob.type.EAGLE || gob.type == Gob.Type.BEAR || gob.type == Gob.Type.LYNX || gob.type == Gob.Type.WALRUS
-                                || gob.type == Gob.Type.MAMMOTH || gob.type == Gob.Type.BAT || gob.type == Gob.Type.SLIME || gob.type == Gob.Type.SEAL || gob.type == Gob.Type.TROLL || gob.getres().name.contains("kritter") && !gob.isplayer()) {
+                       // BotUtils.sysMsg("Test : "+gob.getres().name,Color.white);
+                        if (gob.type == Gob.Type.PLAYER || gob.type == Gob.Type.PROXAGGRO || gob.type == Gob.Type.MAMMOTH || gob.type == Gob.Type.BAT || gob.type == Gob.Type.EAGLE
+                                || gob.type == Gob.Type.SLIME || gob.type == Gob.Type.BEAR || gob.type == Gob.Type.LYNX || gob.type == Gob.Type.SEAL
+                                || gob.type == Gob.Type.TROLL || gob.type == Gob.Type.WALRUS && !gob.isplayer()) {
                             double dist = gob.rc.dist(mc);
                             if ((target == null || dist < target.rc.dist(mc)) && dist <= 5 * tilesz.x)
                                 target = gob;
@@ -1860,8 +1848,9 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                 Gob target = null;
                 synchronized (glob.oc) {
                     for (Gob gob : glob.oc) {
-                        if (gob.type == Gob.Type.MOB || gob.type == gob.type.EAGLE || gob.type == Gob.Type.BEAR || gob.type == Gob.Type.SLIME || gob.type == Gob.Type.LYNX || gob.type == Gob.Type.WALRUS
-                                || gob.type == Gob.Type.MAMMOTH || gob.type == Gob.Type.BAT || gob.type == Gob.Type.SEAL || gob.type == Gob.Type.TROLL || gob.getres().name.contains("kritter") && !gob.isplayer()) {
+                        if (gob.type == Gob.Type.PROXAGGRO || gob.type == Gob.Type.MAMMOTH || gob.type == Gob.Type.BAT || gob.type == Gob.Type.EAGLE
+                                 || gob.type == Gob.Type.SLIME || gob.type == Gob.Type.BEAR || gob.type == Gob.Type.LYNX || gob.type == Gob.Type.SEAL
+                                || gob.type == Gob.Type.TROLL || gob.type == Gob.Type.WALRUS && !gob.isplayer()) {
                             double dist = gob.rc.dist(mc);
                             if ((target == null || dist < target.rc.dist(mc)) && dist <= 5 * tilesz.x)
                                 target = gob;

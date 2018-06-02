@@ -274,6 +274,8 @@ public class MenuGrid extends Widget {
            // p.add(paginafor(Resource.local().load("paginae/amber/steel")));
             p.add(paginafor(Resource.local().load("paginae/amber/torch")));
             p.add(paginafor(Resource.local().load("paginae/amber/CoalToSmelters")));
+            p.add(paginafor(Resource.local().load("paginae/amber/DestroyArea")));
+            p.add(paginafor(Resource.local().load("paginae/amber/Coracleslol")));
             p.add(paginafor(Resource.local().load("paginae/amber/MinerAlert")));
             p.add(paginafor(Resource.local().load("paginae/amber/clover")));
             //p.add(paginafor(Resource.local().load("paginae/amber/rope")));
@@ -477,15 +479,24 @@ public class MenuGrid extends Widget {
                 }
             }
         } else if (ad[1].equals("torch")) {
-            if (gui.getwnd("Torch Lighter") == null) {
-                LightWithTorch sw = new LightWithTorch(gui);
-                gui.map.torchlight = sw;
-                gui.add(sw, new Coord(gui.sz.x / 2 - sw.sz.x / 2, gui.sz.y / 2 - sw.sz.y / 2 - 200));
-                synchronized (GobSelectCallback.class) {
-                    gui.map.registerGobSelect(sw);
-                }
+        if (gui.getwnd("Torch Lighter") == null) {
+            LightWithTorch sw = new LightWithTorch(gui);
+            gui.map.torchlight = sw;
+            gui.add(sw, new Coord(gui.sz.x / 2 - sw.sz.x / 2, gui.sz.y / 2 - sw.sz.y / 2 - 200));
+            synchronized (GobSelectCallback.class) {
+                gui.map.registerGobSelect(sw);
             }
         }
+    } else if (ad[1].equals("destroyarea")) {
+        if (gui.getwnd("Destroy Gobs in Area") == null) {
+            DestroyArea sw = new DestroyArea(gui);
+            gui.map.destroyarea = sw;
+            gui.add(sw, new Coord(gui.sz.x / 2 - sw.sz.x / 2, gui.sz.y / 2 - sw.sz.y / 2 - 200));
+            synchronized (GobSelectCallback.class) {
+                gui.map.registerGobSelect(sw);
+            }
+        }
+    }
      else if (ad[1].equals("coaltosmelters")) {
             if (gui.getwnd("Add Coal To Smelters") == null) {
                 CoalToSmelters sw = new CoalToSmelters(gui);
@@ -526,6 +537,8 @@ public class MenuGrid extends Widget {
             gui.livestockwnd.raise();
         } else if (ad[1].equals("shoo")) {
             new Thread(new Shoo(gui), "Shoo").start();
+        } else if (ad[1].equals("Coracleslol")) {
+            new Thread(new Coracleslol(gui), "Coracleslol").start();
         } else if (ad[1].equals("PepperPickerUpper")) {
             new Thread(new PepperPickerUpper(gui), "PepperPickerUpper").start();
         } else if (ad[1].equals("dream")) {

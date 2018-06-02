@@ -1,11 +1,8 @@
 package haven;
 
 import haven.purus.BotUtils;
-import haven.Fightsess;
-import haven.Fightview;
-import haven.purus.pbot.PBotAPI;
 
-import java.awt.Color;
+import java.awt.*;
 
 public class DamageSprite extends Sprite implements PView.Render2D {
     public static final int ID = -1000;
@@ -83,17 +80,21 @@ public class DamageSprite extends Sprite implements PView.Render2D {
             int myred = Fightsess.myred;
             KinInfo kininfo = gob.getattr(KinInfo.class);
             if(kininfo != null)
-                gui.syslog.append("Hit " + kininfo.name + " For " + dmg + " Damage and "+arm+" armor damage. Had "+blue+" blue opening and "+red+" red opening.",Color.white);
+                BotUtils.sysLogAppend("Hit " + kininfo.name + " For " + dmg + " Damage and "+arm+" armor damage. Had "+blue+" blue opening and "+red+" red opening.","green");
             else
             if (gob.isplayer())
-                gui.syslog.append("I got hit for " + dmg + " Damage and "+arm+" armor damage. I had "+myblue+" blue opening and "+myred+" red opening.",Color.red);
+                BotUtils.sysLogAppend("I got hit for " + dmg + " Damage and "+arm+" armor damage. I had "+myblue+" blue opening and "+myred+" red opening.","red");
             else
                 if(gob.getres().basename().contains("Body"))
-                    gui.syslog.append("Hit Unknown player For " + dmg + " Damage and "+arm+" armor damage. Had "+blue+" blue opening and "+red+" red opening.",Color.white);
+                    BotUtils.sysLogAppend("Hit Unknown player For " + dmg + " Damage and "+arm+" armor damage. Had "+blue+" blue opening and "+red+" red opening.","green");
                     else
-                gui.syslog.append("Hit " + gob.getres().basename() + " For " + dmg + " Damage and "+arm+" armor damage. Had "+blue+" blue opening and "+red+" red opening.",Color.white);
+                BotUtils.sysLogAppend("Hit " + gob.getres().basename() + " For " + dmg + " Damage and "+arm+" armor damage. Had "+blue+" blue opening and "+red+" red opening.","green");
             this.dmg += dmg;
             this.dmgtex = dfrn.render(this.dmg + "").tex();
         }
+    }
+    public GameUI getGUI()
+    {
+        return HavenPanel.lui.root.findchild(GameUI.class);
     }
 }

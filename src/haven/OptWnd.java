@@ -733,7 +733,7 @@ public class OptWnd extends Window {
                 BPRadSprite.smatDanger = new States.ColState(new Color(Config.smatdangerred, Config.smatdangergreen, Config.smatdangerblue, 100));
             }
         });
-        appender.add(new CheckBox("Highlight empty/finished drying frames") {
+        appender.add(new CheckBox("Highlight empty/finished drying frames and full/empty tanning tubs.") {
             {
                 a = Config.showdframestatus;
             }
@@ -741,6 +741,17 @@ public class OptWnd extends Window {
             public void set(boolean val) {
                 Utils.setprefb("showdframestatus", val);
                 Config.showdframestatus = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Highlight empty/full cheese racks") {
+            {
+                a = Config.showrackstatus;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showrackstatus", val);
+                Config.showrackstatus = val;
                 a = val;
             }
         });

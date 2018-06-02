@@ -26,16 +26,10 @@
 
 package haven;
 
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import haven.purus.BotUtils;
 import haven.purus.pbot.PBotAPI;
 import haven.res.ui.tt.q.qbuff.QBuff;
+
+import java.util.*;
 
 public class Inventory extends Widget implements DTarget {
     public static final Tex invsq = Resource.loadtex("gfx/hud/invsq");
@@ -281,6 +275,27 @@ public class Inventory extends Widget implements DTarget {
         	}
         }
         return null;
+    }
+
+    public List<Coord> getFreeSlots() {
+        List<Coord> cordlist = new ArrayList<>();
+        int[][] invTable = new int[isz.x][isz.y];
+       // System.out.println(isz.x +", " + isz.y);
+        for (Widget wdg = child; wdg != null; wdg = wdg.next) {
+            if (wdg instanceof WItem) {
+                WItem item = (WItem) wdg;
+                for(int i=0; i<item.sz.div(sqsz).y; i++)
+                    for(int j=0; j<item.sz.div(sqsz).x; j++)
+                        invTable[item.c.div(sqsz).x+j][item.c.div(sqsz).y+i] = 1;
+            }
+        }
+        for(int i=0; i<isz.y; i++) {
+            for(int j=0; j<isz.x; j++) {
+                if(invTable[j][i] == 0)
+                    cordlist.add(new Coord(j,i));
+            }
+        }
+        return cordlist;
     }
 
     public boolean drink(int threshold) {

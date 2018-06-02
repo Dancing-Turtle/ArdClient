@@ -1,3 +1,12 @@
+1.00.04
+Fixed proximity aggro, should aggro any animal in 5 tiles of where you click now if your cursor is in attack mode. 
+Fixed combat damage logging and total damage overlay.
+Fixed cheese rack highlighting, only highlights if rack contains 3 trays or less than 3 trays. Broke out rack highlighting setting from dry frame highlighting in options.
+Horses SHOULD now default to speed 3 after mounting. Requires that Giddyup! be selected under menu options to autoselect. 
+Added a Coracle Script to drop coracle from inventory and mount it, and then pick it back up after dismounting and place in inventory.
+Added a destroy bot that can be used to clear roads of vines or clear large amounts of stockpiles or item gob items.
+
+~
 1.00.03
 Changed combat damage from a system message to a log append to get rid of the alert sound everytime you do or take damage. My bad, it made sense at the time.
 Fixed a crash caused by lack of cupboard opening sound in res file, woops.
