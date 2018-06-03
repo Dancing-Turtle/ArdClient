@@ -28,14 +28,13 @@ package haven;
 
 import haven.purus.BotUtils;
 
-import java.awt.Color;
+import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import static haven.OCache.posres;
 
 public class Fightsess extends Widget {
     public static final Tex cdframe = Resource.loadtex("gfx/hud/combat/cool");
@@ -214,28 +213,30 @@ public class Fightsess extends Widget {
         }
     }
     private Double checkdelta() {
-        Double delta = 0.0;
-        Double delta2 = 0.0;
-        Double baseopener;
-        unarmedcombat = Fightview.unarmed;
-        String lastactused = Fightview.ttretain;
-        Double dblblue = (double) oldblue;
-        Double dblred = (double) oldred;
-        if (lastactused.contains("Flex")) {
-            expected = ((1 - (dblblue / 100)) * 15.0);
-            baseopener = 15.0;
-        }
-        else if (lastactused.contains("Teeth")) {
-            expected = ((1 - (dblred / 100)) * 20.0);
-            baseopener = 20.0;
-        }
-        else
-            return null;
+        try {
+            Double delta = 0.0;
+            Double delta2 = 0.0;
+            Double baseopener;
+            unarmedcombat = Fightview.unarmed;
+            String lastactused = Fightview.ttretain;
+            Double dblblue = (double) oldblue;
+            Double dblred = (double) oldred;
+            if (lastactused.contains("Flex")) {
+                expected = ((1 - (dblblue / 100)) * 15.0);
+                baseopener = 15.0;
+            } else if (lastactused.contains("Teeth")) {
+                expected = ((1 - (dblred / 100)) * 20.0);
+                baseopener = 20.0;
+            } else
+                return null;
 
-        delta = ((Math.pow(expected,4.0) * unarmedcombat))/(Math.pow((lastactopened-0.5),4.0));
-        delta2 = ((Math.pow(expected,4.0) * unarmedcombat))/(Math.pow((lastactopened+0.4),4.0));
 
-BotUtils.gui.error("Estimated target combat weight : "+delta.intValue()+"-"+delta2.intValue());
+            delta = ((Math.pow(expected, 4.0) * unarmedcombat)) / (Math.pow((lastactopened - 0.5), 4.0));
+            delta2 = ((Math.pow(expected, 4.0) * unarmedcombat)) / (Math.pow((lastactopened + 0.4), 4.0));
+if(delta.intValue() > 10000)
+    return null;
+            BotUtils.gui.error("Estimated target combat weight : " + delta.intValue() + "-" + delta2.intValue());
+        }catch(NullPointerException lolnull){}
 
         return delta;
     }

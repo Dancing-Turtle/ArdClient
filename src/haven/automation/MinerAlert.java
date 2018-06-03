@@ -6,6 +6,7 @@ import haven.*;
 import haven.Label;
 import haven.Utils;
 import haven.Window;
+import haven.purus.BotUtils;
 import haven.purus.pbot.PBotAPI;
 
 import java.awt.*;
@@ -241,7 +242,7 @@ public class MinerAlert extends Window {
                 if(countslimes>0) {
                     double now = Utils.rtime();
                     if(now-lasterror > 15) {
-                        gui.syslog.append("Slime number spawned : " + list.size(),Color.white);
+                        BotUtils.sysLogAppend("Slime number spawned : " + list.size(),"white");
                         lasterror = now;
                     }
                 }

@@ -1,3 +1,9 @@
+1.00.05
+Fixed various crashes caused by some new features. 
+Fixed livestock manager for horses.
+Fixed the ctrl+click to shoo macro, previously did not work if inspect was selected as an auto flowermenu selection.
+
+~
 1.00.04
 Fixed proximity aggro, should aggro any animal in 5 tiles of where you click now if your cursor is in attack mode. 
 Fixed combat damage logging and total damage overlay.

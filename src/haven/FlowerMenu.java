@@ -133,6 +133,7 @@ public class FlowerMenu extends Widget {
 
     public class horsemounter implements Runnable{
         public void run(){
+            try{
             //BotUtils.sleep(500);
             GameUI gui = getGUI();
             while(gui.ui.root.findchild(FlowerMenu.class) != null) {
@@ -148,8 +149,9 @@ public class FlowerMenu extends Widget {
                     if (widget instanceof Speedget) {
                         ((Speedget) widget).set(2);
                         horsemounter.interrupt();
+                    }
                 }
-            }
+            }catch(Exception e){}
         }
         }
 
