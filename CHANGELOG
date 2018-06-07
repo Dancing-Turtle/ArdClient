@@ -1,3 +1,26 @@
+1.00.09
+Fixed gob count script to account for the knocked flag, so you can count the number of alive vs dead animals or vice versa. 
+Fixed tanning tub coloring, should be blue tinted now if they need bark or water, green if theyre ready for hides, and red if theyre ready to empty of leather. 
+Broke out the tanning tub and drying frame color from cheese racks so i could tone down the brightness of tub coloring.
+Made Trellis farmer drop grapes again. (maybe)
+Sped up cheese slicer.
+Added sound alerts to minealert for gold silver and cinnabar. Hit mute to disable, play every 45 seconds until the tile is mined. 
+
+~
+1.00.08
+Added cinnabar to the miner alert window with an audible ting every 45 seconds.
+
+~
+1.00.07
+Changed the cheeserack highlighting to add a third color if there are not 3 trays on the track, but there are more than 1. 
+Added a Block Splitter bot, icon is a block of wood. Does what it sounds like, splits blocks of wood from your inventory for fuels. Equip your axe first.
+
+~
+1.00.06
+Fixed the craftbot use for cauldrons, shouldn't randomly stop crafting. Also added the ability to select a cistern to refill the barrel from. Various other bugfixes around the craftbot. 
+Multiple improvements to the Coal bot, added ability to light with Lanterns as well. Fixed coal bot looping randomly for no reason. Oops.
+
+~
 1.00.05
 Fixed various crashes caused by some new features. 
 Fixed livestock manager for horses.

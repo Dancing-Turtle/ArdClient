@@ -1,18 +1,12 @@
 package haven.purus;
 
-import java.awt.Color;
-
 import haven.Button;
-import haven.CheckBox;
-import haven.Config;
-import haven.Coord;
-import haven.Gob;
-import haven.MCache;
-import haven.Utils;
-import haven.Widget;
+import haven.*;
 import haven.Window;
 import haven.automation.AreaSelectCallback;
 import haven.automation.GobSelectCallback;
+
+import java.awt.*;
 
 public class Farmer extends Window implements AreaSelectCallback, GobSelectCallback {
 
@@ -336,7 +330,7 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 		Button contSelBtn = new Button(140, "Select Container") {
 			@Override
 			public void click() {
-				BotUtils.sysMsg("Alt + click a barrel", Color.WHITE);
+				BotUtils.sysMsg("Alt + click a barrel/chest", Color.WHITE);
 				registerGobSelect();
 			}
 		};

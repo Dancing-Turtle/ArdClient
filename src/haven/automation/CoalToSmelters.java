@@ -176,7 +176,6 @@ public class CoalToSmelters extends Window implements GobSelectCallback {
                 light1btn.hide();
                 light2btn.hide();
                 lightallbtn.hide();
-                terminate = false;
                 clearbtn.hide();
                 bankselected = 1;
                 lblc4.settext(bankselected + "");
@@ -193,19 +192,18 @@ public class CoalToSmelters extends Window implements GobSelectCallback {
                     return;
                 }
                 this.hide();
-                runbtn.hide();
                 cbtn.hide();
+                runbtn2.hide();
+                stopbtn.show();
+                fuelbtn.hide();
                 switchbtn.hide();
-                clearbtn2.hide();
                 terminate = false;
+                clearbtn2.hide();
                 swapbtn.hide();
                 areaSelBtn.hide();
-                fuelbtn.hide();
-                lightallbtn.hide();
-                light2btn.hide();
                 light1btn.hide();
-                stopbtn.show();
-                terminate = false;
+                light2btn.hide();
+                lightallbtn.hide();
                 clearbtn.hide();
                 bankselected = 2;
                 lblc4.settext(bankselected + "");
@@ -396,47 +394,20 @@ public class CoalToSmelters extends Window implements GobSelectCallback {
                 selectedAreaB = PBotAPI.getSelectedAreaB();
                 biglist.addAll(Smelters());
 
-                for (int i = 0; i < 8; i++) {
+                for (int i = 0; i < biglist.size(); i++) {
+                    if (i < 8)
                         list.add(biglist.get(i));
+                    else
+                        list2.add(biglist.get(i));
                 }
-                for (int i = 8; i < 16; i++) {
-                    list2.add(biglist.get(i));
-                }
-                }catch(IndexOutOfBoundsException | NullPointerException idklol){BotUtils.sysMsg("Error detected, please try closing and reopening the script window.",Color.white);}
-                    lblc.settext(list.size() + "");
-                    lblc2.settext(list2.size() + "");
-                    lblc4.settext(bankselected + "");
-                    biglist = null;
+
+                lblc.settext(list.size() + "");
+                lblc2.settext(list2.size() + "");
+                lblc4.settext(bankselected + "");
+                biglist = null;
+            }catch(NullPointerException q){BotUtils.sysMsg("Error detected, please reopen the bot and try again.",Color.white);}
         }
         }
-private class testthread implements Runnable{
-        @Override
-    public void run() {
-            if (BotUtils.invFreeSlots() < 3 && chest != null) {
-                BotUtils.pfRightClick(chest, 0);
-                try {
-                    while (gui.getwnd("Exquisite Chest") == null) {
-                        try {
-                            Thread.sleep(10);
-                        } catch (InterruptedException iqp) {
-                        }
-                    }
-                }catch(NullPointerException ipo){}
-                BotUtils.sysMsg("Found it", Color.white);
-                  BotUtils.waitForWindow("Exquisite Chest");
-                    for (Widget w = BotUtils.playerInventory().child; w != null; w = w.next) {
-                       if (w instanceof GItem && ((GItem) w).res.get().name.contains("pepper")) {
-                          GItem item = (GItem) w;
-                        try {
-                          item.wdgmsg("transfer", Coord.z);
-                    } catch (NullPointerException qip) {
-                      BotUtils.sysMsg("Null Pointer on line 142", Color.white);
-                }
-                }
-                 }
-            }
-        }
-}
 
         private class Runner implements Runnable {
             @Override
@@ -463,12 +434,13 @@ private class testthread implements Runnable{
                         stopbtn.click();
                     }
                     while (!terminate) {
+                        BotUtils.sysLogAppend("Filling : " + activelist.size() + " Smelters/Ovens.", "white");
                         for (int l = 0; l < activelist.size(); l++) {
                             count = countretain;
                             WItem coalw = gui.maininv.getItemPartial("Coal");
                             WItem coalw2 = gui.maininv.getItemPartial("Branch");
                             if (coalw == null) {
-                                if(coalw2==null) {
+                                if (coalw2 == null) {
                                     gui.error("No fuel found in the inventory");
                                     stopbtn.click();
                                     return;
@@ -519,11 +491,11 @@ private class testthread implements Runnable{
                                 }
                             }
                             if (coalw2 != null) {
-                                    if (coalw2 == null) {
-                                        gui.error("No fuel found in the inventory");
-                                        stopbtn.click();
-                                        return;
-                                    }
+                                if (coalw2 == null) {
+                                    gui.error("No fuel found in the inventory");
+                                    stopbtn.click();
+                                    return;
+                                }
                                 GItem coal = coalw2.item;
                                 coal.wdgmsg("take", new Coord(coal.sz.x / 2, coal.sz.y / 2));
                                 int timeout = 0;
@@ -568,20 +540,17 @@ private class testthread implements Runnable{
 
                             }
                         }
+                        count = countretain;
+                        BotUtils.sysMsg("Done", Color.white);
+                        lblc.settext(list.size() + "");
+                        lblc2.settext(list2.size() + "");
+                        if (bankselected == 3)
+                            bankselected = 1;
+                        activelist.clear();
+                        lblc4.settext(bankselected + "");
+                        stopbtn.click();
                     }
-
-                } catch (NullPointerException ie) {
-
-                }
-                count = countretain;
-                BotUtils.sysMsg("Done", Color.white);
-                lblc.settext(list.size() + "");
-                lblc2.settext(list2.size() + "");
-                if (bankselected == 3)
-                    bankselected = 1;
-                activelist.clear();
-                lblc4.settext(bankselected + "");
-                stopbtn.click();
+                }catch(NullPointerException ie){}
             }
         }
 
@@ -620,12 +589,12 @@ private class testthread implements Runnable{
 
                             if (l != null) {
                                 String lname = l.item.getname();
-                                if (lname.contains("Lit Torch"))
+                                if (lname.contains("Lit Torch")||lname.contains("Lantern"))
                                     noltorch = false;
                             }
                             if (r != null) {
                                 String rname = r.item.getname();
-                                if (rname.contains("Lit Torch"))
+                                if (rname.contains("Lit Torch")||rname.contains("Lantern"))
                                     nortorch = false;
                             }
 
@@ -654,9 +623,9 @@ private class testthread implements Runnable{
                     }
                     BotUtils.sysMsg("Done", Color.white);
                     torchselected =1;
-                    torchlist.clear();
                     lblc.settext(list.size() + "");
                     lblc2.settext(list2.size() + "");
+                    torchlist.clear();
                     stopbtn.click();
                 }
             }

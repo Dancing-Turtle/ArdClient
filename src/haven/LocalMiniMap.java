@@ -26,17 +26,16 @@
 
 package haven;
 
-import static haven.MCache.cmaps;
-import static haven.MCache.tilesz;
+import haven.resutil.Ridges;
+
 import java.awt.*;
-import java.awt.image.*;
+import java.awt.image.BufferedImage;
 import java.util.*;
 import java.util.List;
 
+import static haven.MCache.cmaps;
+import static haven.MCache.tilesz;
 import static haven.OCache.posres;
-
-import haven.purus.BotUtils;
-import haven.resutil.Ridges;
 
 public class LocalMiniMap extends Widget {
     private static final Tex resize = Resource.loadtex("gfx/hud/wndmap/lg/resize");
@@ -60,7 +59,7 @@ public class LocalMiniMap extends Widget {
     private static final Resource eaglesfx = Resource.local().loadwait("sfx/eagle");
     private static final Resource doomedsfx = Resource.local().loadwait("sfx/doomed");
     private static final Resource swagsfx = Resource.local().loadwait("sfx/swag");
-    private static final Resource slimesfx = Resource.local().loadwait("sfx/slimes");
+
 	private final HashSet<Long> sgobs = new HashSet<Long>();
     private final Map<Coord, Tex> maptiles = new LinkedHashMap<Coord, Tex>(100, 0.75f, false) {
         @Override
@@ -196,7 +195,6 @@ public class LocalMiniMap extends Widget {
                     Resource res = gob.getres();
                     if (res == null)
                         continue;
-
                     GobIcon icon = gob.getattr(GobIcon.class);
                     if (icon != null || Config.additonalicons.containsKey(res.name)) {
                         if (Gob.Type.MOB.has(gob.type) || gob.type == Gob.Type.BAT) {

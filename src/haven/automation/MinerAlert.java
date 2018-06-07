@@ -29,61 +29,72 @@ public class MinerAlert extends Window {
     public Boolean terminate = false;
     public static int delay = 5000;
     public Gob gob;
-    private Button runbtn, stopbtn;
-    private final Label labelcountiron, labelcountgold, labelcountsilver, labelcounttin, labelcountcopper, labelcountmagnetite, labelcounthematite,labelcountslimes,labelcountslimestotal;
+    private Button runbtn, stopbtn, mutebtn;
+    private final Label labelcountiron, labelcountgold, labelcountcinnabar, labelcountsilver, labelcounttin, labelcountcopper, labelcountmagnetite, labelcounthematite,labelcountslimes,labelcountslimestotal;
     private static final Text.Foundry infof = new Text.Foundry(Text.sans, 10).aa(true);
     private double lasterror = 0;
     public List<Gob> slimecount = new ArrayList<>();
+    private static final Resource goldsfx = Resource.local().loadwait("sfx/gold");
+    private static final Resource silversfx = Resource.local().loadwait("sfx/silver");
+    private static final Resource cinnabarsfx = Resource.local().loadwait("sfx/cinnabar");
+    public Boolean audiomute;
 
     public MinerAlert(GameUI gui) {
-        super(new Coord(170, 200), "Miner Alert");
+        super(new Coord(170, 240), "Miner Alert");
         this.gui = gui;
-
+        int yvalue = 17;
+        int yvalue2 = 8;
+        audiomute = false;
 
         final Label labeliron = new Label("Number of Iron tiles visible.", infof);
-        add(labeliron, new Coord(10, 8));
+        add(labeliron, new Coord(10, yvalue2));
         labelcountiron = new Label("0", Text.num12boldFnd, Color.WHITE);
-        add(labelcountiron, new Coord(65, 17));
+        add(labelcountiron, new Coord(65, yvalue));
 
         final Label labeltin = new Label("Number of Tin tiles visible.", infof);
-        add(labeltin, new Coord(10, 28));
+        add(labeltin, new Coord(10, yvalue2+=20));
         labelcounttin = new Label("0", Text.num12boldFnd, Color.WHITE);
-        add(labelcounttin, new Coord(65, 37));
+        add(labelcounttin, new Coord(65, yvalue+=20));
 
         final Label labelcopper = new Label("Number of Copper tiles visible.", infof);
-        add(labelcopper, new Coord(10, 48));
+        add(labelcopper, new Coord(10, yvalue2+=20));
         labelcountcopper = new Label("0", Text.num12boldFnd, Color.WHITE);
-        add(labelcountcopper, new Coord(65, 57));
+        add(labelcountcopper, new Coord(65, yvalue+=20));
 
         final Label labelgold = new Label("Number of Gold tiles visible.", infof);
-        add(labelgold, new Coord(10, 68));
+        add(labelgold, new Coord(10, yvalue2+=20));
         labelcountgold = new Label("0", Text.num12boldFnd, Color.WHITE);
-        add(labelcountgold, new Coord(65, 77));
+        add(labelcountgold, new Coord(65, yvalue+=20));
 
         final Label labelsilver = new Label("Number of Silver Tiles visible.", infof);
-        add(labelsilver, new Coord(10, 88));
+        add(labelsilver, new Coord(10, yvalue2+=20));
         labelcountsilver = new Label("0", Text.num12boldFnd, Color.WHITE);
-        add(labelcountsilver, new Coord(65, 97));
+        add(labelcountsilver, new Coord(65, yvalue+=20));
+
+        final Label labelcinnabar = new Label("Number of Cinnabar Tiles visible.", infof);
+        add(labelcinnabar, new Coord(10, yvalue2+=20));
+        labelcountcinnabar = new Label("0", Text.num12boldFnd, Color.WHITE);
+        add(labelcountcinnabar, new Coord(65, yvalue+=20));
 
         final Label labelmagnetite = new Label("Number of Black Ore Tiles visible.", infof);
-        add(labelmagnetite, new Coord(10, 108));
+        add(labelmagnetite, new Coord(10, yvalue2+=20));
         labelcountmagnetite = new Label("0", Text.num12boldFnd, Color.WHITE);
-        add(labelcountmagnetite, new Coord(65, 117));
+        add(labelcountmagnetite, new Coord(65, yvalue+=20));
 
         final Label labelhematite = new Label("Number of Bloodstone Tiles visible.", infof);
-        add(labelhematite, new Coord(10, 128));
+        add(labelhematite, new Coord(10, yvalue2+=20));
         labelcounthematite = new Label("0", Text.num12boldFnd, Color.WHITE);
-        add(labelcounthematite, new Coord(65, 137));
+        add(labelcounthematite, new Coord(65, yvalue+=20));
 
         final Label labelslimes = new Label("Number of Slimes Visible", infof);
-        add(labelslimes, new Coord(10, 148));
+        add(labelslimes, new Coord(10, yvalue2+=20));
         labelcountslimes = new Label("0", Text.num12boldFnd, Color.WHITE);
-        add(labelcountslimes, new Coord(65, 157));
+        add(labelcountslimes, new Coord(65, yvalue+=20));
 
         final Label labelslimestotal = new Label("Number of Slimes Total", infof);
-        add(labelslimestotal, new Coord(10, 168));
+        add(labelslimestotal, new Coord(10, yvalue2+=20));
         labelcountslimestotal = new Label("0", Text.num12boldFnd, Color.WHITE);
-        add(labelcountslimestotal, new Coord(65, 177));
+        add(labelcountslimestotal, new Coord(65, yvalue+=20));
 
 
         runbtn = new Button(100, "Run") {
@@ -111,6 +122,18 @@ public class MinerAlert extends Window {
             }
         };
         //add(stopbtn, new Coord(35, 470));
+
+        mutebtn = new Button(100, "Mute") {
+            @Override
+            public void click() {
+                if(audiomute)
+                    audiomute = false;
+                else
+                    audiomute = true;
+                BotUtils.sysMsg("Mute status : "+audiomute,Color.white);
+            }
+        };
+        add(mutebtn, new Coord(35, yvalue+=20));
 
         ActionListener timedevent = new ActionListener() {
             @Override
@@ -213,6 +236,9 @@ public class MinerAlert extends Window {
                             countgold = countgold + 1;
                             countnagyagite = countnagyagite + 1;
                         }
+                        if(name.equals("gfx/tiles/rocks/cinnabar")){
+                            countcinnabar = countcinnabar +1;
+                        }
 
                     }
                 }
@@ -225,17 +251,31 @@ public class MinerAlert extends Window {
                 labelcounthematite.settext(counthematite + "");
                 labelcountslimes.settext(countslimes + "");
                 labelcountslimestotal.settext(slimecount.size() + "");
+                labelcountcinnabar.settext(countcinnabar +"");
                 if(countgold > 0) {
                     double now = Utils.rtime();
-                    if(now-lasterror > 15) {
+                    if(now-lasterror > 45) {
                         lasterror = now;
-                        gui.error("Gold Visible on Screen");
+                        BotUtils.sysMsg("Gold Visible on screen!!",Color.white);
+                        if(!audiomute)
+                            Audio.play(goldsfx);
+                    }
+                }
+                if(countcinnabar > 0){
+                    double now = Utils.rtime();
+                    if (now-lasterror > 45){
+                        BotUtils.sysMsg("Cinnabar visible on screen!!",Color.white);
+                        if(!audiomute)
+                            Audio.play(cinnabarsfx);
+                        lasterror = now;
                     }
                 }
                 if(countsilver > 0) {
                     double now = Utils.rtime();
                     if (now-lasterror>15) {
                         gui.error("Silver Visible on Screen");
+                        if(!audiomute)
+                            Audio.play(silversfx);
                         lasterror = now;
                     }
                 }
@@ -253,6 +293,7 @@ public class MinerAlert extends Window {
                 countsilver = 0;
                 counthematite = 0;
                 countmagnetite = 0;
+                countcinnabar = 0;
                 countslimes=0;
                 list = null;
                 stopbtn.click();

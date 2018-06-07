@@ -29,6 +29,7 @@ package haven;
 import haven.purus.BotUtils;
 
 import java.awt.*;
+import java.util.ConcurrentModificationException;
 
 import static java.lang.Math.PI;
 
@@ -143,7 +144,9 @@ public class FlowerMenu extends Widget {
           //  BotUtils.sysLogAppend("flowermenu not present","white");
             Gob player = gui.map.player();
             while(player.ols.size() == 1){}
-            BotUtils.sleep(50);
+            try {
+                Thread.sleep(50);
+            }catch(InterruptedException idkheh){}
                 UI ui = gui.ui;
                 for (Widget widget : ui.rwidgets.keySet()) {
                     if (widget instanceof Speedget) {
@@ -151,7 +154,7 @@ public class FlowerMenu extends Widget {
                         horsemounter.interrupt();
                     }
                 }
-            }catch(Exception e){}
+            }catch(ConcurrentModificationException e){}
         }
         }
 

@@ -1,16 +1,14 @@
 package haven.automation;
 
 
-import haven.*;
 import haven.Button;
-import haven.Label;
+import haven.*;
 import haven.Window;
 import haven.purus.BotUtils;
 import haven.purus.pbot.PBotAPI;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.util.List;
 
 import static haven.OCache.posres;
 
@@ -27,6 +25,7 @@ public class CraftAllBot extends Window implements GobSelectCallback{
     private Thread runner;
     public Gob barrel;
     public Gob cauldron;
+    public Gob cistern;
     public Boolean usecauldron = false;
     public Window cwnd = null;
 
@@ -59,7 +58,7 @@ public CraftAllBot(GameUI gui){
     };
     add(runbtn, new Coord(10, 10));
 
-    cauldbtn = new Button(140, "Cauldron") {
+   /* cauldbtn = new Button(140, "Cauldron") {
         @Override
         public void click() {
             terminate = false;
@@ -70,13 +69,16 @@ public CraftAllBot(GameUI gui){
             BotUtils.sysMsg("Cauldron usage is : "+usecauldron,Color.white);
         }
     };
-    add(cauldbtn, new Coord(10, 70));
+    add(cauldbtn, new Coord(10, 70));*/
 
     stopbtn = new Button(140, "Stop") {
         @Override
         public void click() {
+            if(runner != null)
+                runner.interrupt();
             terminate = true;
             // TODO: terminate PF
+            //terminate();
             this.hide();
             runbtn.show();
             cbtn.show();
@@ -92,7 +94,7 @@ public class Runner implements Runnable {
     public void run() {
         GameUI gui = gameui();
 
-        try {
+
             Window crafting = gui.getwnd("Crafting");
             if(crafting == null){
                 BotUtils.sysMsg("Craft Window not open, open and retry.",Color.white);
@@ -110,50 +112,86 @@ public class Runner implements Runnable {
                     }
                 }
             }
-            while (!terminate){
-                if(usecauldron) {
-                    cwnd = gui.getwnd("Cauldron");
-                    VMeter vm = cwnd.getchild(VMeter.class);
-                    IMeter vm2 = cwnd.getchild(IMeter.class);
-                    if (vm.amount < 30) {
-                        Coord retain = barrel.rc.floor(posres);
-                        PBotAPI.liftGob(barrel);
-                        BotUtils.sleep(500);
-                        gui.map.wdgmsg("click", cauldron.sc, cauldron.rc.floor(posres), 3, 0, 0, (int) cauldron.id, cauldron.rc.floor(posres), 0, -1);
-                        BotUtils.sleep(500);
-                        gui.map.wdgmsg("click", Coord.z, retain, 3, 0);
-                        BotUtils.sleep(500);
-                        gui.map.wdgmsg("click", cauldron.sc, cauldron.rc.floor(posres), 3, 0, 0, (int) cauldron.id, cauldron.rc.floor(posres), 0, -1);
-                        BotUtils.sleep(500);
-                        ((Button) craftall).click();
-                        BotUtils.sleep(500);
-                        gui.map.wdgmsg("click", cauldron.sc, cauldron.rc.floor(posres), 3, 0, 0, (int) cauldron.id, cauldron.rc.floor(posres), 0, -1);
+            int iterations = 0;
+            while (!terminate) {
+                if(iterations > 50)
+                    stopbtn.click();
+                if (cauldron != null && !terminate) {
+                    try {
+                        // BotUtils.sysLogAppend("before cwnd check","white");
+                         int cwndtimeout = 0;
+                        while (cwnd == null) {
+                           //  BotUtils.sysLogAppend("inside cwnd check","white");
+                            cwnd = gui.getwnd("Cauldron");
+                            cwndtimeout ++;
+                            if (cwnd != null)
+                                break;
+                            if(cwndtimeout > 50000)
+                                stopbtn.click();
+                        }
+                        cwndtimeout = 0;
+                        //  BotUtils.sysLogAppend("after cwnd check","white");
+                        VMeter vm = cwnd.getchild(VMeter.class);
+                        IMeter vm2 = cwnd.getchild(IMeter.class);
+                        if (vm.amount < 30 && !terminate) {
+                            Coord retain = barrel.rc.floor(posres);
+                            if (barrel.ols.size() == 0 && cistern != null) {
+                                PBotAPI.liftGob(barrel);
+                                BotUtils.sleep(1000);
+                                gui.map.wdgmsg("click", cistern.sc, cistern.rc.floor(posres), 3, 0, 0, (int) cistern.id, cistern.rc.floor(posres), 0, -1);
+                                BotUtils.sleep(1000);
+                                gui.map.wdgmsg("click", cauldron.sc, cauldron.rc.floor(posres), 3, 0, 0, (int) cauldron.id, cauldron.rc.floor(posres), 0, -1);
+                                BotUtils.sleep(1000);
+                                gui.map.wdgmsg("click", Coord.z, retain, 3, 0);
+                                BotUtils.sleep(1000);
+                                gui.map.wdgmsg("click", cauldron.sc, cauldron.rc.floor(posres), 3, 0, 0, (int) cauldron.id, cauldron.rc.floor(posres), 0, -1);
+                                BotUtils.sleep(1000);
+                                ((Button) craftall).click();
+                                BotUtils.sleep(1000);
+                            }
+                            else {
+                                PBotAPI.liftGob(barrel);
+                                BotUtils.sleep(1000);
+                                gui.map.wdgmsg("click", cauldron.sc, cauldron.rc.floor(posres), 3, 0, 0, (int) cauldron.id, cauldron.rc.floor(posres), 0, -1);
+                                BotUtils.sleep(1000);
+                                gui.map.wdgmsg("click", Coord.z, retain, 3, 0);
+                                BotUtils.sleep(1000);
+                                gui.map.wdgmsg("click", cauldron.sc, cauldron.rc.floor(posres), 3, 0, 0, (int) cauldron.id, cauldron.rc.floor(posres), 0, -1);
+                                BotUtils.sleep(1000);
+                                ((Button) craftall).click();
+                                BotUtils.sleep(1000);
+                            }
+                        }
+                    } catch (NullPointerException i) {
+                        runner.interrupt();
+                        stopbtn.click();
                     }
                 }
-             //   IMeter.Meter stam = gui.getmeter("stam", 0);
-               // if (gui.prog == -1) {
-                  //  BotUtils.sleep(1000);
-                  //  Thread i = new Thread(new BeltDrink(gui), "BeltDrink");
-                  //  i.start();
-                  //  BotUtils.sleep(1000);
-              //  }
-              //  while(gui.prog >= 0) {
-                  //  BotUtils.sleep(10);
-              //  }
-               // if(stam.a > 50)
-              //  ((Button) craftall).click();
-               // else{
-                   // Thread i = new Thread(new BeltDrink(gui), "BeltDrink");
-                   // i.start();
+                IMeter.Meter stam = gui.getmeter("stam", 0);
+                if (gui.prog == -1 && !terminate) {
+                  //  BotUtils.sysLogAppend("inside drink","white");
+                    Thread i = new Thread(new BeltDrink(gui), "BeltDrink");
+                    i.start();
+                    BotUtils.sleep(500);
+                    while(gui.prog >= 0)
+                        BotUtils.sleep(10);
                 }
-
-
-
-
-        } catch (NullPointerException q) {
-            stopbtn.click();
-           // gui.error("Null Pointer Exception");
-        }
+                while (gui.prog >= 0 && !terminate) {
+                    iterations = 0;
+                  //  BotUtils.sysLogAppend("sleeping during craft","white");
+                    BotUtils.sleep(10);
+                }
+                if (stam.a > 50 && !terminate)
+                    ((Button) craftall).click();
+                else {
+                    Thread i = new Thread(new BeltDrink(gui), "BeltDrink");
+                    i.start();
+                }
+               // BotUtils.sysLogAppend("end","white");
+                iterations ++;
+              //  BotUtils.sysLogAppend("iterations : "+iterations,"white");
+                cwnd = null;
+            }
     }
 }
 
@@ -174,6 +212,9 @@ public class Runner implements Runnable {
             if(res.name.equals("gfx/terobjs/cauldron")){
                 BotUtils.sysMsg("Cauldron selected!",Color.white);
                 cauldron = gob;
+            }if(res.name.equals("gfx/terobjs/cistern")){
+                BotUtils.sysMsg("Cistern selected!",Color.white);
+                cistern = gob;
             }
         }
     }
@@ -199,7 +240,7 @@ public class Runner implements Runnable {
         terminate = true;
         if (runner != null)
             runner.interrupt();
-        this.destroy();
+       this.destroy();
     }
 
     public void liftGob(Gob gob) {

@@ -126,6 +126,17 @@ public class TrellisFarmer extends Window implements Runnable {
 					if (stopThread)
 						return;
 				}
+				//BotUtils.dropItem(0);
+				GItem dropitem;
+				for (Widget w = BotUtils.playerInventory().child; w != null; w = w.next) {
+					if (w instanceof GItem && ((GItem) w).resource().name.contains("grape")) {
+						dropitem = (GItem) w;
+						try {
+							dropitem.wdgmsg("drop", Coord.z);
+						} catch (Exception e) { }
+					}
+				}
+
 					if (BotUtils.invFreeSlots() < 4 && chest != null) {
 						BotUtils.pfRightClick(chest, 0);
 						try {
@@ -143,11 +154,24 @@ public class TrellisFarmer extends Window implements Runnable {
 								GItem item = (GItem) w;
 								try {
 									item.wdgmsg("transfer", Coord.z);
+
 								} catch (NullPointerException qip) {
 									BotUtils.sysMsg("Null Pointer on line 142", Color.white);
 								}
 							}
 						}
+						if(BotUtils.invFreeSlots() < 20)
+							for (Widget w = BotUtils.playerInventory().child; w != null; w = w.next) {
+								if (w instanceof GItem && ((GItem) w).res.get().name.contains("pepper")) {
+									GItem item = (GItem) w;
+									try {
+										item.wdgmsg("drop", Coord.z);
+
+									} catch (NullPointerException qip) {
+										BotUtils.sysMsg("Null Pointer on line 142", Color.white);
+									}
+								}
+							}
 					}
 					// Update progression
 					cropsHarvested++;

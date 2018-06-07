@@ -26,6 +26,7 @@
 
 package haven;
 
+import haven.purus.BotUtils;
 import haven.resutil.BPRadSprite;
 
 import java.awt.*;
@@ -58,8 +59,13 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
     public int cropstgmaxval = 0;
     private Overlay gobpath = null;
     private Overlay bowvector = null;
-    private static final Material.Colors dframeEmpty = new Material.Colors(new Color(0, 255, 0, 255));
-    private static final Material.Colors dframeDone = new Material.Colors(new Color(255, 0, 0, 255));
+    private static final Material.Colors dframeEmpty = new Material.Colors(new Color(0, 255, 0, 200));
+    private static final Material.Colors cRackEmpty = new Material.Colors(new Color(0, 255, 0, 255));
+    private static final Material.Colors cRackFull = new Material.Colors(new Color(255, 0, 0, 255));
+    private static final Material.Colors dframeDone = new Material.Colors(new Color(255, 0, 0, 200));
+    private static final Material.Colors dframeWater = new Material.Colors(new Color(0, 0, 255, 200));
+    private static final Material.Colors dframeBark = new Material.Colors(new Color(165, 42, 42, 200));
+    private static final Material.Colors cRackMissing = new Material.Colors(new Color(255, 0, 255, 200));
     private static final Material.Colors potDOne = new Material.Colors(new Color(0, 0, 0, 255));
     private static Gob.Overlay animalradius = new Gob.Overlay(new BPRadSprite(100.0F, -10.0F, BPRadSprite.smatDanger));
     private static final Map<Gob, Gob.Overlay> playerhighlight = new HashMap<Gob, Gob.Overlay>();
@@ -534,20 +540,23 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             rl.prepc(MapView.markedFx);
     if(Config.showrackstatus && type == Type.CHEESERACK){
                 if (ols.size() == 3)
-                    rl.prepc(dframeDone);
+                    rl.prepc(cRackFull);
+                if(ols.size() > 0 && ols.size()<3)
+                    rl.prepc(cRackMissing);
                 else
-                    rl.prepc(dframeEmpty);
+                    rl.prepc(cRackEmpty);
     }
     if(Config.showdframestatus && type == Type.TANTUB){
         int stage = getattr(ResDrawable.class).sdt.peekrbuf(0);
        // BotUtils.sysLogAppend("Sprite num : "+stage,"white");
-       // if (stage == 1 || stage == 2)
-        //    rl.prepc(dframeEmpty);
-       // else
-       // if(stage != 0)
-        //    rl.prepc(dframeDone);
-      //  }
-    }
+        if (stage == 2)
+            rl.prepc(dframeEmpty);
+        if(stage == 10 || stage == 9 || stage == 8)
+            rl.prepc(dframeDone);
+        if(stage == 0 || stage == 1 || stage == 4 || stage == 5)
+            rl.prepc(dframeWater);
+        }
+
         if (Config.showdframestatus && type == Type.DFRAME) {
             boolean done = true;
             boolean empty = true;

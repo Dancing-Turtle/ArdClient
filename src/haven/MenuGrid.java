@@ -290,6 +290,7 @@ public class MenuGrid extends Widget {
             p.add(paginafor(Resource.local().load("paginae/amber/equipweapon")));
             p.add(paginafor(Resource.local().load("paginae/amber/BeltDrink")));
             p.add(paginafor(Resource.local().load("paginae/amber/SliceCheese")));
+            p.add(paginafor(Resource.local().load("paginae/amber/SplitLogs")));
             p.add(paginafor(Resource.local().load("paginae/amber/OpenRacks")));
             p.add(paginafor(Resource.local().load("paginae/amber/CountGobs")));
             p.add(paginafor(Resource.local().load("paginae/amber/PepperPickerUpper")));
@@ -565,6 +566,8 @@ public class MenuGrid extends Widget {
             new Thread(new OpenRacks(gui), "OpenRacks").start();
         } else if (ad[1].equals("SliceCheese")) {
             new Thread(new SliceCheese(gui), "SliceCheese").start();
+        } else if (ad[1].equals("SplitLogs")) {
+            new Thread(new SplitLogs(gui), "SplitLogs").start();
         } else if (ad[1].equals("dismount")) {
             new Thread(new Dismount(gui), "Dismount").start();
         } else if(ad[1].equals("farmbot")) {
@@ -623,7 +626,7 @@ public class MenuGrid extends Widget {
                     if (ad.length > 0 && (ad[0].equals("craft") || ad[0].equals("bp")))
                         gameui().histbelt.push(r.pag);
 
-                    if (Config.confirmmagic && r.res.name.startsWith("paginae/seid/")) {
+                    if (Config.confirmmagic && r.res.name.startsWith("paginae/seid/") && !r.res.name.equals("paginae/seid/rawhide")) {
                         Window confirmwnd = new Window(new Coord(225, 100), "Confirm") {
                             @Override
                             public void wdgmsg(Widget sender, String msg, Object... args) {

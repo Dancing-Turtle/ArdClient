@@ -5,6 +5,7 @@ import haven.*;
 import haven.Window;
 import haven.purus.BotUtils;
 import haven.WItem;
+import haven.purus.pbot.PBotAPI;
 import haven.resutil.FoodInfo;
 
 import java.awt.*;
@@ -13,6 +14,8 @@ import java.util.List;
 public class PepperFood implements Runnable {
     private GameUI gui;
     private static final int TIMEOUT = 2000;
+    private static int iterations;
+    List<WItem> foods;
 
     public PepperFood(GameUI gui) {
         this.gui = gui;
@@ -20,77 +23,56 @@ public class PepperFood implements Runnable {
 
     @Override
     public void run() {
-        List<WItem> pepper;
-        WItem tray2 = null;
-        pepper = gui.maininv.getItemsPartial("pepper");
-        List<WItem> tray = null;
-        List<WItem> food = null;
-        int pepperiterator = 0;
-        for (Widget w = gui.lchild; w != null && tray == null; w = w.prev) {
-            if (!(w instanceof Window))
-                continue;
-            for (Widget inv = w.lchild; inv != null; inv = inv.prev) {
-                if (!(inv instanceof Inventory))
-                    continue;
-                tray = gui.maininv.getItemsPartial("");
-                if (tray != null)
-                    break;
-            }
-        }
+ iterations = 0;
+        while (iterations < 2) {
+            WItem pepper;
+            pepper = gui.maininv.getItemPartial("pepper");
+            try{
+                Window cupboard = gui.getwnd("Cupboard");
+                Inventory inv = PBotAPI.getInventory(cupboard);
+                foods = getFood(inv);
+            }catch(NullPointerException q){BotUtils.sysLogAppend("Null pointer at window grab.","white");}
+
+try {
+    pepper.item.wdgmsg("take", Coord.z);
+}catch(NullPointerException qq){BotUtils.sysLogAppend("No pepper left.","white");}
+
+            BotUtils.sleep(500);
 
 
-    pepper.get(0).item.wdgmsg("take", Coord.z);
-
-
-        BotUtils.sleep(500);
-
-
-        try {
-            for (int i = 0; i < tray.size(); i++) {
-                //  gui.syslog.append("looping",Color.white);
-                // tray.get(i).item.wdgmsg("itemact",0);
-                if (BotUtils.getItemAtHand() == null) {
-                    BotUtils.sysMsg("Out of pepper, getting next", Color.white);
-                    pepperiterator = pepperiterator +1;
-                    pepper.get(pepperiterator).item.wdgmsg("take", Coord.z);
-                    BotUtils.sleep(500);
-                    if (BotUtils.getItemAtHand() == null){
-                        BotUtils.sysMsg("Fully out of pepper",Color.white);
-                        break;
+            try {
+                for (int i = 0; i < foods.size(); i++) {
+                    for (ItemInfo info : foods.get(i).item.info()) {
+                        if (info instanceof FoodInfo) {
+                            foods.get(i).item.wdgmsg("itemact", 0);
+                        }
                     }
                 }
-                for (ItemInfo info : tray.get(i).item.info()) {
-                    if (info instanceof FoodInfo) {
-                        tray.get(i).item.wdgmsg("itemact", 0);
-                    }
-                }
-
-
-                // BotUtils.sysMsg("test : "+tray.get(i).item.info().get(5).toString(),Color.white);
-                // for (ItemInfo info : tray.get(i).item.info()) {
-                //if (info instanceof ItemInfo.AdHoc) {
-                //if (((ItemInfo.AdHoc) info).str.text != "Peppered") {
-                // tray.get(i).wdgmsg("iact",-1);
-                // }
-
 
                 //}
+            } catch (NullPointerException | IndexOutOfBoundsException q) {
             }
 
-            //}
-        } catch (NullPointerException | IndexOutOfBoundsException q) {
-        }
 
-
-        if (BotUtils.getItemAtHand() != null) {
-            Coord slot = BotUtils.getFreeInvSlot(BotUtils.playerInventory());
-            if (slot != null) {
-                int freeSlots = BotUtils.invFreeSlots();
-                BotUtils.dropItemToInventory(slot, BotUtils.playerInventory());
-                while (BotUtils.getItemAtHand() != null)
-                    BotUtils.sleep(50);
+            if (BotUtils.getItemAtHand() != null) {
+                Coord slot = BotUtils.getFreeInvSlot(BotUtils.playerInventory());
+                if (slot != null) {
+                    int freeSlots = BotUtils.invFreeSlots();
+                    BotUtils.dropItemToInventory(slot, BotUtils.playerInventory());
+                    while (BotUtils.getItemAtHand() != null)
+                        BotUtils.sleep(50);
+                }
             }
+            iterations++;
         }
     }
+    private List<WItem> getFood (Inventory inv){
+        List<WItem> food = inv.getItemsPartial("");
+        // BotUtils.sysMsg("trying to find trays", Color.WHITE);
+        if(food == null)
+            return null;
+        return food;
     }
+}
+
 

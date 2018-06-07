@@ -18,6 +18,7 @@ public class CountGobs implements Runnable, GobSelectCallback {
 
     public Gob gob;
     public Gob selection;
+    public Boolean isknocked;
 
     public CountGobs(GameUI gui) {
         this.gui = gui;
@@ -54,6 +55,8 @@ public class CountGobs implements Runnable, GobSelectCallback {
             BotUtils.sleep(10);
         }
         selection = gob;
+        if(gob.knocked)
+            isknocked = true;
         BotUtils.sysMsg("Selection is "+selection.getres().name,Color.white);
         //BotUtils.sysMsg(selection.getres().name, Color.white);
         gui.map.unregisterGobSelect();
@@ -67,7 +70,7 @@ public class CountGobs implements Runnable, GobSelectCallback {
             try {
                 Resource res = selection.getres();
                 Resource res2 = allGobs.get(i).getres();
-                if (selection.getres().name == allGobs.get(i).getres().name) {
+                if (selection.getres().name == allGobs.get(i).getres().name && gob.knocked == isknocked) {
                    // BotUtils.sysMsg("idk" + selection.getres().name, Color.white);
                     //BotUtils.sysMsg("idk2" + allGobs.get(i).getres().name, Color.white);
                     list.add(allGobs.get(i));
