@@ -23,49 +23,52 @@ public class PepperFood implements Runnable {
 
     @Override
     public void run() {
- iterations = 0;
-        while (iterations < 2) {
-            WItem pepper;
-            pepper = gui.maininv.getItemPartial("pepper");
             try{
                 Window cupboard = gui.getwnd("Cupboard");
                 Inventory inv = PBotAPI.getInventory(cupboard);
                 foods = getFood(inv);
             }catch(NullPointerException q){BotUtils.sysLogAppend("Null pointer at window grab.","white");}
 
-try {
-    pepper.item.wdgmsg("take", Coord.z);
-}catch(NullPointerException qq){BotUtils.sysLogAppend("No pepper left.","white");}
-
             BotUtils.sleep(500);
 
+                Equipory f = gui.getequipory();
+                WItem l = f.quickslots[6];
+                WItem r = f.quickslots[7];
 
-            try {
-                for (int i = 0; i < foods.size(); i++) {
-                    for (ItemInfo info : foods.get(i).item.info()) {
-                        if (info instanceof FoodInfo) {
-                            foods.get(i).item.wdgmsg("itemact", 0);
-                        }
+                boolean nolbucket = true;
+                boolean norbucket = true;
+
+                if (l != null) {
+                    String lname = l.item.getname();
+                    if (lname.contains("Bucket"))
+                        nolbucket = false;
+                }
+                if (r != null) {
+                    String rname = r.item.getname();
+                    if (rname.contains("Bucket"))
+                        norbucket = false;
+                }
+
+                if (!nolbucket || !norbucket) {
+                    WItem x = f.quickslots[nolbucket ? 7 : 6];
+                    x.mousedown(new Coord(x.sz.x / 2, x.sz.y / 2), 1);
+                    while(BotUtils.getItemAtHand() == null)
+                        BotUtils.sleep(10);
+
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException ie) {
+                        f.wdgmsg("drop", nolbucket ? 7 : 6);
+                        return;
                     }
+                    for (WItem fooditem : foods){
+                        GItem fooditemlol = fooditem.item;
+                        fooditemlol.wdgmsg("itemact",0);
+                    }
+                    f.wdgmsg("drop", nolbucket ? 7 : 6);
                 }
-
-                //}
-            } catch (NullPointerException | IndexOutOfBoundsException q) {
+                BotUtils.sysMsg("Food found and Peppered : "+foods.size(),Color.white);
             }
-
-
-            if (BotUtils.getItemAtHand() != null) {
-                Coord slot = BotUtils.getFreeInvSlot(BotUtils.playerInventory());
-                if (slot != null) {
-                    int freeSlots = BotUtils.invFreeSlots();
-                    BotUtils.dropItemToInventory(slot, BotUtils.playerInventory());
-                    while (BotUtils.getItemAtHand() != null)
-                        BotUtils.sleep(50);
-                }
-            }
-            iterations++;
-        }
-    }
     private List<WItem> getFood (Inventory inv){
         List<WItem> food = inv.getItemsPartial("");
         // BotUtils.sysMsg("trying to find trays", Color.WHITE);

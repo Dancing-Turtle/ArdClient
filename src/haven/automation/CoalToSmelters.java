@@ -45,6 +45,8 @@ public class CoalToSmelters extends Window implements GobSelectCallback {
     private int torchselected = 1;
     private static Window chestwind;
     public static int delay = 100;
+    public Equipory e;
+    public boolean noltorch;
 
 
 
@@ -59,6 +61,7 @@ public class CoalToSmelters extends Window implements GobSelectCallback {
 
 
         super(new Coord(270, 210), "Add Coal To Smelters");
+        terminate2 = false;
 
         final Label lbl = new Label("Alt + Click to select Ovens or Smelters", infof);
         add(lbl, new Coord(53, 5));
@@ -193,6 +196,7 @@ public class CoalToSmelters extends Window implements GobSelectCallback {
                 }
                 this.hide();
                 cbtn.hide();
+                runbtn.hide();
                 runbtn2.hide();
                 stopbtn.show();
                 fuelbtn.hide();
@@ -360,6 +364,7 @@ public class CoalToSmelters extends Window implements GobSelectCallback {
                                 if (smelter instanceof Inventory) {
                                     List<WItem> stones = getstones((Inventory) smelter);
                                     List<WItem> bars = getbars((Inventory) smelter);
+                                    List<WItem> quicksilver = getsilver((Inventory) smelter);
                                     for (WItem item : stones) {
                                         GItem stone = item.item;
                                         stone.wdgmsg("drop", Coord.z);
@@ -368,14 +373,54 @@ public class CoalToSmelters extends Window implements GobSelectCallback {
                                         GItem barslol = bar.item;
                                         barslol.wdgmsg("transfer", Coord.z);
                                     }
+                                    if(quicksilver.size() > 0){
+                                        Equipory f = gui.getequipory();
+                                        WItem l = f.quickslots[6];
+                                        WItem r = f.quickslots[7];
+
+                                        boolean nolbucket = true;
+                                        boolean norbucket = true;
+
+                                        if (l != null) {
+                                            String lname = l.item.getname();
+                                            if (lname.contains("Bucket"))
+                                                nolbucket = false;
+                                        }
+                                        if (r != null) {
+                                            String rname = r.item.getname();
+                                            if (rname.contains("Bucket"))
+                                                norbucket = false;
+                                        }
+
+                                        if (!nolbucket || !norbucket) {
+                                            WItem x = f.quickslots[nolbucket ? 7 : 6];
+                                            x.mousedown(new Coord(x.sz.x / 2, x.sz.y / 2), 1);
+                                            while(BotUtils.getItemAtHand() == null)
+                                                BotUtils.sleep(10);
+
+                                            try {
+                                                Thread.sleep(100);
+                                            } catch (InterruptedException ie) {
+                                                f.wdgmsg("drop", nolbucket ? 7 : 6);
+                                                return;
+                                            }
+                                            for (WItem qsilver : quicksilver){
+                                                GItem quicksilverlol = qsilver.item;
+                                               // BotUtils.sysLogAppend("trying to iact","white");
+                                                quicksilverlol.wdgmsg("itemact",0);
+                                            }
+                                             f.wdgmsg("drop", nolbucket ? 7 : 6);
+                                        }
+                                    }
                                 }
                             }
                         }
-                    } catch (NullPointerException p) {
+                    } catch (NullPointerException p) {BotUtils.sysLogAppend("Null pointer at : "+p.getLocalizedMessage(),"white");
                     }
                 }
             }
         };
+        if(!terminate2)
             new javax.swing.Timer(delay, timedevent).start();
 
     }
@@ -415,18 +460,13 @@ public class CoalToSmelters extends Window implements GobSelectCallback {
                 GameUI gui = gameui();
                 countretain = count;
                 try {
-                    if (bankselected == 1) {
-                        activelist = list;
-                    } else if (bankselected == 2) {
-                        activelist = list2;
-                    } else if (bankselected == 3) {
+                    if (bankselected == 1)
+                        activelist.addAll(list);
+                     else if (bankselected == 2)
+                        activelist.addAll(list2);
+                     else if (bankselected == 3) {
                         activelist.addAll(list);
                         activelist.addAll(list2);
-                    }
-                    if (count == 0) {
-                        BotUtils.sysMsg("Please increase fuel count above 0", Color.white);
-                        stopbtn.click();
-                        return;
                     }
                     if (activelist.size() == 0) {
                         BotUtils.sysMsg("Found list is null.", Color.white);
@@ -542,10 +582,10 @@ public class CoalToSmelters extends Window implements GobSelectCallback {
                         }
                         count = countretain;
                         BotUtils.sysMsg("Done", Color.white);
-                        lblc.settext(list.size() + "");
-                        lblc2.settext(list2.size() + "");
                         if (bankselected == 3)
                             bankselected = 1;
+                        lblc.settext(list.size() + "");
+                        lblc2.settext(list2.size() + "");
                         activelist.clear();
                         lblc4.settext(bankselected + "");
                         stopbtn.click();
@@ -559,9 +599,9 @@ public class CoalToSmelters extends Window implements GobSelectCallback {
             public void run() {
                 GameUI gui = gameui();
                 if (torchselected == 1) {
-                    torchlist = list;
+                    torchlist.addAll(list);
                 } else if (torchselected == 2) {
-                    torchlist = list2;
+                    torchlist.addAll(list2);
                 } else if (torchselected == 3) {
                     torchlist.addAll(list);
                     torchlist.addAll(list2);
@@ -584,7 +624,7 @@ public class CoalToSmelters extends Window implements GobSelectCallback {
                             WItem l = e.quickslots[6];
                             WItem r = e.quickslots[7];
 
-                            boolean noltorch = true;
+                            noltorch = true;
                             boolean nortorch = true;
 
                             if (l != null) {
@@ -620,9 +660,9 @@ public class CoalToSmelters extends Window implements GobSelectCallback {
                             // e.wdgmsg("drop", noltorch ? 7 : 6);
                         } catch (InterruptedException ie) {
                         }
+                       // e.wdgmsg("drop",noltorch ? 7:6);
                     }
                     BotUtils.sysMsg("Done", Color.white);
-                    torchselected =1;
                     lblc.settext(list.size() + "");
                     lblc2.settext(list2.size() + "");
                     torchlist.clear();
@@ -706,6 +746,10 @@ public class CoalToSmelters extends Window implements GobSelectCallback {
     private List<WItem> getbars (Inventory inv){
         List<WItem> getbars = inv.getItemsPartial("Bar");
         return getbars;
+    }
+    private List<WItem> getsilver (Inventory inv){
+        List<WItem> getsilver = inv.getItemsPartial("Quicksilver");
+        return getsilver;
     }
 
 

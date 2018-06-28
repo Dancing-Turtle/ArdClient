@@ -14,17 +14,12 @@ import static haven.OCache.posres;
 public class TrellisFarmer extends Window implements Runnable {
 
 	private Coord rc1, rc2;
-	
 	private ArrayList<Gob> crops = new ArrayList<Gob>();
-
 	private boolean stopThread = false;
-
 	private Label lblProg;
-
 	private ArrayList<String> cropName = new ArrayList<String>();
 	private ArrayList<String> seedName = new ArrayList<String>();
 	private String trellis = "gfx/terobjs/plants/trellis";
-
 	private boolean harvest = false;
 	private boolean destroy = false;
 	private boolean replant = false;
@@ -127,15 +122,16 @@ public class TrellisFarmer extends Window implements Runnable {
 						return;
 				}
 				//BotUtils.dropItem(0);
+				try {
 				GItem dropitem;
 				for (Widget w = BotUtils.playerInventory().child; w != null; w = w.next) {
 					if (w instanceof GItem && ((GItem) w).resource().name.contains("grape")) {
 						dropitem = (GItem) w;
-						try {
+
 							dropitem.wdgmsg("drop", Coord.z);
-						} catch (Exception e) { }
+						}
 					}
-				}
+				}catch (Exception e) { }
 
 					if (BotUtils.invFreeSlots() < 4 && chest != null) {
 						BotUtils.pfRightClick(chest, 0);

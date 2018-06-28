@@ -360,6 +360,7 @@ public class Config {
         put("Clean", new CheckListboxItem("Clean", Resource.BUNDLE_FLOWER));
         put("Skin", new CheckListboxItem("Skin", Resource.BUNDLE_FLOWER));
         put("Flay", new CheckListboxItem("Flay", Resource.BUNDLE_FLOWER));
+        put("Collect bones", new CheckListboxItem("Collect bones", Resource.BUNDLE_FLOWER));
         put("Butcher", new CheckListboxItem("Butcher", Resource.BUNDLE_FLOWER));
         put("Giddyup!", new CheckListboxItem("Giddyup!", Resource.BUNDLE_FLOWER));
         put("Sleep", new CheckListboxItem("Sleep", Resource.BUNDLE_FLOWER));

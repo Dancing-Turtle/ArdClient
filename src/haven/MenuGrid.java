@@ -32,11 +32,13 @@ import haven.purus.BarrelFiller;
 import haven.purus.Farmer;
 import haven.purus.StockpileFiller;
 import haven.purus.TroughFiller;
+import haven.automation.PepperBot;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.font.TextAttribute;
 import java.awt.image.BufferedImage;
+import haven.Resource.AButton;
 import java.util.*;
 import java.util.List;
 
@@ -304,7 +306,7 @@ public class MenuGrid extends Widget {
            // p.add(paginafor(Resource.local().load("paginae/purus/troughfill")));
             p.add(paginafor(Resource.local().load("paginae/purus/study")));
            // p.add(paginafor(Resource.local().load("paginae/purus/barrelfill")));
-          //  p.add(paginafor(Resource.local().load("paginae/purus/stockpilefill")));
+            p.add(paginafor(Resource.local().load("paginae/purus/stockpilefill")));
             // PBot Scripts
           //  p.add(paginafor(Resource.local().load("paginae/purus/PBotMenu")));
         }
@@ -507,8 +509,17 @@ public class MenuGrid extends Widget {
                     gui.map.registerGobSelect(sw);
                 }
             }
-        }
-        else if (ad[1].equals("MinerAlert")) {
+    } else if (ad[1].equals("PepperPickerUpper")) {
+            if(gui.getwnd("Pepper Bot" ) == null){
+            PepperBot sw = new PepperBot(gui);
+            gui.map.pepperbot = sw;
+            gui.add(sw, new Coord(gui.sz.x / 2 - sw.sz.x / 2, gui.sz.y / 2 - sw.sz.y / 2 - 200));
+            synchronized (GobSelectCallback.class) {
+                gui.map.registerAreaSelect (sw);
+                gui.map.registerGobSelect(sw);
+            }
+            }
+        } else if (ad[1].equals("MinerAlert")) {
             if (gui.getwnd("Miner Alert") == null) {
                 MinerAlert sw = new MinerAlert(gui);
                 gui.map.mineralert = sw;
@@ -540,8 +551,6 @@ public class MenuGrid extends Widget {
             new Thread(new Shoo(gui), "Shoo").start();
         } else if (ad[1].equals("Coracleslol")) {
             new Thread(new Coracleslol(gui), "Coracleslol").start();
-        } else if (ad[1].equals("PepperPickerUpper")) {
-            new Thread(new PepperPickerUpper(gui), "PepperPickerUpper").start();
         } else if (ad[1].equals("dream")) {
             new Thread(new DreamHarvester(gui), "DreamHarvester").start();
         } else if (ad[1].equals("trellis-harvest")) {
@@ -577,6 +586,7 @@ public class MenuGrid extends Widget {
             synchronized (GobSelectCallback.class) {
                 gameui().map.registerAreaSelect(f);
             }
+
         } else if(ad[1].equals("troughfill")) {
         	TroughFiller tf = new TroughFiller();
         	gui.add(tf, new Coord(gui.sz.x / 2 - tf.sz.x / 2, gui.sz.y / 2 - tf.sz.y / 2 - 200));

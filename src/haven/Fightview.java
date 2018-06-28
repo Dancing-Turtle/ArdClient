@@ -126,7 +126,7 @@ public class Fightview extends Widget {
                         gameui().syslog.append(String.format("Enemy Player, %s, ip %d - %d", tt.t, ip, oip), combatLogOpClr);
                     else
                             gameui().syslog.append(String.format("Enemy :%s, %s, ip %d - %d",gob.getres().basename(), tt.t, ip, oip), combatLogOpClr);
-                } catch (Loading l) {
+                } catch (Loading | NullPointerException l) {
                 }
             }
         }

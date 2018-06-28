@@ -18,7 +18,7 @@ public class Goat extends Animal {
         int x = 0;
         x = addColumn(columns, "Quality:", "Quality", 0, x);
         x = addColumn(columns, "Breeding quality:", "Breeding", 1, x);
-        x = addColumn(columns, "Combined Quality:", "Combined", 2, x);
+        x = addColumn(columns, "Combined quality:", "Combined", 2, x);
         x = addColumn(columns, "Meat quality:", "Meat", 3, x);
         x = addColumn(columns, "Milk quality:", "Milk", 4, x);
         x = addColumn(columns, "Hide quality:", "Hide", 5, x);

@@ -139,7 +139,7 @@ public class Runner implements Runnable {
                                 PBotAPI.liftGob(barrel);
                                 BotUtils.sleep(1000);
                                 gui.map.wdgmsg("click", cistern.sc, cistern.rc.floor(posres), 3, 0, 0, (int) cistern.id, cistern.rc.floor(posres), 0, -1);
-                                BotUtils.sleep(1000);
+                                BotUtils.sleep(3500);
                                 gui.map.wdgmsg("click", cauldron.sc, cauldron.rc.floor(posres), 3, 0, 0, (int) cauldron.id, cauldron.rc.floor(posres), 0, -1);
                                 BotUtils.sleep(1000);
                                 gui.map.wdgmsg("click", Coord.z, retain, 3, 0);
@@ -212,8 +212,8 @@ public class Runner implements Runnable {
             if(res.name.equals("gfx/terobjs/cauldron")){
                 BotUtils.sysMsg("Cauldron selected!",Color.white);
                 cauldron = gob;
-            }if(res.name.equals("gfx/terobjs/cistern")){
-                BotUtils.sysMsg("Cistern selected!",Color.white);
+            }if(res.name.equals("gfx/terobjs/cistern") || res.name.equals("gfx/terobjs/well")){
+                BotUtils.sysMsg("Water source selected!",Color.white);
                 cistern = gob;
             }
         }

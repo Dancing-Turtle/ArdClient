@@ -36,6 +36,7 @@ import java.util.Random;
 import haven.MapView.ClickInfo;
 import haven.Skeleton.Pose;
 import haven.Skeleton.PoseMod;
+import haven.MapView.ClickInfo;
 
 public class Composited implements Rendered, MapView.Clickable {
     public final Skeleton skel;
@@ -49,17 +50,17 @@ public class Composited implements Rendered, MapView.Clickable {
     public Sprite.Owner eqowner = null;
 
     public class Poses {
-        public final PoseMod[] mods;
-        Pose old;
-        float ipold = 0.0f, ipol = 0.0f;
-        public float limit = -1.0f;
-        public boolean stat, ldone;
-        private Random srnd = new Random();
-        private float rsmod = (srnd.nextFloat() * 0.1f) + 0.95f;
+	public final PoseMod[] mods;
+	Pose old;
+	float ipold = 0.0f, ipol = 0.0f;
+	public float limit = -1.0f;
+	public boolean stat, ldone;
+	private Random srnd = new Random();
+	private float rsmod = (srnd.nextFloat() * 0.1f) + 0.95f;
 
-        public Poses() {
-            this.mods = new PoseMod[0];
-        }
+	public Poses() {
+	    this.mods = new PoseMod[0];
+	}
 
         public Poses(List<? extends PoseMod> mods) {
             this.mods = mods.toArray(new PoseMod[0]);
@@ -268,7 +269,7 @@ public class Composited implements Rendered, MapView.Clickable {
                 if (bone != null)
                     bt = pose.bonetrans(bone.idx);
             }
-            if (bt == null)
+            if ((bt == null) && !ed.at.equals(""))
                 throw (new RuntimeException("Transformation " + ed.at + " for equipment " + ed.res + " on skeleton " + skel + " could not be resolved"));
             if ((ed.off.x != 0.0f) || (ed.off.y != 0.0f) || (ed.off.z != 0.0f))
                 this.et = GLState.compose(bt, Location.xlate(ed.off));
@@ -276,9 +277,9 @@ public class Composited implements Rendered, MapView.Clickable {
                 this.et = bt;
         }
 
-        public void tick(int dt) {
+        public void tick(int dt) {}
         }
-    }
+
 
     public static class MD implements Cloneable {
         public Indir<Resource> mod;

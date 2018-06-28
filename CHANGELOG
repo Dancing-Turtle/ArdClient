@@ -1,3 +1,26 @@
+1.00.15
+Added new Buddy Window features and such from recent default updates.
+~
+
+1.00.14
+Maybe fixed harvest carrots to trough.
+Added "Collect bones" to the flowermenu autoselector. Fuck you Jorb.
+
+~
+1.00.13
+Carrots can now be farmed directly into a trough using Plant+Barrel
+~
+1.00.12
+Fixed a bug that caused you to not be able to inspect Goats.
+~
+1.00.11
+New GUI appearance.
+Pepperbot programmed, needs a certain layout to work correctly. PM me for a picture of it. 
+Various bug fixes, probably, don't remember.
+~
+1.00.10
+Added new Quicksilver functionality to the autodrop feature of the smelter bot. If interacting with a smelter containing quicksilver while a bucket is equipped in your left or right hand, it should empty it into the bucket and drop the stones. 
+~
 1.00.09
 Fixed gob count script to account for the knocked flag, so you can count the number of alive vs dead animals or vice versa. 
 Fixed tanning tub coloring, should be blue tinted now if they need bark or water, green if theyre ready for hides, and red if theyre ready to empty of leather. 

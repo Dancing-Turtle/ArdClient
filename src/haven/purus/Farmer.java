@@ -21,8 +21,8 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 		Button carrotBtn = new Button(140, "Carrot") {
 			@Override
 			public void click() {
-				if (containeronly || replantcontainer) {
-					BotUtils.sysMsg("Choose replant for carrots!", Color.WHITE);
+				if (containeronly && barrel == null || replantcontainer && barrel == null) {
+					BotUtils.sysMsg("Select a trough to dump carrots into if you choose Barrel or Replant+Barrel", Color.WHITE);
 				} else if (a != null && b != null) {
 					gameui().map.unregisterAreaSelect();
 					// Start carrot farmer and close this window
@@ -362,9 +362,9 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 
 	@Override
 	public void gobselect(Gob gob) {
-		if (gob.getres().basename().contains("barrel")) {
+		if (gob.getres().basename().contains("barrel") || gob.getres().basename().contains("trough")) {
 			barrel = gob;
-			BotUtils.sysMsg("Barrel selected!", Color.WHITE);
+			BotUtils.sysMsg("Barrel/Trough selected!", Color.WHITE);
 		} else if (gob.getres().basename().contains("chest")) {
 			chest = gob;
 			BotUtils.sysMsg("Chest selected!", Color.WHITE);

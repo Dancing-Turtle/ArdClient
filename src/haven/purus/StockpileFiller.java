@@ -6,15 +6,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import haven.Button;
-import haven.Coord;
-import haven.Frame;
-import haven.GOut;
-import haven.Gob;
-import haven.Label;
-import haven.WItem;
-import haven.Widget;
-import haven.Window;
+import haven.*;
 import haven.automation.GobSelectCallback;
 
 public class StockpileFiller extends Window implements GobSelectCallback, ItemClickCallback {
@@ -87,51 +79,53 @@ public class StockpileFiller extends Window implements GobSelectCallback, ItemCl
 
 	Thread t = new Thread(new Runnable() {
 		public void run() {
-			while(true) {
-				Gob gob = BotUtils.findObjectByNames(1000, terobj);
-				if(gob == null) {
-					BotUtils.sysMsg("No more items on ground found!", Color.GREEN);
-					break;
-				}
-				while(gob != null && BotUtils.getItemAtHand() == null) {
-					if(stop)
-						break;
-					BotUtils.doClick(gob, 3, 1);
-					while(BotUtils.findObjectById(gob.id) != null && BotUtils.getItemAtHand() == null) {
-						BotUtils.sleep(100);
-					}
-					gob = BotUtils.findObjectByNames(1000, terobj);
-				}
-				
-				if(BotUtils.getItemAtHand()==null && BotUtils.getInventoryItemsByName(BotUtils.playerInventory(), invobj).size()>0) {
-					BotUtils.takeItem(BotUtils.getInventoryItemsByName(BotUtils.playerInventory(), invobj).get(0).item);
-				}
-				while(BotUtils.getItemAtHand() != null && !stop) {
-					if(stockpiles.isEmpty()) {
-						BotUtils.sysMsg("All chosen stockpiles full!", Color.GREEN);
-						stop = true;
+			try {
+				while (true) {
+					Gob gob = BotUtils.findObjectByNames(1000, terobj);
+					if (gob == null) {
+						BotUtils.sysMsg("No more items on ground found!", Color.GREEN);
 						break;
 					}
-					
-					if(BotUtils.stockpileIsFull(BotUtils.findObjectById(stockpiles.get(0).id))) {
-						stockpiles.remove(0);
-						continue;
+					while (gob != null && BotUtils.getItemAtHand() == null) {
+						if (stop)
+							break;
+						BotUtils.doClick(gob, 3, 1);
+						while (BotUtils.findObjectById(gob.id) != null && BotUtils.getItemAtHand() == null) {
+							BotUtils.sleep(100);
+						}
+						gob = BotUtils.findObjectByNames(1000, terobj);
 					}
-					if(stop)
-						break;
-					BotUtils.gui.map.wdgmsg("itemact", Coord.z, stockpiles.get(0).rc.floor(posres), 1, 0, (int) stockpiles.get(0).id, stockpiles.get(0).rc.floor(posres), 0, -1);
-					int cnt = BotUtils.invFreeSlots();
-					while(BotUtils.invFreeSlots() == cnt) {
-						BotUtils.sleep(100);
-					}
-					if(BotUtils.getItemAtHand()==null && BotUtils.getInventoryItemsByName(BotUtils.playerInventory(), invobj).size()>0) {
+
+					if (BotUtils.getItemAtHand() == null && BotUtils.getInventoryItemsByName(BotUtils.playerInventory(), invobj).size() > 0) {
 						BotUtils.takeItem(BotUtils.getInventoryItemsByName(BotUtils.playerInventory(), invobj).get(0).item);
 					}
+					while (BotUtils.getItemAtHand() != null && !stop) {
+						if (stockpiles.isEmpty()) {
+							BotUtils.sysMsg("All chosen stockpiles full!", Color.GREEN);
+							stop = true;
+							break;
+						}
+
+						if (BotUtils.stockpileIsFull(BotUtils.findObjectById(stockpiles.get(0).id))) {
+							stockpiles.remove(0);
+							continue;
+						}
+						if (stop)
+							break;
+						BotUtils.gui.map.wdgmsg("itemact", Coord.z, stockpiles.get(0).rc.floor(posres), 1, 0, (int) stockpiles.get(0).id, stockpiles.get(0).rc.floor(posres), 0, -1);
+						int cnt = BotUtils.invFreeSlots();
+						while (BotUtils.invFreeSlots() == cnt) {
+							BotUtils.sleep(100);
+						}
+						if (BotUtils.getItemAtHand() == null && BotUtils.getInventoryItemsByName(BotUtils.playerInventory(), invobj).size() > 0) {
+							BotUtils.takeItem(BotUtils.getInventoryItemsByName(BotUtils.playerInventory(), invobj).get(0).item);
+						}
+					}
+
 				}
-				
-			}
-			BotUtils.sysMsg("Stockpile Filler finished!", Color.GREEN);
-			reqdestroy();
+				BotUtils.sysMsg("Stockpile Filler finished!", Color.GREEN);
+				reqdestroy();
+			}catch(Loading q){}
 		}
 	});
 	
