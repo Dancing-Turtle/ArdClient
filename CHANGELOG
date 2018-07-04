@@ -1,3 +1,16 @@
+1.00.17
+Improvements to the Eat all button on tables, will now eat everyone on the table and in your inventory. 
+Improvements on the Pepper food bot, should now pepper no matter what inventory the food is in (Chest/Cupboard/Etc)
+~
+
+1.00.17
+Fixed - button on add attributes not working.
+~
+
+1.00.16
+Re-enabled fill trough script, I didn't write it so don't complain about it.
+~
+
 1.00.15
 Added new Buddy Window features and such from recent default updates.
 ~

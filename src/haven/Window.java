@@ -39,6 +39,7 @@ import java.util.List;
 
 import haven.glsl.Array;
 import haven.purus.BotUtils;
+import haven.purus.pbot.PBotAPI;
 import haven.resutil.Curiosity;
 
 public class Window extends Widget implements DTarget {
@@ -232,13 +233,30 @@ public class Window extends Widget implements DTarget {
                     public void click() {
                         Resource curs = ui.root.getcurs(c);
                         if (curs.name.equals("gfx/hud/curs/eat")) {
-                            for (Widget table = parent.lchild; table != null; table = table.prev) {
-                                if (table instanceof Inventory) {
-                                    List<WItem> foods = getfoods((Inventory) table);
-                                    for (WItem item : foods) {
-                                        GItem food = item.item;
-                                        food.wdgmsg("iact",Coord.z,-1);
+                          //  for (Widget table = parent.lchild; table != null; table = table.prev) {
+                               // if (table instanceof Inventory) {
+                                  //  List<WItem> foods = getfoods((Inventory) table);
+                                  //  for (WItem item : foods) {
+                                  //      GItem food = item.item;
+                                  //      food.wdgmsg("iact",Coord.z,-1);
+                                 //   }
+                              //  }
+                         //   }
+                            GameUI gui = gameui();
+                            synchronized (gui.ui.root.lchild) {
+                                try {
+                                    for (Widget q = gui.ui.root.lchild; q != null; q = q.rnext()) {
+                                        if (q instanceof Inventory) {
+                                            List<WItem> foods = getfoods((Inventory) q);
+                                            for (WItem item : foods){
+                                                GItem food = item.item;
+                                                food.wdgmsg("iact",Coord.z,-1);
+                                            }
+                                        }
+
                                     }
+
+                                } catch (NullPointerException q) {
                                 }
                             }
 

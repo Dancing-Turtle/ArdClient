@@ -580,7 +580,7 @@ public class CharWnd extends Window {
                         adj(-25);
                         return true;
                     } else
-                        adj(1);
+                        adj(-1);
                     return true;
 
                 }

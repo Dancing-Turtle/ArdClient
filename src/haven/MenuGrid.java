@@ -303,7 +303,7 @@ public class MenuGrid extends Widget {
            // p.add(paginafor(Resource.local().load("paginae/amber/dismount")));
             // Purus Pasta
             p.add(paginafor(Resource.local().load("paginae/purus/farmer")));
-           // p.add(paginafor(Resource.local().load("paginae/purus/troughfill")));
+            p.add(paginafor(Resource.local().load("paginae/purus/troughfill")));
             p.add(paginafor(Resource.local().load("paginae/purus/study")));
            // p.add(paginafor(Resource.local().load("paginae/purus/barrelfill")));
             p.add(paginafor(Resource.local().load("paginae/purus/stockpilefill")));

@@ -235,7 +235,7 @@ public class Fightsess extends Widget {
             delta2 = ((Math.pow(expected, 4.0) * unarmedcombat)) / (Math.pow((lastactopened + 0.4), 4.0));
 if(delta.intValue() > 10000)
     return null;
-            BotUtils.gui.error("Estimated target combat weight : " + delta.intValue() + "-" + delta2.intValue());
+            BotUtils.gui.error("Estimated target combat weight : " + delta2.intValue() + "-" + delta.intValue());
         }catch(NullPointerException lolnull){}
 
         return delta;
