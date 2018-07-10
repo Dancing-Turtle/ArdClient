@@ -1153,6 +1153,7 @@ na.put(ChatAttribute.HEARTH_SECRET, hs);
             this.msg = msg;
             this.chnm = chansel.nf[0].render(chan.name());
             if(chan.name().equals(Resource.getLocString(Resource.BUNDLE_LABEL, Config.chatalert)) || chan.name().equals(Resource.getLocString(Resource.BUNDLE_LABEL, "Area Chat"))){
+                if(Config.chatsounds)
                 Audio.play(notifsfx);
             }
         }

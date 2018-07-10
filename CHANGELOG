@@ -1,3 +1,11 @@
+1.00.19
+Added a sound option to disable the chat alert sound.
+~
+
+1.00.18
+Bug fixes, don't remember exactly. 
+~
+
 1.00.17
 Improvements to the Eat all button on tables, will now eat everyone on the table and in your inventory. 
 Improvements on the Pepper food bot, should now pepper no matter what inventory the food is in (Chest/Cupboard/Etc)

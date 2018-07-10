@@ -150,7 +150,7 @@ public class PepperBotRun extends Window implements Runnable {
 					BotUtils.sleep(6000);
 					while (BotUtils.invFreeSlots() < 4 && !stopThread) {
 						List<WItem> pepperlist = gameui().maininv.getItemsPartial("Peppercorn");
-						BotUtils.sysLogAppend("Peppercorns : "+pepperlist.size(),"white");
+						//BotUtils.sysLogAppend("Peppercorns : "+pepperlist.size(),"white");
 						if (pepperlist.size() == 0) //put pepper on tables
 						{
 							gui.act("travel", "hearth");
@@ -207,11 +207,18 @@ public class PepperBotRun extends Window implements Runnable {
 						((Button) craftall).click();
 						BotUtils.sleep(2000);
 						if (vm.amount < 30) {
+							List<Gob> allgobs = PBotAPI.getGobs();
+							for (Gob gobz : allgobs){
+								if (gobz.id == barrel.id){
+									barrel = gobz;
+									break;
+								}
+							}
 							BotUtils.sysLogAppend("filling cauldron, barrel is : "+barrel.ols.size(),"white");
 							BotUtils.sleep(600);
 							Coord retain = barrel.rc.floor(posres);
 							if (barrel.ols.size() == 0 && water != null) {
-								BotUtils.sysLogAppend("Barrel is empty refilling from cistern/well overlay size is : "+barrel.ols.size(),"white");
+								//BotUtils.sysLogAppend("Barrel is empty refilling from cistern/well overlay size is : "+barrel.ols.size(),"white");
 								PBotAPI.liftGob(barrel);
 								BotUtils.sleep(1000);
 								gui.map.wdgmsg("click", water.sc, water.rc.floor(posres), 3, 0, 0, (int) water.id, water.rc.floor(posres), 0, -1);
@@ -225,7 +232,7 @@ public class PepperBotRun extends Window implements Runnable {
 								((Button) craftall).click();
 								BotUtils.sleep(1000);
 							} else {
-								BotUtils.sysLogAppend("Barrel is not empty refilling from barrel overlay size is : "+barrel.ols.size(),"white");
+							//	BotUtils.sysLogAppend("Barrel is not empty refilling from barrel overlay size is : "+barrel.ols.size(),"white");
 								PBotAPI.liftGob(barrel);
 								BotUtils.sleep(1000);
 								gui.map.wdgmsg("click", cauldron.sc, cauldron.rc.floor(posres), 3, 0, 0, (int) cauldron.id, cauldron.rc.floor(posres), 0, -1);

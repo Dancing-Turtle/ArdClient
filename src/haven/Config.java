@@ -82,6 +82,7 @@ public class Config {
     public static double chatalarmvol = Utils.getprefd("chatalarmvol", 0.8);
     public static boolean studyalarm = Utils.getprefb("studyalarm", false);
     public static boolean errorsounds = Utils.getprefb("errorsounds", true);
+    public static boolean chatsounds = Utils.getprefb("chatsounds", true);
     public static double studyalarmvol = Utils.getprefd("studyalarmvol", 0.8);
     public static double sfxchipvol = Utils.getprefd("sfxchipvol", 0.9);
     public static double sfxquernvol = Utils.getprefd("sfxquernvol", 0.9);

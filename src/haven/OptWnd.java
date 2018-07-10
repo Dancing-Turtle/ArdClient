@@ -567,6 +567,17 @@ public class OptWnd extends Window {
                 Utils.setprefd("sfxchatvol", vol);
             }
         });
+        appender.add(new CheckBox("Enable village chat alert sounds") {
+            {
+                a = Config.chatsounds;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("chatsounds", val);
+                Config.chatsounds = val;
+                a = val;
+            }
+        });
         appender.add(new CheckBox("Enable error sounds") {
             {
                 a = Config.errorsounds;
