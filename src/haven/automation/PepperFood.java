@@ -51,7 +51,7 @@ public class PepperFood implements Runnable {
                     try{
                     WItem x = f.quickslots[nolbucket ? 7 : 6];
                     x.mousedown(new Coord(x.sz.x / 2, x.sz.y / 2), 1);
-                }catch(NullPointerException lo){BotUtils.sysMsg("No equipped Bucket Found",Color.white);}
+                }catch(NullPointerException lo){}
                     while(BotUtils.getItemAtHand() == null)
                         BotUtils.sleep(10);
                     try {
@@ -75,6 +75,10 @@ public class PepperFood implements Runnable {
                             }
                     }
                     f.wdgmsg("drop", nolbucket ? 7 : 6);
+                if(nolbucket && norbucket) {
+                    BotUtils.sysMsg("No equipped Bucket Found", Color.white);
+                }
+                else
                 BotUtils.sysMsg("Done",Color.white);
             }
 

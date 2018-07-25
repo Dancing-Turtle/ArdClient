@@ -202,6 +202,7 @@ public class PepperBotRun extends Window implements Runnable {
 						gui.map.wdgmsg("click", cauldron.sc, cauldron.rc.floor(posres), 3, 0, 0, (int) cauldron.id, cauldron.rc.floor(posres), 0, -1);
 						BotUtils.waitForWindow("Cauldron");
 						Window cwnd = gameui().getwnd("Cauldron");
+						BotUtils.sleep(200);
 						VMeter vm = cwnd.getchild(VMeter.class);
 						IMeter vm2 = cwnd.getchild(IMeter.class);
 						((Button) craftall).click();
