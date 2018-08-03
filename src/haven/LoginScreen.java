@@ -29,8 +29,7 @@ package haven;
 import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.event.KeyEvent;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -47,6 +46,7 @@ public class LoginScreen extends Widget {
     static Text.Foundry textf, textfs, special;
     static Tex bg = Resource.loadtex("gfx/loginscr");
     Text progress = null;
+    private Window log;
 
     static {
         textf = new Text.Foundry(Text.sans, 16).aa(true);
@@ -59,13 +59,40 @@ public class LoginScreen extends Widget {
         setfocustab(true);
         add(new Img(bg), Coord.z);
         optbtn = adda(new Button(100, "Options"), sz.x-110, 40, 0, 1);
-        new UpdateChecker().start();
+       // new UpdateChecker().start();
         add(new LoginList(200, 29), new Coord(10, 10));
         statusbtn = adda(new Button(100, "Initializing..."), sz.x-110, 80, 0, 1);
         StartUpdaterThread();
         GameUI.swimon = false;
         GameUI.trackon = false;
         GameUI.crimeon = false;
+    }
+
+    private void showChangeLog() {
+        log = ui.root.add(new Window(new Coord(50, 50), "Changelog"), new Coord(100, 50));
+        log.justclose = true;
+        Textlog txt = log.add(new Textlog(new Coord(450, 500)));
+        txt.quote = false;
+        int maxlines = txt.maxLines = 200;
+        log.pack();
+        try {
+            InputStream in = LoginScreen.class.getResourceAsStream("/changelog.txt");
+            BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+            File f = Config.getFile("changelog.txt");
+            FileOutputStream out = new FileOutputStream(f);
+            String strLine;
+            int count = 0;
+            while((count < maxlines) && (strLine = br.readLine()) != null) {
+                txt.append(strLine);
+                out.write((strLine + Config.LINE_SEPARATOR).getBytes());
+                count++;
+            }
+            br.close();
+            out.close();
+            in.close();
+        } catch(IOException ignored) {
+        }
+        txt.setprog(0);
     }
 
     private static abstract class Login extends Widget {
@@ -362,6 +389,9 @@ public class LoginScreen extends Widget {
     protected void added() {
         presize();
         parent.setfocus(this);
+        if(Config.isUpdate){
+            showChangeLog();
+        }
     }
 
     public void draw(GOut g) {

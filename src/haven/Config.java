@@ -38,7 +38,9 @@ import java.util.*;
 import static haven.Utils.getprop;
 
 public class Config {
+    public static final File HOMEDIR = new File("").getAbsoluteFile();
     public static final boolean iswindows = System.getProperty("os.name").startsWith("Windows");
+    public static final String LINE_SEPARATOR = System.getProperty("line.separator");
     public static String authuser = null;
     public static String authserv = null;
     public static String defserv = null;
@@ -142,6 +144,7 @@ public class Config {
     public static boolean dropsmelterstones = Utils.getprefb("dropsmelterstones", true);
     public static boolean showdframestatus = Utils.getprefb("showdframestatus", true);
     public static boolean showrackstatus = Utils.getprefb("showrackstatus", true);
+    public static boolean showcupboardstatus = Utils.getprefb("showcupboardstatus", true);
     public static boolean enableorthofullzoom = Utils.getprefb("enableorthofullzoom", false);
     public static boolean partycircles =  Utils.getprefb("partycircles", false);
     public static boolean noquests =  Utils.getprefb("noquests", false);
@@ -180,7 +183,9 @@ public class Config {
     public static String playerposfile;
     public static byte[] authck = null;
     public static String prefspec = "hafen";
-    public static String version;
+    //public static String version;
+    public static String version = Utils.getpref("version", "1.0");
+    public static String newversion;
     public static String Changelog;
     public static String[] Changelogarray;
     public static StringBuffer Changelogbuffer;
@@ -205,6 +210,7 @@ public class Config {
     public static int smatdangergreen= Utils.getprefi("smatdangergreen",0);
     public static int smatdangerblue = Utils.getprefi("smatdangerblue",0);
     public static String confid = "amber";
+    public static final boolean isUpdate;
 
     public final static String chatfile = "chatlog.txt";
     public static PrintWriter chatlog = null;
@@ -613,8 +619,7 @@ public class Config {
         String p;
         if ((p = getprop("haven.authck", null)) != null)
             authck = Utils.hex2byte(p);
-
-        try {
+      /*  try {
             InputStream in = ErrorHandler.class.getResourceAsStream("/buildinfo");
             try {
                 if (in != null) {
@@ -626,7 +631,13 @@ public class Config {
             } finally {
                 in.close();
             }
-        } catch (Exception e) {}
+        } catch (Exception e) {}*/
+        loadBuildVersion();
+        isUpdate = (!version.equals(newversion)) || !getFile("changelog.txt").exists();
+        if (isUpdate) {
+         //   Config.version = newversion;
+            Utils.setpref("version",newversion);
+        }
         try {
             InputStream in = ErrorHandler.class.getResourceAsStream("/CHANGELOG");
             try {
@@ -634,11 +645,11 @@ public class Config {
                     java.util.Scanner s = new java.util.Scanner(in);
                     Changelogbuffer = new StringBuffer();
                     while(s.hasNextLine()) {
-                            Changelogbuffer.append("-");
-                            Changelogbuffer.append(s.nextLine());
+                        Changelogbuffer.append("-");
+                        Changelogbuffer.append(s.nextLine());
                     }
-                //  }
-                   Changelog = Changelogbuffer.toString();
+                    //  }
+                    Changelog = Changelogbuffer.toString();
                 }
             } finally {
                 in.close();
@@ -670,6 +681,117 @@ public class Config {
 
         loadLogins();
     }
+
+        private static void loadBuildVersion() {
+            InputStream in = Config.class.getResourceAsStream("/buildinfo");
+            try {
+                try {
+                    if(in != null) {
+                        Properties info = new Properties();
+                        info.load(in);
+                        newversion = info.getProperty("version");
+                    }
+                } finally {
+                    if (in != null) { in.close(); }
+                }
+            } catch(IOException e) {
+                throw(new Error(e));
+            }
+        }
+    public static File getFile(String name) {
+        return new File(HOMEDIR, name);
+    }
+    public static String loadFile(String name) {
+        InputStream inputStream = getFSStream(name);
+        if(inputStream == null) {
+            inputStream = getJarStream(name);
+        }
+        return getString(inputStream);
+    }
+
+    public static String loadJarFile(String name) {
+        return getString(getJarStream(name));
+    }
+
+    public static String loadFSFile(String name) {
+        return getString(getFSStream(name));
+    }
+
+    private static InputStream getFSStream(String name) {
+        InputStream inputStream = null;
+        File file = Config.getFile(name);
+        if(file.exists() && file.canRead()) {
+            try {
+                inputStream = new FileInputStream(file);
+            } catch (FileNotFoundException ignored) {
+            }
+        }
+        return inputStream;
+    }
+
+    private static InputStream getJarStream(String name) {
+        if(name.charAt(0) != '/') {
+            name = '/' + name;
+        }
+        return Config.class.getResourceAsStream(name);
+    }
+
+    private static String getString(InputStream inputStream) {
+        if(inputStream != null) {
+            try {
+                return Utils.stream2str(inputStream);
+            } catch (Exception ignore) {
+            } finally {
+                try {inputStream.close();} catch (IOException ignored) {}
+            }
+        }
+        return null;
+    }
+
+    public static void saveFile(String name, String data){
+        File file = Config.getFile(name);
+        boolean exists = file.exists();
+        if(!exists){
+            try {
+                //noinspection ResultOfMethodCallIgnored
+                String parent = file.getParent();
+                new File(parent).mkdirs();
+                exists = file.createNewFile();
+            } catch (IOException ignored) {}
+        }
+        if(exists && file.canWrite()){
+            PrintWriter out = null;
+            try {
+                out = new PrintWriter(file);
+                out.print(data);
+            } catch (FileNotFoundException ignored) {
+            } finally {
+                if (out != null) {
+                    out.close();
+                }
+            }
+        }
+    }
+
+    private static int getint(String name, int def) {
+        String val = getprop(name, null);
+        if(val == null)
+            return(def);
+        return(Integer.parseInt(val));
+    }
+
+    private static URL geturl(String name, String def) {
+        String val = getprop(name, def);
+        if(val.equals(""))
+            return(null);
+        try {
+            return(new URL(val));
+        } catch(java.net.MalformedURLException e) {
+            throw(new RuntimeException(e));
+        }
+    }
+
+
 
     private static void loadLogins() {
         try {

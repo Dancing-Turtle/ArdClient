@@ -1,3 +1,15 @@
+1.00.23
+Autoupdater added, hopefully fixed changelog maybe.
+~
+
+1.00.22
+Added Pumpkins to trough bot, maybe.
+~
+
+1.00.21
+Added an overlay option to cupboards if they're full. 
+~
+
 1.00.19
 Added a sound option to disable the chat alert sound.
 ~

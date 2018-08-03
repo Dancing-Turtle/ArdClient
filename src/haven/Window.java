@@ -61,6 +61,7 @@ public class Window extends Widget implements DTarget {
     public static final Coord cpo = new Coord(36, 15);
     public static final int capo = 7, capio = 2;
     public static boolean CurioReport = false;
+    public boolean justclose = false;
     public static final Coord dlmrgn = new Coord(23, 14), dsmrgn = new Coord(9, 9);
     public static final BufferedImage ctex = Resource.loadimg("gfx/hud/fonttex");
     public static final Text.Furnace cf = new Text.Imager(new PUtils.TexFurn(new Text.Foundry(Text.sans, Text.cfg.wndCap).aa(true), ctex)) {
@@ -517,10 +518,17 @@ public class Window extends Widget implements DTarget {
 
     public void wdgmsg(Widget sender, String msg, Object... args) {
         if (sender == cbtn) {
+            if(justclose)
+                close();
+            else
             wdgmsg("close");
         } else {
             super.wdgmsg(sender, msg, args);
         }
+    }
+
+    public void close() {
+        ui.destroy(this);
     }
 
     public boolean type(char key, java.awt.event.KeyEvent ev) {

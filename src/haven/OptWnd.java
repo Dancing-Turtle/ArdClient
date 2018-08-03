@@ -744,7 +744,7 @@ public class OptWnd extends Window {
                 BPRadSprite.smatDanger = new States.ColState(new Color(Config.smatdangerred, Config.smatdangergreen, Config.smatdangerblue, 100));
             }
         });
-        appender.add(new CheckBox("Highlight empty/finished drying frames and full/empty tanning tubs.") {
+        appender.add(new CheckBox("Highlight empty/finished drying frames and full/empty tanning tubs. Requires restart.") {
             {
                 a = Config.showdframestatus;
             }
@@ -755,7 +755,18 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
-        appender.add(new CheckBox("Highlight empty/full cheese racks") {
+        appender.add(new CheckBox("Highlight full cupboards with a slight red tint. Requires restart.") {
+            {
+                a = Config.showcupboardstatus;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showcupboardstatus", val);
+                Config.showdframestatus = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Highlight empty/full cheese racks. Requires restart.") {
             {
                 a = Config.showrackstatus;
             }
@@ -766,7 +777,7 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
-        appender.add(new CheckBox("Highlight finished garden pots") {
+        appender.add(new CheckBox("Highlight finished garden pots. Requires restart.") {
             {
                 a = Config.highlightpots;
             }
