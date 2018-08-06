@@ -1731,6 +1731,18 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
+
+        appender.add(new CheckBox("Hide Animals") {
+            {
+                a = Config.hideanimals;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("hideanimals", val);
+                Config.hideanimals = val;
+                a = val;
+            }
+        });
         
         appender.add(new CheckBox("Hide wagons") {
             {

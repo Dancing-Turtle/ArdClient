@@ -105,7 +105,7 @@ public class PBotScriptlist extends GameUI.Hidewnd {
 			if(!scriptDirectory.exists())
 				scriptDirectory.mkdir();
 			for(File f:scriptDirectory.listFiles()) {
-				if(f.getName().endsWith(".PBot")) {
+				if(f.getName().endsWith(".PBot") || f.getName().endsWith("jbot")) {
 					itemList.add(new PBotScriptlistItem(f.getName(), f));
 				}
 			}

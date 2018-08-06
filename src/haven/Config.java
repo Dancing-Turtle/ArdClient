@@ -196,6 +196,7 @@ public class Config {
     public static boolean hideTrees = Utils.getprefb("hideTrees", true);
     public static boolean hideCrops = Utils.getprefb("hideCrops", true);
     public static boolean hideWalls = Utils.getprefb("hideWalls", true);
+    public static boolean hideanimals = Utils.getprefb("hideWalls", false);
     public static boolean hideWagons = Utils.getprefb("hideWagons", false);
     public static boolean hideHouses = Utils.getprefb("hideHouses", false);
     public static boolean hideBushes = Utils.getprefb("hideBushes", true);

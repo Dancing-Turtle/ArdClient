@@ -1,5 +1,0 @@
-// Test script
-var PBot = Java.type("haven.purus.pbot.PBotAPI");
-
-
-Pbot.doAct("lift");

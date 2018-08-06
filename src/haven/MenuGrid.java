@@ -308,7 +308,7 @@ public class MenuGrid extends Widget {
            // p.add(paginafor(Resource.local().load("paginae/purus/barrelfill")));
             p.add(paginafor(Resource.local().load("paginae/purus/stockpilefill")));
             // PBot Scripts
-          //  p.add(paginafor(Resource.local().load("paginae/purus/PBotMenu")));
+            p.add(paginafor(Resource.local().load("paginae/purus/PBotMenu")));
         }
     }
 
