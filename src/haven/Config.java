@@ -121,6 +121,7 @@ public class Config {
     public static boolean reversebadcamy = Utils.getprefb("reversebadcamy", false);
     public static boolean showservertime = Utils.getprefb("showservertime", false);
     public static boolean enabletracking = Utils.getprefb("enabletracking", false);
+    public static boolean autoconnectdiscord = Utils.getprefb("autoconnectdiscord", false);
     public static boolean enablecrime = Utils.getprefb("enablecrime", false);
     public static boolean resinfo = Utils.getprefb("resinfo", false);
     public static boolean showanimalrad = Utils.getprefb("showanimalrad", true);
@@ -170,6 +171,8 @@ public class Config {
     public static boolean disableelev =  Utils.getprefb("disableelev", false);
     public static String treeboxclr =  Utils.getpref("treeboxclr", "D7FF00");
     public static String chatalert =  Utils.getpref("chatalert", "Null");
+    public static String discordchannel =  Utils.getpref("discordchannel", "Null");
+    public static String discordbotkey =  Utils.getpref("discordbotkey", "Null");
     public static boolean highlightpots = Utils.getprefb("highlightpots", false);
     public static boolean bonsai = Utils.getprefb("bonsai", false);
     public static int fontsizechat = Utils.getprefi("fontsizechat", 14);
@@ -196,7 +199,7 @@ public class Config {
     public static boolean hideTrees = Utils.getprefb("hideTrees", true);
     public static boolean hideCrops = Utils.getprefb("hideCrops", true);
     public static boolean hideWalls = Utils.getprefb("hideWalls", true);
-    public static boolean hideanimals = Utils.getprefb("hideWalls", false);
+    public static boolean hideanimals = Utils.getprefb("hideanimals", false);
     public static boolean hideWagons = Utils.getprefb("hideWagons", false);
     public static boolean hideHouses = Utils.getprefb("hideHouses", false);
     public static boolean hideBushes = Utils.getprefb("hideBushes", true);

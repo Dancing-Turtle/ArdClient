@@ -26,10 +26,12 @@
 
 package haven;
 
+import java.awt.*;
 import java.util.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.InputEvent;
+import haven.automation.Discord;
 
 public class UI {
     public RootWidget root;
@@ -341,6 +343,15 @@ public class UI {
                 return;
 
             if(!rwidgets.containsKey(sender)) {
+
+               if(sender.toString().contains("Discord")){
+                   System.out.println("Found Discord Error");
+                   System.out.println("Msg contents : "+args[0]);
+                   gui.Discord.append(gui.getparent(GameUI.class).buddies.getCharName() + ":  " + args[0], Color.white);
+                   ChatUI.Channel.Message sendmsg = new ChatUI.Channel.SimpleMessage(gui.getparent(GameUI.class).buddies.getCharName() + ":  " + args[0],Color.white,0);
+                   Discord.pendingmsg = gui.getparent(GameUI.class).buddies.getCharName()+": "+args[0];
+
+               }
                 System.err.printf("Wdgmsg sender (%s) is not in rwidgets, message is %s\n", sender.getClass().getName(), msg);
                 return;
             }

@@ -753,6 +753,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             if(!playerhighlight.containsKey(this)) {
             	Resource res = getres();
             	if (res != null && res.name.contains("body") && !isplayer()) {
+                  //  BotUtils.sysLogAppend("Player : "+ki.name+" spotted","white");
 		            Overlay overlay = new Gob.Overlay(new PartyMemberOutline(this, BuddyWnd.gc[ki.group]));
 		            ols.add(overlay);
 		            playerhighlight.put(this, overlay);

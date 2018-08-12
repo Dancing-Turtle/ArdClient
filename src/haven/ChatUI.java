@@ -46,6 +46,8 @@ import java.text.AttributedCharacterIterator;
 import java.text.AttributedCharacterIterator.Attribute;
 import java.text.CharacterIterator;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -56,6 +58,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import haven.purus.BotUtils;
+import net.dv8tion.jda.core.AccountType;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.JDABuilder;
+import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.events.ReadyEvent;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import javax.security.auth.login.LoginException;
 
 public class ChatUI extends Widget {
     private static final Resource alarmsfx = Resource.local().loadwait("sfx/chatalarm");
@@ -71,6 +85,7 @@ public class ChatUI extends Widget {
             new Color(255, 0, 0),
     };
     public Channel sel = null;
+    public static String Titans;
     public int urgency = 0;
     private final Selector chansel;
     private Coord base = Coord.z;
@@ -78,6 +93,7 @@ public class ChatUI extends Widget {
     private final LinkedList<Notification> notifs = new LinkedList<Notification>();
     private UI.Grab qgrab;
     public static final String CMD_PREFIX_HLIGHT = "@";
+
 
     public ChatUI(int w, int h) {
         super(new Coord(w, h));
@@ -92,6 +108,10 @@ public class ChatUI extends Widget {
         base = this.c;
         resize(this.sz);
     }
+
+
+
+
 
 
     public static class ChatAttribute extends Attribute {
@@ -308,6 +328,8 @@ na.put(ChatAttribute.HEARTH_SECRET, hs);
 
         public void notify(Message msg, int urgency) {
             getparent(ChatUI.class).notify(this, msg);
+            System.out.println("urgency update : "+this);
+            System.out.println("urgency update : "+this.name());
             updurgency(Math.max(this.urgency, urgency));
         }
 
@@ -875,6 +897,43 @@ na.put(ChatAttribute.HEARTH_SECRET, hs);
         }
     }
 
+    public static class Discord extends MultiChat {
+        private long lastmsg = 0;
+
+        public Discord() {
+            super(false, Resource.getLocString(Resource.BUNDLE_LABEL, "Discord"), 0);
+        }
+
+        public void uimsg(String msg, Object... args) {
+            if (msg == "msg") {
+                Integer from = (Integer) args[0];
+                int gobid = (Integer) args[1];
+                String line = (String) args[2];
+                Color col = Color.WHITE;
+                System.out.println("Testing uimsg Discord");
+                if (from == null) {
+                    MyMessage my = new MyMessage(line, iw());
+                    append(my);
+                    save(name, my.text().text, super.getparent(GameUI.class).buddies.getCharName());
+                } else {
+                    Message cmsg = new NamedMessage(from, line, Utils.blendcol(col, Color.WHITE, 0.5), iw());
+                    append(cmsg);
+                    save(name, cmsg.text().text);
+                    if (urgency > 0)
+                        notify(cmsg, urgency);
+
+                    long time = System.currentTimeMillis();
+                    if (Config.chatalarm && (lastmsg == 0 || (time - lastmsg) / 1000 > 50)) {
+                        Audio.play(alarmsfx, Config.chatalarmvol);
+                        lastmsg = time;
+                    }
+                }
+            } else {
+                super.uimsg(msg, args);
+            }
+        }
+    }
+
     public static class PrivChat extends EntryChannel {
         private final int other;
         private long lastmsg = 0;
@@ -936,12 +995,20 @@ na.put(ChatAttribute.HEARTH_SECRET, hs);
                 return (b.name);
         }
     }
-
     @RName("schan")
     public static class $SChan implements Factory {
         public Widget create(UI ui, Object[] args) {
             String name = (String) args[0];
             return (new SimpleChat(false, name));
+        }
+    }
+
+    @RName("dchat")
+    public static class $DChat implements Factory {
+        public Widget create(UI ui, Object[] args) {
+            String name = (String) args[0];
+            int urgency = (Integer) args[1];
+            return (new Discord());
         }
     }
 
@@ -1050,8 +1117,12 @@ na.put(ChatAttribute.HEARTH_SECRET, hs);
                     if (ch.chan == sel)
                         g.image(chanseld, new Coord(0, y));
                     g.chcolor(255, 255, 255, 255);
-                    if ((ch.rname == null) || !ch.rname.text.equals(ch.chan.name()) || (ch.urgency != ch.chan.urgency))
+                    if ((ch.rname == null) || !ch.rname.text.equals(ch.chan.name()) || (ch.urgency != ch.chan.urgency)) {
+                     //   System.out.println("draw check on urgency "+ch.rname.text);
+                        System.out.println("draw check on urgency "+ch.chan.name());
+                        System.out.println("draw check on urgency "+ch.urgency);
                         ch.rname = nf[ch.urgency = ch.chan.urgency].render(ch.chan.name());
+                    }
                     g.aimage(ch.rname.tex(), new Coord(sz.x / 2, y + 8), 0.5, 0.5);
                     g.image(chandiv, new Coord(0, y + 18));
                     y += 28;
@@ -1142,7 +1213,7 @@ na.put(ChatAttribute.HEARTH_SECRET, hs);
         select(chan, true);
     }
 
-    private class Notification {
+    public class Notification {
         public final Channel chan;
         public final Text chnm;
         public final Channel.Message msg;
@@ -1152,7 +1223,11 @@ na.put(ChatAttribute.HEARTH_SECRET, hs);
             this.chan = chan;
             this.msg = msg;
             this.chnm = chansel.nf[0].render(chan.name());
-            if(chan.name().equals(Resource.getLocString(Resource.BUNDLE_LABEL, Config.chatalert)) || chan.name().equals(Resource.getLocString(Resource.BUNDLE_LABEL, "Area Chat"))){
+            System.out.println("Channel sel : "+chnm.text);
+            System.out.println("Channel sel : "+chan.name());
+            System.out.println("Channel sel : "+chansel.nf[0].toString());
+
+            if(chan.name().equals(Resource.getLocString(Resource.BUNDLE_LABEL, "Discord")) || chan.name().equals(Resource.getLocString(Resource.BUNDLE_LABEL, Config.chatalert)) || chan.name().equals(Resource.getLocString(Resource.BUNDLE_LABEL, "Area Chat"))){
                 if(Config.chatsounds)
                 Audio.play(notifsfx);
             }

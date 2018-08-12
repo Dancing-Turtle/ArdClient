@@ -28,6 +28,7 @@ package haven;
 
 import haven.Resource.AButton;
 import haven.automation.*;
+import haven.automation.Discord;
 import haven.purus.BarrelFiller;
 import haven.purus.Farmer;
 import haven.purus.StockpileFiller;
@@ -295,6 +296,7 @@ public class MenuGrid extends Widget {
             p.add(paginafor(Resource.local().load("paginae/amber/SplitLogs")));
             p.add(paginafor(Resource.local().load("paginae/amber/OpenRacks")));
             p.add(paginafor(Resource.local().load("paginae/amber/CountGobs")));
+            p.add(paginafor(Resource.local().load("paginae/amber/Discord")));
             p.add(paginafor(Resource.local().load("paginae/amber/PepperPickerUpper")));
             p.add(paginafor(Resource.local().load("paginae/amber/TakeTrays")));
             p.add(paginafor(Resource.local().load("paginae/amber/CraftAllBot")));
@@ -565,6 +567,8 @@ public class MenuGrid extends Widget {
             new Thread(new BeltDrink(gui), "BeltDrink").start();
         } else if (ad[1].equals("CountGobs")) {
             new Thread(new CountGobs(gui), "CountGobs").start();
+        } else if (ad[1].equals("Discord")) {
+            new Thread(new Discord(gui)).start();
         } else if (ad[1].equals("TakeTrays")) {
             new Thread(new TakeTrays(gui), "TakeTrays").start();
         } else if (ad[1].equals("PepperFood")) {
@@ -702,6 +706,12 @@ public class MenuGrid extends Widget {
             if (Config.enabletracking && !GameUI.trackon) {
                 wdgmsg("act", new Object[]{"tracking"});
                 gui.trackautotgld = true;
+            }
+            if(Config.autoconnectdiscord && !GameUI.discordconnected) {
+                if (Resource.getLocString(Resource.BUNDLE_LABEL, Config.discordbotkey) != null && Resource.getLocString(Resource.BUNDLE_LABEL, Config.discordchannel) != null) {
+                    new Thread(new Discord(gui)).start();
+                    gui.discordconnected = true;
+                }
             }
             if (Config.enablecrime && !GameUI.crimeon) {
                 gui.crimeautotgld = true;

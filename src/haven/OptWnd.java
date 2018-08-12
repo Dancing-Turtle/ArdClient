@@ -1495,6 +1495,49 @@ public class OptWnd extends Window {
                     }
                 }
         );
+        appender.add(new CheckBox("Connect to Discord on Login") {
+            {
+                a = Config.autoconnectdiscord;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("autoconnectdiscord", val);
+                Config.enabletracking = val;
+                a = val;
+            }
+        });
+        appender.addRow(new Label("Enter Discord Channel ID"),
+                new TextEntry(150, Config.discordchannel) {
+                    @Override
+                    public boolean type(char c, KeyEvent ev) {
+                        if (!parent.visible)
+                            return false;
+
+                        boolean ret = buf.key(ev);
+                        if (text.length() > 0) {
+                            Utils.setpref("discordchannel", text);
+                        }
+
+                        return ret;
+                    }
+                }
+        );
+        appender.addRow(new Label("Enter Discord Bot Secret Key"),
+                new TextEntry(150, Config.discordbotkey) {
+                    @Override
+                    public boolean type(char c, KeyEvent ev) {
+                        if (!parent.visible)
+                            return false;
+
+                        boolean ret = buf.key(ev);
+                        if (text.length() > 0) {
+                            Utils.setpref("discordbotkey", text);
+                        }
+
+                        return ret;
+                    }
+                }
+        );
         appender.addRow(new Label("Chat font size (req. restart):"), makeFontSizeChatDropdown());
         appender.add(new CheckBox("Font antialiasing") {
             {
