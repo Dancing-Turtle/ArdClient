@@ -112,6 +112,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 
 
 
+
     public abstract class Belt extends Widget {
         public Belt(Coord sz) {
             super(sz);
@@ -206,6 +207,8 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         }, new Coord(HavenPanel.w / 2 - 300 / 2, umpanel.sz.y));
         syslog = chat.add(new ChatUI.Log(Resource.getLocString(Resource.BUNDLE_LABEL, "System")));
         Discord = chat.add(new ChatUI.Discord());
+       // ui.rwidgets.put(new ChatUI.Discord(),150);
+      //  Discord = chat.add(new ChatUI.MultiChat(false,"Discord",2));
        // new Thread(new Discord(gui)).start();
         opts = add(new OptWnd());
         opts.hide();

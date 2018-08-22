@@ -19,27 +19,50 @@ public class PepperBot extends Window implements AreaSelectCallback, GobSelectCa
 	private Coord a, b;
 	private boolean containeronly = false, replant = true, replantcontainer = false;
 	private CheckBox replantChkbox, fillContainerChkbox, replantBarrelChkbox;
-	private Gob barrel, chest, rowmarker, water, cauldron, htable;
+	private Gob barrel, hfire, rowmarker, water, cauldron, htable;
 	public Thread testthread;
 	private final int rowgap = 4200;
 	private final int northtravel = 20000;
 	private int section = 1;
+	public boolean allowrun;
 
 	public PepperBot(GameUI gui) {
 
-		super(new Coord(180, 300), "Pepper Bot");
+		super(new Coord(180, 150), "Pepper Bot");
 		int y = 0;
 		Button trelHarBtn = new Button(140, "Trellis harvest") {
 			@Override
 			public void click() {
-				if (a != null && b != null) {
-					// Start yellow onion farmer and close this window
-					PepperBotRun bf = new PepperBotRun(a, b, true, false, false, barrel, water, rowmarker, cauldron, section);
+			allowrun = true;
+					if(hfire == null)
+					{
+						BotUtils.sysMsg("No Hearthfire Selected.",Color.white);
+						allowrun = false;
+					}
+					if(barrel == null)
+					{
+						BotUtils.sysMsg("No barrel Selected.",Color.white);
+						allowrun = false;
+					}
+					if(water == null)
+					{
+						BotUtils.sysMsg("No water source Selected.",Color.white);
+						allowrun = false;
+					}
+					if(cauldron == null)
+					{
+						BotUtils.sysMsg("No cauldron Selected.",Color.white);
+						allowrun = false;
+					}
+
+
+				if (a != null && b != null && allowrun) {
+					PepperBotRun bf = new PepperBotRun(a, b, true, false, false, barrel, water, cauldron, section,hfire);
 
 					gameui().add(bf, new Coord(gameui().sz.x / 2 - bf.sz.x / 2, gameui().sz.y / 2 - bf.sz.y / 2 - 200));
 					new Thread(bf).start();
 					this.parent.destroy();
-				} else {
+				} else if(allowrun){
 					BotUtils.sysMsg("Area not selected!", Color.WHITE);
 				}
 			}
@@ -81,15 +104,12 @@ public class PepperBot extends Window implements AreaSelectCallback, GobSelectCa
 		if (gob.getres().basename().contains("barrel")) {
 			barrel = gob;
 			BotUtils.sysMsg("Barrel selected!x : " + gob.rc.x + " y : " + gob.rc.y, Color.WHITE);
-		} else if (gob.getres().basename().contains("chest")) {
-			chest = gob;
-			BotUtils.sysMsg("Chest selected!x : " + gob.rc.x + " y : " + gob.rc.y, Color.WHITE);
 		} else if (gob.getres().basename().contains("well") || (gob.getres().basename().contains("Cistern"))) {
 			water = gob;
 			BotUtils.sysMsg("Well selected! x : " + gob.rc.x + " y : " + gob.rc.y, Color.white);
 		} else if (gob.getres().basename().contains("pow")) {
-			rowmarker = gob;
-			BotUtils.sysMsg("Row marker selected!x : " + gob.rc.x + " y : " + gob.rc.y, Color.white);
+			hfire = gob;
+			BotUtils.sysMsg("Hearthfire selected!x : " + gob.rc.x + " y : " + gob.rc.y, Color.white);
 		} else if (gob.getres().basename().contains("cauldron")) {
 			cauldron = gob;
 			BotUtils.sysMsg("Cauldron Selected!x : " + gob.rc.x + " y : " + gob.rc.y, Color.white);
@@ -126,21 +146,10 @@ public class PepperBot extends Window implements AreaSelectCallback, GobSelectCa
 	public void run() {
 		BotUtils.sysMsg("Started", Color.white);
 		GameUI gui = gameui();
-		//gui.map.wdgmsg("click", Coord.z, cauldron.rc.x-10,cauldron.rc.y, 1, 0);
-		//	gameui().map.wdgmsg("click", Coord.z, barrel.rc.floor(posres), 0, 0, (int) barrel.id,barrel.rc.floor(posres), 0, -1);
-		Gob player = gui.map.player();
-		Coord location = player.rc.floor(posres);
-		int x = location.x;
-		int y = location.y - rowgap;
-		Coord finalloc = new Coord(x, y);
-		gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
-		BotUtils.sleep(2000);
-		location = player.rc.floor(posres);
-		x = location.x + northtravel;
-		y = location.y;
-		finalloc = new Coord(x, y);
-		gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
-		BotUtils.sysLogAppend("Testing  x : " + x + " y : " + y, "white");
+		UI ui = gameui().ui;
+		//ui.rwidgets.
+//	gui.map.wdgmsg("click", hfire.sc, hfire.rc.floor(posres), 1, 0, 0, (int) hfire.id, hfire.rc.floor(posres), 0, -1);
+
 	}
 }
 }

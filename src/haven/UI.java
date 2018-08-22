@@ -52,6 +52,7 @@ public class UI {
     public int beltWndId = -1;
 	public GameUI gui;
 
+
     {
         lastevent = lasttick = Utils.rtime();
     }
@@ -146,6 +147,7 @@ public class UI {
     }
 
     public void newwidget(int id, String type, int parent, Object[] pargs, Object... cargs) throws InterruptedException {
+       // System.out.println("Widget ID : "+id+" Type : "+type+" Parent : "+parent);
         if (Config.quickbelt && type.equals("wnd") && cargs[1].equals("Belt")) {
             // use custom belt window
             type = "wnd-belt";
@@ -199,6 +201,7 @@ public class UI {
     public void addwidget(int id, int parent, Object[] pargs) {
         synchronized(this) {
             Widget wdg = widgets.get(id);
+
             if(wdg == null)
                 throw(new UIException("Null child widget " + id + " added to " + parent, null, pargs));
             Widget pwdg = widgets.get(parent);
@@ -339,6 +342,7 @@ public class UI {
     public void wdgmsg(Widget sender, String msg, Object... args) {
         int id;
         synchronized(this) {
+        //    System.out.println("Sender : "+sender+" msg : "+msg);
             if (msg.endsWith("-identical"))
                 return;
 
@@ -353,6 +357,7 @@ public class UI {
 
                }
                 System.err.printf("Wdgmsg sender (%s) is not in rwidgets, message is %s\n", sender.getClass().getName(), msg);
+               System.out.println("Sender is : "+sender);
                 return;
             }
             id = rwidgets.get(sender);
@@ -364,10 +369,24 @@ public class UI {
     public void uimsg(int id, String msg, Object... args) {
         synchronized (this) {
             Widget wdg = widgets.get(id);
-            if (wdg != null)
-                wdg.uimsg(msg.intern(), args);
-            else
-                throw (new UIException("Uimsg to non-existent widget " + id, msg, args));
+
+            if(id == 55){
+                if (msg.contains("msg")) {
+                    for (Widget w = gui.chat.lchild; w != null; w = w.prev) {
+                        if (w instanceof ChatUI.MultiChat) {
+                            ChatUI.MultiChat chat = (ChatUI.MultiChat) w;
+                            if (chat.name().contains(Resource.getLocString(Resource.BUNDLE_LABEL, "(P)"))) {
+                                chat.updurgency(1);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+                if (wdg != null)
+                    wdg.uimsg(msg.intern(), args);
+                 else
+                    throw (new UIException("Uimsg to non-existent widget " + id, msg, args));
         }
     }
 

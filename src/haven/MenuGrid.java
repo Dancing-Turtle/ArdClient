@@ -297,7 +297,7 @@ public class MenuGrid extends Widget {
             p.add(paginafor(Resource.local().load("paginae/amber/OpenRacks")));
             p.add(paginafor(Resource.local().load("paginae/amber/CountGobs")));
             p.add(paginafor(Resource.local().load("paginae/amber/Discord")));
-            p.add(paginafor(Resource.local().load("paginae/amber/PepperPickerUpper")));
+            p.add(paginafor(Resource.local().load("paginae/amber/PepperBot")));
             p.add(paginafor(Resource.local().load("paginae/amber/TakeTrays")));
             p.add(paginafor(Resource.local().load("paginae/amber/CraftAllBot")));
             p.add(paginafor(Resource.local().load("paginae/amber/PepperFood")));
@@ -511,7 +511,7 @@ public class MenuGrid extends Widget {
                     gui.map.registerGobSelect(sw);
                 }
             }
-    } else if (ad[1].equals("PepperPickerUpper")) {
+    } else if (ad[1].equals("PepperBot")) {
             if(gui.getwnd("Pepper Bot" ) == null){
             PepperBot sw = new PepperBot(gui);
             gui.map.pepperbot = sw;

@@ -44,6 +44,7 @@ public CraftAllBot(GameUI gui){
     };
     add(clrbtn, new Coord(10, 40));
 
+
     runbtn = new Button(140, "Run") {
         @Override
         public void click() {

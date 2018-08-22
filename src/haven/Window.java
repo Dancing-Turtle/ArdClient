@@ -61,6 +61,7 @@ public class Window extends Widget implements DTarget {
     public static final Coord cpo = new Coord(36, 15);
     public static final int capo = 7, capio = 2;
     public static boolean CurioReport = false;
+    public Button checkcurios;
     public boolean justclose = false;
     public static final Coord dlmrgn = new Coord(23, 14), dsmrgn = new Coord(9, 9);
     public static final BufferedImage ctex = Resource.loadimg("gfx/hud/fonttex");
@@ -223,7 +224,6 @@ public class Window extends Widget implements DTarget {
 //Collection Curios2 = Config.curiolist;
 
         Collection GetCurios = new ArrayList();
-
         Collection FinalCurios = new ArrayList();
         //List<WItem> foods = new ArrayList<>();
         //List<WItem> stones = new ArrayList<>();
@@ -276,6 +276,8 @@ public class Window extends Widget implements DTarget {
 
 
             if (cap.text.equals("Study Desk")) {
+                if (checkcurios != null)
+                    checkcurios.destroy();
 
                 int sizeY = 250;
                 int totalLP = 0;
@@ -331,14 +333,13 @@ public class Window extends Widget implements DTarget {
                 }
 
 
-                add(new Button(100, "Check Curios") {
+                checkcurios = add(new Button(100, "Check Curios") {
                     public void click() {
                         CurioReport = true;
                     }
                 }, new Coord(60, y - 30));
                 sizeY += 50;
                 resize(230, sizeY);
-
                 if (CurioReport) {
                     CurioReport = false;
                     Curios.removeAll(GetCurios);

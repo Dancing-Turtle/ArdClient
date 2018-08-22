@@ -6,6 +6,7 @@ import haven.Label;
 import haven.Window;
 import haven.purus.BotUtils;
 import haven.purus.pbot.PBotAPI;
+import net.dv8tion.jda.client.entities.Application;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ public class PepperBotRun extends Window implements Runnable {
 	private boolean harvest = false;
 	private boolean destroy = false;
 	private boolean replant = false;
-	private Gob chest, water, rowmarker, cauldron, barrel;
+	private Gob chest, water, rowmarker, cauldron, barrel, hfire;
 	private final int rowgap = 4200;
 	private final int northtravel = 20000;
 	private int section;
@@ -34,7 +35,7 @@ public class PepperBotRun extends Window implements Runnable {
 	private Boolean boilmode = false;
 	private Coord finalloc;
 
-	public PepperBotRun(Coord rc1, Coord rc2, boolean harvest, boolean destroy, boolean replant, Gob barrel, Gob water, Gob rowmarker, Gob cauldron, int section) {
+	public PepperBotRun(Coord rc1, Coord rc2, boolean harvest, boolean destroy, boolean replant, Gob barrel, Gob water, Gob cauldron, int section, Gob hfire) {
 		super(new Coord(120, 65), "Trellis Farmer");
 		this.rc1 = rc1;
 		this.rc2 = rc2;
@@ -42,7 +43,8 @@ public class PepperBotRun extends Window implements Runnable {
 		this.destroy = destroy;
 		this.replant = replant;
 		this.water = water;
-		this.rowmarker = rowmarker;
+		//this.rowmarker = rowmarker;
+		this.hfire = hfire;
 		this.cauldron = cauldron;
 		this.barrel = barrel;
 		this.section = section;
@@ -66,7 +68,7 @@ public class PepperBotRun extends Window implements Runnable {
 	}
 
 	public void run() {
-		BotUtils.sysMsg("Trellis Farmer started!", Color.white);
+		BotUtils.sysMsg("Pepper Bot started!", Color.white);
 		Window crafting = gameui().getwnd("Crafting");
 		if (crafting == null) {
 			BotUtils.sysMsg("Craft Window not open, open and retry.", Color.white);
@@ -115,9 +117,18 @@ public class PepperBotRun extends Window implements Runnable {
 				// Right click the crop
 				BotUtils.doClick(g, 3, 0);
 
+				int retryharvest = 0;
+
 				// Wait for harvest menu to appear
 				while (ui.root.findchild(FlowerMenu.class) == null) {
+					retryharvest++;
 					BotUtils.sleep(10);
+					if (retryharvest >= 500){
+						BotUtils.sysLogAppend("Retrying harvest","white");
+						BotUtils.doClick(g, 3, 0);
+						retryharvest = 0;
+					}
+
 					if (stopThread)
 						return;
 				}
@@ -153,8 +164,18 @@ public class PepperBotRun extends Window implements Runnable {
 						//BotUtils.sysLogAppend("Peppercorns : "+pepperlist.size(),"white");
 						if (pepperlist.size() == 0) //put pepper on tables
 						{
-							gui.act("travel", "hearth");
-							BotUtils.sleep(6000);
+							BotUtils.sleep(1000);
+							while(gui.getwnd("Cauldron")!=null)
+							gui.map.wdgmsg("click", hfire.sc, hfire.rc.floor(posres), 1, 0, 0, (int) hfire.id, hfire.rc.floor(posres), 0, -1);
+							//gameui().map.wdgmsg("click",Coord.z,hfire.sc,1,0);
+							//gui.act("travel", "hearth");
+							//Gob player = gui.map.player();
+							//Coord location = player.rc.floor(posres);
+							//int x = location.x;
+							//int y = location.y - rowgap;
+							//finalloc = new Coord(x, y);
+							//gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
+							BotUtils.sleep(2000);
 							if (section == 2) {
 								Gob player = gui.map.player();
 								Coord location = player.rc.floor(posres);
@@ -200,7 +221,20 @@ public class PepperBotRun extends Window implements Runnable {
 						if(BotUtils.invFreeSlots() > 4)
 							break;
 						gui.map.wdgmsg("click", cauldron.sc, cauldron.rc.floor(posres), 3, 0, 0, (int) cauldron.id, cauldron.rc.floor(posres), 0, -1);
-						BotUtils.waitForWindow("Cauldron");
+						FlowerMenu.setNextSelection("Open");
+						int tryagaintimer = 0;
+						while(gui.getwnd("Cauldron") == null){
+							try {
+								Thread.sleep(10);
+								tryagaintimer++;
+								if (tryagaintimer >= 500) {
+									BotUtils.sysLogAppend("Retrying cauldron open","white");
+									gui.map.wdgmsg("click", cauldron.sc, cauldron.rc.floor(posres), 3, 0, 0, (int) cauldron.id, cauldron.rc.floor(posres), 0, -1);
+									FlowerMenu.setNextSelection("Open");
+								}
+							}catch(InterruptedException idk){}
+						}
+						//BotUtils.waitForWindow("Cauldron");
 						Window cwnd = gameui().getwnd("Cauldron");
 						BotUtils.sleep(200);
 						VMeter vm = cwnd.getchild(VMeter.class);
@@ -215,7 +249,7 @@ public class PepperBotRun extends Window implements Runnable {
 									break;
 								}
 							}
-							BotUtils.sysLogAppend("filling cauldron, barrel is : "+barrel.ols.size(),"white");
+						//	BotUtils.sysLogAppend("filling cauldron, barrel is : "+barrel.ols.size(),"white");
 							BotUtils.sleep(600);
 							Coord retain = barrel.rc.floor(posres);
 							if (barrel.ols.size() == 0 && water != null) {
@@ -225,10 +259,12 @@ public class PepperBotRun extends Window implements Runnable {
 								gui.map.wdgmsg("click", water.sc, water.rc.floor(posres), 3, 0, 0, (int) water.id, water.rc.floor(posres), 0, -1);
 								BotUtils.sleep(3500);
 								gui.map.wdgmsg("click", cauldron.sc, cauldron.rc.floor(posres), 3, 0, 0, (int) cauldron.id, cauldron.rc.floor(posres), 0, -1);
+								FlowerMenu.setNextSelection("Open");
 								BotUtils.sleep(1000);
 								gui.map.wdgmsg("click", Coord.z, retain, 3, 0);
 								BotUtils.sleep(1000);
 								gui.map.wdgmsg("click", cauldron.sc, cauldron.rc.floor(posres), 3, 0, 0, (int) cauldron.id, cauldron.rc.floor(posres), 0, -1);
+								FlowerMenu.setNextSelection("Open");
 								BotUtils.sleep(1000);
 								((Button) craftall).click();
 								BotUtils.sleep(1000);
@@ -237,10 +273,12 @@ public class PepperBotRun extends Window implements Runnable {
 								PBotAPI.liftGob(barrel);
 								BotUtils.sleep(1000);
 								gui.map.wdgmsg("click", cauldron.sc, cauldron.rc.floor(posres), 3, 0, 0, (int) cauldron.id, cauldron.rc.floor(posres), 0, -1);
+								FlowerMenu.setNextSelection("Open");
 								BotUtils.sleep(1000);
 								gui.map.wdgmsg("click", Coord.z, retain, 3, 0);
 								BotUtils.sleep(1000);
 								gui.map.wdgmsg("click", cauldron.sc, cauldron.rc.floor(posres), 3, 0, 0, (int) cauldron.id, cauldron.rc.floor(posres), 0, -1);
+								FlowerMenu.setNextSelection("Open");
 								BotUtils.sleep(1000);
 								((Button) craftall).click();
 								BotUtils.sleep(1000);

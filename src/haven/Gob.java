@@ -27,10 +27,12 @@
 package haven;
 
 import haven.purus.BotUtils;
+import haven.purus.pbot.PBotAPI;
 import haven.resutil.BPRadSprite;
 
 import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
     public Coord2d rc;
@@ -38,6 +40,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
     public Coord3f sczu;
     public double a;
     public boolean virtual = false;
+    public int printdelay;
     public long id;
     public int frame;
     public final Glob glob;

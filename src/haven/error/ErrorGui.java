@@ -123,7 +123,8 @@ public abstract class ErrorGui extends JDialog implements ErrorStatus {
         final String tr = w.toString();
         SwingUtilities.invokeLater(() -> {
             String details = String.format("%s.%s\n%s, %s\n%s\n\n%s",
-                    Config.version, Config.gitrev.substring(0, 8),
+                    Config.version,
+                    Config.gitrev.substring(0, 8),
                     r.props.get("os"), r.props.get("java"),
                     r.props.get("gpu"),
                     tr);

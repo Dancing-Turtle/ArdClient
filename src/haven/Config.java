@@ -629,7 +629,7 @@ public class Config {
                 if (in != null) {
                     java.util.Scanner s = new java.util.Scanner(in);
                     String[] binfo = s.next().split(",");
-                    version = binfo[0];
+                   // version = binfo[0];
                     gitrev = binfo[1];
                 }
             } finally {
@@ -694,6 +694,7 @@ public class Config {
                         Properties info = new Properties();
                         info.load(in);
                         newversion = info.getProperty("version");
+                        gitrev = info.getProperty("git-rev");
                     }
                 } finally {
                     if (in != null) { in.close(); }

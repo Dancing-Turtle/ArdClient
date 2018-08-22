@@ -1,3 +1,39 @@
+1.00.31
+Fixed area chat not triggering the alert sound and notification highlighting. 
+Added blue highlighting to alert for messages in public realm chat. 
+~
+
+1.00.30
+Some bugfixes to the pepperbot. Maybe fixed getting stuck trying to open cauldron and harvesting pepper if there's lag when opening the flowermenu.
+Improved pepperbot speed by removing the hearth after boiling and just walking to hearthfire.
+Fixed tooltip on pepperbot icon. 
+Fixed the check curios button on the study table window.
+~
+
+1.00.29
+Added Discord functionality. Navigate to the haven options "UI Settings" tab for the needed fields. Or PM me on discord.
+~
+
+1.00.28
+Fixed a bug where the new hide Livestock setting wasn't saving between sessions.
+~
+
+1.00.27
+Added option to Hide Settings to hide Livestock
+~
+
+1.00.26
+Added a green tint to fully empty cupboards. The color scale is now - 0 items, green tint. 1-63 items, regular color. 64 items, red tint. Blame JColes.
+~
+
+1.00.25
+Fixed a crash caused by a depreciated gemstone class file in the Hafen.jar
+~
+
+1.00.24
+Bugfixes due to new version platform.
+~
+
 1.00.23
 Autoupdater added, hopefully fixed changelog maybe.
 ~

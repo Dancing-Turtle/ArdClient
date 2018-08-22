@@ -841,8 +841,9 @@ na.put(ChatAttribute.HEARTH_SECRET, hs);
                 } else {
                     Message cmsg = new NamedMessage(from, line, fromcolor(from), iw());
                     append(cmsg);
-                    if (urgency > 0)
-                        notify(cmsg, urgency);
+                   // if (urgency > 0)
+                    notify(cmsg, 1);
+                  //  notify(cmsg, urgency);
                     save(name, cmsg.text().text);
                 }
             } else {
@@ -1006,8 +1007,7 @@ na.put(ChatAttribute.HEARTH_SECRET, hs);
     @RName("dchat")
     public static class $DChat implements Factory {
         public Widget create(UI ui, Object[] args) {
-            String name = (String) args[0];
-            int urgency = (Integer) args[1];
+            System.out.println("triggered dchat");
             return (new Discord());
         }
     }
@@ -1016,6 +1016,7 @@ na.put(ChatAttribute.HEARTH_SECRET, hs);
     public static class $MChat implements Factory {
         public Widget create(UI ui, Object[] args) {
             String name = (String) args[0];
+            System.out.println("triggered mchat name : "+name + args[0]);
             int urgency = (Integer) args[1];
             return (new MultiChat(false, Resource.getLocString(Resource.BUNDLE_LABEL, name), urgency));
         }
