@@ -2,4 +2,4 @@
 
 Based on Amber and Purus Clients
 
-https://github.com/Ardenneslol/ArdClient/releases
+https://ardenneslol.github.io/Hafen/updater-hafen.jar
