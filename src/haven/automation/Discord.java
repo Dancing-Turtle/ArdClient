@@ -56,7 +56,6 @@ public class Discord extends ListenerAdapter implements Runnable {
             channels = new ArrayList<>();
             try {
                 JDABuilder builder = new JDABuilder(AccountType.BOT);
-               // builder.setToken("NDUyMzM1MDYzNzAzNDg2NDc0.Dkvu1Q.In7-lxo-fwDSM5i13mRhtnlbFsU");
                 builder.setToken(Resource.getLocString(Resource.BUNDLE_LABEL, Config.discordbotkey));
                 builder.addEventListener(new Discord(gui));
                 JDA jda = builder.buildBlocking();
