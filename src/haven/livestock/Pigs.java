@@ -8,7 +8,7 @@ import haven.Resource;
 import haven.Tex;
 
 public class Pigs extends Animal {
-    private int attributesRequired = columns.size() + 1;
+    private int attributesRequired = columns.size() +1;
     private static final Tex texSow = Resource.loadtex("gfx/livestockava/sow");
     private static final Tex texHog = Resource.loadtex("gfx/livestockava/hog");
 
@@ -24,7 +24,8 @@ public class Pigs extends Animal {
         x = addColumn(columns, "Hide quality:", "Hide", 5, x);
         x = addColumn(columns, "Meat quantity:", "Meat #", 6, x);
         x = addColumn(columns, "Milk quantity:", "Milk #", 7, x);
-            addColumn(columns, "X", "", 8, x);
+        x = addColumn(columns,"Truffle snout:","Snout",8,x);
+            addColumn(columns, "X", "", 9, x);
     }
 
     public Pigs(long wndid, String type) {

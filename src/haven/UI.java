@@ -51,6 +51,7 @@ public class UI {
     public final ActAudio audio = new ActAudio();
     public int beltWndId = -1;
 	public GameUI gui;
+	public int realmchat;
 
 
     {
@@ -148,6 +149,8 @@ public class UI {
 
     public void newwidget(int id, String type, int parent, Object[] pargs, Object... cargs) throws InterruptedException {
        // System.out.println("Widget ID : "+id+" Type : "+type+" Parent : "+parent);
+        if(type.contains("rchan"))
+            realmchat = id;
         if (Config.quickbelt && type.equals("wnd") && cargs[1].equals("Belt")) {
             // use custom belt window
             type = "wnd-belt";
@@ -342,22 +345,14 @@ public class UI {
     public void wdgmsg(Widget sender, String msg, Object... args) {
         int id;
         synchronized(this) {
-        //    System.out.println("Sender : "+sender+" msg : "+msg);
+          //  System.out.println("Sender : "+sender+" msg : "+msg);
             if (msg.endsWith("-identical"))
                 return;
 
             if(!rwidgets.containsKey(sender)) {
-
-               if(sender.toString().contains("Discord")){
-                   System.out.println("Found Discord Error");
-                   System.out.println("Msg contents : "+args[0]);
-                   gui.Discord.append(gui.getparent(GameUI.class).buddies.getCharName() + ":  " + args[0], Color.white);
-                   ChatUI.Channel.Message sendmsg = new ChatUI.Channel.SimpleMessage(gui.getparent(GameUI.class).buddies.getCharName() + ":  " + args[0],Color.white,0);
-                   Discord.pendingmsg = gui.getparent(GameUI.class).buddies.getCharName()+": "+args[0];
-
-               }
                 System.err.printf("Wdgmsg sender (%s) is not in rwidgets, message is %s\n", sender.getClass().getName(), msg);
-               System.out.println("Sender is : "+sender);
+                 //   System.out.println("Args:"+args[0]);
+              // System.out.println("Sender is : "+sender);
                 return;
             }
             id = rwidgets.get(sender);
@@ -369,9 +364,9 @@ public class UI {
     public void uimsg(int id, String msg, Object... args) {
         synchronized (this) {
             Widget wdg = widgets.get(id);
-
-            if(id == 55){
-                if (msg.contains("msg")) {
+            //System.out.println("id : "+id+" msg: "+msg+" widget:"+wdg.toString());
+            if(id == realmchat){
+                if (msg.contains("msg") && wdg.toString().contains("Realm")) {
                     for (Widget w = gui.chat.lchild; w != null; w = w.prev) {
                         if (w instanceof ChatUI.MultiChat) {
                             ChatUI.MultiChat chat = (ChatUI.MultiChat) w;

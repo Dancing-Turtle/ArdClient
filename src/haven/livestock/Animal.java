@@ -32,7 +32,7 @@ public abstract class Animal extends HashMap<String, Integer> {
     }
 
     public Animal(long wndid, String type) {
-        super(12);
+        super(13);
         this.wndid = wndid;
         this.type = type;
         put(Resource.getLocString(Resource.BUNDLE_LABEL, "Quality:"), null);
@@ -49,6 +49,8 @@ public abstract class Animal extends HashMap<String, Integer> {
         // sheep
         put(Resource.getLocString(Resource.BUNDLE_LABEL, "Wool quantity:"), null);
         put(Resource.getLocString(Resource.BUNDLE_LABEL, "Wool quality:"), null);
+        //pig
+        put(Resource.getLocString(Resource.BUNDLE_LABEL,"Truffle snout:"),null);
     }
 
     public static int addColumn(Map<String, Column> columns, String name, String displayName, int index, int x) {

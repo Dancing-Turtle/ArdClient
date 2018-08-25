@@ -85,6 +85,7 @@ public class Config {
     public static boolean studyalarm = Utils.getprefb("studyalarm", false);
     public static boolean errorsounds = Utils.getprefb("errorsounds", true);
     public static boolean chatsounds = Utils.getprefb("chatsounds", true);
+    public static boolean discordsounds = Utils.getprefb("discordsounds", true);
     public static double studyalarmvol = Utils.getprefd("studyalarmvol", 0.8);
     public static double sfxchipvol = Utils.getprefd("sfxchipvol", 0.9);
     public static double sfxquernvol = Utils.getprefd("sfxquernvol", 0.9);
@@ -171,7 +172,7 @@ public class Config {
     public static boolean disableelev =  Utils.getprefb("disableelev", false);
     public static String treeboxclr =  Utils.getpref("treeboxclr", "D7FF00");
     public static String chatalert =  Utils.getpref("chatalert", "Null");
-    public static String discordchannel =  Utils.getpref("discordchannel", "Null");
+  //  public static String discordchannel =  Utils.getpref("discordchannel", "Null");
     public static String discordbotkey =  Utils.getpref("discordbotkey", "Null");
     public static boolean highlightpots = Utils.getprefb("highlightpots", false);
     public static boolean bonsai = Utils.getprefb("bonsai", false);

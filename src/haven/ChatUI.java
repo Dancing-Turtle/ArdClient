@@ -65,6 +65,7 @@ import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.ReadyEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -714,6 +715,71 @@ na.put(ChatAttribute.HEARTH_SECRET, hs);
         }
     }
 
+    public static abstract class DiscordChannel extends Channel {
+        private final TextEntry in;
+        private List<String> history = new ArrayList<String>();
+        private int hpos = 0;
+        private String hcurrent;
+
+        public DiscordChannel(boolean closable) {
+            super(closable);
+            setfocusctl(true);
+            this.in = new TextEntry(0, "") {
+                public void activate(String text) {
+                    if (text.length() > 0)
+                        send(text);
+                    settext("");
+                    hpos = history.size();
+                }
+
+                public boolean keydown(KeyEvent ev) {
+                    if (ev.getKeyCode() == KeyEvent.VK_UP) {
+                        if (hpos > 0) {
+                            if (hpos == history.size())
+                                hcurrent = text;
+                            rsettext(history.get(--hpos));
+                        }
+                        return (true);
+                    } else if (ev.getKeyCode() == KeyEvent.VK_DOWN) {
+                        if (hpos < history.size()) {
+                            if (++hpos == history.size())
+                                rsettext(hcurrent);
+                            else
+                                rsettext(history.get(hpos));
+                        }
+                        return (true);
+                    } else {
+                        return (super.keydown(ev));
+                    }
+                }
+            };
+            add(this.in);
+        }
+
+        public int ih() {
+            return (sz.y - in.sz.y);
+        }
+
+        public void resize(Coord sz) {
+            super.resize(sz);
+            if (in != null) {
+                in.c = new Coord(0, this.sz.y - in.sz.y);
+                in.resize(this.sz.x);
+            }
+        }
+
+        public void send(String text) {
+            history.add(text);
+            GameUI gui = gameui();
+          //  this.append(gui.getparent(GameUI.class).buddies.getCharName() + ":  " + text, Color.white);
+           // wdgmsg("msg", text);
+            for(TextChannel loop:haven.automation.Discord.channels)
+                if (this.name().equals(loop.getName())){
+                loop.sendMessage(gui.getparent(GameUI.class).buddies.getCharName()+": "+text).queue();
+                }
+        }
+    }
+
     public static class SimpleChat extends EntryChannel {
         public final String name;
 
@@ -856,6 +922,105 @@ na.put(ChatAttribute.HEARTH_SECRET, hs);
         }
     }
 
+    public static class DiscordChat extends DiscordChannel {
+        public final int urgency;
+        protected final String name;
+        private final Map<Integer, Color> pc = new HashMap<Integer, Color>();
+
+        public class NamedMessage extends Message {
+            public final int from;
+            public final String text;
+            public final int w;
+            public final Color col;
+            private String cn;
+            private Text r = null;
+
+            public NamedMessage(int from, String text, Color col, int w) {
+                this.from = from;
+                this.text = text;
+                this.w = w;
+                this.col = col;
+            }
+
+            public Text text() {
+                BuddyWnd.Buddy b = getparent(GameUI.class).buddies.find(from);
+                String nm = (b == null) ? "???" : (b.name);
+                if ((r == null) || !nm.equals(cn)) {
+                    String tf = String.format("%s: %s", nm, text);
+                    r = fnd.render(RichText.Parser.quote(Config.chattimestamp ? timestamp(tf) : tf), w, TextAttribute.FOREGROUND, col);
+                    cn = nm;
+                }
+                return (r);
+            }
+
+            public Tex tex() {
+                return (text().tex());
+            }
+
+            public Coord sz() {
+                if (r == null)
+                    return (text().sz());
+                else
+                    return (r.sz());
+            }
+        }
+
+        public class MyMessage extends SimpleMessage {
+            public MyMessage(String text, int w) {
+                super(text, new Color(192, 192, 255), w);
+            }
+        }
+
+        public DiscordChat(boolean closable, String name, int urgency) {
+            super(closable);
+            this.name = name;
+            this.urgency = urgency;
+        }
+
+        private float colseq = 0;
+
+        private Color nextcol() {
+            return (new Color(Color.HSBtoRGB(colseq = ((colseq + (float) Math.sqrt(2)) % 1.0f), 0.5f, 1.0f)));
+        }
+
+        public Color fromcolor(int from) {
+            synchronized (pc) {
+                Color c = pc.get(from);
+                if (c == null)
+                    pc.put(from, c = nextcol());
+                return (c);
+            }
+        }
+
+        public void uimsg(String msg, Object... args) {
+            if (msg == "msg") {
+                Integer from = (Integer) args[0];
+                String line = (String) args[1];
+
+                if (from == null) {
+                    MyMessage my = new MyMessage(line, iw());
+                    append(my);
+                    save(name, my.text().text, super.getparent(GameUI.class).buddies.getCharName());
+                } else {
+                    Message cmsg = new NamedMessage(from, line, fromcolor(from), iw());
+                    append(cmsg);
+                    // if (urgency > 0)
+                    notify(cmsg, 1);
+                    //  notify(cmsg, urgency);
+                    save(name, cmsg.text().text);
+                }
+            } else {
+                super.uimsg(msg, args);
+            }
+        }
+
+        public String name() {
+            return (name);
+        }
+    }
+
+
+
     public static class PartyChat extends MultiChat {
         private long lastmsg = 0;
 
@@ -898,42 +1063,6 @@ na.put(ChatAttribute.HEARTH_SECRET, hs);
         }
     }
 
-    public static class Discord extends MultiChat {
-        private long lastmsg = 0;
-
-        public Discord() {
-            super(false, Resource.getLocString(Resource.BUNDLE_LABEL, "Discord"), 0);
-        }
-
-        public void uimsg(String msg, Object... args) {
-            if (msg == "msg") {
-                Integer from = (Integer) args[0];
-                int gobid = (Integer) args[1];
-                String line = (String) args[2];
-                Color col = Color.WHITE;
-                System.out.println("Testing uimsg Discord");
-                if (from == null) {
-                    MyMessage my = new MyMessage(line, iw());
-                    append(my);
-                    save(name, my.text().text, super.getparent(GameUI.class).buddies.getCharName());
-                } else {
-                    Message cmsg = new NamedMessage(from, line, Utils.blendcol(col, Color.WHITE, 0.5), iw());
-                    append(cmsg);
-                    save(name, cmsg.text().text);
-                    if (urgency > 0)
-                        notify(cmsg, urgency);
-
-                    long time = System.currentTimeMillis();
-                    if (Config.chatalarm && (lastmsg == 0 || (time - lastmsg) / 1000 > 50)) {
-                        Audio.play(alarmsfx, Config.chatalarmvol);
-                        lastmsg = time;
-                    }
-                }
-            } else {
-                super.uimsg(msg, args);
-            }
-        }
-    }
 
     public static class PrivChat extends EntryChannel {
         private final int other;
@@ -1120,8 +1249,8 @@ na.put(ChatAttribute.HEARTH_SECRET, hs);
                     g.chcolor(255, 255, 255, 255);
                     if ((ch.rname == null) || !ch.rname.text.equals(ch.chan.name()) || (ch.urgency != ch.chan.urgency)) {
                      //   System.out.println("draw check on urgency "+ch.rname.text);
-                        System.out.println("draw check on urgency "+ch.chan.name());
-                        System.out.println("draw check on urgency "+ch.urgency);
+                     //   System.out.println("draw check on urgency "+ch.chan.name());
+                     //   System.out.println("draw check on urgency "+ch.urgency);
                         ch.rname = nf[ch.urgency = ch.chan.urgency].render(ch.chan.name());
                     }
                     g.aimage(ch.rname.tex(), new Coord(sz.x / 2, y + 8), 0.5, 0.5);
@@ -1224,11 +1353,23 @@ na.put(ChatAttribute.HEARTH_SECRET, hs);
             this.chan = chan;
             this.msg = msg;
             this.chnm = chansel.nf[0].render(chan.name());
-            System.out.println("Channel sel : "+chnm.text);
-            System.out.println("Channel sel : "+chan.name());
-            System.out.println("Channel sel : "+chansel.nf[0].toString());
+           // System.out.println("Channel sel : "+chnm.text);
+            //System.out.println("Channel sel : "+chan.name());
+            //System.out.println("Channel sel : "+chansel.nf[0].toString());
+try {
+    if(haven.automation.Discord.channels != null) {
+        for (TextChannel channel : haven.automation.Discord.channels) {
+            if (channel.getName().equals(chan.name())) {
+                if (Config.discordsounds) {
+                    Audio.play(notifsfx);
+                    break;
+                }
+            }
+        }
+    }
+}catch(NullPointerException discordnull){}
 
-            if(chan.name().equals(Resource.getLocString(Resource.BUNDLE_LABEL, "Discord")) || chan.name().equals(Resource.getLocString(Resource.BUNDLE_LABEL, Config.chatalert)) || chan.name().equals(Resource.getLocString(Resource.BUNDLE_LABEL, "Area Chat"))){
+            if(chan.name().equals(Resource.getLocString(Resource.BUNDLE_LABEL, Config.chatalert)) || chan.name().equals(Resource.getLocString(Resource.BUNDLE_LABEL, "Area Chat"))){
                 if(Config.chatsounds)
                 Audio.play(notifsfx);
             }

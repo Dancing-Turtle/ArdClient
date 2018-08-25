@@ -28,7 +28,6 @@ package haven;
 
 import static haven.Inventory.invsq;
 
-import haven.automation.Discord;
 import haven.automation.ErrorSysMsgCallback;
 import haven.automation.PickForageable;
 import haven.livestock.LivestockManager;
@@ -81,7 +80,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public WItem vhand;
     public ChatUI chat;
     public ChatUI.Channel syslog;
-    public ChatUI.Channel Discord;
     public double prog = -1;
     private boolean afk = false;
     @SuppressWarnings("unchecked")
@@ -100,7 +98,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public static boolean trackon = false;
     public static boolean partyperm = false;
     public boolean crimeautotgld = false;
-    public static boolean discordconnected = false;
     public boolean trackautotgld = false;
     public FBelt fbelt;
     public CraftHistoryBelt histbelt;
@@ -109,6 +106,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public LivestockManager livestockwnd;
     public GameUI gui = null;
     public ItemClickCallback itemClickCallback;
+    public static boolean discordconnected;
 
 
 
@@ -206,10 +204,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             }
         }, new Coord(HavenPanel.w / 2 - 300 / 2, umpanel.sz.y));
         syslog = chat.add(new ChatUI.Log(Resource.getLocString(Resource.BUNDLE_LABEL, "System")));
-        Discord = chat.add(new ChatUI.Discord());
-       // ui.rwidgets.put(new ChatUI.Discord(),150);
-      //  Discord = chat.add(new ChatUI.MultiChat(false,"Discord",2));
-       // new Thread(new Discord(gui)).start();
         opts = add(new OptWnd());
         opts.hide();
         zerg = add(new Zergwnd(), 187, 50);

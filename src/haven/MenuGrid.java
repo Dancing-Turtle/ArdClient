@@ -28,11 +28,9 @@ package haven;
 
 import haven.Resource.AButton;
 import haven.automation.*;
+import haven.automation.BeltDrink;
 import haven.automation.Discord;
-import haven.purus.BarrelFiller;
-import haven.purus.Farmer;
-import haven.purus.StockpileFiller;
-import haven.purus.TroughFiller;
+import haven.purus.*;
 import haven.automation.PepperBot;
 
 import java.awt.*;
@@ -56,6 +54,7 @@ public class MenuGrid extends Widget {
     private boolean recons = true;
     private Map<Character, PagButton> hotmap = new HashMap<>();
     private boolean togglestuff = true;
+    public Thread Discord;
 
     @RName("scm")
     public static class $_ implements Factory {
@@ -470,7 +469,6 @@ public class MenuGrid extends Widget {
         if (ad[1].equals("coal")) {
             Thread t = new Thread(new AddCoalToSmelter(gui, Integer.parseInt(ad[2])), "AddCoalToSmelter");
             t.start();
-
         } else if (ad[1].equals("branchoven")) {
             Thread t = new Thread(new AddBranchesToOven(gui, Integer.parseInt(ad[2])), "AddBranchesToOven");
             t.start();
@@ -568,6 +566,19 @@ public class MenuGrid extends Widget {
         } else if (ad[1].equals("CountGobs")) {
             new Thread(new CountGobs(gui), "CountGobs").start();
         } else if (ad[1].equals("Discord")) {
+            if (GameUI.discordconnected) {
+                Discord.interrupt();
+                GameUI.discordconnected = false;
+                BotUtils.sysMsg("Discord Disconnected",Color.white);
+                for(int i=0;i<15;i++) {
+                    for (Widget w = gui.chat.lchild; w != null; w = w.prev) {
+                        if (w instanceof ChatUI.DiscordChat) {
+                            w.destroy();
+                        }
+                    }
+                }
+            }
+            else
             new Thread(new Discord(gui)).start();
         } else if (ad[1].equals("TakeTrays")) {
             new Thread(new TakeTrays(gui), "TakeTrays").start();
@@ -708,9 +719,10 @@ public class MenuGrid extends Widget {
                 gui.trackautotgld = true;
             }
             if(Config.autoconnectdiscord && !GameUI.discordconnected) {
-                if (Resource.getLocString(Resource.BUNDLE_LABEL, Config.discordbotkey) != null && Resource.getLocString(Resource.BUNDLE_LABEL, Config.discordchannel) != null) {
-                    new Thread(new Discord(gui)).start();
-                    gui.discordconnected = true;
+                if (Resource.getLocString(Resource.BUNDLE_LABEL, Config.discordbotkey) != null) {
+                   Discord =  new Thread(new Discord(gui));
+                   Discord.start();
+                   gui.discordconnected = true;
                 }
             }
             if (Config.enablecrime && !GameUI.crimeon) {

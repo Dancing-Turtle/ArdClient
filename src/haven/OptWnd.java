@@ -578,6 +578,17 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
+        appender.add(new CheckBox("Enable discord chat alert sounds") {
+            {
+                a = Config.discordsounds;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("discordsounds", val);
+                Config.discordsounds = val;
+                a = val;
+            }
+        });
         appender.add(new CheckBox("Enable error sounds") {
             {
                 a = Config.errorsounds;
@@ -1502,11 +1513,11 @@ public class OptWnd extends Window {
 
             public void set(boolean val) {
                 Utils.setprefb("autoconnectdiscord", val);
-                Config.enabletracking = val;
+                Config.autoconnectdiscord = val;
                 a = val;
             }
         });
-        appender.addRow(new Label("Enter Discord Channel ID"),
+       /* appender.addRow(new Label("Enter Discord Channel ID"),
                 new TextEntry(150, Config.discordchannel) {
                     @Override
                     public boolean type(char c, KeyEvent ev) {
@@ -1521,9 +1532,9 @@ public class OptWnd extends Window {
                         return ret;
                     }
                 }
-        );
+        );*/
         appender.addRow(new Label("Enter Discord Bot Secret Key"),
-                new TextEntry(150, Config.discordbotkey) {
+                new TextEntry(350, Config.discordbotkey) {
                     @Override
                     public boolean type(char c, KeyEvent ev) {
                         if (!parent.visible)

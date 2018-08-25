@@ -302,12 +302,13 @@ public class LivestockManager extends Window {
         }
         pendingAnimal.put(name, val);
         pendingAnimal.attributeResolved();
-
+        System.out.println("attributes status : "+pendingAnimal.hasAllAttributes()+" size : "+pendingAnimal.size());
 
 
 
 
         if (pendingAnimal.hasAllAttributes()) {
+            System.out.println("has all attributes");
             combined = false;
             Panel p = getAnimalPanel(type);
 
