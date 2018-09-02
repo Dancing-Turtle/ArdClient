@@ -180,7 +180,6 @@ public class Discord extends ListenerAdapter implements Runnable {
             System.out.println("Channelfinal = : "+channelfinal.getName());
 
 
-
             String[] SplitMessage = msg.split(" ");
 
             boolean bot = author.isBot();

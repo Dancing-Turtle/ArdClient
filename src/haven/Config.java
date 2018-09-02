@@ -375,6 +375,7 @@ public class Config {
         put("Collect bones", new CheckListboxItem("Collect bones", Resource.BUNDLE_FLOWER));
         put("Butcher", new CheckListboxItem("Butcher", Resource.BUNDLE_FLOWER));
         put("Giddyup!", new CheckListboxItem("Giddyup!", Resource.BUNDLE_FLOWER));
+        put("Cargo", new CheckListboxItem("Cargo", Resource.BUNDLE_FLOWER));
         put("Sleep", new CheckListboxItem("Sleep", Resource.BUNDLE_FLOWER));
         put("Shear wool", new CheckListboxItem("Shear wool", Resource.BUNDLE_FLOWER));
         put("Harvest wax", new CheckListboxItem("Harvest wax", Resource.BUNDLE_FLOWER));

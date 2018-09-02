@@ -1132,15 +1132,7 @@ na.put(ChatAttribute.HEARTH_SECRET, hs);
             return (new SimpleChat(false, name));
         }
     }
-
-    @RName("dchat")
-    public static class $DChat implements Factory {
-        public Widget create(UI ui, Object[] args) {
-            System.out.println("triggered dchat");
-            return (new Discord());
-        }
-    }
-
+    
     @RName("mchat")
     public static class $MChat implements Factory {
         public Widget create(UI ui, Object[] args) {

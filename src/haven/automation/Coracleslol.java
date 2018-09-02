@@ -11,6 +11,7 @@ public class Coracleslol implements Runnable {
     public GameUI gui;
     public boolean havecoracle;
     public WItem coracle;
+    public Gob coraclegob;
     public Coracleslol(GameUI gui) {
         this.gui = gui;
     }
@@ -24,7 +25,9 @@ public class Coracleslol implements Runnable {
         if(coracle != null)
             havecoracle = true;
         if(!havecoracle){
-            Gob coraclegob = BotUtils.findObjectByNames(10, "gfx/terobjs/vehicle/coracle");
+            try {
+                coraclegob = BotUtils.findObjectByNames(10, "gfx/terobjs/vehicle/coracle");
+            }catch(NullPointerException ip){}
             if (coraclegob == null){
                 BotUtils.sysMsg("Coracle not found.",Color.white);
                 return;

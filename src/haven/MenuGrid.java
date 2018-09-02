@@ -54,7 +54,7 @@ public class MenuGrid extends Widget {
     private boolean recons = true;
     private Map<Character, PagButton> hotmap = new HashMap<>();
     private boolean togglestuff = true;
-    public Thread Discord;
+    public boolean discordconnected;
 
     @RName("scm")
     public static class $_ implements Factory {
@@ -566,10 +566,10 @@ public class MenuGrid extends Widget {
         } else if (ad[1].equals("CountGobs")) {
             new Thread(new CountGobs(gui), "CountGobs").start();
         } else if (ad[1].equals("Discord")) {
-            if (GameUI.discordconnected) {
-                Discord.interrupt();
-                GameUI.discordconnected = false;
+            if (discordconnected) {
+                discordconnected = false;
                 BotUtils.sysMsg("Discord Disconnected",Color.white);
+                Discord.jdalogin.shutdownNow();
                 for(int i=0;i<15;i++) {
                     for (Widget w = gui.chat.lchild; w != null; w = w.prev) {
                         if (w instanceof ChatUI.DiscordChat) {
@@ -718,11 +718,10 @@ public class MenuGrid extends Widget {
                 wdgmsg("act", new Object[]{"tracking"});
                 gui.trackautotgld = true;
             }
-            if(Config.autoconnectdiscord && !GameUI.discordconnected) {
+            if(Config.autoconnectdiscord && !discordconnected) {
                 if (Resource.getLocString(Resource.BUNDLE_LABEL, Config.discordbotkey) != null) {
-                   Discord =  new Thread(new Discord(gui));
-                   Discord.start();
-                   gui.discordconnected = true;
+                   new Thread(new Discord(gui)).start();
+                   discordconnected = true;
                 }
             }
             if (Config.enablecrime && !GameUI.crimeon) {

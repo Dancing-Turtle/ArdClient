@@ -7,18 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 
-import haven.Button;
-import haven.Coord;
-import haven.FlowerMenu;
-import haven.GItem;
-import haven.GameUI;
-import haven.Gob;
-import haven.HavenPanel;
-import haven.IMeter;
-import haven.Inventory;
-import haven.Label;
-import haven.Widget;
-import haven.Window;
+import haven.*;
 import haven.automation.BeltDrink;
 import haven.purus.pbot.PBotAPI;
 
@@ -157,7 +146,7 @@ public class SeedCropFarmer extends Window implements Runnable {
 							}
 						}
 					}
-					}catch(NullPointerException q){}
+					}catch(NullPointerException | Loading | Resource.LoadException q){}
 			} else if (replantcontainer) {
 				try {
 					GItem item = null;
@@ -251,7 +240,7 @@ public class SeedCropFarmer extends Window implements Runnable {
 							}
 						}
 					}
-				} catch (NullPointerException x) {
+				} catch (NullPointerException | Loading | Resource.LoadException x) {
 				}
 			}
 		else {
@@ -290,7 +279,7 @@ public class SeedCropFarmer extends Window implements Runnable {
 							}
 						}
 					}
-				} catch (NullPointerException p) { }
+				} catch (NullPointerException | Loading | Resource.LoadException p) { }
 			}
 
 

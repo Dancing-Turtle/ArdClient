@@ -106,7 +106,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public LivestockManager livestockwnd;
     public GameUI gui = null;
     public ItemClickCallback itemClickCallback;
-    public static boolean discordconnected;
 
 
 
