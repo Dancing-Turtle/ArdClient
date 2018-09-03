@@ -9,7 +9,6 @@ import haven.Window;
 import haven.purus.BotUtils;
 import haven.purus.pbot.PBotAPI;
 import haven.res.ui.tt.q.qbuff.QBuff;
-import javafx.beans.binding.When;
 import haven.Inventory;
 
 import java.awt.*;

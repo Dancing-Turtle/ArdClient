@@ -27,15 +27,16 @@ public class PepperBotRun extends Window implements Runnable {
 	private boolean harvest = false;
 	private boolean destroy = false;
 	private boolean replant = false;
+	public int x,y;
 	private Gob chest, water, rowmarker, cauldron, barrel, hfire;
 	private final int rowgap = 4200;
-	private final int northtravel = 20000;
-	private int section;
+	private final int travel = 20000;
+	private int section, direction;
 	public Widget craftall;
 	private Boolean boilmode = false;
 	private Coord finalloc;
 
-	public PepperBotRun(Coord rc1, Coord rc2, boolean harvest, boolean destroy, boolean replant, Gob barrel, Gob water, Gob cauldron, int section, Gob hfire) {
+	public PepperBotRun(Coord rc1, Coord rc2, boolean harvest, boolean destroy, boolean replant, Gob barrel, Gob water, Gob cauldron, int section, Gob hfire, int direction) {
 		super(new Coord(120, 65), "Trellis Farmer");
 		this.rc1 = rc1;
 		this.rc2 = rc2;
@@ -43,6 +44,7 @@ public class PepperBotRun extends Window implements Runnable {
 		this.destroy = destroy;
 		this.replant = replant;
 		this.water = water;
+		this.direction = direction;
 		//this.rowmarker = rowmarker;
 		this.hfire = hfire;
 		this.cauldron = cauldron;
@@ -179,16 +181,44 @@ public class PepperBotRun extends Window implements Runnable {
 							if (section == 2) {
 								Gob player = gui.map.player();
 								Coord location = player.rc.floor(posres);
-								int x = location.x;
-								int y = location.y - rowgap;
+								if(direction ==1) {
+									 x = location.x;
+									 y = location.y - rowgap;
+								}
+								if(direction ==2) {
+									x = location.x;
+									y = location.y + rowgap;
+								}
+								if(direction ==3) {
+									x = location.x + rowgap;
+									y = location.y;
+								}
+								if(direction ==4) {
+									x = location.x - rowgap;
+									y = location.y;
+								}
 								finalloc = new Coord(x, y);
 								gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
 								BotUtils.sleep(2000);
 							}else if (section != 1 && section != 2){
 								Gob player = gui.map.player();
 								Coord location = player.rc.floor(posres);
-								int x = location.x;
-								int y = location.y - ((rowgap*section)-rowgap);
+								if(direction==1) {
+									x = location.x;
+									y = location.y - ((rowgap * section) - rowgap);
+								}
+								if(direction==2) {
+									x = location.x;
+									y = location.y + ((rowgap * section) - rowgap);
+								}
+								if(direction==3) {
+									x = location.x+ ((rowgap * section) - rowgap);
+									y = location.y;
+								}
+								if(direction==4) {
+									x = location.x- ((rowgap * section) - rowgap);
+									y = location.y;
+								}
 								finalloc = new Coord(x, y);
 								gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
 								BotUtils.sleep(6000);
@@ -297,8 +327,22 @@ public class PepperBotRun extends Window implements Runnable {
 					BotUtils.sleep(2000);
 					Gob player = gui.map.player();
 					Coord location = player.rc.floor(posres);
-					int x = location.x + northtravel;
-					int y = location.y;
+					if(direction==1) {
+						x = location.x + travel;
+						y = location.y;
+					}
+					if(direction==2) {
+						x = location.x - travel;
+						y = location.y;
+					}
+					if(direction==3) {
+						x = location.x;
+						y = location.y + travel;
+					}
+					if(direction==4) {
+						x = location.x;
+						y = location.y - travel;
+					}
 					finalloc = new Coord(x, y);
 					gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
 					BotUtils.sleep(5000);

@@ -1132,7 +1132,7 @@ na.put(ChatAttribute.HEARTH_SECRET, hs);
             return (new SimpleChat(false, name));
         }
     }
-    
+
     @RName("mchat")
     public static class $MChat implements Factory {
         public Widget create(UI ui, Object[] args) {

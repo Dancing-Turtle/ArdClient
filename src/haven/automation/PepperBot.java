@@ -18,18 +18,37 @@ public class PepperBot extends Window implements AreaSelectCallback, GobSelectCa
 
 	private Coord a, b;
 	private boolean containeronly = false, replant = true, replantcontainer = false;
+	private static final Text.Foundry infof = new Text.Foundry(Text.sans, 10).aa(true);
 	private CheckBox replantChkbox, fillContainerChkbox, replantBarrelChkbox;
 	private Gob barrel, hfire, rowmarker, water, cauldron, htable;
 	public Thread testthread;
 	private final int rowgap = 4200;
 	private final int northtravel = 20000;
 	private int section = 1;
+	private int direction = 1;
 	public boolean allowrun;
+	private final Label lblc4, lblc3;
+	private final int travel = 20000;
+	public int xx, yy;
 
 	public PepperBot(GameUI gui) {
 
-		super(new Coord(180, 150), "Pepper Bot");
+		super(new Coord(180, 260), "Pepper Bot");
+
 		int y = 0;
+		final Label lbl5 = new Label("Setup Selected", infof);
+		add(lbl5, new Coord(20, y));
+		y+=15;
+		lblc4 = new Label("Tables West-->East", Text.num12boldFnd, Color.WHITE);
+		add(lblc4, new Coord(20, y));
+		y+=35;
+		final Label lbl6 = new Label("Section Selected", infof);
+		add(lbl6, new Coord(20, y));
+		y+=15;
+		lblc3 = new Label(section+"", Text.num12boldFnd, Color.WHITE);
+		add(lblc3, new Coord(20, y));
+		y+=25;
+
 		Button trelHarBtn = new Button(140, "Trellis harvest") {
 			@Override
 			public void click() {
@@ -57,7 +76,7 @@ public class PepperBot extends Window implements AreaSelectCallback, GobSelectCa
 
 
 				if (a != null && b != null && allowrun) {
-					PepperBotRun bf = new PepperBotRun(a, b, true, false, false, barrel, water, cauldron, section,hfire);
+					PepperBotRun bf = new PepperBotRun(a, b, true, false, false, barrel, water, cauldron, section,hfire,direction);
 
 					gameui().add(bf, new Coord(gameui().sz.x / 2 - bf.sz.x / 2, gameui().sz.y / 2 - bf.sz.y / 2 - 200));
 					new Thread(bf).start();
@@ -85,9 +104,29 @@ public class PepperBot extends Window implements AreaSelectCallback, GobSelectCa
 				if (section>4)
 					section = 1;
 				BotUtils.sysMsg("Section is now : "+section,Color.white);
+				lblc3.settext(section+"");
 			}
 		};
 		add(sectionSelBtn, new Coord(20, y));
+		y += 35;
+		Button sectionDirBtn = new Button(140, "Direction") {
+			@Override
+			public void click() {
+				direction++;
+				if (direction>4)
+					direction = 1;
+				if(direction == 1)
+					lblc4.settext("Tables West --> East");
+				if(direction == 2)
+					lblc4.settext("Tables East --> West");
+				if(direction == 3)
+					lblc4.settext("Tables North --> South");
+				if(direction == 4)
+					lblc4.settext("Tables South --> North");
+				//BotUtils.sysMsg("Section is now : "+section,Color.white);
+			}
+		};
+		add(sectionDirBtn, new Coord(20, y));
 		y += 35;
 		Button RunBtn = new Button(140, "Run Test") {
 			@Override
@@ -147,6 +186,27 @@ public class PepperBot extends Window implements AreaSelectCallback, GobSelectCa
 		BotUtils.sysMsg("Started", Color.white);
 		GameUI gui = gameui();
 		UI ui = gameui().ui;
+	Gob player = gui.map.player();
+	Coord location = player.rc.floor(posres);
+
+	if(direction==1) {
+		xx = location.x;
+		yy = location.y - ((rowgap * section) - rowgap);
+	}
+	if(direction==2) {
+		xx = location.x;
+		yy = location.y + ((rowgap * section) - rowgap);
+	}
+	if(direction==3) {
+		xx = location.x + ((rowgap * section) - rowgap);
+		yy = location.y;
+	}
+	if(direction==4) {
+		xx = location.x - ((rowgap * section) - rowgap);
+		yy = location.y;
+	}
+	Coord finalloc = new Coord(xx, yy);
+	gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
 		//ui.rwidgets.
 //	gui.map.wdgmsg("click", hfire.sc, hfire.rc.floor(posres), 1, 0, 0, (int) hfire.id, hfire.rc.floor(posres), 0, -1);
 
