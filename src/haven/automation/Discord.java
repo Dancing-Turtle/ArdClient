@@ -31,12 +31,10 @@ public class Discord extends ListenerAdapter implements Runnable {
 
     public ChatUI.MultiChat Discord;
     public static int delay = 2000;
-    public static String pendingmsg;
     public static boolean readytogo;
     public static MessageChannel channelfinal;
     public JDA jda;
     public MessageChannel channel;
-    public String Camelot;
     public static JDA jdalogin;
     public static List<TextChannel> channels, tempchannels;
     public int iw;

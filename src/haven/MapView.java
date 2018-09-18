@@ -85,6 +85,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     public static Gob shooanimal;
     public CoalToSmelters coaltosmelters;
     public PepperBot pepperbot;
+    public FlaxBot flaxbot;
     public DestroyArea destroyarea;
     public MinerAlert mineralert;
     public CraftAllBot craftbot;

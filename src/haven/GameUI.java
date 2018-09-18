@@ -28,6 +28,7 @@ package haven;
 
 import static haven.Inventory.invsq;
 
+import haven.automation.Discord;
 import haven.automation.ErrorSysMsgCallback;
 import haven.automation.PickForageable;
 import haven.livestock.LivestockManager;
@@ -304,6 +305,8 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             cur = show(tvis = true) ? 0 : 1;
         }
 
+
+
         public <T extends Widget> T add(T child) {
             super.add(child);
             pack();
@@ -486,6 +489,19 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             vhand = add(new ItemDrag(fi.dc, fi.item));
             if (map.lastItemactClickArgs != null)
                 map.iteminteractreplay();
+        }
+    }
+    public void DiscordToggle(){
+        if(Discord.jdalogin != null) {
+            BotUtils.sysMsg("Discord Disconnected",Color.white);
+            Discord.jdalogin.shutdownNow();
+            for(int i=0;i<15;i++) {
+                for (Widget w = chat.lchild; w != null; w = w.prev) {
+                    if (w instanceof ChatUI.DiscordChat) {
+                        w.destroy();
+                    }
+                }
+            }
         }
     }
 

@@ -3,13 +3,12 @@ package haven.purus;
 import static haven.OCache.posres;
 
 import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
+import java.util.*;
 
 import haven.*;
 import haven.automation.BeltDrink;
 import haven.purus.pbot.PBotAPI;
+import haven.res.ui.tt.q.qbuff.QBuff;
 
 public class SeedCropFarmer extends Window implements Runnable {
 
@@ -111,9 +110,25 @@ public class SeedCropFarmer extends Window implements Runnable {
 			// Replant
 			if (replant) {
 				try {
-					GItem item = null;
-					while (BotUtils.getItemAtHand() == null) {
-						Inventory inv = BotUtils.playerInventory();
+                    while (BotUtils.getItemAtHand() == null) {
+                        while(gui.maininv.getItemPartial("seed") == null)
+							BotUtils.sleep(10);
+                        WItem flax = gui.maininv.getItemPartial("seed");
+                        GItem flax2 = flax.item;
+                        java.util.List<WItem> items = gui.maininv.getIdenticalItems((flax2));
+                        sort(items);
+                        for (WItem seeds : items) {
+                            GItem item = seeds.item;
+                            if (BotUtils.getAmount(item) >= 5) {
+                                //BotUtils.sysLogAppend("Replanting flax of quality : " + item.quality().q, "white");
+                                BotUtils.takeItem(item);
+                                break;
+                            }
+                        }
+                    }
+					//GItem item = null;
+
+						/*Inventory inv = BotUtils.playerInventory();
 						for (Widget w = inv.child; w != null; w = w.next) {
 							if (w instanceof GItem && ((GItem) w).resource().name.equals(seedName) && (!seedName.contains("seed") || BotUtils.getAmount((GItem) w) >= 5)) {
 								while ((GItem) w == null) {
@@ -124,8 +139,8 @@ public class SeedCropFarmer extends Window implements Runnable {
 							}
 						}
 						if (item != null)
-							BotUtils.takeItem(item);
-					}
+							BotUtils.takeItem(item);*/
+
 					while (BotUtils.getItemAtHand() == null)
 						BotUtils.sleep(10);
 					// Plant the seed from hand
@@ -135,11 +150,15 @@ public class SeedCropFarmer extends Window implements Runnable {
 					BotUtils.mapInteractClick(0);
 					while (BotUtils.findNearestStageCrop(5, 0, cropName) == null || (BotUtils.getItemAtHand() != null && (seedName.contains("seed") && amount == BotUtils.getAmount(BotUtils.getItemAtHand())))) {
 						BotUtils.sleep(10);
+					//	BotUtils.sysLogAppend("in weird sleep loop","white");
 					}
+
 					BotUtils.dropItem(0);
+
 					for (Widget w = BotUtils.playerInventory().child; w != null; w = w.next) {
+						BotUtils.sysLogAppend("in drop loop","white");
 						if (w instanceof GItem && ((GItem) w).resource().name.equals(seedName)) {
-							item = (GItem) w;
+							GItem item = (GItem) w;
 							try {
 								item.wdgmsg("drop", Coord.z);
 							} catch (Exception e) {
@@ -149,99 +168,99 @@ public class SeedCropFarmer extends Window implements Runnable {
 					}catch(NullPointerException | Loading | Resource.LoadException q){}
 			} else if (replantcontainer) {
 				try {
-					GItem item = null;
 					while (BotUtils.getItemAtHand() == null) {
-						Inventory inv = BotUtils.playerInventory();
-						for (Widget w = inv.child; w != null; w = w.next) {
-							if (w instanceof GItem && ((GItem) w).resource().name.equals(seedName) && (!seedName.contains("seed") || BotUtils.getAmount((GItem) w) >= 5)) {
-								while ((GItem) w == null) {
-									BotUtils.sleep(10);
-								}
-								item = (GItem) w;
+						while(gui.maininv.getItemPartial("seed") == null)
+							BotUtils.sleep(10);
+						WItem flax = gui.maininv.getItemPartial("seed");
+						GItem flax2 = flax.item;
+						java.util.List<WItem> items = gui.maininv.getIdenticalItems((flax2));
+						sort(items);
+						for (WItem seeds : items) {
+							GItem item = seeds.item;
+							if (BotUtils.getAmount(item) >= 5) {
+								//BotUtils.sysLogAppend("Replanting flax of quality : " + item.quality().q, "white");
+								BotUtils.takeItem(item);
 								break;
 							}
 						}
-						if (item != null)
-							BotUtils.takeItem(item);
-
-					}
-					while (BotUtils.getItemAtHand() == null)
-						BotUtils.sleep(10);
-
-					// Plant the seed from hand
-					int amount = 0;
-					if (seedName.contains("seed"))
-						BotUtils.getAmount(BotUtils.getItemAtHand());
-					BotUtils.mapInteractClick(0);
-					while (BotUtils.findNearestStageCrop(5, 0, cropName) == null || (BotUtils.getItemAtHand() != null && (seedName.contains("seed") && amount == BotUtils.getAmount(BotUtils.getItemAtHand())))) {
-						BotUtils.sleep(10);
 					}
 
+						while (BotUtils.getItemAtHand() == null)
+							BotUtils.sleep(10);
 
-					// Merge seed from hand into inventory or put it in inventory
-					if(!seedName.contains("carrot")) {
-						for (Widget w = BotUtils.playerInventory().child; w != null; w = w.next) {
-							if (w instanceof GItem && ((GItem) w).resource().name.equals(seedName)) {
-								item = (GItem) w;
-								if (BotUtils.getItemAtHand() != null && BotUtils.getAmount(item) < 50) {
-									int handAmount = BotUtils.getAmount(BotUtils.getItemAtHand());
-									try {
-										item.wdgmsg("itemact", 0);
-									} catch (Exception e) {
+						// Plant the seed from hand
+						int amount = 0;
+						if (seedName.contains("seed"))
+							BotUtils.getAmount(BotUtils.getItemAtHand());
+						BotUtils.mapInteractClick(0);
+						while (BotUtils.findNearestStageCrop(5, 0, cropName) == null || (BotUtils.getItemAtHand() != null && (seedName.contains("seed") && amount == BotUtils.getAmount(BotUtils.getItemAtHand())))) {
+							BotUtils.sleep(10);
+						}
+
+
+						// Merge seed from hand into inventory or put it in inventory
+						if (!seedName.contains("carrot")) {
+							for (Widget w = BotUtils.playerInventory().child; w != null; w = w.next) {
+								if (w instanceof GItem && ((GItem) w).resource().name.equals(seedName)) {
+									GItem item = (GItem) w;
+									if (BotUtils.getItemAtHand() != null && BotUtils.getAmount(item) < 50) {
+										int handAmount = BotUtils.getAmount(BotUtils.getItemAtHand());
+										try {
+											item.wdgmsg("itemact", 0);
+										} catch (Exception e) {
+										}
+										while (BotUtils.getItemAtHand() != null && BotUtils.getAmount(BotUtils.getItemAtHand()) == handAmount)
+											BotUtils.sleep(50);
 									}
-									while (BotUtils.getItemAtHand() != null && BotUtils.getAmount(BotUtils.getItemAtHand()) == handAmount)
-										BotUtils.sleep(50);
 								}
 							}
 						}
-					}
-					if (BotUtils.getItemAtHand() != null) {
-						Coord slot = BotUtils.getFreeInvSlot(BotUtils.playerInventory());
-						if (slot != null) {
-							int freeSlots = BotUtils.invFreeSlots();
-							BotUtils.dropItemToInventory(slot, BotUtils.playerInventory());
-							while (BotUtils.getItemAtHand() != null)
-								BotUtils.sleep(50);
-						}
-					}
-					if (BotUtils.invFreeSlots() == 0) {
-						if (BotUtils.getItemAtHand() != null)
-							BotUtils.dropItem(0);
-						BotUtils.pfRightClick(barrel, 0);
-						if (barrel.getres().basename().contains("barrel"))
-						BotUtils.waitForWindow("Barrel");
-						else
-							BotUtils.waitForWindow("Trough");
 						if (BotUtils.getItemAtHand() != null) {
-							gameui().map.wdgmsg("itemact", Coord.z, barrel.rc.floor(posres), 0, 0, (int) barrel.id,
-									barrel.rc.floor(posres), 0, -1);
-							int i = 0;
-							while (BotUtils.getItemAtHand() != null) {
-								if (i == 60000)
-									break;
-								BotUtils.sleep(10);
-								i++;
+							Coord slot = BotUtils.getFreeInvSlot(BotUtils.playerInventory());
+							if (slot != null) {
+								int freeSlots = BotUtils.invFreeSlots();
+								BotUtils.dropItemToInventory(slot, BotUtils.playerInventory());
+								while (BotUtils.getItemAtHand() != null)
+									BotUtils.sleep(50);
 							}
 						}
-						while (BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), Arrays.asList(seedName)).size() != 0) {
-							if (stopThread)
-								break;
-							item = BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), Arrays.asList(seedName)).get(0).item;
-							BotUtils.takeItem(item);
+						if (BotUtils.invFreeSlots() == 0) {
+							if (BotUtils.getItemAtHand() != null)
+								BotUtils.dropItem(0);
+							BotUtils.pfRightClick(barrel, 0);
+							if (barrel.getres().basename().contains("barrel"))
+								BotUtils.waitForWindow("Barrel");
+							else
+								BotUtils.waitForWindow("Trough");
+							if (BotUtils.getItemAtHand() != null) {
+								gameui().map.wdgmsg("itemact", Coord.z, barrel.rc.floor(posres), 0, 0, (int) barrel.id,
+										barrel.rc.floor(posres), 0, -1);
+								int i = 0;
+								while (BotUtils.getItemAtHand() != null) {
+									if (i == 60000)
+										break;
+									BotUtils.sleep(10);
+									i++;
+								}
+							}
+							while (BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), Arrays.asList(seedName)).size() != 0) {
+								if (stopThread)
+									break;
+								GItem item = BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), Arrays.asList(seedName)).get(0).item;
+								BotUtils.takeItem(item);
 
-							gameui().map.wdgmsg("itemact", Coord.z, barrel.rc.floor(posres), 0, 0, (int) barrel.id,
-									barrel.rc.floor(posres), 0, -1);
-							int i = 0;
-							while (BotUtils.getItemAtHand() != null) {
-								if (i == 60000)
-									break;
-								BotUtils.sleep(10);
-								i++;
+								gameui().map.wdgmsg("itemact", Coord.z, barrel.rc.floor(posres), 0, 0, (int) barrel.id,
+										barrel.rc.floor(posres), 0, -1);
+								int i = 0;
+								while (BotUtils.getItemAtHand() != null) {
+									if (i == 60000)
+										break;
+									BotUtils.sleep(10);
+									i++;
+								}
 							}
 						}
-					}
-				} catch (NullPointerException | Loading | Resource.LoadException x) {
-				}
+				} catch (NullPointerException | Loading | Resource.LoadException x) { }
 			}
 		else {
 				try {
@@ -279,11 +298,9 @@ public class SeedCropFarmer extends Window implements Runnable {
 							}
 						}
 					}
-				} catch (NullPointerException | Loading | Resource.LoadException p) { }
-			}
-
-
-
+						} catch(NullPointerException | Loading | Resource.LoadException p){
+						}
+					}
 			cropsHarvested++;
 			lblProg.settext(cropsHarvested + "/" + totalCrops);
 		}
@@ -358,6 +375,21 @@ public class SeedCropFarmer extends Window implements Runnable {
 			} else
 				return (a.rc.floor().x < b.rc.floor().x) ? -1 : (a.rc.floor().x > b.rc.floor().x) ? 1 : 0;
 		}
+	}
+
+	public void sort (List< WItem > items) {
+		Collections.sort(items, (a, b) -> {
+			QBuff aq = a.item.quality();
+			QBuff bq = b.item.quality();
+			if (aq == null || bq == null)
+				return 0;
+			else if (aq.q == bq.q)
+				return 0;
+			else if (aq.q > bq.q)
+				return -1;
+			else
+				return 1;
+		});
 	}
 
 	public void stop() {

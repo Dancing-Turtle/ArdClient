@@ -7,10 +7,13 @@ import haven.Window;
 import haven.purus.BotUtils;
 import haven.purus.SeedCropFarmer;
 import haven.automation.PepperBotRun;
+import haven.res.ui.tt.q.qbuff.QBuff;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 import static haven.OCache.posres;
 
@@ -20,7 +23,7 @@ public class PepperBot extends Window implements AreaSelectCallback, GobSelectCa
 	private boolean containeronly = false, replant = true, replantcontainer = false;
 	private static final Text.Foundry infof = new Text.Foundry(Text.sans, 10).aa(true);
 	private CheckBox replantChkbox, fillContainerChkbox, replantBarrelChkbox;
-	private Gob barrel, hfire, rowmarker, water, cauldron, htable;
+	private Gob barrel, hfire, rowmarker, water, cauldron, htable, grinder;
 	public Thread testthread;
 	private final int rowgap = 4200;
 	private final int northtravel = 20000;
@@ -33,7 +36,7 @@ public class PepperBot extends Window implements AreaSelectCallback, GobSelectCa
 
 	public PepperBot(GameUI gui) {
 
-		super(new Coord(180, 260), "Pepper Bot");
+		super(new Coord(180, 290), "Pepper Bot");
 
 		int y = 0;
 		final Label lbl5 = new Label("Setup Selected", infof);
@@ -48,6 +51,48 @@ public class PepperBot extends Window implements AreaSelectCallback, GobSelectCa
 		lblc3 = new Label(section+"", Text.num12boldFnd, Color.WHITE);
 		add(lblc3, new Coord(20, y));
 		y+=25;
+
+		if(BotUtils.findObjectByNames(100,"gfx/terobjs/quern")!=null){
+			grinder = BotUtils.findObjectByNames(100,"gfx/terobjs/quern");
+			if (MapView.markedGobs.contains(grinder.id))
+				MapView.markedGobs.remove(grinder.id);
+			else
+				MapView.markedGobs.add(grinder.id);
+			BotUtils.sysMsg("Auto added Quern",Color.white);
+		}
+		if(BotUtils.findObjectByNames(100,"gfx/terobjs/well")!=null){
+			water = BotUtils.findObjectByNames(100,"gfx/terobjs/well");
+			if (MapView.markedGobs.contains(water.id))
+				MapView.markedGobs.remove(water.id);
+			else
+				MapView.markedGobs.add(water.id);
+			BotUtils.sysMsg("Auto added Water Source",Color.white);
+		}
+		if(BotUtils.findObjectByNames(100,"gfx/terobjs/cauldron")!=null){
+			cauldron = BotUtils.findObjectByNames(100,"gfx/terobjs/cauldron");
+			if (MapView.markedGobs.contains(cauldron.id))
+				MapView.markedGobs.remove(cauldron.id);
+			else
+				MapView.markedGobs.add(cauldron.id);
+			BotUtils.sysMsg("Auto added Cauldron",Color.white);
+		}
+		if(BotUtils.findObjectByNames(100,"gfx/terobjs/pow")!=null){
+			hfire = BotUtils.findObjectByNames(100,"gfx/terobjs/pow");
+			if (MapView.markedGobs.contains(hfire.id))
+				MapView.markedGobs.remove(hfire.id);
+			else
+				MapView.markedGobs.add(hfire.id);
+			BotUtils.sysMsg("Auto added HearthFire",Color.white);
+		}
+		if(BotUtils.findObjectByNames(100,"gfx/terobjs/barrel")!=null){
+			barrel = BotUtils.findObjectByNames(100,"gfx/terobjs/barrel");
+			if (MapView.markedGobs.contains(barrel.id))
+				MapView.markedGobs.remove(barrel.id);
+			else
+				MapView.markedGobs.add(barrel.id);
+			BotUtils.sysMsg("Auto added Barrel",Color.white);
+		}
+
 
 		Button trelHarBtn = new Button(140, "Trellis harvest") {
 			@Override
@@ -87,6 +132,32 @@ public class PepperBot extends Window implements AreaSelectCallback, GobSelectCa
 			}
 		};
 		add(trelHarBtn, new Coord(20, y));
+		y += 35;
+		Button GrindBtn = new Button(140, "Grind Pepper") {
+			@Override
+			public void click() {
+				allowrun = true;
+				if(hfire == null)
+				{
+					BotUtils.sysMsg("No Hearthfire Selected.",Color.white);
+					allowrun = false;
+				}
+				if(grinder == null)
+				{
+					BotUtils.sysMsg("No grinder Selected.",Color.white);
+					allowrun = false;
+				}
+				if (a != null && b != null && allowrun) {
+					PepperGrinderRun bf = new PepperGrinderRun(a,b,grinder,section,hfire,direction);
+					gameui().add(bf, new Coord(gameui().sz.x / 2 - bf.sz.x / 2, gameui().sz.y / 2 - bf.sz.y / 2 - 200));
+					new Thread(bf).start();
+					this.parent.destroy();
+				} else if(allowrun){
+					BotUtils.sysMsg("Area not selected!", Color.WHITE);
+				}
+			}
+		};
+		add(GrindBtn, new Coord(20, y));
 		y += 35;
 		Button areaSelBtn = new Button(140, "Select Area") {
 			@Override
@@ -136,7 +207,6 @@ public class PepperBot extends Window implements AreaSelectCallback, GobSelectCa
 			}
 		};
 		add(RunBtn, new Coord(20, y));
-		y += 35;
 	}
 
 	public void gobselect(Gob gob) {
@@ -156,7 +226,10 @@ public class PepperBot extends Window implements AreaSelectCallback, GobSelectCa
 			htable = gob;
 			int stage = gob.getStage();
 			BotUtils.sysMsg("table selected : "+gob.rc.x + " y : "+gob.rc.y+" stage : "+stage+" overlay : "+gob.ols.size(),Color.white);
-		}
+	} else if (gob.getres().basename().contains("quern")){
+		grinder = gob;
+		BotUtils.sysMsg("grinder selected : "+gob.rc.x + " y : "+gob.rc.y,Color.white);
+	}
 	}
 
 	private void registerGobSelect() {
@@ -185,31 +258,53 @@ public class PepperBot extends Window implements AreaSelectCallback, GobSelectCa
 	public void run() {
 		BotUtils.sysMsg("Started", Color.white);
 		GameUI gui = gameui();
-		UI ui = gameui().ui;
-	Gob player = gui.map.player();
-	Coord location = player.rc.floor(posres);
+for(Widget w = gui.lchild;w != null;w = w.prev){
+	System.out.println("Widget # : "+w.wdgid()+ " Parent # : "+w.parent.wdgid());
+}
 
-	if(direction==1) {
-		xx = location.x;
-		yy = location.y - ((rowgap * section) - rowgap);
-	}
-	if(direction==2) {
-		xx = location.x;
-		yy = location.y + ((rowgap * section) - rowgap);
-	}
-	if(direction==3) {
-		xx = location.x + ((rowgap * section) - rowgap);
-		yy = location.y;
-	}
-	if(direction==4) {
-		xx = location.x - ((rowgap * section) - rowgap);
-		yy = location.y;
-	}
-	Coord finalloc = new Coord(xx, yy);
-	gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
-		//ui.rwidgets.
-//	gui.map.wdgmsg("click", hfire.sc, hfire.rc.floor(posres), 1, 0, 0, (int) hfire.id, hfire.rc.floor(posres), 0, -1);
-
-	}
+;	}
+		public void sort(java.util.List<WItem> items){
+			Collections.sort(items, (a, b) -> {
+				QBuff aq = a.item.quality();
+				QBuff bq = b.item.quality();
+				if (aq == null || bq == null)
+					return 0;
+				else if (aq.q == bq.q)
+					return 0;
+				else if (aq.q > bq.q)
+					return -1;
+				else
+					return 1;
+			});
+		}
+		public java.util.List<WItem> getIdenticalItems(GItem item) {
+			List<WItem> items = new ArrayList<WItem>();
+			GSprite sprite = item.spr();
+			if (sprite != null) {
+				String name = sprite.getname();
+				String resname = item.resource().name;
+				for (Widget wdg = child; wdg != null; wdg = wdg.next) {
+					if (wdg instanceof WItem) {
+						sprite = ((WItem) wdg).item.spr();
+						if (sprite != null) {
+							Resource res = ((WItem) wdg).item.resource();
+							if (res != null && res.name.equals(resname) && (name == null || name.equals(sprite.getname())))
+								items.add((WItem) wdg);
+						}
+					}
+				}
+			}
+			return items;
+		}
+		public WItem getItemPartial(String name) {
+			for (Widget wdg = child; wdg != null; wdg = wdg.next) {
+				if (wdg instanceof WItem) {
+					String wdgname = ((WItem)wdg).item.getname();
+					if (wdgname.contains(name))
+						return (WItem) wdg;
+				}
+			}
+			return null;
+		}
 }
 }

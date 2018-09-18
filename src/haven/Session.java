@@ -41,7 +41,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class Session implements Resource.Resolver {
-    public static final int PVER = 16;
+    public static final int PVER = 17;
 
     public static final int MSG_SESS = 0;
     public static final int MSG_REL = 1;
@@ -73,7 +73,7 @@ public class Session implements Resource.Resolver {
     Map<Integer, PMessage> waiting = new TreeMap<Integer, PMessage>();
     LinkedList<RMessage> pending = new LinkedList<RMessage>();
     Map<Long, ObjAck> objacks = new TreeMap<Long, ObjAck>();
-    String username;
+    public String username;
     byte[] cookie;
     final Map<Integer, CachedRes> rescache = new TreeMap<Integer, CachedRes>();
     public final Glob glob;

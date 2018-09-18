@@ -32,6 +32,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.InputEvent;
 import haven.automation.Discord;
+import haven.purus.BotUtils;
 
 public class UI {
     public RootWidget root;
@@ -41,6 +42,7 @@ public class UI {
     Receiver rcvr;
     public Coord mc = Coord.z, lcc = Coord.z;
     public Session sess;
+    public int questid;
     public boolean modshift, modctrl, modmeta, modsuper;
     public int keycode;
     public Object lasttip;
@@ -124,6 +126,10 @@ public class UI {
     public void bind(Widget w, int id) {
         widgets.put(id, w);
         rwidgets.put(w, id);
+        if(questid == id && CharWnd.abandonquest){
+            w.wdgmsg("opt","rm");
+            CharWnd.abandonquest = false;
+        }
     }
 
     public void drawafter(AfterDraw ad) {
@@ -148,7 +154,11 @@ public class UI {
     }
 
     public void newwidget(int id, String type, int parent, Object[] pargs, Object... cargs) throws InterruptedException {
-       // System.out.println("Widget ID : "+id+" Type : "+type+" Parent : "+parent);
+        System.out.println("Widget ID : "+id+" Type : "+type+" Parent : "+parent);
+     //   if(type.equals("quest")) {
+      //      questid = id;
+       //     BotUtils.sysMsg("quest found",Color.white);
+        //}
         if(type.contains("rchan"))
             realmchat = id;
         if (Config.quickbelt && type.equals("wnd") && cargs[1].equals("Belt")) {
@@ -167,6 +177,11 @@ public class UI {
 
             Widget wdg = f.create(this, cargs);
             wdg.attach(this);
+            if(type.equals("quest")) {
+                if(CharWnd.abandonquest) {
+                  questid = id;
+                }
+            }
             if (parent != 65535) {
                 Widget pwdg = widgets.get(parent);
                 if(pwdg == null)
@@ -204,7 +219,6 @@ public class UI {
     public void addwidget(int id, int parent, Object[] pargs) {
         synchronized(this) {
             Widget wdg = widgets.get(id);
-
             if(wdg == null)
                 throw(new UIException("Null child widget " + id + " added to " + parent, null, pargs));
             Widget pwdg = widgets.get(parent);
@@ -345,7 +359,7 @@ public class UI {
     public void wdgmsg(Widget sender, String msg, Object... args) {
         int id;
         synchronized(this) {
-          //  System.out.println("Sender : "+sender+" msg : "+msg);
+   //     try { for(Object obj:args) System.out.println("Sender : " + sender + " msg = " + msg + " arg 1 : " + obj); }catch(ArrayIndexOutOfBoundsException q){}
             if (msg.endsWith("-identical"))
                 return;
 
@@ -364,7 +378,7 @@ public class UI {
     public void uimsg(int id, String msg, Object... args) {
         synchronized (this) {
             Widget wdg = widgets.get(id);
-            //System.out.println("id : "+id+" msg: "+msg+" widget:"+wdg.toString());
+
             if(id == realmchat){
                 if (msg.contains("msg") && wdg.toString().contains("Realm")) {
                     for (Widget w = gui.chat.lchild; w != null; w = w.prev) {
@@ -378,8 +392,10 @@ public class UI {
                     }
                 }
             }
-                if (wdg != null)
+                if (wdg != null) {
+           //   try { for(Object obj:args) System.out.println("Wdg : " + wdg + " msg : "+msg+" id = " + id + " arg 1 : " + obj); }catch(ArrayIndexOutOfBoundsException qq){}
                     wdg.uimsg(msg.intern(), args);
+                }
                  else
                     throw (new UIException("Uimsg to non-existent widget " + id, msg, args));
         }

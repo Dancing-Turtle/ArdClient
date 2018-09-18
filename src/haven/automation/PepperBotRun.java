@@ -20,7 +20,7 @@ public class PepperBotRun extends Window implements Runnable {
 	private ArrayList<Gob> crops = new ArrayList<Gob>();
 	private ArrayList<Gob> tables = new ArrayList<Gob>();
 	private boolean stopThread = false;
-	private Label lblProg;
+	private Label lblProg, lblProg2;
 	private ArrayList<String> cropName = new ArrayList<String>();
 	private ArrayList<String> seedName = new ArrayList<String>();
 	private String trellis = "gfx/terobjs/plants/trellis";
@@ -37,7 +37,7 @@ public class PepperBotRun extends Window implements Runnable {
 	private Coord finalloc;
 
 	public PepperBotRun(Coord rc1, Coord rc2, boolean harvest, boolean destroy, boolean replant, Gob barrel, Gob water, Gob cauldron, int section, Gob hfire, int direction) {
-		super(new Coord(120, 65), "Trellis Farmer");
+		super(new Coord(140, 55), "Trellis Farmer");
 		this.rc1 = rc1;
 		this.rc2 = rc2;
 		this.harvest = harvest;
@@ -60,6 +60,11 @@ public class PepperBotRun extends Window implements Runnable {
 		lblProg = new Label("Initialising...");
 		add(lblProg, new Coord(65, 35));
 
+		Label lblstxt2 = new Label("Status: ");
+		add(lblstxt2, new Coord(15, 45));
+		lblProg2 = new Label("Initialising...");
+		add(lblProg2, new Coord(55, 45));
+
 		Button stopBtn = new Button(120, "Stop") {
 			@Override
 			public void click() {
@@ -71,12 +76,12 @@ public class PepperBotRun extends Window implements Runnable {
 
 	public void run() {
 		BotUtils.sysMsg("Pepper Bot started!", Color.white);
-		Window crafting = gameui().getwnd("Crafting");
-		if (crafting == null) {
-			BotUtils.sysMsg("Craft Window not open, open and retry.", Color.white);
-			stop();
-			return;
-		}
+		GameUI gui = gameui();
+		if(gui.getwnd("Crafting")!= null)
+			gui.getwnd("Crafting").close();
+		gui.wdgmsg("act", "craft", "boiledpepper");
+		PBotAPI.waitForWindow("Crafting");
+		Window crafting = gui.getwnd("Crafting");
 		for (Widget a = crafting.lchild; a != null; a = a.prev) {
 			for (Widget aa = a.lchild; aa != null; aa = aa.prev) {
 				if (aa instanceof Button) {
@@ -102,9 +107,10 @@ public class PepperBotRun extends Window implements Runnable {
 
 
 				// Check if stamina is under 30%, drink if needed
-				GameUI gui = HavenPanel.lui.root.findchild(GameUI.class);
+				gui = HavenPanel.lui.root.findchild(GameUI.class);
 				IMeter.Meter stam = gui.getmeter("stam", 0);
 				if (stam.a <= 60) {
+					lblProg2.settext("Drinking");
 					new Thread(new BeltDrink(gui), "BeltDrink").start();
 					BotUtils.sleep(5000);
 				}
@@ -113,11 +119,14 @@ public class PepperBotRun extends Window implements Runnable {
 				if (stopThread)
 					return;
 
-				int stageBefore = g.getStage();
+	int stageBefore = g.getStage();
 
 
 				// Right click the crop
+				try {
+					lblProg2.settext("Harvesting");
 				BotUtils.doClick(g, 3, 0);
+				}catch(NullPointerException qq){BotUtils.sysMsg("Null pointer when harvesting, ping related?",Color.white);}
 
 				int retryharvest = 0;
 
@@ -127,6 +136,7 @@ public class PepperBotRun extends Window implements Runnable {
 					BotUtils.sleep(10);
 					if (retryharvest >= 500){
 						BotUtils.sysLogAppend("Retrying harvest","white");
+						lblProg2.settext("Retry Harvest");
 						BotUtils.doClick(g, 3, 0);
 						retryharvest = 0;
 					}
@@ -148,6 +158,13 @@ public class PepperBotRun extends Window implements Runnable {
 
 				// Wait until stage has changed = harvested
 				while (true) {
+					retryharvest++;
+					if (retryharvest >= 500){
+						BotUtils.sysLogAppend("Retrying harvest","white");
+						lblProg2.settext("Retry Harvest");
+						BotUtils.doClick(g, 3, 0);
+						retryharvest = 0;
+					}
 					if (BotUtils.findObjectById(g.id) == null
 							|| BotUtils.findObjectById(g.id).getStage() != stageBefore)
 						break;
@@ -163,20 +180,12 @@ public class PepperBotRun extends Window implements Runnable {
 					BotUtils.sleep(6000);
 					while (BotUtils.invFreeSlots() < 4 && !stopThread) {
 						List<WItem> pepperlist = gameui().maininv.getItemsPartial("Peppercorn");
-						//BotUtils.sysLogAppend("Peppercorns : "+pepperlist.size(),"white");
 						if (pepperlist.size() == 0) //put pepper on tables
 						{
+							lblProg2.settext("Tables");
 							BotUtils.sleep(1000);
 							while(gui.getwnd("Cauldron")!=null)
 							gui.map.wdgmsg("click", hfire.sc, hfire.rc.floor(posres), 1, 0, 0, (int) hfire.id, hfire.rc.floor(posres), 0, -1);
-							//gameui().map.wdgmsg("click",Coord.z,hfire.sc,1,0);
-							//gui.act("travel", "hearth");
-							//Gob player = gui.map.player();
-							//Coord location = player.rc.floor(posres);
-							//int x = location.x;
-							//int y = location.y - rowgap;
-							//finalloc = new Coord(x, y);
-							//gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
 							BotUtils.sleep(2000);
 							if (section == 2) {
 								Gob player = gui.map.player();
@@ -224,6 +233,7 @@ public class PepperBotRun extends Window implements Runnable {
 								BotUtils.sleep(6000);
 							}
 							for (Gob htable : tables) {
+								lblProg2.settext("Tables");
 								//BotUtils.sysLogAppend("In the htable array","white");
 								pepperlist = gameui().maininv.getItemsPartial("Drupe");
 								if (pepperlist.size() > 0) {
@@ -250,6 +260,7 @@ public class PepperBotRun extends Window implements Runnable {
 						}
 						if(BotUtils.invFreeSlots() > 4)
 							break;
+						lblProg2.settext("Boiling");
 						gui.map.wdgmsg("click", cauldron.sc, cauldron.rc.floor(posres), 3, 0, 0, (int) cauldron.id, cauldron.rc.floor(posres), 0, -1);
 						FlowerMenu.setNextSelection("Open");
 						int tryagaintimer = 0;
@@ -283,6 +294,7 @@ public class PepperBotRun extends Window implements Runnable {
 							BotUtils.sleep(600);
 							Coord retain = barrel.rc.floor(posres);
 							if (barrel.ols.size() == 0 && water != null) {
+								lblProg2.settext("Refill Barrel");
 								//BotUtils.sysLogAppend("Barrel is empty refilling from cistern/well overlay size is : "+barrel.ols.size(),"white");
 								PBotAPI.liftGob(barrel);
 								BotUtils.sleep(1000);
@@ -299,6 +311,7 @@ public class PepperBotRun extends Window implements Runnable {
 								((Button) craftall).click();
 								BotUtils.sleep(1000);
 							} else {
+								lblProg2.settext("Refill Cauldron");
 							//	BotUtils.sysLogAppend("Barrel is not empty refilling from barrel overlay size is : "+barrel.ols.size(),"white");
 								PBotAPI.liftGob(barrel);
 								BotUtils.sleep(1000);
@@ -315,13 +328,16 @@ public class PepperBotRun extends Window implements Runnable {
 							}
 						}
 						while (gui.prog >= 0) {
+							lblProg2.settext("Boiling");
 							BotUtils.sleep(10);
 						}
 						if (stam.a > 50)
 							((Button) craftall).click();
+
 					}
 				}
 				if(boilmode) {
+					lblProg2.settext("Moving to harvest");
 					boilmode = false;
 					gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
 					BotUtils.sleep(2000);

@@ -39,6 +39,7 @@ public class CountGobs implements Runnable, GobSelectCallback {
         selection = gob;
        // if(gob.knocked)
            // isknocked = true;
+
         BotUtils.sysMsg("Selection is "+selection.getres().name,Color.white);
         gui.map.unregisterGobSelect();
 
@@ -66,6 +67,10 @@ public class CountGobs implements Runnable, GobSelectCallback {
             }catch(NullPointerException | Loading e){}
 
         }
+       // int stage = selection.getattr(ResDrawable.class).spr.res.ver;
+      //  String stage2 = selection.getattr(ResDrawable.class).spr.res.name;
+      //  String stage3 = selection.getattr(ResDrawable.class).spr.res.indir().name;
+      //  BotUtils.sysLogAppend("a : "+selection.a+" type: "+selection.type+" get stage : "+selection.getStage()+" V : "+selection.getv(),"white");
         BotUtils.sysMsg("Total is - "+list.size(),Color.white);
 
     }

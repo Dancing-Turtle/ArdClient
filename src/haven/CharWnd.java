@@ -26,6 +26,8 @@
 
 package haven;
 
+import haven.automation.QuestAbandon;
+import haven.purus.BotUtils;
 import haven.resutil.Curiosity;
 import haven.resutil.FoodInfo;
 import static haven.PUtils.blurmask2;
@@ -41,19 +43,13 @@ import static haven.PUtils.blurmask2;
 import static haven.PUtils.convolvedown;
 import static haven.PUtils.imgblur;
 import static haven.PUtils.rasterimg;
+import static java.awt.Color.white;
 
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.font.TextAttribute;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import haven.PUtils.BlurFurn;
 import haven.PUtils.Convolution;
@@ -84,6 +80,7 @@ public class CharWnd extends Window {
     public final CredoGrid credos;
     public final ExpGrid exps;
     public final Widget woundbox;
+    public static boolean abandonquest = false;
     public final WoundList wounds;
     public Wound.Info wound;
     private final Tabs.Tab questtab;
@@ -93,6 +90,7 @@ public class CharWnd extends Window {
     public int exp, enc;
     private int scost;
     private final Tabs.Tab sattr, fgt;
+    public int level;
 
     public static class FoodMeter extends Widget {
         public static final Tex frame = Resource.loadtex("gfx/hud/chr/foodm");
@@ -939,9 +937,10 @@ public class CharWnd extends Window {
     }
 
     public static class Wound {
-        public final int id;
+        public final int id, parentid;
         public Indir<Resource> res;
         public Object qdata;
+        public int level;
         private String sortkey = "\uffff";
         private Tex small;
         private final Text.UText<?> rnm = new Text.UText<String>(attrf) {
@@ -959,10 +958,11 @@ public class CharWnd extends Window {
             }
         };
 
-        private Wound(int id, Indir<Resource> res, Object qdata) {
+        private Wound(int id, Indir<Resource> res, Object qdata, int parentid) {
             this.id = id;
             this.res = res;
             this.qdata = qdata;
+            this.parentid = parentid;
         }
 
         public static class Box extends LoadingTextBox implements Info {
@@ -1483,6 +1483,9 @@ public class CharWnd extends Window {
             }
 
             public void uimsg(String msg, Object... args) {
+                for(Object obj : args){
+                    System.out.println("msg : "+msg+" arg : "+obj);
+                }
                 if(msg == "opts") {
                     List<Pair<String, String>> opts = new ArrayList<>();
                     for(int i = 0; i < args.length; i += 2)
@@ -1507,7 +1510,6 @@ public class CharWnd extends Window {
 
         public interface Info {
             public int questid();
-
             public Widget qview();
         }
     }
@@ -1755,6 +1757,23 @@ public class CharWnd extends Window {
             super(w, h, attrf.height() + 2);
         }
 
+        private List<Wound> treesort(List<Wound> from, int pid, int level) {
+            List<Wound> direct = new ArrayList<>(from.size());
+            for(Wound w : from) {
+                if(w.parentid == pid) {
+                    w.level = level;
+                    direct.add(w);
+                }
+            }
+            Collections.sort(direct, wcomp);
+            List<Wound> ret = new ArrayList<>(from.size());
+            for(Wound w : direct) {
+                ret.add(w);
+                ret.addAll(treesort(from, w.id, level + 1));
+            }
+            return(ret);
+        }
+
         public void tick(double dt) {
             if (loading) {
                 loading = false;
@@ -1766,7 +1785,7 @@ public class CharWnd extends Window {
                         loading = true;
                     }
                 }
-                Collections.sort(wounds, wcomp);
+                wounds = treesort(wounds, -1,0);
             }
         }
 
@@ -1787,14 +1806,17 @@ public class CharWnd extends Window {
             g.chcolor((idx % 2 == 0) ? every : other);
             g.frect(Coord.z, g.sz);
             g.chcolor();
+            int x = w.level * itemh;
             try {
                 if (w.small == null)
                     w.small = new TexI(PUtils.convolvedown(w.res.get().layer(Resource.imgc).img, new Coord(itemh, itemh), iconfilter));
-                g.image(w.small, Coord.z);
+                g.image(w.small, new Coord(x, 0));
+                x += itemh+5;
             } catch (Loading e) {
-                g.image(WItem.missing.layer(Resource.imgc).tex(), Coord.z, new Coord(itemh, itemh));
+                g.image(WItem.missing.layer(Resource.imgc).tex(), new Coord(x, 0), new Coord(itemh, itemh));
+                x += itemh + 5;
             }
-            g.aimage(w.rnm.get().tex(), new Coord(itemh + 5, itemh / 2), 0, 0.5);
+            g.aimage(w.rnm.get().tex(), new Coord(x, itemh / 2), 0, 0.5);
             Text qd = w.rqd.get();
             if (qd != null)
                 g.aimage(qd.tex(), new Coord(sz.x - 15, itemh / 2), 1.0, 0.5);
@@ -1863,6 +1885,7 @@ public class CharWnd extends Window {
             super(w, h, attrf.height() + 2);
         }
 
+
         public void tick(double dt) {
             if (loading) {
                 loading = false;
@@ -1897,12 +1920,28 @@ public class CharWnd extends Window {
             g.aimage(q.rnm.get().tex(), new Coord(itemh + 5, itemh / 2), 0, 0.5);
         }
 
+        public boolean mousedown(Coord c, int button) {
+            Quest q = itemat(c);
+            if (button == 3) {
+                abandonquest = true;
+                CharWnd.this.wdgmsg("qsel", (Object) null);
+                CharWnd.this.wdgmsg("qsel", q.id);
+                BotUtils.sysMsg("Dropping quest : "+q.title,white);
+                remove(q);
+            } else
+            change(q);
+
+            return true;
+
+        }
+
         public void change(Quest q) {
-            if ((q == null) || ((CharWnd.this.quest != null) && (q.id == CharWnd.this.quest.questid())))
+            if((q == null) || ((CharWnd.this.quest != null) && (q.id == CharWnd.this.quest.questid())))
                 CharWnd.this.wdgmsg("qsel", (Object) null);
             else
                 CharWnd.this.wdgmsg("qsel", q.id);
         }
+
 
         public Quest get(int id) {
             for (Quest q : quests) {
@@ -2283,6 +2322,8 @@ public class CharWnd extends Window {
     }
 
     public void addchild(Widget child, Object... args) {
+
+
         String place = (args[0] instanceof String) ? (((String) args[0]).intern()) : null;
         if (place == "study") {
             sattr.add(child, new Coord(255, 35).add(wbox.btloff()));
@@ -2358,6 +2399,25 @@ public class CharWnd extends Window {
         return (buf);
     }
 
+    private void decwound(Object[] args, int a, int len) {
+        int id = (Integer)args[a];
+        Indir<Resource> res = (args[a + 1] == null)?null:ui.sess.getres((Integer)args[a + 1]);
+        if(res != null) {
+            Object qdata = args[a + 2];
+            int parentid = (len > 3) ? ((args[a + 3] == null) ? -1 : (Integer)args[a + 3]) : -1;
+            Wound w = wounds.get(id);
+            if(w == null) {
+                wounds.add(new Wound(id, res, qdata, parentid));
+            } else {
+                w.res = res;
+                w.qdata = qdata;
+            }
+            wounds.loading = true;
+        } else {
+            wounds.remove(id);
+        }
+    }
+
     public void uimsg(String nm, Object... args) {
         if (nm == "exp") {
             exp = ((Number) args[0]).intValue();
@@ -2405,14 +2465,25 @@ public class CharWnd extends Window {
         } else if(nm == "exps") {
             exps.seen.update(decexplist(args, 0));
         } else if (nm == "wounds") {
-            for (int i = 0; i < args.length; i += 3) {
+            if(args.length > 0) {
+                if(args[0] instanceof Object[]) {
+                    for(int i = 0; i < args.length; i++)
+                        decwound((Object[])args[i], 0, ((Object[])args[i]).length);
+                } else {
+                    for(int i = 0; i < args.length; i += 3)
+                        decwound(args, i, 3);
+                }
+            }
+          /*  for (int i = 0; i < args.length; i += 3) {
                 int id = (Integer) args[i];
                 Indir<Resource> res = (args[i + 1] == null) ? null : ui.sess.getres((Integer) args[i + 1]);
                 Object qdata = args[i + 2];
                 if (res != null) {
+                    Object qdata = args[a + 2];
+                    int parentid = (len > 3) ? ((args[a + 3] == null) ? -1 : (Integer)args[a + 3]) : -1;
                     Wound w = wounds.get(id);
                     if (w == null) {
-                        wounds.add(new Wound(id, res, qdata));
+                        wounds.add(new Wound(id,res,qdata,parentid));
                     } else {
                         w.res = res;
                         w.qdata = qdata;
@@ -2421,7 +2492,7 @@ public class CharWnd extends Window {
                 } else {
                     wounds.remove(id);
                 }
-            }
+            }*/
         } else if (nm == "quests") {
             for(int i = 0; i < args.length;) {
                 int id = (Integer)args[i++];

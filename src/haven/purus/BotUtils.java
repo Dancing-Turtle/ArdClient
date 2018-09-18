@@ -221,26 +221,57 @@ public class BotUtils {
 		Coord2d plc = player().rc;
 		double min = radius;
 		Gob nearest = null;
-		synchronized (gui.ui.sess.glob.oc) {
-			for (Gob gob : gui.ui.sess.glob.oc) {
-				double dist = gob.rc.dist(plc);
-				if (dist < min) {
-					boolean matches = false;
-					for (String name : names) {
-						if (true) {
-							if (gob.getStage() == stage) {
-								matches = true;
-								break;
+		try {
+			synchronized (gui.ui.sess.glob.oc) {
+				for (Gob gob : gui.ui.sess.glob.oc) {
+					double dist = gob.rc.dist(plc);
+					if (dist < min) {
+						boolean matches = false;
+						for (String name : names) {
+							if (true) {
+								if (gob.getStage() == stage) {
+									matches = true;
+									break;
+								}
 							}
 						}
-					}
-					if (matches) {
-						min = dist;
-						nearest = gob;
+						if (matches) {
+							min = dist;
+							nearest = gob;
+						}
 					}
 				}
 			}
-		}
+		}catch(NullPointerException q){}
+		return nearest;
+	}
+	// Finds the nearest crop with a name and stage
+	public static Gob findNearestStageCropPartial(int radius, int stage, String... names) {
+		Coord2d plc = player().rc;
+		double min = radius;
+		Gob nearest = null;
+		try {
+			synchronized (gui.ui.sess.glob.oc) {
+				for (Gob gob : gui.ui.sess.glob.oc) {
+					double dist = gob.rc.dist(plc);
+					if (dist < min) {
+						boolean matches = false;
+						for (String name : names) {
+							if (gob.getres().basename().contains(name)) {
+								if (gob.getStage() == stage) {
+									matches = true;
+									break;
+								}
+							}
+						}
+						if (matches) {
+							min = dist;
+							nearest = gob;
+						}
+					}
+				}
+			}
+		}catch(NullPointerException q){}
 		return nearest;
 	}
 

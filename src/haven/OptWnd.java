@@ -27,6 +27,7 @@
 package haven;
 
 
+import haven.automation.Discord;
 import haven.resutil.BPRadSprite;
 
 import java.awt.Color;
@@ -398,6 +399,7 @@ public class OptWnd extends Window {
             main.add(new Button(200, "Switch character") {
                 public void click() {
                     GameUI gui = gameui();
+                    gui.DiscordToggle();
                     gui.act("lo", "cs");
                     if (gui != null & gui.map != null)
                         gui.map.canceltasks();
@@ -406,6 +408,7 @@ public class OptWnd extends Window {
             main.add(new Button(200, "Log out") {
                 public void click() {
                     GameUI gui = gameui();
+                    gui.DiscordToggle();
                     gui.act("lo");
                     if (gui != null & gui.map != null)
                         gui.map.canceltasks();

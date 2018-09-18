@@ -26,6 +26,8 @@
 
 package haven;
 
+import haven.purus.BotUtils;
+
 import java.awt.Color;
 
 public abstract class Listbox<T> extends ListWidget<T> {
@@ -91,8 +93,9 @@ public abstract class Listbox<T> extends ListWidget<T> {
         T item = itemat(c);
         if ((item == null) && (button == 1))
             change(null);
-        else if (item != null)
+        else if (item != null) {
             itemclick(item, button);
+        }
         return (true);
     }
 

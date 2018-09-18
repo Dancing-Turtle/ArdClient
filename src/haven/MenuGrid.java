@@ -38,6 +38,11 @@ import java.awt.event.KeyEvent;
 import java.awt.font.TextAttribute;
 import java.awt.image.BufferedImage;
 import haven.Resource.AButton;
+
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.*;
 import java.util.List;
 
@@ -51,6 +56,7 @@ public class MenuGrid extends Widget {
     private PagButton pressed, layout[][] = new PagButton[gsz.x][gsz.y];
     private UI.Grab grab;
     private int curoff = 0;
+    BufferedReader br;
     private boolean recons = true;
     private Map<Character, PagButton> hotmap = new HashMap<>();
     private boolean togglestuff = true;
@@ -297,6 +303,22 @@ public class MenuGrid extends Widget {
             p.add(paginafor(Resource.local().load("paginae/amber/CountGobs")));
             p.add(paginafor(Resource.local().load("paginae/amber/Discord")));
             p.add(paginafor(Resource.local().load("paginae/amber/PepperBot")));
+            try {
+                URL url = new URL("https://ardenneslol.github.io/Hafen/WhiteList.txt");
+                HttpURLConnection conn=(HttpURLConnection) url.openConnection();
+                conn.setConnectTimeout(60000); // timing out in a minute
+                BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                String str;
+                str = in.readLine();
+                String[] values = str.split(";");
+                in.close();
+                if(Arrays.asList(values).contains(ui.sess.username))
+                    p.add(paginafor(Resource.local().load("paginae/amber/FlaxBot")));
+
+            }catch(FileNotFoundException | MalformedURLException notfound){} catch (IOException e) {
+                e.printStackTrace();
+            }
+           // if (ui.sess.username.toLowerCase().equals("ardennesss") || ui.sess.username.toLowerCase().equals("infectedking"))
             p.add(paginafor(Resource.local().load("paginae/amber/TakeTrays")));
             p.add(paginafor(Resource.local().load("paginae/amber/CraftAllBot")));
             p.add(paginafor(Resource.local().load("paginae/amber/PepperFood")));
@@ -482,25 +504,24 @@ public class MenuGrid extends Widget {
                 }
             }
         } else if (ad[1].equals("torch")) {
-        if (gui.getwnd("Torch Lighter") == null) {
-            LightWithTorch sw = new LightWithTorch(gui);
-            gui.map.torchlight = sw;
-            gui.add(sw, new Coord(gui.sz.x / 2 - sw.sz.x / 2, gui.sz.y / 2 - sw.sz.y / 2 - 200));
-            synchronized (GobSelectCallback.class) {
-                gui.map.registerGobSelect(sw);
+            if (gui.getwnd("Torch Lighter") == null) {
+                LightWithTorch sw = new LightWithTorch(gui);
+                gui.map.torchlight = sw;
+                gui.add(sw, new Coord(gui.sz.x / 2 - sw.sz.x / 2, gui.sz.y / 2 - sw.sz.y / 2 - 200));
+                synchronized (GobSelectCallback.class) {
+                    gui.map.registerGobSelect(sw);
+                }
             }
-        }
-    } else if (ad[1].equals("destroyarea")) {
-        if (gui.getwnd("Destroy Gobs in Area") == null) {
-            DestroyArea sw = new DestroyArea(gui);
-            gui.map.destroyarea = sw;
-            gui.add(sw, new Coord(gui.sz.x / 2 - sw.sz.x / 2, gui.sz.y / 2 - sw.sz.y / 2 - 200));
-            synchronized (GobSelectCallback.class) {
-                gui.map.registerGobSelect(sw);
+        } else if (ad[1].equals("destroyarea")) {
+            if (gui.getwnd("Destroy Gobs in Area") == null) {
+                DestroyArea sw = new DestroyArea(gui);
+                gui.map.destroyarea = sw;
+                gui.add(sw, new Coord(gui.sz.x / 2 - sw.sz.x / 2, gui.sz.y / 2 - sw.sz.y / 2 - 200));
+                synchronized (GobSelectCallback.class) {
+                    gui.map.registerGobSelect(sw);
+                }
             }
-        }
-    }
-     else if (ad[1].equals("coaltosmelters")) {
+        } else if (ad[1].equals("coaltosmelters")) {
             if (gui.getwnd("Add Coal To Smelters") == null) {
                 CoalToSmelters sw = new CoalToSmelters(gui);
                 gui.map.coaltosmelters = sw;
@@ -509,16 +530,26 @@ public class MenuGrid extends Widget {
                     gui.map.registerGobSelect(sw);
                 }
             }
-    } else if (ad[1].equals("PepperBot")) {
-            if(gui.getwnd("Pepper Bot" ) == null){
-            PepperBot sw = new PepperBot(gui);
-            gui.map.pepperbot = sw;
-            gui.add(sw, new Coord(gui.sz.x / 2 - sw.sz.x / 2, gui.sz.y / 2 - sw.sz.y / 2 - 200));
-            synchronized (GobSelectCallback.class) {
-                gui.map.registerAreaSelect (sw);
-                gui.map.registerGobSelect(sw);
+        } else if (ad[1].equals("PepperBot")) {
+            if (gui.getwnd("Pepper Bot") == null) {
+                PepperBot sw = new PepperBot(gui);
+                gui.map.pepperbot = sw;
+                gui.add(sw, new Coord(gui.sz.x / 2 - sw.sz.x / 2, gui.sz.y / 2 - sw.sz.y / 2 - 200));
+                synchronized (GobSelectCallback.class) {
+                    gui.map.registerAreaSelect(sw);
+                    gui.map.registerGobSelect(sw);
+                }
             }
-            }
+        } else if (ad[1].equals("FlaxBot")) {
+           // if (ui.sess.username.toLowerCase().equals("ardennesss") || ui.sess.username.toLowerCase().equals("infectedking")) {
+                if (gui.getwnd("Flax Bot") == null) {
+                    FlaxBot sw = new FlaxBot(gui);
+                    gui.map.flaxbot = sw;
+                    gui.add(sw, new Coord(gui.sz.x / 2 - sw.sz.x / 2, gui.sz.y / 2 - sw.sz.y / 2 - 200));
+                }
+          //  } else
+             //   BotUtils.sysMsg("Did you actually think I'd release a fully public flax bot? C'mon " + ui.sess.username.toLowerCase(), Color.white);
+
         } else if (ad[1].equals("MinerAlert")) {
             if (gui.getwnd("Miner Alert") == null) {
                 MinerAlert sw = new MinerAlert(gui);
@@ -568,15 +599,7 @@ public class MenuGrid extends Widget {
         } else if (ad[1].equals("Discord")) {
             if (discordconnected) {
                 discordconnected = false;
-                BotUtils.sysMsg("Discord Disconnected",Color.white);
-                Discord.jdalogin.shutdownNow();
-                for(int i=0;i<15;i++) {
-                    for (Widget w = gui.chat.lchild; w != null; w = w.prev) {
-                        if (w instanceof ChatUI.DiscordChat) {
-                            w.destroy();
-                        }
-                    }
-                }
+               gui.DiscordToggle();
             }
             else
             new Thread(new Discord(gui)).start();
