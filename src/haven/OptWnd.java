@@ -1037,14 +1037,36 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
-        appender.add(new CheckBox("Drop mined cat gold, petrified seashells, strange crystals") {
+        appender.add(new CheckBox("Drop mined Cat Gold.") {
             {
-                a = Config.dropMinedCurios;
+                a = Config.dropMinedCatGold;
             }
 
             public void set(boolean val) {
-                Utils.setprefb("dropMinedCurios", val);
-                Config.dropMinedCurios = val;
+                Utils.setprefb("dropMinedCatGold", val);
+                Config.dropMinedCatGold = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Drop mined Petrified SeaShells.") {
+            {
+                a = Config.dropMinedSeaShells;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("dropMinedSeaShells", val);
+                Config.dropMinedSeaShells = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Drop mined Strange Crystals.") {
+            {
+                a = Config.dropMinedCrystals;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("dropMinedCrystals", val);
+                Config.dropMinedCrystals = val;
                 a = val;
             }
         });
@@ -1593,6 +1615,33 @@ public class OptWnd extends Window {
                     }
                 },
                 fontAdd
+        );
+        appender.add(new CheckBox("Enable commune auto quest drop.") {
+            {
+                a = Config.autoquestdrop;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("autoquestdrop", val);
+                Config.autoquestdrop = val;
+                a = val;
+            }
+        });
+        appender.addRow(new Label("Drop all Commune quests not from this quest giver. Requires client restart if changed."),
+                new TextEntry(85, Config.questdropstring) {
+                    @Override
+                    public boolean type(char c, KeyEvent ev) {
+                        if (!parent.visible)
+                            return false;
+
+                        boolean ret = buf.key(ev);
+                        if (text.length() > 0) {
+                            Utils.setpref("questdropstring", text);
+                        }
+
+                        return ret;
+                    }
+                }
         );
 
 

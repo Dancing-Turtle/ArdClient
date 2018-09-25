@@ -52,9 +52,10 @@ public class CoalToSmelters extends Window implements GobSelectCallback {
 
     List<Gob> list = new ArrayList<>();
     List<Gob> list2 = new ArrayList<>();
+    List<Gob> biglist = new ArrayList<>();
     List<Gob> activelist = new ArrayList<>();
     List<Gob> torchlist = new ArrayList<>();
-    List<Gob> biglist = new ArrayList<>();
+
 
 
     public CoalToSmelters(GameUI gui) {

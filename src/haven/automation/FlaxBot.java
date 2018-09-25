@@ -59,57 +59,57 @@ public class FlaxBot extends Window {
         private class runner implements Runnable {
             @Override
             public void run() {
-                BotUtils.sysMsg("Flax Bot Started!", Color.white);
-                lblProg.settext(cropsHarvested + " Units Harvested");
-                lblProg2.settext(cropsHarvested + "Starting");
-                GameUI gui = HavenPanel.lui.root.findchild(GameUI.class);
-                while (!stopThread) {
+                try {
+                    BotUtils.sysMsg("Flax Bot Started!", Color.white);
                     lblProg.settext(cropsHarvested + " Units Harvested");
-                    IMeter.Meter stam = gui.getmeter("stam", 0);
-                    if (stam.a <= 30) {
-                        lblProg2.settext("Drinking");
-                        BotUtils.drink();
-                    }
+                    lblProg2.settext(cropsHarvested + "Starting");
+                    GameUI gui = HavenPanel.lui.root.findchild(GameUI.class);
+                    while (!stopThread) {
+                        lblProg.settext(cropsHarvested + " Units Harvested");
+                        IMeter.Meter stam = gui.getmeter("stam", 0);
+                        if (stam.a <= 30) {
+                            lblProg2.settext("Drinking");
+                            BotUtils.drink();
+                        }
 
-                    if (stopThread)
-                        stop();
+                        if (stopThread)
+                            stop();
 
-                   while(BotUtils.findNearestStageCropPartial(5000,3,"flax") == null) {
-                       lblProg2.settext("No Flax");
-                       BotUtils.sleep(5000);
-                   }
-                    while(g==null) {
-                        lblProg2.settext("Found Flax");
-                        g = BotUtils.findNearestStageCropPartial(5000, 3, "flax");
+                        while (BotUtils.findNearestStageCropPartial(5000, 3, "flax") == null) {
+                            lblProg2.settext("No Flax");
+                            // BotUtils.sleep(5000);
+                        }
+                        while (g == null) {
+                            lblProg2.settext("Found Flax");
+                            g = BotUtils.findNearestStageCropPartial(5000, 3, "flax");
+                        }
+                        BotUtils.pfRightClick(g, 0);
+                        // BotUtils.doClick(g, 1, 0);
 
-                    }
-
-                        BotUtils.doClick(g, 1, 0);
-
-                    int retryharvest = 0;
-                    int retrycount = 0;
-                        BotUtils.gui.map.wdgmsg("click", Coord.z, g.rc.floor(posres), 1, 0);
+                        int retryharvest = 0;
+                        int retrycount = 0;
+                        // BotUtils.gui.map.wdgmsg("click", Coord.z, g.rc.floor(posres), 1, 0);
                         while (BotUtils.player().rc.x != g.rc.x || BotUtils.player().rc.y != g.rc.y) {
                             if (stopThread)
                                 return;
                             retryharvest++;
                             lblProg2.settext("Moving to Crop");
-                            if(retryharvest >= 500){
+                            if (retryharvest >= 500) {
                                 lblProg2.settext("Retry Movement");
-                                BotUtils.sysLogAppend("Moving char in move loop","white");
+                                BotUtils.sysLogAppend("Moving char in move loop", "white");
                                 Gob player = gui.map.player();
                                 Coord location = player.rc.floor(posres);
-                                int x = location.x + (int)Math.random() * 2000 - 1000;
-                                int y = location.y + (int)Math.random() * 2000 - 1000;
+                                int x = location.x + (int) Math.random() * 4000 - 1000;
+                                int y = location.y + (int) Math.random() * 4000 - 1000;
                                 Coord finalloc = new Coord(x, y);
                                 gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
                                 retryharvest = 0;
-                                BotUtils.sleep(1000);
+                                BotUtils.sleep(2500);
                                 BotUtils.gui.map.wdgmsg("click", Coord.z, g.rc.floor(posres), 1, 0);
                             }
                             BotUtils.sleep(10);
                         }
-                    lblProg2.settext("Harvesting");
+                        lblProg2.settext("Harvesting");
                         BotUtils.pfRightClick(g, 0);
 
                         // Wait for harvest menu to appear and harvest the crop
@@ -119,26 +119,38 @@ public class FlaxBot extends Window {
                                 return;
                             retryharvest++;
                             BotUtils.sleep(10);
-                            if (retryharvest >= 500){
+                            if (retryharvest >= 500) {
                                 lblProg2.settext("Retry Harvest");
-                                if(retrycount>=3){
+                                if (retrycount >= 3) {
                                     lblProg2.settext("Unstucking");
-                                    BotUtils.sysLogAppend("Moving char","white");
+                                    BotUtils.sysLogAppend("Moving char", "white");
                                     Gob player = gui.map.player();
                                     Coord location = player.rc.floor(posres);
-                                        int x = location.x + (int)Math.random() * 2000 - 1000;
-                                        int y = location.y + (int)Math.random() * 2000 - 1000;
-                                        Coord finalloc = new Coord(x, y);
-                                        gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
-                                        retrycount = 0;
-                                        BotUtils.sleep(1000);
+                                    int x = location.x + (int) Math.random() * 4000 - 1000;
+                                    int y = location.y + (int) Math.random() * 4000 - 1000;
+                                    Coord finalloc = new Coord(x, y);
+                                    gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
+                                    retrycount = 0;
+                                    BotUtils.sleep(2500);
                                     BotUtils.pfRightClick(g, 0);
                                 }
-                                BotUtils.sysLogAppend("Retrying harvest","white");
+                                BotUtils.sysLogAppend("Retrying harvest", "white");
                                 lblProg2.settext("Retrying Harvest");
-                                BotUtils.doClick(g, 3, 0);
+                                try {
+                                    BotUtils.pfRightClick(g, 0);
+                                    // BotUtils.doClick(g, 3, 0);
+                                } catch (NullPointerException q) {
+                                    g = null;
+                                    BotUtils.sysMsg("Crop was null somehow on line 141, the fuck? Finding new flax tile. ", Color.white);
+                                    while (g == null) {
+                                        lblProg2.settext("Found Flax");
+                                        g = BotUtils.findNearestStageCropPartial(5000, 3, "flax");
+                                    }
+                                    BotUtils.pfRightClick(g, 0);
+                                    // BotUtils.doClick(g, 3, 0);
+                                }
                                 retryharvest = 0;
-                                retrycount ++;
+                                retrycount++;
                             }
 
                             if (stopThread)
@@ -165,24 +177,36 @@ public class FlaxBot extends Window {
                                 return;
                             retryharvest++;
                             BotUtils.sleep(10);
-                            if (retryharvest >= 500){
+                            if (retryharvest >= 500) {
                                 lblProg2.settext("Retry Harvest");
-                                if(retrycount>=3){
+                                if (retrycount >= 3) {
                                     lblProg2.settext("Unstucking");
-                                    BotUtils.sysLogAppend("Moving char","white");
+                                    BotUtils.sysLogAppend("Moving char", "white");
                                     Gob player = gui.map.player();
                                     Coord location = player.rc.floor(posres);
-                                    int x = location.x + (int)Math.random() * 2000 - 1000;
-                                    int y = location.y + (int)Math.random() * 2000 - 1000;
+                                    int x = location.x + (int) Math.random() * 4000 - 1000;
+                                    int y = location.y + (int) Math.random() * 4000 - 1000;
                                     Coord finalloc = new Coord(x, y);
                                     gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
                                     retrycount = 0;
-                                    BotUtils.sleep(1000);
+                                    BotUtils.sleep(2500);
                                 }
-                                BotUtils.sysLogAppend("Retrying harvest","white");
-                                BotUtils.doClick(g, 3, 0);
+                                BotUtils.sysLogAppend("Retrying harvest", "white");
+                                try {
+                                    BotUtils.pfRightClick(g, 0);
+                                    //  BotUtils.doClick(g, 3, 0);
+                                } catch (NullPointerException q) {
+                                    g = null;
+                                    BotUtils.sysMsg("Crop was null somehow on line 192, the fuck? Finding new flax tile. ", Color.white);
+                                    while (g == null) {
+                                        lblProg2.settext("Found Flax");
+                                        g = BotUtils.findNearestStageCropPartial(5000, 3, "flax");
+                                    }
+                                    BotUtils.pfRightClick(g, 0);
+                                    //    BotUtils.doClick(g, 3, 0);
+                                }
                                 retryharvest = 0;
-                                retrycount ++;
+                                retrycount++;
                             }
                         }
 
@@ -199,61 +223,96 @@ public class FlaxBot extends Window {
                             for (WItem seeds : items) {
                                 GItem item = seeds.item;
                                 if (BotUtils.getAmount(item) >= 5) {
-                                    lblProg2.settext(cropsHarvested + "Picking Up Seeds");
+                                    lblProg2.settext("Picking Up Seeds");
                                     BotUtils.sysLogAppend("Replanting flax of quality : " + item.quality().q, "white");
                                     BotUtils.takeItem(item);
                                     break;
                                 }
                             }
 
-                            while (BotUtils.getItemAtHand() == null){
-                                lblProg2.settext("Waiting to Pickup Seeds");
-                                BotUtils.sleep(10);
-                        }
-                                // Plant the seed from hand
-                                int amount = 0;
-                                if (seedname.contains("seed"))
-                                    BotUtils.getAmount(BotUtils.getItemAtHand());
-                            lblProg2.settext("Planting");
-                                BotUtils.mapInteractClick(0);
-                                while (BotUtils.findNearestStageCropPartial(5, 0, "flax") == null || (BotUtils.getItemAtHand() != null && (seedname.contains("seed") && amount == BotUtils.getAmount(BotUtils.getItemAtHand())))) {
-                                    retryharvest++;
-                                    if(retryharvest > 500){
-                                        lblProg2.settext("Retry Planting");
-                                        BotUtils.mapInteractClick(0);
-                                        retryharvest = 0;
-                                    }
-                                    if(BotUtils.getItemAtHand() == null){
-                                        lblProg2.settext("Retry Pickup Item and plant");
-                                        sort(items);
-                                        for (WItem seeds : items) {
-                                            GItem item = seeds.item;
-                                            if (BotUtils.getAmount(item) >= 5) {
-                                                lblProg2.settext("Picking Up Seeds");
-                                                BotUtils.sysLogAppend("Replanting flax of quality : " + item.quality().q, "white");
-                                                BotUtils.takeItem(item);
-                                                break;
-                                            }
+                            while (BotUtils.getItemAtHand() == null) {
+                                retrycount++;
+                                if (retrycount > 2000) {
+                                    flax = gui.maininv.getItemPartial("Flax");
+                                    flax2 = flax.item;
+                                    items = gui.maininv.getIdenticalItems((flax2));
+                                    sort(items);
+                                    for (WItem seeds : items) {
+                                        GItem item = seeds.item;
+                                        if (BotUtils.getAmount(item) >= 5) {
+                                            lblProg2.settext("Retry Seed Pickup");
+                                            BotUtils.sysLogAppend("Retry Replanting flax of quality : " + item.quality().q, "white");
+                                            BotUtils.takeItem(item);
+                                            break;
                                         }
-                                        while(BotUtils.getItemAtHand() == null) {
-                                            retryharvest++;
-                                            lblProg2.settext("No Seeds On Cursor");
-                                            if(retryharvest > 5000){
-                                                BotUtils.sysMsg("Somehow I don't have any plantable flax. Stopping.",Color.white);
-                                                stopBtn.click();
-                                            }
-                                            BotUtils.sleep(10);
-                                        }
-                                        BotUtils.mapInteractClick(0);
                                     }
-                                    lblProg2.settext("Waiting for Planting Complete");
+                                    lblProg2.settext("Waiting to Pickup Seeds");
                                     BotUtils.sleep(10);
                                 }
-
+                            }
+                            // Plant the seed from hand
+                            int amount = 0;
+                            amount = BotUtils.getAmount(BotUtils.getItemAtHand());
+                            lblProg2.settext("Planting");
+                            BotUtils.mapInteractClick(0);
+                            while (BotUtils.findNearestStageCropPartial(5, 0, "flax") == null || (BotUtils.getItemAtHand() != null && (seedname.contains("seed") && amount == BotUtils.getAmount(BotUtils.getItemAtHand())))) {
+                                retryharvest++;
+                                if (retryharvest > 500) {
+                                    lblProg2.settext("Retry Planting");
+                                    BotUtils.mapInteractClick(0);
+                                    retryharvest = 0;
+                                }
+                                if (BotUtils.getItemAtHand() == null) {
+                                    lblProg2.settext("Retry Pickup Item and plant");
+                                    sort(items);
+                                    for (WItem seeds : items) {
+                                        GItem item = seeds.item;
+                                        if (BotUtils.getAmount(item) >= 5) {
+                                            lblProg2.settext("Picking Up Seeds");
+                                            BotUtils.sysLogAppend("Replanting flax of quality : " + item.quality().q, "white");
+                                            BotUtils.takeItem(item);
+                                            break;
+                                        }
+                                    }
+                                    while (BotUtils.getItemAtHand() == null) {
+                                        retryharvest++;
+                                        lblProg2.settext("No Seeds On Cursor");
+                                        if (retryharvest > 5000) {
+                                            BotUtils.sysMsg("Somehow I don't have any plantable flax. Stopping.", Color.white);
+                                            stopBtn.click();
+                                        }
+                                        BotUtils.sleep(10);
+                                    }
+                                    BotUtils.mapInteractClick(0);
+                                }
+                                lblProg2.settext("Waiting for Planting Complete");
+                                while (BotUtils.findNearestStageCrop(5, 0, "gfx/terobjs/plants/flax") == null || (BotUtils.getItemAtHand() != null && amount == BotUtils.getAmount(BotUtils.getItemAtHand())))
+                                    BotUtils.sleep(10);
+                            }
 
                                 // Merge seed from hand into inventory or put it in inventory
-                            //commented out at request to prevent mixing high and low q seeds
-                             /*   for (Widget w = BotUtils.playerInventory().child; w != null; w = w.next) {
+                                //commented out at request to prevent mixing high and low q seeds
+                            if(gui.maininv.getItemPartial("Flax")!= null){
+                                flax = gui.maininv.getItemPartial("Flax");
+                                flax2 = flax.item;
+                                items = gui.maininv.getIdenticalItems((flax2));
+                                sort(items);
+                                if (BotUtils.getItemAtHand() != null && items.size() != 0 && gui.maininv.getItemPartial("Flax")!= null) {
+                                    for (WItem seedslol : items) {
+                                        if (BotUtils.getItemAtHand() != null && BotUtils.getAmount(seedslol.item) < 50 && seedslol.item.quality().q == BotUtils.getItemAtHand().quality().q) {
+                                          //  System.out.println("Combining quality : " + BotUtils.getItemAtHand().quality().q + " seeds in hand with quality : " + seedslol.item.quality().q + " seeds in inventory.");
+                                            BotUtils.sysLogAppend("Combining quality : " + BotUtils.getItemAtHand().quality().q + " seeds in hand with quality : " + seedslol.item.quality().q + " seeds in inventory.","white");
+                                            int handAmount = BotUtils.getAmount(BotUtils.getItemAtHand());
+                                            try {
+                                                seedslol.item.wdgmsg("itemact", 0);
+                                            } catch (Exception e) {
+                                            }
+                                            while (BotUtils.getItemAtHand() != null && BotUtils.getAmount(BotUtils.getItemAtHand()) == handAmount)
+                                                BotUtils.sleep(50);
+                                        }
+                                    }
+                                }}
+                              /*  for (Widget w = BotUtils.playerInventory().child; w != null; w = w.next) {
                                     if (w instanceof GItem && ((GItem) w).resource().name.equals(seedname)) {
                                         GItem item = (GItem) w;
                                         if (BotUtils.getItemAtHand() != null && BotUtils.getAmount(item) < 50) {
@@ -268,8 +327,6 @@ public class FlaxBot extends Window {
                                         }
                                     }
                                 }*/
-
-
 
 
                                 if (BotUtils.getItemAtHand() != null) {
@@ -337,18 +394,16 @@ public class FlaxBot extends Window {
                                         }
                                     }
                                 }
-
-                        } catch (NullPointerException x) {
-                        }
+                        } catch (NullPointerException x) { System.out.println("Null Pointer Exception");}
                         g = null;
-                       // BotUtils.sysLogAppend("finished loop " + cropsHarvested, "white");
+                        // BotUtils.sysLogAppend("finished loop " + cropsHarvested, "white");
                         cropsHarvested++;
                         lblProg.settext(cropsHarvested + " Units Harvested");
                     }
+                } catch (Resource.LoadException | Loading lolol) {
                 }
             }
-
-
+        }
 
         class CoordSort implements Comparator<Gob> {
             public int compare(Gob a, Gob b) {

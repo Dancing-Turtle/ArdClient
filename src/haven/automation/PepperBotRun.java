@@ -19,15 +19,19 @@ public class PepperBotRun extends Window implements Runnable {
 	private Coord rc1, rc2;
 	private ArrayList<Gob> crops = new ArrayList<Gob>();
 	private ArrayList<Gob> tables = new ArrayList<Gob>();
+	private ArrayList<Gob> tablesblacklist = new ArrayList<Gob>();
 	private boolean stopThread = false;
 	private Label lblProg, lblProg2;
 	private ArrayList<String> cropName = new ArrayList<String>();
-	private ArrayList<String> seedName = new ArrayList<String>();
 	private String trellis = "gfx/terobjs/plants/trellis";
 	private boolean harvest = false;
 	private boolean destroy = false;
+	private Gob htable;
 	private boolean replant = false;
+	private static final int TIMEOUT = 2000;
+	private Window cwnd;
 	public int x,y;
+	private Button stopBtn;
 	private Gob chest, water, rowmarker, cauldron, barrel, hfire;
 	private final int rowgap = 4200;
 	private final int travel = 20000;
@@ -58,20 +62,20 @@ public class PepperBotRun extends Window implements Runnable {
 		Label lblstxt = new Label("Progress:");
 		add(lblstxt, new Coord(15, 35));
 		lblProg = new Label("Initialising...");
-		add(lblProg, new Coord(65, 35));
+		add(lblProg, new Coord(70, 35));
 
 		Label lblstxt2 = new Label("Status: ");
 		add(lblstxt2, new Coord(15, 45));
 		lblProg2 = new Label("Initialising...");
-		add(lblProg2, new Coord(55, 45));
+		add(lblProg2, new Coord(70, 45));
 
-		Button stopBtn = new Button(120, "Stop") {
+		stopBtn = new Button(120, "Stop") {
 			@Override
 			public void click() {
 				stop();
 			}
 		};
-		add(stopBtn, new Coord(0, 0));
+		add(stopBtn, new Coord(10, 0));
 	}
 
 	public void run() {
@@ -119,14 +123,16 @@ public class PepperBotRun extends Window implements Runnable {
 				if (stopThread)
 					return;
 
-	int stageBefore = g.getStage();
+				int stageBefore = g.getStage();
 
 
 				// Right click the crop
 				try {
 					lblProg2.settext("Harvesting");
-				BotUtils.doClick(g, 3, 0);
-				}catch(NullPointerException qq){BotUtils.sysMsg("Null pointer when harvesting, ping related?",Color.white);}
+					BotUtils.doClick(g,3,0);
+				} catch (NullPointerException qq) {
+					BotUtils.sysMsg("Null pointer when harvesting, ping related?", Color.white);
+				}
 
 				int retryharvest = 0;
 
@@ -134,8 +140,8 @@ public class PepperBotRun extends Window implements Runnable {
 				while (ui.root.findchild(FlowerMenu.class) == null) {
 					retryharvest++;
 					BotUtils.sleep(10);
-					if (retryharvest >= 500){
-						BotUtils.sysLogAppend("Retrying harvest","white");
+					if (retryharvest >= 500) {
+						BotUtils.sysLogAppend("Retrying harvest", "white");
 						lblProg2.settext("Retry Harvest");
 						BotUtils.doClick(g, 3, 0);
 						retryharvest = 0;
@@ -159,8 +165,8 @@ public class PepperBotRun extends Window implements Runnable {
 				// Wait until stage has changed = harvested
 				while (true) {
 					retryharvest++;
-					if (retryharvest >= 500){
-						BotUtils.sysLogAppend("Retrying harvest","white");
+					if (retryharvest >= 500) {
+						BotUtils.sysLogAppend("Retrying harvest", "white");
 						lblProg2.settext("Retry Harvest");
 						BotUtils.doClick(g, 3, 0);
 						retryharvest = 0;
@@ -180,86 +186,121 @@ public class PepperBotRun extends Window implements Runnable {
 					BotUtils.sleep(6000);
 					while (BotUtils.invFreeSlots() < 4 && !stopThread) {
 						List<WItem> pepperlist = gameui().maininv.getItemsPartial("Peppercorn");
-						if (pepperlist.size() == 0) //put pepper on tables
-						{
+						if (pepperlist.size() == 0) {
 							lblProg2.settext("Tables");
 							BotUtils.sleep(1000);
-							while(gui.getwnd("Cauldron")!=null)
-							gui.map.wdgmsg("click", hfire.sc, hfire.rc.floor(posres), 1, 0, 0, (int) hfire.id, hfire.rc.floor(posres), 0, -1);
+							//while (gui.getwnd("Cauldron") != null)
+                            gui.map.wdgmsg("click", hfire.sc, hfire.rc.floor(posres), 1, 0, 0, (int) hfire.id, hfire.rc.floor(posres), 0, -1);
 							BotUtils.sleep(2000);
+							System.out.println("before section selection");
 							if (section == 2) {
+								System.out.println("section 2");
 								Gob player = gui.map.player();
 								Coord location = player.rc.floor(posres);
-								if(direction ==1) {
-									 x = location.x;
-									 y = location.y - rowgap;
+								if (direction == 1) {
+									x = location.x;
+									y = location.y - rowgap;
 								}
-								if(direction ==2) {
+								if (direction == 2) {
 									x = location.x;
 									y = location.y + rowgap;
 								}
-								if(direction ==3) {
+								if (direction == 3) {
 									x = location.x + rowgap;
 									y = location.y;
 								}
-								if(direction ==4) {
+								if (direction == 4) {
 									x = location.x - rowgap;
 									y = location.y;
 								}
 								finalloc = new Coord(x, y);
 								gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
 								BotUtils.sleep(2000);
-							}else if (section != 1 && section != 2){
+							} else if (section != 1 && section != 2) {
+								System.out.println("section 3/4");
 								Gob player = gui.map.player();
 								Coord location = player.rc.floor(posres);
-								if(direction==1) {
+								if (direction == 1) {
 									x = location.x;
 									y = location.y - ((rowgap * section) - rowgap);
 								}
-								if(direction==2) {
+								if (direction == 2) {
 									x = location.x;
 									y = location.y + ((rowgap * section) - rowgap);
 								}
-								if(direction==3) {
-									x = location.x+ ((rowgap * section) - rowgap);
+								if (direction == 3) {
+									x = location.x + ((rowgap * section) - rowgap);
 									y = location.y;
 								}
-								if(direction==4) {
-									x = location.x- ((rowgap * section) - rowgap);
+								if (direction == 4) {
+									x = location.x - ((rowgap * section) - rowgap);
 									y = location.y;
 								}
 								finalloc = new Coord(x, y);
 								gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
+
 								BotUtils.sleep(6000);
 							}
-							for (Gob htable : tables) {
+							while (gui.maininv.getItemPartialCount("Drupe") > 0) {
 								lblProg2.settext("Tables");
-								//BotUtils.sysLogAppend("In the htable array","white");
-								pepperlist = gameui().maininv.getItemsPartial("Drupe");
-								if (pepperlist.size() > 0) {
-									//BotUtils.sysLogAppend("pepper still in inv, overlay of current table is : "+htable.ols.size(),"white");
-									if (htable.ols.size() != 2) {
-									//	BotUtils.sysLogAppend("empty table found","white");
-										gui.map.wdgmsg("click", htable.sc, htable.rc.floor(posres), 3, 0, 0, (int) htable.id, htable.rc.floor(posres), 0, -1);
-										BotUtils.waitForWindow("Herbalist Table");
-										BotUtils.sleep(1000);
-										for (Widget w = BotUtils.playerInventory().child; w != null; w = w.next) {
-											//BotUtils.sysLogAppend("checking inv","white");
-											if (w instanceof GItem && ((GItem) w).getname().contains("Pepper")) {
-											//	BotUtils.sysLogAppend("Pepper Found","white");
-												GItem item = (GItem) w;
-												try {
-												//	BotUtils.sysLogAppend("trying to transfer pepper","white");
-													item.wdgmsg("transfer", Coord.z);
-												} catch (NullPointerException qip) {BotUtils.sysLogAppend("Null pointer during pepper transfer.","white");}
-											}
-										}
+								while (htable == null) {
+									if(tables.size() == 0)
+									{
+										BotUtils.sysMsg("Tables is now empty for some reason, all tables full?",Color.white);
+										stopBtn.click();
+										break;
 									}
+									for (Gob tablelol : tables) {
+										if (tablelol.ols.size() != 2) {
+											System.out.println("Found not full table, id : "+tablelol.id);
+											htable = tablelol;
+											break;
+										}
+										else {
+                                            tablesblacklist.add(tablelol);
+                                            System.out.println("Blacklisting table : "+tablelol.id);
+                                        }
+									}
+									tables.removeAll(tablesblacklist);
+									tablesblacklist.clear();
 								}
-							}
-						}
+
+								System.out.println("clicking table, tables size : "+tables.size()+" blacklist size "+tablesblacklist.size()+" gob id : "+htable.id);
+								//BotUtils.doClick(htable,3,0);
+								BotUtils.pfRightClick(htable,0);
+                                    while(gui.getwnd("Herbalist Table")==null)
+										BotUtils.sleep(10);
+
+                                    BotUtils.waitForWindow("Herbalist Table");
+									cwnd = gui.getwnd("Herbalist Table");
+                                    System.out.println("Getting pepper from inv");
+                                    BotUtils.sleep(2000);
+                                    for (Widget w = BotUtils.playerInventory().child; w != null; w = w.next) {
+                                        if (w instanceof GItem && ((GItem) w).getname().contains("Pepper")) {
+                                            GItem item = (GItem) w;
+                                            try {
+                                                item.wdgmsg("transfer", Coord.z);
+                                            } catch (NullPointerException qip) {}
+                                        }
+                                    }
+                                    if(gui.getwnd("Herbalist Table")!=null){
+                                for(Widget w = cwnd.lchild;w!=null;w = w.prev) {
+                                    if (w instanceof Inventory) {
+                                        int drupes = PBotAPI.getInventoryContents((Inventory) w).size();
+										System.out.println("Pepper on table : "+drupes);
+                                        if (drupes == 16) {
+                                            tables.remove(htable);
+                                            System.out.println("Table full, removing : "+htable.id);
+                                            break;
+                                        }
+                                    }
+                                }}
+								htable = null;
+								cwnd = null;
+						}}
 						if(BotUtils.invFreeSlots() > 4)
 							break;
+						pepperlist.clear();
 						lblProg2.settext("Boiling");
 						gui.map.wdgmsg("click", cauldron.sc, cauldron.rc.floor(posres), 3, 0, 0, (int) cauldron.id, cauldron.rc.floor(posres), 0, -1);
 						FlowerMenu.setNextSelection("Open");
@@ -279,7 +320,6 @@ public class PepperBotRun extends Window implements Runnable {
 						Window cwnd = gameui().getwnd("Cauldron");
 						BotUtils.sleep(200);
 						VMeter vm = cwnd.getchild(VMeter.class);
-						IMeter vm2 = cwnd.getchild(IMeter.class);
 						((Button) craftall).click();
 						BotUtils.sleep(2000);
 						if (vm.amount < 30) {
@@ -295,6 +335,7 @@ public class PepperBotRun extends Window implements Runnable {
 							Coord retain = barrel.rc.floor(posres);
 							if (barrel.ols.size() == 0 && water != null) {
 								lblProg2.settext("Refill Barrel");
+								System.out.println("Refill Barrel");
 								//BotUtils.sysLogAppend("Barrel is empty refilling from cistern/well overlay size is : "+barrel.ols.size(),"white");
 								PBotAPI.liftGob(barrel);
 								BotUtils.sleep(1000);
@@ -313,10 +354,11 @@ public class PepperBotRun extends Window implements Runnable {
 							} else {
 								lblProg2.settext("Refill Cauldron");
 							//	BotUtils.sysLogAppend("Barrel is not empty refilling from barrel overlay size is : "+barrel.ols.size(),"white");
+								System.out.println("Refill Cauldron");
 								PBotAPI.liftGob(barrel);
 								BotUtils.sleep(1000);
 								gui.map.wdgmsg("click", cauldron.sc, cauldron.rc.floor(posres), 3, 0, 0, (int) cauldron.id, cauldron.rc.floor(posres), 0, -1);
-								FlowerMenu.setNextSelection("Open");
+								//FlowerMenu.setNextSelection("Open");
 								BotUtils.sleep(1000);
 								gui.map.wdgmsg("click", Coord.z, retain, 3, 0);
 								BotUtils.sleep(1000);

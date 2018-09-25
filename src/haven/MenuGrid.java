@@ -279,7 +279,7 @@ public class MenuGrid extends Widget {
            // p.add(paginafor(Resource.local().load("paginae/amber/coal9")));
            // p.add(paginafor(Resource.local().load("paginae/amber/coal12")));
             p.add(paginafor(Resource.local().load("paginae/amber/branchoven")));
-           // p.add(paginafor(Resource.local().load("paginae/amber/steel")));
+            p.add(paginafor(Resource.local().load("paginae/amber/steel")));
             p.add(paginafor(Resource.local().load("paginae/amber/torch")));
             p.add(paginafor(Resource.local().load("paginae/amber/CoalToSmelters")));
             p.add(paginafor(Resource.local().load("paginae/amber/DestroyArea")));

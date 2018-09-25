@@ -79,6 +79,7 @@ public class CharWnd extends Window {
     public final SkillGrid skg;
     public final CredoGrid credos;
     public final ExpGrid exps;
+    public int autoquestdroptimer = 0;
     public final Widget woundbox;
     public static boolean abandonquest = false;
     public final WoundList wounds;
@@ -1483,9 +1484,8 @@ public class CharWnd extends Window {
             }
 
             public void uimsg(String msg, Object... args) {
-                for(Object obj : args){
-                    System.out.println("msg : "+msg+" arg : "+obj);
-                }
+               // for(Object obj : args) System.out.println("msg : "+msg+" arg : "+obj);
+
                 if(msg == "opts") {
                     List<Pair<String, String>> opts = new ArrayList<>();
                     for(int i = 0; i < args.length; i += 2)
@@ -1502,6 +1502,8 @@ public class CharWnd extends Window {
         public static class $quest implements Factory {
             public Widget create(UI ui, Object[] args) {
                 int id = (Integer) args[0];
+                //for(Object obj : args)
+                  //  System.out.println(" args : "+obj);
                 Indir<Resource> res = ui.sess.getres((Integer) args[1]);
                 String title = (args.length > 2)?(String)args[2]:null;
                 return(new DefaultBox(id, res, title));
@@ -1905,6 +1907,20 @@ public class CharWnd extends Window {
         }
 
         protected void drawitem(GOut g, Quest q, int idx) {
+            try{
+                for(Quest i : quests) {
+                    if (ui.Questnumberarray.contains(Integer.valueOf(i.id)) && ui.readytodrop) {
+                        if (i.title.contains("Visit") && !i.title.contains(Config.questdropstring) && Config.autoquestdrop && ui.readytodrop) {
+                            BotUtils.sysLogAppend("Queing removal of : " + q.title, "white");
+                            ui.Questnumberarray.remove(Integer.valueOf(i.id));
+                            change(q);
+                            remove(q);
+                            ui.readytodrop = false;
+                        }
+                    }
+                }
+            }catch(NullPointerException qip){}
+           // if(ui.Questnumberarray.contains(q.id)) remove(q);
             if ((quest != null) && (quest.questid() == q.id))
                 drawsel(g);
             g.chcolor((idx % 2 == 0) ? every : other);
@@ -1952,6 +1968,13 @@ public class CharWnd extends Window {
         }
 
         public void add(Quest q) {
+            try {
+                if (q.title.contains("Visit") && !q.title.contains(Config.questdropstring)) {
+                   // BotUtils.sysLogAppend("Non Gerd quest found : " + q.title, "white");
+                    ui.Questnumberarray.add(q.id);
+                    System.out.println("CharWnd numberarray : "+ui.Questnumberarray.size()+" quest to drop : "+q.id);
+                }
+            }catch(NullPointerException pp){}
             quests.add(q);
         }
 

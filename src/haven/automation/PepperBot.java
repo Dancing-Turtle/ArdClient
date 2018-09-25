@@ -29,6 +29,7 @@ public class PepperBot extends Window implements AreaSelectCallback, GobSelectCa
 	private final int northtravel = 20000;
 	private int section = 1;
 	private int direction = 1;
+	List<WItem> ItemList;
 	public boolean allowrun;
 	private final Label lblc4, lblc3;
 	private final int travel = 20000;
@@ -54,43 +55,33 @@ public class PepperBot extends Window implements AreaSelectCallback, GobSelectCa
 
 		if(BotUtils.findObjectByNames(100,"gfx/terobjs/quern")!=null){
 			grinder = BotUtils.findObjectByNames(100,"gfx/terobjs/quern");
-			if (MapView.markedGobs.contains(grinder.id))
-				MapView.markedGobs.remove(grinder.id);
-			else
+			if (!MapView.markedGobs.contains(grinder.id))
 				MapView.markedGobs.add(grinder.id);
-			BotUtils.sysMsg("Auto added Quern",Color.white);
+			BotUtils.sysLogAppend("Auto added Quern","white");
 		}
 		if(BotUtils.findObjectByNames(100,"gfx/terobjs/well")!=null){
 			water = BotUtils.findObjectByNames(100,"gfx/terobjs/well");
-			if (MapView.markedGobs.contains(water.id))
-				MapView.markedGobs.remove(water.id);
-			else
+			if (!MapView.markedGobs.contains(water.id))
 				MapView.markedGobs.add(water.id);
-			BotUtils.sysMsg("Auto added Water Source",Color.white);
+			BotUtils.sysLogAppend("Auto added water source","white");
 		}
 		if(BotUtils.findObjectByNames(100,"gfx/terobjs/cauldron")!=null){
 			cauldron = BotUtils.findObjectByNames(100,"gfx/terobjs/cauldron");
-			if (MapView.markedGobs.contains(cauldron.id))
-				MapView.markedGobs.remove(cauldron.id);
-			else
+			if (!MapView.markedGobs.contains(cauldron.id))
 				MapView.markedGobs.add(cauldron.id);
-			BotUtils.sysMsg("Auto added Cauldron",Color.white);
+			BotUtils.sysLogAppend("Auto added cauldron","white");
 		}
 		if(BotUtils.findObjectByNames(100,"gfx/terobjs/pow")!=null){
 			hfire = BotUtils.findObjectByNames(100,"gfx/terobjs/pow");
-			if (MapView.markedGobs.contains(hfire.id))
-				MapView.markedGobs.remove(hfire.id);
-			else
+			if (!MapView.markedGobs.contains(hfire.id))
 				MapView.markedGobs.add(hfire.id);
-			BotUtils.sysMsg("Auto added HearthFire",Color.white);
+			BotUtils.sysLogAppend("Auto added hearthfire","white");
 		}
 		if(BotUtils.findObjectByNames(100,"gfx/terobjs/barrel")!=null){
 			barrel = BotUtils.findObjectByNames(100,"gfx/terobjs/barrel");
-			if (MapView.markedGobs.contains(barrel.id))
-				MapView.markedGobs.remove(barrel.id);
-			else
+			if (!MapView.markedGobs.contains(barrel.id))
 				MapView.markedGobs.add(barrel.id);
-			BotUtils.sysMsg("Auto added Barrel",Color.white);
+			BotUtils.sysLogAppend("Auto added barrel","white");
 		}
 
 
@@ -256,13 +247,21 @@ public class PepperBot extends Window implements AreaSelectCallback, GobSelectCa
 	public class testthread implements Runnable{
 @Override
 	public void run() {
-		BotUtils.sysMsg("Started", Color.white);
-		GameUI gui = gameui();
-for(Widget w = gui.lchild;w != null;w = w.prev){
-	System.out.println("Widget # : "+w.wdgid()+ " Parent # : "+w.parent.wdgid());
+	BotUtils.sysMsg("Started", Color.white);
+	GameUI gui = gameui();
+	List<WItem> idk = BotUtils.getInventoryContents(BotUtils.playerInventory());
+	for (WItem idkok : idk)
+		System.out.println("res : " + idkok.item.resource().name);
 }
 
-;	}
+	public double round(double value, int places) {
+		if (places < 0) throw new IllegalArgumentException();
+
+		long factor = (long) Math.pow(10, places);
+		value = value * factor;
+		long tmp = Math.round(value);
+		return (double) tmp / factor;
+	}
 		public void sort(java.util.List<WItem> items){
 			Collections.sort(items, (a, b) -> {
 				QBuff aq = a.item.quality();

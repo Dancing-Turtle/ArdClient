@@ -79,9 +79,9 @@ public class SeedCropFarmer extends Window implements Runnable {
 			// Right click the crop
 			BotUtils.doClick(g, 1, 0);
 			BotUtils.gui.map.wdgmsg("click", Coord.z, g.rc.floor(posres), 1, 0);
-			while (BotUtils.player().rc.x != g.rc.x || BotUtils.player().rc.y != g.rc.y) {
+			while (BotUtils.player().rc.x != g.rc.x || BotUtils.player().rc.y != g.rc.y)
 				BotUtils.sleep(10);
-			}
+
 			BotUtils.pfRightClick(g, 0);
 
 			// Wait for harvest menu to appear and harvest the crop
@@ -146,7 +146,7 @@ public class SeedCropFarmer extends Window implements Runnable {
 					// Plant the seed from hand
 					int amount = 0;
 					if (seedName.contains("seed"))
-						BotUtils.getAmount(BotUtils.getItemAtHand());
+						amount = BotUtils.getAmount(BotUtils.getItemAtHand());
 					BotUtils.mapInteractClick(0);
 					while (BotUtils.findNearestStageCrop(5, 0, cropName) == null || (BotUtils.getItemAtHand() != null && (seedName.contains("seed") && amount == BotUtils.getAmount(BotUtils.getItemAtHand())))) {
 						BotUtils.sleep(10);

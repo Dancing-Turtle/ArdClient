@@ -142,7 +142,9 @@ public class Config {
     public static boolean dropMinedStones = Utils.getprefb("dropMinedStones", true);
     public static boolean dropMinedOre = Utils.getprefb("dropMinedOre", true);
     public static boolean dropMinedOrePrecious = Utils.getprefb("dropMinedOrePrecious", true);
-    public static boolean dropMinedCurios = Utils.getprefb("dropMinedCurios", true);
+    public static boolean dropMinedCatGold = Utils.getprefb("dropMinedCatGold", true);
+    public static boolean dropMinedSeaShells = Utils.getprefb("dropMinedSeaShells", true);
+    public static boolean dropMinedCrystals = Utils.getprefb("dropMinedCrystals", true);
     public static boolean dropsmelterstones = Utils.getprefb("dropsmelterstones", true);
     public static boolean showdframestatus = Utils.getprefb("showdframestatus", true);
     public static boolean showrackstatus = Utils.getprefb("showrackstatus", true);
@@ -172,12 +174,14 @@ public class Config {
     public static boolean disableelev =  Utils.getprefb("disableelev", false);
     public static String treeboxclr =  Utils.getpref("treeboxclr", "D7FF00");
     public static String chatalert =  Utils.getpref("chatalert", "Null");
+    public static String questdropstring =  Utils.getpref("questdropstring", "Null");
   //  public static String discordchannel =  Utils.getpref("discordchannel", "Null");
     public static String discordbotkey =  Utils.getpref("discordbotkey", "Null");
     public static boolean highlightpots = Utils.getprefb("highlightpots", false);
     public static boolean bonsai = Utils.getprefb("bonsai", false);
     public static int fontsizechat = Utils.getprefi("fontsizechat", 14);
     public static boolean fontaa = Utils.getprefb("fontaa", false);
+    public static boolean autoquestdrop = Utils.getprefb("autoquestdrop", false);
     public static boolean usefont = Utils.getprefb("usefont", false);
     public static String font = Utils.getpref("font", "SansSerif");
     public static int fontadd = Utils.getprefi("fontadd", 0);

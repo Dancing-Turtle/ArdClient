@@ -31,6 +31,8 @@ import java.util.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.InputEvent;
+import java.util.List;
+
 import haven.automation.Discord;
 import haven.purus.BotUtils;
 
@@ -45,9 +47,12 @@ public class UI {
     public int questid;
     public boolean modshift, modctrl, modmeta, modsuper;
     public int keycode;
+    public boolean readytodrop = false;
     public Object lasttip;
     double lastevent, lasttick;
     public Widget mouseon;
+    public List<Integer> Questwidgetarray = new ArrayList<>();
+    public List<Integer> Questnumberarray = new ArrayList<>();
     public Console cons = new WidgetConsole();
     private Collection<AfterDraw> afterdraws = new LinkedList<AfterDraw>();
     public final ActAudio audio = new ActAudio();
@@ -126,8 +131,9 @@ public class UI {
     public void bind(Widget w, int id) {
         widgets.put(id, w);
         rwidgets.put(w, id);
-        if(questid == id && CharWnd.abandonquest){
+        if(id == questid && CharWnd.abandonquest){
             w.wdgmsg("opt","rm");
+            readytodrop = true;
             CharWnd.abandonquest = false;
         }
     }
@@ -154,11 +160,7 @@ public class UI {
     }
 
     public void newwidget(int id, String type, int parent, Object[] pargs, Object... cargs) throws InterruptedException {
-        System.out.println("Widget ID : "+id+" Type : "+type+" Parent : "+parent);
-     //   if(type.equals("quest")) {
-      //      questid = id;
-       //     BotUtils.sysMsg("quest found",Color.white);
-        //}
+       // System.out.println("Widget ID : "+id+" Type : "+type+" Parent : "+parent);
         if(type.contains("rchan"))
             realmchat = id;
         if (Config.quickbelt && type.equals("wnd") && cargs[1].equals("Belt")) {
@@ -181,6 +183,12 @@ public class UI {
                 if(CharWnd.abandonquest) {
                   questid = id;
                 }
+                try{
+                if(cargs[2].toString().contains("Visit") && !cargs[2].toString().contains(Config.questdropstring) && Config.autoquestdrop){
+                  //  System.out.println("Non "+Config.questdropstring+" Visit Quest Found");
+                    Questwidgetarray.add(Integer.valueOf(id));
+                    System.out.println("Widgetarray size : "+Questwidgetarray.size());
+                }}catch(ArrayIndexOutOfBoundsException qq){}
             }
             if (parent != 65535) {
                 Widget pwdg = widgets.get(parent);
@@ -213,6 +221,14 @@ public class UI {
                 }
             }
             bind(wdg, id);
+            if(Questwidgetarray.contains(id) && Config.autoquestdrop) {
+                wdg.wdgmsg("opt", "rm");
+                Questwidgetarray.remove(Integer.valueOf(id));
+                  BotUtils.sysLogAppend("Dropping quest ID : "+id,"white");
+                  System.out.println("Dropping quest ID : "+id+" quests left : "+Questwidgetarray.size());
+                  Questnumberarray.add((int)cargs[0]);
+                  CharWnd.abandonquest = false;
+            }
         }
     }
 
@@ -359,7 +375,7 @@ public class UI {
     public void wdgmsg(Widget sender, String msg, Object... args) {
         int id;
         synchronized(this) {
-   //     try { for(Object obj:args) System.out.println("Sender : " + sender + " msg = " + msg + " arg 1 : " + obj); }catch(ArrayIndexOutOfBoundsException q){}
+       // try { for(Object obj:args) System.out.println("Sender : " + sender + " msg = " + msg + " arg 1 : " + obj); }catch(ArrayIndexOutOfBoundsException q){}
             if (msg.endsWith("-identical"))
                 return;
 
@@ -393,7 +409,7 @@ public class UI {
                 }
             }
                 if (wdg != null) {
-           //   try { for(Object obj:args) System.out.println("Wdg : " + wdg + " msg : "+msg+" id = " + id + " arg 1 : " + obj); }catch(ArrayIndexOutOfBoundsException qq){}
+          //    try { for(Object obj:args) System.out.println("Wdg : " + wdg + " msg : "+msg+" id = " + id + " arg 1 : " + obj); }catch(ArrayIndexOutOfBoundsException qq){}
                     wdg.uimsg(msg.intern(), args);
                 }
                  else

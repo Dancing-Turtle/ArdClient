@@ -771,8 +771,6 @@ na.put(ChatAttribute.HEARTH_SECRET, hs);
         public void send(String text) {
             history.add(text);
             GameUI gui = gameui();
-          //  this.append(gui.getparent(GameUI.class).buddies.getCharName() + ":  " + text, Color.white);
-           // wdgmsg("msg", text);
             for(TextChannel loop:haven.automation.Discord.channels)
                 if (this.name().equals(loop.getName())){
                 loop.sendMessage(gui.getparent(GameUI.class).buddies.getCharName()+": "+text).queue();
