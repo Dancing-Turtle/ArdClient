@@ -375,7 +375,7 @@ public class UI {
     public void wdgmsg(Widget sender, String msg, Object... args) {
         int id;
         synchronized(this) {
-       // try { for(Object obj:args) System.out.println("Sender : " + sender + " msg = " + msg + " arg 1 : " + obj); }catch(ArrayIndexOutOfBoundsException q){}
+      //  try { for(Object obj:args) if(!sender.toString().contains("Camera")) System.out.println("Sender : " + sender + " msg = " + msg + " arg 1 : " + obj); }catch(ArrayIndexOutOfBoundsException q){}
             if (msg.endsWith("-identical"))
                 return;
 

@@ -181,6 +181,7 @@ public class PepperBotRun extends Window implements Runnable {
 				}
 
 				if (BotUtils.invFreeSlots() < 4 && !stopThread) {
+					List<Gob> goblist = PBotAPI.getGobs();
 					boilmode = true;
 					gui.act("travel", "hearth");
 					BotUtils.sleep(6000);
@@ -250,7 +251,11 @@ public class PepperBotRun extends Window implements Runnable {
 										stopBtn.click();
 										break;
 									}
+
 									for (Gob tablelol : tables) {
+										for (Gob idklol : goblist)
+											if (idklol.id == tablelol.id)
+												tablelol = idklol;
 										if (tablelol.ols.size() != 2) {
 											System.out.println("Found not full table, id : "+tablelol.id);
 											htable = tablelol;
@@ -265,7 +270,7 @@ public class PepperBotRun extends Window implements Runnable {
 									tablesblacklist.clear();
 								}
 
-								System.out.println("clicking table, tables size : "+tables.size()+" blacklist size "+tablesblacklist.size()+" gob id : "+htable.id);
+							//	System.out.println("clicking table, tables size : "+tables.size()+" blacklist size "+tablesblacklist.size()+" gob id : "+htable.id);
 								//BotUtils.doClick(htable,3,0);
 								BotUtils.pfRightClick(htable,0);
                                     while(gui.getwnd("Herbalist Table")==null)
@@ -283,7 +288,11 @@ public class PepperBotRun extends Window implements Runnable {
                                             } catch (NullPointerException qip) {}
                                         }
                                     }
+                                    BotUtils.sleep(1500);
+                                    BotUtils.doClick(htable,3,0);
+                                    BotUtils.waitForWindow("Herbalist Table");
                                     if(gui.getwnd("Herbalist Table")!=null){
+                                    	cwnd = gui.getwnd("Herbalist Table");
                                 for(Widget w = cwnd.lchild;w!=null;w = w.prev) {
                                     if (w instanceof Inventory) {
                                         int drupes = PBotAPI.getInventoryContents((Inventory) w).size();

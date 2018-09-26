@@ -184,7 +184,7 @@ while(tables.size()>0 && !stopThread) {
         int retrycount = 0;
         while(gui.getwnd("Herbalist Table")== null){
         	retrytimer++;
-        	if(retrytimer > 2000){
+        	if(retrytimer > 1000){
         		retrycount++;
 				if (retrycount >= 3) {
 					lblProg.settext("Unstucking");
@@ -314,10 +314,7 @@ if(BotUtils.invFreeSlots() <= 2) {
 }
 BotUtils.sysLogAppend("end of loop","white");
 }
-	// Update progression
-		BotUtils.sysMsg("Grinder Bot finished!",Color.white);
-		stopThread =false;
-		stopBtn.click();
+		stopThread =true;
 		this.destroy();
 	}
 
@@ -416,7 +413,7 @@ BotUtils.sysLogAppend("end of loop","white");
 
 	public void stop() {
 		// Stops thread
-		BotUtils.sysMsg("Trellis Farmer stopped!", Color.white);
+		BotUtils.sysMsg("Pepper Grinder Stopped!", Color.white);
 		gameui().map.wdgmsg("click", Coord.z, gameui().map.player().rc.floor(posres), 1, 0);
 		if (gameui().map.pfthread != null) {
 			gameui().map.pfthread.interrupt();

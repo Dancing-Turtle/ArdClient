@@ -249,9 +249,12 @@ public class PepperBot extends Window implements AreaSelectCallback, GobSelectCa
 	public void run() {
 	BotUtils.sysMsg("Started", Color.white);
 	GameUI gui = gameui();
-	List<WItem> idk = BotUtils.getInventoryContents(BotUtils.playerInventory());
-	for (WItem idkok : idk)
-		System.out.println("res : " + idkok.item.resource().name);
+	Coord location = gui.map.player().rc.floor(posres);
+	int y = location.y + (int) Math.random() * 4000 - 1000;
+	System.out.println(" y : "+y);
+	//List<WItem> idk = BotUtils.getInventoryContents(BotUtils.playerInventory());
+	//for (WItem idkok : idk)
+	//	System.out.println("res : " + idkok.item.resource().name);
 }
 
 	public double round(double value, int places) {

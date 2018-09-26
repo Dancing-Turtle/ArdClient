@@ -110,25 +110,9 @@ public class SeedCropFarmer extends Window implements Runnable {
 			// Replant
 			if (replant) {
 				try {
-                    while (BotUtils.getItemAtHand() == null) {
-                        while(gui.maininv.getItemPartial("seed") == null)
-							BotUtils.sleep(10);
-                        WItem flax = gui.maininv.getItemPartial("seed");
-                        GItem flax2 = flax.item;
-                        java.util.List<WItem> items = gui.maininv.getIdenticalItems((flax2));
-                        sort(items);
-                        for (WItem seeds : items) {
-                            GItem item = seeds.item;
-                            if (BotUtils.getAmount(item) >= 5) {
-                                //BotUtils.sysLogAppend("Replanting flax of quality : " + item.quality().q, "white");
-                                BotUtils.takeItem(item);
-                                break;
-                            }
-                        }
-                    }
-					//GItem item = null;
-
-						/*Inventory inv = BotUtils.playerInventory();
+					GItem item = null;
+					while (BotUtils.getItemAtHand() == null) {
+						Inventory inv = BotUtils.playerInventory();
 						for (Widget w = inv.child; w != null; w = w.next) {
 							if (w instanceof GItem && ((GItem) w).resource().name.equals(seedName) && (!seedName.contains("seed") || BotUtils.getAmount((GItem) w) >= 5)) {
 								while ((GItem) w == null) {
@@ -139,33 +123,29 @@ public class SeedCropFarmer extends Window implements Runnable {
 							}
 						}
 						if (item != null)
-							BotUtils.takeItem(item);*/
-
+							BotUtils.takeItem(item);
+					}
 					while (BotUtils.getItemAtHand() == null)
 						BotUtils.sleep(10);
 					// Plant the seed from hand
 					int amount = 0;
 					if (seedName.contains("seed"))
-						amount = BotUtils.getAmount(BotUtils.getItemAtHand());
+						BotUtils.getAmount(BotUtils.getItemAtHand());
 					BotUtils.mapInteractClick(0);
 					while (BotUtils.findNearestStageCrop(5, 0, cropName) == null || (BotUtils.getItemAtHand() != null && (seedName.contains("seed") && amount == BotUtils.getAmount(BotUtils.getItemAtHand())))) {
 						BotUtils.sleep(10);
-					//	BotUtils.sysLogAppend("in weird sleep loop","white");
 					}
-
 					BotUtils.dropItem(0);
-
 					for (Widget w = BotUtils.playerInventory().child; w != null; w = w.next) {
-						BotUtils.sysLogAppend("in drop loop","white");
 						if (w instanceof GItem && ((GItem) w).resource().name.equals(seedName)) {
-							GItem item = (GItem) w;
+							item = (GItem) w;
 							try {
 								item.wdgmsg("drop", Coord.z);
 							} catch (Exception e) {
 							}
 						}
 					}
-					}catch(NullPointerException | Loading | Resource.LoadException q){}
+				}catch(NullPointerException q){}
 			} else if (replantcontainer) {
 				try {
 					while (BotUtils.getItemAtHand() == null) {

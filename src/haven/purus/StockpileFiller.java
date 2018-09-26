@@ -91,6 +91,7 @@ public class StockpileFiller extends Window implements GobSelectCallback, ItemCl
 							break;
 						BotUtils.doClick(gob, 3, 1);
 						while (BotUtils.findObjectById(gob.id) != null && BotUtils.getItemAtHand() == null) {
+							System.out.println("waiting to pickup item");
 							BotUtils.sleep(100);
 						}
 						gob = BotUtils.findObjectByNames(1000, terobj);
@@ -101,23 +102,40 @@ public class StockpileFiller extends Window implements GobSelectCallback, ItemCl
 					}
 					while (BotUtils.getItemAtHand() != null && !stop) {
 						if (stockpiles.isEmpty()) {
+							System.out.println("Stockpiles empty");
 							BotUtils.sysMsg("All chosen stockpiles full!", Color.GREEN);
 							stop = true;
 							break;
 						}
 
 						if (BotUtils.stockpileIsFull(BotUtils.findObjectById(stockpiles.get(0).id))) {
+							System.out.println("Stockpile full");
 							stockpiles.remove(0);
 							continue;
 						}
 						if (stop)
 							break;
+						BotUtils.pfRightClick(stockpiles.get(0),0);
+						int retry = 0;
+						while(gameui().getwnd("Stockpile")==null){
+							retry++;
+							if(retry > 500){
+								retry = 0;
+								BotUtils.sysLogAppend("Retrying trough interaction","white");
+								//BotUtils.dropItem(0);
+								BotUtils.pfRightClick(stockpiles.get(0),0);
+							}
+							BotUtils.sleep(10);
+						}
+						System.out.println("clicking stockpile");
 						BotUtils.gui.map.wdgmsg("itemact", Coord.z, stockpiles.get(0).rc.floor(posres), 1, 0, (int) stockpiles.get(0).id, stockpiles.get(0).rc.floor(posres), 0, -1);
 						int cnt = BotUtils.invFreeSlots();
 						while (BotUtils.invFreeSlots() == cnt) {
+							System.out.println("waiting for inv update");
 							BotUtils.sleep(100);
 						}
 						if (BotUtils.getItemAtHand() == null && BotUtils.getInventoryItemsByName(BotUtils.playerInventory(), invobj).size() > 0) {
+							System.out.println("grabbing new item");
 							BotUtils.takeItem(BotUtils.getInventoryItemsByName(BotUtils.playerInventory(), invobj).get(0).item);
 						}
 					}
@@ -169,6 +187,7 @@ public class StockpileFiller extends Window implements GobSelectCallback, ItemCl
 	}
 
 	public void stop() {
+		t.interrupt();
 		stop = true;
 		synchronized (ItemClickCallback.class) {
     		BotUtils.gui.unregisterItemCallback();

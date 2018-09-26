@@ -7,16 +7,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import haven.Coord;
-import haven.Frame;
-import haven.GItem;
-import haven.GOut;
-import haven.Gob;
-import haven.Inventory;
-import haven.Label;
-import haven.UI;
-import haven.Widget;
-import haven.Window;
+import haven.*;
 import haven.automation.GobSelectCallback;
 
 public class TroughFiller extends Window implements GobSelectCallback {
@@ -46,52 +37,67 @@ public class TroughFiller extends Window implements GobSelectCallback {
 
 	Thread t = new Thread(new Runnable() {
 		public void run() {
-			main: while (true) {
-				if (BotUtils.findObjectByNames(1000, terobjs) == null
-						&& BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), invobjs).size() == 0)
-					break;
-				while (BotUtils.invFreeSlots() > 0) {
-					if (stop)
-						break main;
-					if (BotUtils.findObjectByNames(1000, terobjs) == null)
+			try {
+				main:
+				while (true) {
+					if (BotUtils.findObjectByNames(1000, terobjs) == null
+							&& BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), invobjs).size() == 0)
 						break;
-
-					Gob g = BotUtils.findObjectByNames(1000, terobjs);
-					BotUtils.pfRightClick(g, 0);
-					int i = 0;
-					while (BotUtils.findObjectById(g.id) != null) {
-						if (i == 100)
+					while (BotUtils.invFreeSlots() > 0) {
+						if (stop)
+							break main;
+						if (BotUtils.findObjectByNames(1000, terobjs) == null)
 							break;
-						BotUtils.sleep(100);
-						i++;
+
+						Gob g = BotUtils.findObjectByNames(1000, terobjs);
+						BotUtils.pfRightClick(g, 0);
+						int i = 0;
+						while (BotUtils.findObjectById(g.id) != null) {
+							if (i == 100)
+								break;
+							BotUtils.sleep(50);
+							i++;
+						}
 					}
-				}
 
-				if (stop)
-					break main;
-				if (BotUtils.getItemAtHand() != null)
-					BotUtils.dropItem(0);
-				BotUtils.pfRightClick(trough, 0);
-				BotUtils.waitForWindow("Trough");
-
-				while (BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), invobjs).size() != 0) {
 					if (stop)
 						break main;
-					GItem item = BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), invobjs).get(0).item;
-					BotUtils.takeItem(item);
+					if (BotUtils.getItemAtHand() != null)
+						BotUtils.dropItem(0);
 
-					gameui().map.wdgmsg("itemact", Coord.z, trough.rc.floor(posres), 0, 0, (int) trough.id,
-							trough.rc.floor(posres), 0, -1);
-					int i = 0;
-					while (BotUtils.getItemAtHand() != null) {
-						if (i == 60000)
-							break main;
+					BotUtils.pfRightClick(trough, 0);
+					int retry = 0;
+					while(gameui().getwnd("Trough")==null){
+						retry++;
+						if(retry > 500){
+							retry = 0;
+							BotUtils.sysLogAppend("Retrying trough interaction","white");
+							BotUtils.dropItem(0);
+							BotUtils.pfRightClick(trough,0);
+						}
 						BotUtils.sleep(10);
-						i++;
 					}
-				}
+					//BotUtils.waitForWindow("Trough");
 
-			}
+					while (BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), invobjs).size() != 0) {
+						if (stop)
+							break main;
+						GItem item = BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), invobjs).get(0).item;
+						BotUtils.takeItem(item);
+
+						gameui().map.wdgmsg("itemact", Coord.z, trough.rc.floor(posres), 0, 0, (int) trough.id,
+								trough.rc.floor(posres), 0, -1);
+						int i = 0;
+						while (BotUtils.getItemAtHand() != null) {
+							if (i == 60000)
+								break main;
+							BotUtils.sleep(10);
+							i++;
+						}
+					}
+
+				}
+			}catch(Loading | Resource.LoadException | NullPointerException idklol) {BotUtils.sysLogAppend("Error captured in main thread.","white");}
 			BotUtils.sysMsg("Trough Filler finished", Color.WHITE);
 			reqdestroy();
 		}

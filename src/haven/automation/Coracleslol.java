@@ -25,6 +25,8 @@ public class Coracleslol implements Runnable {
         if(coracle != null)
             havecoracle = true;
         if(!havecoracle){
+            while(BotUtils.findObjectByNames(10,"gfx/terobjs/vehicle/coracle")==null)
+                BotUtils.sleep(10);
             try {
                 coraclegob = BotUtils.findObjectByNames(10, "gfx/terobjs/vehicle/coracle");
             }catch(NullPointerException ip){}
@@ -46,7 +48,9 @@ public class Coracleslol implements Runnable {
         }
         else {
             coracle.item.wdgmsg("drop", Coord.z);
-            while(gui.maininv.getItemPartial("Coracle")!=null){}
+            while(gui.maininv.getItemPartial("Coracle")!=null){BotUtils.sleep(10);}
+            while(BotUtils.findObjectByNames(10,"gfx/terobjs/vehicle/coracle") == null)
+                BotUtils.sleep(10);
             Gob coraclegob = BotUtils.findObjectByNames(10, "gfx/terobjs/vehicle/coracle");
             if (coraclegob == null) {
                 BotUtils.sysMsg("Coracle not found, breaking.", Color.white);
