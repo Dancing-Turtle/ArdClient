@@ -274,6 +274,34 @@ public class BotUtils {
 		}catch(NullPointerException q){}
 		return nearest;
 	}
+	public static Gob findNearestGob(int radius, List<Gob> blacklist, String... names) {
+		Coord2d plc = player().rc;
+		double min = radius;
+		Gob nearest = null;
+		try {
+			synchronized (gui.ui.sess.glob.oc) {
+				for (Gob gob : gui.ui.sess.glob.oc) {
+					double dist = gob.rc.dist(plc);
+					if (dist < min) {
+						boolean matches = false;
+						for (String name : names) {
+							if (gob.getres().basename().contains(name)) {
+								if (!blacklist.contains(gob)) {
+									matches = true;
+									break;
+								}
+							}
+						}
+						if (matches) {
+							min = dist;
+							nearest = gob;
+						}
+					}
+				}
+			}
+		}catch(NullPointerException q){}
+		return nearest;
+	}
 
 	// Checks if the object's name can be found from resources
 	public static boolean isObjectName(Gob gob, String name) {

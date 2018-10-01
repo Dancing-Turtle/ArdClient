@@ -1007,6 +1007,10 @@ public class Utils {
     }
 
     public static BufferedImage outline2(BufferedImage img, Color col) {
+        return outline2(img, col, false);
+    }
+
+    public static BufferedImage outline2(BufferedImage img, Color col, boolean thick) {
         BufferedImage ol = outline(img, col);
         Graphics g = ol.getGraphics();
         g.drawImage(img, 1, 1, null);

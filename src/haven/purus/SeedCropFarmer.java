@@ -145,7 +145,7 @@ public class SeedCropFarmer extends Window implements Runnable {
 							}
 						}
 					}
-				}catch(NullPointerException q){}
+				}catch(NullPointerException | Loading | Sprite.ResourceException q){}
 			} else if (replantcontainer) {
 				try {
 					while (BotUtils.getItemAtHand() == null) {

@@ -37,7 +37,7 @@ public class SteelRefueler extends Window implements GobSelectCallback {
         super(new Coord(270, 180), "Steel Refueler");
 
         final Label lbl = new Label("Click select and select your area with crucibles/stockpiles.", infof);
-        add(lbl, new Coord(30, 20));
+        add(lbl, new Coord(0, 20));
 
         Label lblctxt = new Label("Crucibles Selected:", infof);
         add(lblctxt, new Coord(15, 60));
@@ -114,8 +114,9 @@ public class SteelRefueler extends Window implements GobSelectCallback {
                 cloop:
                 for (Gob c : crucibles) {
                     // take fuel from stockpiles if we don't have enough in the inventory
-                  //  int availableFuelCoal = gui.maininv.getItemPartialCount("Coal");
+
                    // int availableFuelBlock = gui.maininv.getItemPartialCount("Block");
+                    //  int availableFuelCoal = gui.maininv.getItemPartialCount("Coal");
                     int availableFuelBranch = gui.maininv.getItemPartialCount("Branch");
                     if (availableFuelBranch < 18)
                         getfuel();

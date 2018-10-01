@@ -26,6 +26,8 @@
 
 package haven;
 
+import haven.purus.BotUtils;
+
 import java.awt.event.KeyEvent;
 
 public class RootWidget extends ConsoleHost {
@@ -60,6 +62,29 @@ public class RootWidget extends ConsoleHost {
             }
         }
         return (true);
+    }
+
+    @Override
+    public boolean keydown(KeyEvent ev) {
+        if(ui.gui.chat.hasfocus) {
+          // System.out.println("chat has focus");
+            return false;
+        }
+        else if(ui.gui.opts.visible) {
+          //  System.out.println("Options has focus.");
+            return false;
+        }
+        else if(ui.gui.menuSearch.search.hasfocus) {
+          //  System.out.println("search has focus visible : "+ui.gui.menuSearch.visible);
+            return false;
+        }
+        else
+                return KeyBinder.handle(ui, ev) || super.keydown(ev);
+    }
+
+    @Override
+    public boolean mousedown(Coord c, int button) {
+        return super.mousedown(c, button);
     }
 
     public void draw(GOut g) {

@@ -59,6 +59,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import haven.automation.Discord;
 import haven.purus.BotUtils;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
@@ -329,8 +330,6 @@ na.put(ChatAttribute.HEARTH_SECRET, hs);
 
         public void notify(Message msg, int urgency) {
             getparent(ChatUI.class).notify(this, msg);
-            System.out.println("urgency update : "+this);
-            System.out.println("urgency update : "+this.name());
             updurgency(Math.max(this.urgency, urgency));
         }
 
@@ -712,6 +711,12 @@ na.put(ChatAttribute.HEARTH_SECRET, hs);
         public void send(String text) {
             history.add(text);
             wdgmsg("msg", text);
+            if(Config.discordchat && this.name().equals(Config.chatalert) && Discord.jdalogin!=null){
+                GameUI gui = gameui();
+                for(TextChannel loop:haven.automation.Discord.channels)
+                    if (loop.getName().equals(Config.discordchannel))
+                        loop.sendMessage(gui.getparent(GameUI.class).buddies.getCharName()+": "+text).queue();
+            }
         }
     }
 
@@ -772,8 +777,8 @@ na.put(ChatAttribute.HEARTH_SECRET, hs);
             history.add(text);
             GameUI gui = gameui();
             for(TextChannel loop:haven.automation.Discord.channels)
-                if (this.name().equals(loop.getName())){
-                loop.sendMessage(gui.getparent(GameUI.class).buddies.getCharName()+": "+text).queue();
+                if (this.name().equals(loop.getName())) {
+                    loop.sendMessage(gui.getparent(GameUI.class).buddies.getCharName() + ": " + text).queue();
                 }
         }
     }
@@ -883,6 +888,7 @@ na.put(ChatAttribute.HEARTH_SECRET, hs);
                 Integer from = (Integer) args[0];
                 String line = (String) args[1];
 
+
                 if (name.equals(Resource.getLocString(Resource.BUNDLE_LABEL, "Area Chat")) && line.startsWith(CMD_PREFIX_HLIGHT)) {
                     try {
                         long gobid = Long.parseLong(line.substring(1));
@@ -907,6 +913,12 @@ na.put(ChatAttribute.HEARTH_SECRET, hs);
                     append(cmsg);
                    // if (urgency > 0)
                     notify(cmsg, 1);
+
+                    if(Config.discordchat && this.name().equals(Config.chatalert) && Discord.jdalogin!=null && !cmsg.text().text.contains(Discord.botname)) {
+                        for (TextChannel loop : haven.automation.Discord.channels)
+                            if (loop.getName().equals(Config.discordchannel))
+                                loop.sendMessage(name + ": " + msg).queue();
+                    }
                   //  notify(cmsg, urgency);
                     save(name, cmsg.text().text);
                 }
@@ -1135,7 +1147,7 @@ na.put(ChatAttribute.HEARTH_SECRET, hs);
     public static class $MChat implements Factory {
         public Widget create(UI ui, Object[] args) {
             String name = (String) args[0];
-            System.out.println("triggered mchat name : "+name + args[0]);
+          //  System.out.println("triggered mchat name : "+name + args[0]);
             int urgency = (Integer) args[1];
             return (new MultiChat(false, Resource.getLocString(Resource.BUNDLE_LABEL, name), urgency));
         }

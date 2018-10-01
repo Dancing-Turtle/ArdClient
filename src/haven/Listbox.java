@@ -31,8 +31,12 @@ import haven.purus.BotUtils;
 import java.awt.Color;
 
 public abstract class Listbox<T> extends ListWidget<T> {
+    public static final Color selc = new Color(114, 179, 82, 128);
+    public static final Color overc = new Color(189, 239, 137, 53);
+    public Color bgcolor = Color.BLACK;
     public int h;
     public final Scrollbar sb;
+    private T over;
 
     public Listbox(int w, int h, int itemh) {
         super(new Coord(w, h * itemh), itemh);
@@ -40,7 +44,11 @@ public abstract class Listbox<T> extends ListWidget<T> {
         this.sb = adda(new Scrollbar(sz.y, 0, 0), sz.x, 0, 1, 0);
     }
 
-    protected void drawsel(GOut g) {
+    protected void drawsel(GOut g)
+    {
+        drawsel(g, selc);
+    }
+    protected void drawsel(GOut g, Color color) {
         g.chcolor(255, 255, 0, 128);
         g.frect(Coord.z, g.sz);
         g.chcolor();
@@ -80,6 +88,8 @@ public abstract class Listbox<T> extends ListWidget<T> {
             change(item);
     }
 
+    protected void itemactivate(T item) {}
+
     public T itemat(Coord c) {
         int idx = (c.y / itemh) + sb.val;
         if (idx >= listitems())
@@ -97,6 +107,34 @@ public abstract class Listbox<T> extends ListWidget<T> {
             itemclick(item, button);
         }
         return (true);
+    }
+
+
+    @Override
+    public void mousemove(Coord c) {
+        super.mousemove(c);
+        if(c.isect(Coord.z, sz)){
+            over = itemat(c);
+        } else{
+            over = null;
+        }
+    }
+
+
+    public void showsel() {
+        if (sb.val + h - 1 < selindex)
+            sb.val = Math.max(0, selindex - h + 1);
+        if (sb.val > selindex)
+            sb.val = Math.max(0, selindex);
+    }
+
+    public boolean mouseclick(Coord c, int button, int count) {
+        if(super.mouseclick(c, button, count))
+            return(true);
+        T item = itemat(c);
+        if(item != null && button == 1 && count >= 2)
+            itemactivate(item);
+        return(true);
     }
 
     public void display(int idx) {

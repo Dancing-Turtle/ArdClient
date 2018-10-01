@@ -58,7 +58,7 @@ public class UI {
     public final ActAudio audio = new ActAudio();
     public int beltWndId = -1;
 	public GameUI gui;
-	public int realmchat;
+	public Widget realmchat;
 
 
     {
@@ -160,9 +160,9 @@ public class UI {
     }
 
     public void newwidget(int id, String type, int parent, Object[] pargs, Object... cargs) throws InterruptedException {
-       // System.out.println("Widget ID : "+id+" Type : "+type+" Parent : "+parent);
-        if(type.contains("rchan"))
-            realmchat = id;
+      //  System.out.println("Widget ID : "+id+" Type : "+type+" Parent : "+parent);
+
+
         if (Config.quickbelt && type.equals("wnd") && cargs[1].equals("Belt")) {
             // use custom belt window
             type = "wnd-belt";
@@ -187,7 +187,7 @@ public class UI {
                 if(cargs[2].toString().contains("Visit") && !cargs[2].toString().contains(Config.questdropstring) && Config.autoquestdrop){
                   //  System.out.println("Non "+Config.questdropstring+" Visit Quest Found");
                     Questwidgetarray.add(Integer.valueOf(id));
-                    System.out.println("Widgetarray size : "+Questwidgetarray.size());
+                  //  System.out.println("Widgetarray size : "+Questwidgetarray.size());
                 }}catch(ArrayIndexOutOfBoundsException qq){}
             }
             if (parent != 65535) {
@@ -221,11 +221,15 @@ public class UI {
                 }
             }
             bind(wdg, id);
+            if(type.contains("rchan"))
+                realmchat = wdg;
+            if(type.contains("speedget"))
+                gui.speedget = (Speedget)wdg;
             if(Questwidgetarray.contains(id) && Config.autoquestdrop) {
                 wdg.wdgmsg("opt", "rm");
                 Questwidgetarray.remove(Integer.valueOf(id));
                   BotUtils.sysLogAppend("Dropping quest ID : "+id,"white");
-                  System.out.println("Dropping quest ID : "+id+" quests left : "+Questwidgetarray.size());
+               //   System.out.println("Dropping quest ID : "+id+" quests left : "+Questwidgetarray.size());
                   Questnumberarray.add((int)cargs[0]);
                   CharWnd.abandonquest = false;
             }
@@ -375,7 +379,7 @@ public class UI {
     public void wdgmsg(Widget sender, String msg, Object... args) {
         int id;
         synchronized(this) {
-      //  try { for(Object obj:args) if(!sender.toString().contains("Camera")) System.out.println("Sender : " + sender + " msg = " + msg + " arg 1 : " + obj); }catch(ArrayIndexOutOfBoundsException q){}
+      // try { for(Object obj:args) if(!sender.toString().contains("Camera")) System.out.println("Sender : " + sender + " msg = " + msg + " arg 1 : " + obj); }catch(ArrayIndexOutOfBoundsException q){}
             if (msg.endsWith("-identical"))
                 return;
 
@@ -395,21 +399,14 @@ public class UI {
         synchronized (this) {
             Widget wdg = widgets.get(id);
 
-            if(id == realmchat){
+            if(realmchat != null){
+            if(id == realmchat.wdgid()){
                 if (msg.contains("msg") && wdg.toString().contains("Realm")) {
-                    for (Widget w = gui.chat.lchild; w != null; w = w.prev) {
-                        if (w instanceof ChatUI.MultiChat) {
-                            ChatUI.MultiChat chat = (ChatUI.MultiChat) w;
-                            if (chat.name().contains(Resource.getLocString(Resource.BUNDLE_LABEL, "(P)"))) {
-                                chat.updurgency(1);
-                                break;
-                            }
-                        }
-                    }
+                    ((ChatUI.EntryChannel) realmchat).updurgency(1);
                 }
-            }
+            }}
                 if (wdg != null) {
-          //    try { for(Object obj:args) System.out.println("Wdg : " + wdg + " msg : "+msg+" id = " + id + " arg 1 : " + obj); }catch(ArrayIndexOutOfBoundsException qq){}
+            //  try { for(Object obj:args) System.out.println("Wdg : " + wdg + " msg : "+msg+" id = " + id + " arg 1 : " + obj); }catch(ArrayIndexOutOfBoundsException qq){}
                     wdg.uimsg(msg.intern(), args);
                 }
                  else
@@ -480,6 +477,9 @@ public class UI {
         }
         return (false);
     }
+  //  public void mousedown(Coord c, int button){
+   //     mousedown(new MouseEvent(panel, 0, 0, 0, c.x, c.y, 1, false, button), c, button);
+   // }
 
     public void mousedown(MouseEvent ev, Coord c, int button) {
         setmods(ev);

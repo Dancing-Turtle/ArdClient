@@ -2,7 +2,7 @@
 
 <project name="hafen" default="deftgt">
   <property name="name" value="ArdClient"/>
-  <property name="version" value="1.00.44"/>
+  <property name="version" value="1.00.46"/>
 
   <target name="build-env">
     <mkdir dir="build" />
@@ -34,6 +34,7 @@
 	<pathelement path="lib/jglob.jar" />
         <pathelement path="lib/junit.jar" />
      <pathelement path="lib/HavenDiscord.jar" />
+          <pathelement path="lib/rxjava-1.1.5.jar" />
       </classpath>
       <compilerarg value="-Xlint:unchecked" />
       <compilerarg value="-Xlint:-options" />
@@ -64,7 +65,7 @@
         <fileset file="changelog.txt" />
       <manifest>
 	<attribute name="Main-Class" value="haven.MainFrame" />
-	<attribute name="Class-Path" value="jogl.jar gluegen-rt.jar amber-res.jar builtin-res.jar hafen-res.jar l10n.jar HavenDiscord.jar" />
+	<attribute name="Class-Path" value="jogl.jar gluegen-rt.jar amber-res.jar builtin-res.jar hafen-res.jar l10n.jar HavenDiscord.jar rxjava-1.1.5.jar rxjava-1.1.5-javadoc.jar" />
       </manifest>
     </jar>
     <chmod file="build/hafen.jar" perm="a+x" />
@@ -112,6 +113,8 @@
 	<include name="builtin-res.jar" />
 	<include name="amber-res.jar" />
      <include name="HavenDiscord.jar" />
+          <include name="rxjava-1.1.5.jar" />
+          <include name="rxjava-1.1.5-javadoc.jar" />
       </fileset>
       <fileset dir="lib/jogl-natives" includes="*.jar">
       </fileset>
@@ -145,7 +148,7 @@
 
     <target name="New Distribute">
         <copy todir="D:\GithubFolder\Ardenneslol.github.io\Hafen">
-            <fileset dir="build" includes="amber-res.jar, hafen.jar, HavenDiscord.jar" />
+            <fileset dir="build" includes="amber-res.jar, hafen.jar, HavenDiscord.jar, rxjava-1.1.5.jar, rxjava-1.1.5-javadoc.jar" />
         </copy>
     </target>
 

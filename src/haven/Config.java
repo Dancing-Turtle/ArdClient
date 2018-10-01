@@ -174,6 +174,8 @@ public class Config {
     public static boolean disableelev =  Utils.getprefb("disableelev", false);
     public static String treeboxclr =  Utils.getpref("treeboxclr", "D7FF00");
     public static String chatalert =  Utils.getpref("chatalert", "Null");
+    public static String discordchannel =  Utils.getpref("discordchannel", "Null");
+    public static boolean discordchat =  Utils.getprefb("discordchat", false);
     public static String questdropstring =  Utils.getpref("questdropstring", "Null");
   //  public static String discordchannel =  Utils.getpref("discordchannel", "Null");
     public static String discordbotkey =  Utils.getpref("discordbotkey", "Null");

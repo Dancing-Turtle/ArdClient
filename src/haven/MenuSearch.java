@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 public class MenuSearch extends GameUI.Hidewnd {
-    private TextEntry search;
+    public TextEntry search;
     private ActionsList list;
 
     public MenuSearch() {
@@ -43,6 +43,15 @@ public class MenuSearch extends GameUI.Hidewnd {
             list.changeFilter("");
         }
         return super.show(show);
+    }
+
+    public void wdgmsg(Widget sender, String msg, Object... args) {
+        if (sender == cbtn) {
+            this.hide();
+            setfocus(ui.gui.invwnd);
+        }
+        else
+            super.wdgmsg(sender, msg, args);
     }
 
     private static class ActionsList extends Listbox<Action> {
@@ -133,6 +142,7 @@ public class MenuSearch extends GameUI.Hidewnd {
             if (a != null) {
                 super.change(a);
                 GameUI gui = gameui();
+                ui.gui.menu.lastCraft = a.pagina;
                 gui.histbelt.push(a.pagina);
                 gui.act(a.pagina.act().ad);
             }

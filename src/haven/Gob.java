@@ -613,6 +613,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
 
         Drawable d = getattr(Drawable.class);
         if (d != null) {
+
         	// Replace hide stuff with Purus Pasta hide
         	if(Config.hidegobs) {
         		if(Config.hideTrees && type == Type.TREE) {

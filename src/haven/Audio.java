@@ -29,13 +29,7 @@ package haven;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
@@ -43,6 +37,7 @@ import javax.sound.sampled.DataLine;
 import javax.sound.sampled.SourceDataLine;
 
 import dolda.xiphutil.VorbisStream;
+import haven.purus.BotUtils;
 
 public class Audio {
     public static boolean enabled = true;
@@ -50,6 +45,7 @@ public class Audio {
     public static final AudioFormat fmt = new AudioFormat(44100, 16, 2, true, false);
     private static int bufsize = Utils.getprefi("audiobufsize", 4096);
     public static double volume = 1.0;
+    public static Date lastlvlup;
 
     static {
         volume = Double.parseDouble(Utils.getpref("sfxvol", "1.0"));
@@ -564,6 +560,7 @@ public class Audio {
 
     public static CS fromres(Resource res) {
         Collection<Resource.Audio> clips = res.layers(Resource.audio);
+
         synchronized (reslastc) {
             Resource.Audio last = reslastc.get(res);
             int sz = clips.size();
@@ -581,6 +578,18 @@ public class Audio {
 
             if (Config.sfxwhipvol != 1.0 && "sfx/balders".equals(res.name))
                 return new Audio.VolAdjust(clip.stream(), Config.sfxwhipvol);
+
+            if(res.name.equals("sfx/lvlup") || res.name.equals("sfx/msg")){
+                Date thislvlup = new Date();
+                if(lastlvlup != null) {
+                    if ((Math.abs(lastlvlup.getTime() - thislvlup.getTime()) / 1000) < 1)
+                        return new Audio.VolAdjust(clip.stream(),0);
+                    else
+                        lastlvlup = thislvlup;
+                }
+                else
+                    lastlvlup = thislvlup;
+            }
 
             return (clip.stream());
         }

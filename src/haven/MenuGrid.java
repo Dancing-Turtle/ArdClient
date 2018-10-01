@@ -45,6 +45,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MenuGrid extends Widget {
     public final static Coord bgsz = Inventory.invsq.sz().add(-1, -1);
@@ -61,7 +62,8 @@ public class MenuGrid extends Widget {
     private Map<Character, PagButton> hotmap = new HashMap<>();
     private boolean togglestuff = true;
     public boolean discordconnected;
-
+    public Pagina lastCraft = null;
+    public int pagseq = 0;
     @RName("scm")
     public static class $_ implements Factory {
         public Widget create(UI ui, Object[] args) {
@@ -77,6 +79,11 @@ public class MenuGrid extends Widget {
             this.pag = pag;
             this.res = pag.res();
         }
+
+        private static final OwnerContext.ClassResolver<PagButton> ctxr = new OwnerContext.ClassResolver<PagButton>()
+                .add(Glob.class, p -> p.pag.scm.ui.sess.glob)
+                .add(Session.class, p -> p.pag.scm.ui.sess);
+        public <T> T context(Class<T> cl) {return(ctxr.context(cl, this));}
 
         public BufferedImage img() {return(res.layer(Resource.imgc).img);}
         public String name() {return(res.layer(Resource.action).name);}
@@ -98,10 +105,6 @@ public class MenuGrid extends Widget {
                 info = ItemInfo.buildinfo(this, pag.rawinfo);
             return(info);
         }
-        private static final OwnerContext.ClassResolver<PagButton> ctxr = new OwnerContext.ClassResolver<PagButton>()
-                .add(Glob.class, p -> p.pag.scm.ui.sess.glob)
-                .add(Session.class, p -> p.pag.scm.ui.sess);
-        public <T> T context(Class<T> cl) {return(ctxr.context(cl, this));}
 
         public BufferedImage rendertt(boolean withpg) {
             Resource.AButton ad = res.layer(Resource.action);
@@ -127,6 +130,25 @@ public class MenuGrid extends Widget {
         @Resource.PublishedCode(name = "pagina")
         public interface Factory {
             public PagButton make(Pagina info);
+        }
+    }
+
+    public static interface CustomPaginaAction {
+        void perform(OwnerContext ctx);
+    }
+
+    public class CustomPagButton extends PagButton {
+
+        private final CustomPaginaAction action;
+
+        public CustomPagButton(Pagina pag, CustomPaginaAction action) {
+            super(pag);
+            this.action = action;
+        }
+
+        @Override
+        public void use() {
+            action.perform(pag.button);
         }
     }
 
@@ -166,12 +188,12 @@ public class MenuGrid extends Widget {
         public static enum State {
             ENABLED, DISABLED {
                 public Indir<Tex> img(Pagina pag) {
-                    return(Utils.cache(() -> new TexI(PUtils.monochromize(pag.button().img(), Color.LIGHT_GRAY))));
+                    return (Utils.cache(() -> new TexI(PUtils.monochromize(pag.button().img(), Color.LIGHT_GRAY))));
                 }
             };
 
             public Indir<Tex> img(Pagina pag) {
-                return(Utils.cache(() -> new TexI(pag.button().img())));
+                return (Utils.cache(() -> new TexI(pag.button().img())));
             }
         }
 
@@ -180,32 +202,69 @@ public class MenuGrid extends Widget {
             this.res = res;
             state(State.ENABLED);
         }
-        
+
         public Resource res() {
-            return(res.get());
+            return (res.get());
         }
 
         public Resource.AButton act() {
-            return(res().layer(Resource.action));
+            return (res().layer(Resource.action));
         }
 
         private PagButton button = null;
+
         public PagButton button() {
-            if(button == null) {
+            if (button == null) {
                 Resource res = res();
                 PagButton.Factory f = res.getcode(PagButton.Factory.class, false);
-                if(f == null)
+                if (f == null)
                     button = new PagButton(this);
                 else
                     button = f.make(this);
             }
-            return(button);
+            return (button);
         }
 
         public void state(State st) {
             this.st = st;
             this.img = st.img(this);
         }
+
+        public void button(PagButton btn) {
+            button = btn;
+        }
+
+        private static final OwnerContext.ClassResolver<Pagina> ctxr = new OwnerContext.ClassResolver<Pagina>()
+                .add(Glob.class, p -> p.scm.ui.sess.glob)
+                .add(Session.class, p -> p.scm.ui.sess)
+                .add(UI.class, p -> p.scm.ui);
+        public <T> T context(Class<T> cl) {return(ctxr.context(cl, this));}
+
+        public boolean isAction() {
+            Resource.AButton act = act();
+            if(act == null) {return false;}
+            String[] ad = act.ad;
+            return ad != null && ad.length > 0;
+        }
+
+        public static String name(Pagina p) {
+            String name = "";
+            if(p.res instanceof Resource.Named) {
+                name = ((Resource.Named) p.res).name;
+            } else {
+                try {
+                    name = p.res.get().name;
+                } catch (Loading ignored) {}
+            }
+            return name;
+        }
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private Pagina makeLocal(String path, CustomPaginaAction action) {
+        Pagina p = new Pagina(this, Resource.local().loadwait(path).indir());
+        p.button(new CustomPagButton(p, action));
+        return p;
     }
 
     public Map<Indir<Resource>, Pagina> pmap = new WeakHashMap<Indir<Resource>, Pagina>();
@@ -220,7 +279,7 @@ public class MenuGrid extends Widget {
         }
     }
 
-    private boolean cons(Pagina p, Collection<PagButton> buf) {
+   /* private boolean cons(Pagina p, Collection<PagButton> buf) {
         Pagina[] cp = new Pagina[0];
         Collection<Pagina> open, close = new HashSet<Pagina>();
         synchronized (paginae) {
@@ -254,7 +313,8 @@ public class MenuGrid extends Widget {
                     parent.fstart = (parent.fstart == 0) ? pag.fstart : Math.min(parent.fstart, pag.fstart);
                 }
                 if (parent == p)
-                    buf.add(pag.button());
+                    buf.add(pag);
+                    //buf.add(pag.button());
                 else if ((parent != null) && !close.contains(parent) && !open.contains(parent))
                     open.add(parent);
                 close.add(pag);
@@ -263,6 +323,59 @@ public class MenuGrid extends Widget {
             }
         }
         return (ret);
+    }*/
+
+    public boolean consb(Pagina p, Collection<PagButton> buf) {
+        List<Pagina> pags = buf.stream().map(btn -> btn.pag).collect(Collectors.toList());
+        boolean result = cons(p, pags);
+        buf.clear();
+        for(Pagina pag : pags) { buf.add(pag.button());	}
+        return result;
+    }
+
+    public boolean cons(Pagina p, Collection<Pagina> buf) {
+        Pagina[] cp = new Pagina[0];
+        Collection<Pagina> open, close = new HashSet<Pagina>();
+        synchronized(paginae) {
+            open = new LinkedList<Pagina>();
+            for(Pagina pag : paginae) {
+                if(pag.newp == 2) {
+                    pag.newp = 0;
+                    pag.fstart = 0;
+                }
+                open.add(pag);
+            }
+            for(Pagina pag : pmap.values()) {
+                if(pag.newp == 2) {
+                    pag.newp = 0;
+                    pag.fstart = 0;
+                }
+            }
+        }
+        boolean ret = true;
+        while(!open.isEmpty()) {
+            Iterator<Pagina> iter = open.iterator();
+            Pagina pag = iter.next();
+            iter.remove();
+            try {
+                AButton ad = pag.act();
+                if(ad == null)
+                    throw(new RuntimeException("Pagina in " + pag.res + " lacks action"));
+                Pagina parent = paginafor(ad.parent);
+                if((pag.newp != 0) && (parent != null) && (parent.newp == 0)) {
+                    parent.newp = 2;
+                    parent.fstart = (parent.fstart == 0)?pag.fstart:Math.min(parent.fstart, pag.fstart);
+                }
+                if(parent == p)
+                    buf.add(pag);
+                else if((parent != null) && !close.contains(parent) && !open.contains(parent))
+                    open.add(parent);
+                close.add(pag);
+            } catch(Loading e) {
+                ret = false;
+            }
+        }
+        return(ret);
     }
 
     public MenuGrid() {
@@ -275,9 +388,9 @@ public class MenuGrid extends Widget {
         synchronized (paginae) {
             Collection<Pagina> p = paginae;
             p.add(paginafor(Resource.local().load("paginae/amber/coal8")));
-           // p.add(paginafor(Resource.local().load("paginae/amber/coal11")));
-           // p.add(paginafor(Resource.local().load("paginae/amber/coal9")));
-           // p.add(paginafor(Resource.local().load("paginae/amber/coal12")));
+            p.add(paginafor(Resource.local().load("paginae/amber/coal11")));
+            p.add(paginafor(Resource.local().load("paginae/amber/coal9")));
+            p.add(paginafor(Resource.local().load("paginae/amber/coal12")));
             p.add(paginafor(Resource.local().load("paginae/amber/branchoven")));
             p.add(paginafor(Resource.local().load("paginae/amber/steel")));
             p.add(paginafor(Resource.local().load("paginae/amber/torch")));
@@ -318,7 +431,6 @@ public class MenuGrid extends Widget {
             }catch(FileNotFoundException | MalformedURLException notfound){} catch (IOException e) {
                 e.printStackTrace();
             }
-           // if (ui.sess.username.toLowerCase().equals("ardennesss") || ui.sess.username.toLowerCase().equals("infectedking"))
             p.add(paginafor(Resource.local().load("paginae/amber/TakeTrays")));
             p.add(paginafor(Resource.local().load("paginae/amber/CraftAllBot")));
             p.add(paginafor(Resource.local().load("paginae/amber/PepperFood")));
@@ -338,7 +450,7 @@ public class MenuGrid extends Widget {
     private void updlayout() {
         synchronized(paginae) {
             List<PagButton> cur = new ArrayList<>();
-            recons = !cons(this.cur, cur);
+            recons = !consb(this.cur, cur);
             Collections.sort(cur, Comparator.comparing(PagButton::sortkey));
             this.curbtns = cur;
             int i = curoff;
@@ -655,8 +767,9 @@ public class MenuGrid extends Widget {
         }
     }
 
-    private void use(PagButton r, boolean reset) {
-        Collection<PagButton> sub = new ArrayList<>();
+    public void use(PagButton r, boolean reset) {
+      //  Collection<PagButton> sub = new ArrayList<>();
+        Collection<Pagina> sub = new ArrayList<>();
         cons(r.pag, sub);
         if (sub.size() > 0) {
             this.cur = r.pag;
@@ -671,9 +784,10 @@ public class MenuGrid extends Widget {
                 if (ad[0].equals("@")) {
                     use(ad);
                 } else {
-                    if (ad.length > 0 && (ad[0].equals("craft") || ad[0].equals("bp")))
+                    if (ad.length > 0 && (ad[0].equals("craft") || ad[0].equals("bp"))) {
+                        lastCraft = r.pag;
                         gameui().histbelt.push(r.pag);
-
+                    }
                     if (Config.confirmmagic && r.res.name.startsWith("paginae/seid/") && !r.res.name.equals("paginae/seid/rawhide")) {
                         Window confirmwnd = new Window(new Coord(225, 100), "Confirm") {
                             @Override
@@ -729,6 +843,10 @@ public class MenuGrid extends Widget {
                 this.cur = null;
         }
         updlayout();
+    }
+
+    public void senduse(String... ad) {
+        wdgmsg("act", (Object[]) ad);
     }
 
     public void tick(double dt) {
@@ -836,6 +954,7 @@ public class MenuGrid extends Widget {
                     }
                 }
                 updlayout();
+                pagseq++;
             }
         } else {
             super.uimsg(msg, args);
@@ -865,5 +984,45 @@ public class MenuGrid extends Widget {
             return (true);
         }
         return (false);
+    }
+   /* private void selectCraft(Pagina r) {
+        if(r == null){
+            return;
+        }
+        if(ui.gui.craftwnd != null){
+            ui.gui.craftwnd.select(r, true);
+        }
+    }*/
+
+    public boolean isCrafting(Pagina p) {
+        return (p != null) && (isCrafting(p.res()) || isCrafting(getParent(p)));
+    }
+
+    public boolean isCrafting(Resource res){
+        return res.name.contains("paginae/act/craft");
+    }
+
+    public Pagina getParent(Pagina p){
+        if(p == null){
+            return null;
+        }
+        try {
+            Resource res = p.res();
+            Resource.AButton ad = res.layer(Resource.action);
+            if (ad == null)
+                return null;
+            return paginafor(ad.parent);
+        } catch (Loading e){
+            return null;
+        }
+    }
+
+    public boolean isChildOf(Pagina item, Pagina parent) {
+        Pagina p;
+        while((p = getParent(item)) != null){
+            if(p == parent){ return true; }
+            item = p;
+        }
+        return false;
     }
 }

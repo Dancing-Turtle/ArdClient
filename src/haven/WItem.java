@@ -56,323 +56,323 @@ import haven.res.ui.tt.Wear;
 import haven.res.ui.tt.q.qbuff.QBuff;
 
 public class WItem extends Widget implements DTarget {
-    public static final Resource missing = Resource.local().loadwait("gfx/invobjs/missing");
-    public final GItem item;
-    public static final Color famountclr = new Color(24, 116, 205);
-    private static final Color qualitybg = new Color(20, 20, 20, 255 - Config.qualitybgtransparency);
-    public static final Color[] wearclr = new Color[]{
-            new Color(233, 0, 14), new Color(218, 128, 87), new Color(246, 233, 87), new Color(145, 225, 60)
-    };
+	public static final Resource missing = Resource.local().loadwait("gfx/invobjs/missing");
+	public GItem item;
+	public static final Color famountclr = new Color(24, 116, 205);
+	private static final Color qualitybg = new Color(20, 20, 20, 255 - Config.qualitybgtransparency);
+	public static final Color[] wearclr = new Color[]{
+			new Color(233, 0, 14), new Color(218, 128, 87), new Color(246, 233, 87), new Color(145, 225, 60)
+	};
 
-    private WItemDestroyCallback destroycb;
+	private WItemDestroyCallback destroycb;
 
-    public WItem(GItem item) {
-        super(sqsz);
-        this.item = item;
-    }
+	public WItem(GItem item) {
+		super(sqsz);
+		this.item = item;
+	}
 
-    public void drawmain(GOut g, GSprite spr) {
-        spr.draw(g);
-    }
+	public void drawmain(GOut g, GSprite spr) {
+		spr.draw(g);
+	}
 
-    public static BufferedImage shorttip(List<ItemInfo> info) {
-        return (ItemInfo.shorttip(info));
-    }
+	public static BufferedImage shorttip(List<ItemInfo> info) {
+		return (ItemInfo.shorttip(info));
+	}
 
-    public static BufferedImage longtip(GItem item, List<ItemInfo> info) {
-        BufferedImage img = ItemInfo.longtip(info);
-        Resource.Pagina pg = item.res.get().layer(Resource.pagina);
-        if (pg != null)
-            img = ItemInfo.catimgs(0, img, RichText.render("\n" + pg.text, 200).img);
-        return (img);
-    }
+	public static BufferedImage longtip(GItem item, List<ItemInfo> info) {
+		BufferedImage img = ItemInfo.longtip(info);
+		Resource.Pagina pg = item.res.get().layer(Resource.pagina);
+		if (pg != null)
+			img = ItemInfo.catimgs(0, img, RichText.render("\n" + pg.text, 200).img);
+		return (img);
+	}
 
-    public BufferedImage longtip(List<ItemInfo> info) {
-        return (longtip(item, info));
-    }
+	public BufferedImage longtip(List<ItemInfo> info) {
+		return (longtip(item, info));
+	}
 
-    public class ItemTip implements Indir<Tex> {
-        private final TexI tex;
+	public class ItemTip implements Indir<Tex> {
+		private final TexI tex;
 
-        public ItemTip(BufferedImage img) {
-            if (img == null)
-                throw (new Loading());
-            tex = new TexI(img);
-        }
+		public ItemTip(BufferedImage img) {
+			if (img == null)
+				throw (new Loading());
+			tex = new TexI(img);
+		}
 
-        public GItem item() {
-            return (item);
-        }
+		public GItem item() {
+			return (item);
+		}
 
-        public Tex get() {
-            return (tex);
-        }
-    }
+		public Tex get() {
+			return (tex);
+		}
+	}
 
-    public class ShortTip extends ItemTip {
-        public ShortTip(List<ItemInfo> info) {
-            super(shorttip(info));
-        }
-    }
+	public class ShortTip extends ItemTip {
+		public ShortTip(List<ItemInfo> info) {
+			super(shorttip(info));
+		}
+	}
 
-    public class LongTip extends ItemTip {
-        public LongTip(List<ItemInfo> info) {
-            super(longtip(info));
-        }
-    }
+	public class LongTip extends ItemTip {
+		public LongTip(List<ItemInfo> info) {
+			super(longtip(info));
+		}
+	}
 
-    private double hoverstart;
-    private ItemTip shorttip = null, longtip = null;
-    private List<ItemInfo> ttinfo = null;
+	private double hoverstart;
+	private ItemTip shorttip = null, longtip = null;
+	private List<ItemInfo> ttinfo = null;
 
-    public Object tooltip(Coord c, Widget prev) {
-        double now = Utils.rtime();
-        if (prev == this) {
-        } else if (prev instanceof WItem) {
-            double ps = ((WItem)prev).hoverstart;
-            if (now - ps < 1.0)
-                hoverstart = now;
-            else
-                hoverstart = ps;
-        } else {
-            hoverstart = now;
-        }
-        try {
-            List<ItemInfo> info = item.info();
-            if (info.size() < 1)
-                return (null);
-            if (info != ttinfo) {
-                shorttip = longtip = null;
-                ttinfo = info;
-            }
-            if (now - hoverstart < 1.0) {
-                if (shorttip == null)
-                    shorttip = new ShortTip(info);
-                return (shorttip);
-            } else {
-                if (longtip == null)
-                    longtip = new LongTip(info);
-                return (longtip);
-            }
-        } catch (Loading e) {
-            return ("...");
-        }
-    }
+	public Object tooltip(Coord c, Widget prev) {
+		double now = Utils.rtime();
+		if (prev == this) {
+		} else if (prev instanceof WItem) {
+			double ps = ((WItem)prev).hoverstart;
+			if (now - ps < 1.0)
+				hoverstart = now;
+			else
+				hoverstart = ps;
+		} else {
+			hoverstart = now;
+		}
+		try {
+			List<ItemInfo> info = item.info();
+			if (info.size() < 1)
+				return (null);
+			if (info != ttinfo) {
+				shorttip = longtip = null;
+				ttinfo = info;
+			}
+			if (now - hoverstart < 1.0) {
+				if (shorttip == null)
+					shorttip = new ShortTip(info);
+				return (shorttip);
+			} else {
+				if (longtip == null)
+					longtip = new LongTip(info);
+				return (longtip);
+			}
+		} catch (Loading e) {
+			return ("...");
+		}
+	}
 
-    private List<ItemInfo> info() {return(item.info());}
-    public final AttrCache<Color> olcol = new AttrCache<>(this::info, info -> {
-        Color ret = null;
-        for(ItemInfo inf : info) {
-            if(inf instanceof GItem.ColorInfo) {
-                Color c = ((GItem.ColorInfo)inf).olcol();
-                if(c != null)
-                    ret = (ret == null)?c:Utils.preblend(ret, c);
-            }
-        }
-        Color fret = ret;
-        return(() -> fret);
-    });
+	private List<ItemInfo> info() {return(item.info());}
+	public final AttrCache<Color> olcol = new AttrCache<>(this::info, info -> {
+		Color ret = null;
+		for(ItemInfo inf : info) {
+			if(inf instanceof GItem.ColorInfo) {
+				Color c = ((GItem.ColorInfo)inf).olcol();
+				if(c != null)
+					ret = (ret == null)?c:Utils.preblend(ret, c);
+			}
+		}
+		Color fret = ret;
+		return(() -> fret);
+	});
 
-    public final AttrCache<GItem.InfoOverlay<?>[]> itemols = new AttrCache<>(this::info, info -> {
-        ArrayList<GItem.InfoOverlay<?>> buf = new ArrayList<>();
-        for(ItemInfo inf : info) {
-            if(inf instanceof GItem.OverlayInfo)
-                buf.add(GItem.InfoOverlay.create((GItem.OverlayInfo<?>)inf));
-        }
-        GItem.InfoOverlay<?>[] ret = buf.toArray(new GItem.InfoOverlay<?>[0]);
-        return(() -> ret);
-    });
-    
-    public final AttrCache<Double> itemmeter = new AttrCache<>(this::info, AttrCache.map1(GItem.MeterInfo.class, minf -> {
-        GItem itm = WItem.this.item;
-        if (minf != null) {
-            double meter = minf.meter();
-            if (itm.studytime > 0 && parent instanceof InventoryStudy) {
-                int timeleft = (int) (itm.studytime * (1.0 - meter));
-                int hoursleft = timeleft / 60;
-                int minutesleft = timeleft - hoursleft * 60;
-                if(hoursleft < 1){
-                    itm.metertex = Text.renderstroked(String.format("%d:%02d", hoursleft, minutesleft), Color.YELLOW, Color.BLACK, num10Fnd).tex();
-                }
-                else
-                    itm.metertex = Text.renderstroked(String.format("%d:%02d", hoursleft, minutesleft), Color.WHITE, Color.BLACK, num10Fnd).tex();
-            } else {
-                itm.metertex = Text.renderstroked(String.format("%.1f%%", (meter * 100)), Color.WHITE, Color.BLACK, num10Fnd).tex();
-            }
-            return minf::meter;
-        }
-        itm.metertex = null;
-        return minf::meter;
-    }));
+	public final AttrCache<GItem.InfoOverlay<?>[]> itemols = new AttrCache<>(this::info, info -> {
+		ArrayList<GItem.InfoOverlay<?>> buf = new ArrayList<>();
+		for(ItemInfo inf : info) {
+			if(inf instanceof GItem.OverlayInfo)
+				buf.add(GItem.InfoOverlay.create((GItem.OverlayInfo<?>)inf));
+		}
+		GItem.InfoOverlay<?>[] ret = buf.toArray(new GItem.InfoOverlay<?>[0]);
+		return(() -> ret);
+	});
 
-    private GSprite lspr = null;
+	public final AttrCache<Double> itemmeter = new AttrCache<>(this::info, AttrCache.map1(GItem.MeterInfo.class, minf -> {
+		GItem itm = WItem.this.item;
+		if (minf != null) {
+			double meter = minf.meter();
+			if (itm.studytime > 0 && parent instanceof InventoryStudy) {
+				int timeleft = (int) (itm.studytime * (1.0 - meter));
+				int hoursleft = timeleft / 60;
+				int minutesleft = timeleft - hoursleft * 60;
+				if(hoursleft < 1){
+					itm.metertex = Text.renderstroked(String.format("%d:%02d", hoursleft, minutesleft), Color.YELLOW, Color.BLACK, num10Fnd).tex();
+				}
+				else
+					itm.metertex = Text.renderstroked(String.format("%d:%02d", hoursleft, minutesleft), Color.WHITE, Color.BLACK, num10Fnd).tex();
+			} else {
+				itm.metertex = Text.renderstroked(String.format("%.1f%%", (meter * 100)), Color.WHITE, Color.BLACK, num10Fnd).tex();
+			}
+			return minf::meter;
+		}
+		itm.metertex = null;
+		return minf::meter;
+	}));
 
-    public void tick(double dt) {
-    /* XXX: This is ugly and there should be a better way to
-     * ensure the resizing happens as it should, but I can't think
-	 * of one yet. */
-        GSprite spr = item.spr();
-        if ((spr != null) && (spr != lspr)) {
-            Coord sz = new Coord(spr.sz());
-            if ((sz.x % sqsz.x) != 0)
-                sz.x = sqsz.x * ((sz.x / sqsz.x) + 1);
-            if ((sz.y % sqsz.y) != 0)
-                sz.y = sqsz.y * ((sz.y / sqsz.y) + 1);
-            resize(sz);
-            lspr = spr;
-        }
-    }
+	private GSprite lspr = null;
 
-    public void draw(GOut g) {
-        GSprite spr = item.spr();
-        if (spr != null) {
-            Coord sz = spr.sz();
-            g.defstate();
-            if (olcol.get() != null)
-                g.usestate(new ColorMask(olcol.get()));
-            drawmain(g, spr);
-            g.defstate();
-            GItem.InfoOverlay<?>[] ols = itemols.get();
-            if(ols != null) {
-                for(GItem.InfoOverlay<?> ol : ols)
-                    ol.draw(g);
-            }
-            Double meter = item.meter > 0 ? Double.valueOf(item.meter / 100.0) : itemmeter.get();
-            if (Config.itemmeterbar && meter != null && meter > 0) {
-                g.chcolor(220, 60, 60, 255);
-                g.frect(Coord.z, new Coord((int) (sz.x / (100 / (meter * 100))), 4));
-                g.chcolor();
-            }
+	public void tick(double dt) {
+		/* XXX: This is ugly and there should be a better way to
+		 * ensure the resizing happens as it should, but I can't think
+		 * of one yet. */
+		GSprite spr = item.spr();
+		if ((spr != null) && (spr != lspr)) {
+			Coord sz = new Coord(spr.sz());
+			if ((sz.x % sqsz.x) != 0)
+				sz.x = sqsz.x * ((sz.x / sqsz.x) + 1);
+			if ((sz.y % sqsz.y) != 0)
+				sz.y = sqsz.y * ((sz.y / sqsz.y) + 1);
+			resize(sz);
+			lspr = spr;
+		}
+	}
 
-            QBuff quality = item.quality();
-            if (Config.showquality) {
-                if (quality != null && quality.qtex != null) {
-                    Coord btm = new Coord(0, sz.y - 12);
-                    Tex t = Config.qualitywhole ? quality.qwtex : quality.qtex;
-                    if (Config.qualitybg) {
-                        g.chcolor(qualitybg);
-                        g.frect(btm, t.sz().add(1, -1));
-                        g.chcolor();
-                    }
-                    g.image(t, btm);
-                }
-            }
+	public void draw(GOut g) {
+		GSprite spr = item.spr();
+		if (spr != null) {
+			Coord sz = spr.sz();
+			g.defstate();
+			if (olcol.get() != null)
+				g.usestate(new ColorMask(olcol.get()));
+			drawmain(g, spr);
+			g.defstate();
+			GItem.InfoOverlay<?>[] ols = itemols.get();
+			if(ols != null) {
+				for(GItem.InfoOverlay<?> ol : ols)
+					ol.draw(g);
+			}
+			Double meter = item.meter > 0 ? Double.valueOf(item.meter / 100.0) : itemmeter.get();
+			if (Config.itemmeterbar && meter != null && meter > 0) {
+				g.chcolor(220, 60, 60, 255);
+				g.frect(Coord.z, new Coord((int) (sz.x / (100 / (meter * 100))), 4));
+				g.chcolor();
+			}
 
-            if (item.metertex != null)
-                g.image(item.metertex, Coord.z);
+			QBuff quality = item.quality();
+			if (Config.showquality) {
+				if (quality != null && quality.qtex != null) {
+					Coord btm = new Coord(0, sz.y - 12);
+					Tex t = Config.qualitywhole ? quality.qwtex : quality.qtex;
+					if (Config.qualitybg) {
+						g.chcolor(qualitybg);
+						g.frect(btm, t.sz().add(1, -1));
+						g.chcolor();
+					}
+					g.image(t, btm);
+				}
+			}
 
-            ItemInfo.Contents cnt = item.getcontents();
-            if (cnt != null && cnt.content > 0)
-                drawamountbar(g, cnt.content, cnt.isseeds);
+			if (item.metertex != null)
+				g.image(item.metertex, Coord.z);
 
-            if (Config.showwearbars) {
-                try {
-                    for (ItemInfo info : item.info()) {
-                        if (info instanceof Wear) {
-                            double d = ((Wear) info).d;
-                            double m = ((Wear) info).m;
-                            double p = (m - d) / m;
-                            int h = (int) (p * (double) sz.y);
-                            g.chcolor(wearclr[p == 1.0 ? 3 : (int) (p / 0.25)]);
-                            g.frect(new Coord(sz.x - 3, sz.y - h), new Coord(3, h));
-                            g.chcolor();
-                            break;
-                        }
-                    }
-                } catch (Exception e) { // fail silently if info is not ready
-                }
-            }
-        } else {
-            g.image(missing.layer(Resource.imgc).tex(), Coord.z, sz);
-        }
-    }
+			ItemInfo.Contents cnt = item.getcontents();
+			if (cnt != null && cnt.content > 0)
+				drawamountbar(g, cnt.content, cnt.isseeds);
 
-    private void drawamountbar(GOut g, double content, boolean isseeds) {
-        double capacity;
-        String name = item.getname();
-        if (name.contains("Waterskin"))
-            capacity = 3.0D;
-        else if (name.contains("Bucket"))
-            capacity = isseeds ? 1000D : 10.0D;
-        else if (name.contains("Waterflask"))
-            capacity = 2.0D;
-        else
-            return;
+			if (Config.showwearbars) {
+				try {
+					for (ItemInfo info : item.info()) {
+						if (info instanceof Wear) {
+							double d = ((Wear) info).d;
+							double m = ((Wear) info).m;
+							double p = (m - d) / m;
+							int h = (int) (p * (double) sz.y);
+							g.chcolor(wearclr[p == 1.0 ? 3 : (int) (p / 0.25)]);
+							g.frect(new Coord(sz.x - 3, sz.y - h), new Coord(3, h));
+							g.chcolor();
+							break;
+						}
+					}
+				} catch (Exception e) { // fail silently if info is not ready
+				}
+			}
+		} else {
+			g.image(missing.layer(Resource.imgc).tex(), Coord.z, sz);
+		}
+	}
 
-        int h = (int) (content / capacity * sz.y) - 1;
-        if (h < 0)
-            return;
+	private void drawamountbar(GOut g, double content, boolean isseeds) {
+		double capacity;
+		String name = item.getname();
+		if (name.contains("Waterskin"))
+			capacity = 3.0D;
+		else if (name.contains("Bucket"))
+			capacity = isseeds ? 1000D : 10.0D;
+		else if (name.contains("Waterflask"))
+			capacity = 2.0D;
+		else
+			return;
 
-        g.chcolor(famountclr);
-        g.frect(new Coord(sz.x - 4, sz.y - h - 1), new Coord(3, h));
-        g.chcolor();
-    }
+		int h = (int) (content / capacity * sz.y) - 1;
+		if (h < 0)
+			return;
 
-    public boolean mousedown(Coord c, int btn) {
-        if (btn == 1) {
-        	if(ui.gui.itemClickCallback != null) {
-        		ui.gui.itemClickCallback.itemClick(this);
-        		return true;
-        	}
-            if (ui.modctrl && ui.modmeta)
-                wdgmsg("drop-identical", this.item);
-            else if (ui.modctrl && ui.modshift) {
-                String name = ItemInfo.find(ItemInfo.Name.class, item.info()).str.text;
-                name = name.replace(' ', '_');
-                if (!Resource.language.equals("en")) {
-                    int i = name.indexOf('(');
-                    if (i > 0)
-                        name = name.substring(i + 1, name.length() - 1);
-                }
-                try {
-                    WebBrowser.self.show(new URL(String.format("http://ringofbrodgar.com/wiki/%s", name)));
-                } catch (WebBrowser.BrowserException e) {
-                    getparent(GameUI.class).error("Could not launch web browser.");
-                } catch (MalformedURLException e) {
-                }
-            } else if (ui.modshift && !ui.modmeta) {
-                // server side transfer all identical: pass third argument -1 (or 1 for single item)
-                item.wdgmsg("transfer",c);
-            } else if (ui.modctrl)
-                item.wdgmsg("drop", c);
-            else if (ui.modmeta)
-                wdgmsg("transfer-identical", this.item);
-            else
-                item.wdgmsg("take", c);
-            return (true);
-        } else if (btn == 3) {
-            if (ui.modmeta && !(parent instanceof Equipory))
-                wdgmsg("transfer-identical-asc", this.item);
-            else
-                item.wdgmsg("iact", c, ui.modflags());
-            return (true);
-        }
-        return (false);
-    }
+		g.chcolor(famountclr);
+		g.frect(new Coord(sz.x - 4, sz.y - h - 1), new Coord(3, h));
+		g.chcolor();
+	}
 
-    public boolean drop(Coord cc, Coord ul) {
-        return (false);
-    }
+	public boolean mousedown(Coord c, int btn) {
+		if (btn == 1) {
+			if(ui.gui.itemClickCallback != null) {
+				ui.gui.itemClickCallback.itemClick(this);
+				return true;
+			}
+			if (ui.modctrl && ui.modmeta)
+				wdgmsg("drop-identical", this.item);
+			else if (ui.modctrl && ui.modshift) {
+				String name = ItemInfo.find(ItemInfo.Name.class, item.info()).str.text;
+				name = name.replace(' ', '_');
+				if (!Resource.language.equals("en")) {
+					int i = name.indexOf('(');
+					if (i > 0)
+						name = name.substring(i + 1, name.length() - 1);
+				}
+				try {
+					WebBrowser.self.show(new URL(String.format("http://ringofbrodgar.com/wiki/%s", name)));
+				} catch (WebBrowser.BrowserException e) {
+					getparent(GameUI.class).error("Could not launch web browser.");
+				} catch (MalformedURLException e) {
+				}
+			} else if (ui.modshift && !ui.modmeta) {
+				// server side transfer all identical: pass third argument -1 (or 1 for single item)
+				item.wdgmsg("transfer",c);
+			} else if (ui.modctrl)
+				item.wdgmsg("drop", c);
+			else if (ui.modmeta)
+				wdgmsg("transfer-identical", this.item);
+			else
+				item.wdgmsg("take", c);
+			return (true);
+		} else if (btn == 3) {
+			if (ui.modmeta && !(parent instanceof Equipory))
+				wdgmsg("transfer-identical-asc", this.item);
+			else
+				item.wdgmsg("iact", c, ui.modflags());
+			return (true);
+		}
+		return (false);
+	}
 
-    public boolean iteminteract(Coord cc, Coord ul) {
-        item.wdgmsg("itemact", ui.modflags());
-        return (true);
-    }
+	public boolean drop(Coord cc, Coord ul) {
+		return (false);
+	}
 
-    @Override
-    public void reqdestroy() {
-        super.reqdestroy();
-        if (destroycb != null)
-            destroycb.notifyDestroy();
-    }
+	public boolean iteminteract(Coord cc, Coord ul) {
+		item.wdgmsg("itemact", ui.modflags());
+		return (true);
+	}
 
-    public void registerDestroyCallback(WItemDestroyCallback cb) {
-        this.destroycb = cb;
-    }
+	@Override
+	public void reqdestroy() {
+		super.reqdestroy();
+		if (destroycb != null)
+			destroycb.notifyDestroy();
+	}
 
-    public Coord size() {
-        Indir<Resource> res = item.getres().indir();
-    	if (res.get() != null) {
+	public void registerDestroyCallback(WItemDestroyCallback cb) {
+		this.destroycb = cb;
+	}
+
+	public Coord size() {
+		Indir<Resource> res = item.getres().indir();
+		if (res.get() != null) {
 			Tex tex = res.get().layer(Resource.imgc).tex();
 			if(tex == null)
 				return new Coord(1, 1);
@@ -381,5 +381,5 @@ public class WItem extends Widget implements DTarget {
 		} else {
 			return new Coord(1, 1);
 		}
-    }
+	}
 }

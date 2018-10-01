@@ -75,11 +75,11 @@ public class BeltDrink implements Runnable {
                     return;
                 }
             }
-            // if (drinks.size() == 0) {
-            // BotUtils.sysMsg("No water found!", Color.WHITE);
-            //gui.error("No water found!");
-            // }
-
+             if (drinks.size() == 0) {
+                 BotUtils.sysMsg("No water found! Belt Closed?", Color.WHITE);
+                 //gui.error("No water found!");
+                 // }
+             }
         } catch (NullPointerException q) {
         }
     }

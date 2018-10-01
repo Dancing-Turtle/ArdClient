@@ -45,6 +45,7 @@ public class Button extends SIWidget {
     public static final Resource.Audio lbtup = Loading.waitfor(Resource.local().load("sfx/hud/lbtn")).layer(Resource.audio, "up");
     public boolean lg;
     public Text text;
+    private boolean autosized = false;
     public BufferedImage cont;
     public Runnable action = null;
     static Text.Foundry tf = new Text.Foundry(Text.sans.deriveFont(Font.BOLD, Text.cfg.btn)).aa(true);
@@ -115,6 +116,14 @@ public class Button extends SIWidget {
     public Button(int w, BufferedImage cont) {
         this(w, largep(w));
         this.cont = cont;
+    }
+
+
+    public void autosize(boolean on){
+        if(autosized != on){
+            autosized = on;
+            redraw();
+        }
     }
 
     public void draw(BufferedImage img) {

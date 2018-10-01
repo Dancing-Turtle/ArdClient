@@ -531,7 +531,7 @@ public class FightWnd extends Widget {
                     keysftex[i] = Text.render(FightWnd.keysf[i - 5]).tex();
             }
         }
-        
+
         final Tex[] keysfftex = new Tex[10];
         {
         	for(int i = 0; i < 10; i++) {
@@ -576,7 +576,7 @@ public class FightWnd extends Widget {
                     }
                 } catch(Loading l) {}
                 g.chcolor(156, 180, 158, 255);
-                
+
                 Tex keytex;
                 if(Config.combatkeys == 0)
                 {
@@ -588,7 +588,7 @@ public class FightWnd extends Widget {
                 {
                 	keytex = keysfftex[i];
                 }
-                
+
                 g.aimage(keytex, c.add(invsq.sz().sub(2, 0)), 1, 1);
                 g.chcolor();
             }
@@ -842,16 +842,18 @@ public class FightWnd extends Widget {
             }
 
             @Override
+            public void change2(Pair<Text, Integer> item) {
+                super.change2(item);
+           }
+
+            @Override
             public void change(Pair<Text, Integer> item) {
                 super.change(item);
                 load(item.b);
                 use(item.b);
             }
 
-            @Override
-            public void change2(Pair<Text, Integer> item) {
-                super.change2(item);
-            }
+
         };
 
         info = add(new ImageInfoBox(new Coord(223, 152)), new Coord(5, 35).add(wbox.btloff()));

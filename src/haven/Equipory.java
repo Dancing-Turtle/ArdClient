@@ -88,6 +88,7 @@ public class Equipory extends Widget implements DTarget {
     Map<GItem, WItem[]> wmap = new HashMap<GItem, WItem[]>();
     private final Avaview ava;
     public WItem[] quickslots = new WItem[ecoords.length];
+    WItem[] slots = new WItem[ecoords.length];
 
     @RName("epry")
     public static class $_ implements Factory {

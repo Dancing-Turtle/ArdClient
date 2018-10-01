@@ -19,8 +19,10 @@ public class TroughFiller extends Window implements GobSelectCallback {
 
 	private boolean stop = false;
 
+	private Button stopBtn;
+
 	public TroughFiller() {
-		super(new Coord(270, 50), "Trough Filler");
+		super(new Coord(270, 100), "Trough Filler");
 
 		Widget inf = add(new Widget(new Coord(245, 30)) {
 			public void draw(GOut g) {
@@ -33,6 +35,13 @@ public class TroughFiller extends Window implements GobSelectCallback {
 		}, new Coord(10, 10).add(wbox.btloff()));
 		Frame.around(this, Collections.singletonList(inf));
 		Label infolbl = inf.add(new Label("Alt + Click to select trough"), new Coord(5, 0));
+		stopBtn = new Button(120, "Stop") {
+			@Override
+			public void click() {
+				stop();
+			}
+		};
+		add(stopBtn, new Coord(75, 65));
 	}
 
 	Thread t = new Thread(new Runnable() {
@@ -40,17 +49,34 @@ public class TroughFiller extends Window implements GobSelectCallback {
 			try {
 				main:
 				while (true) {
+					int timeout = 0;
+					while(BotUtils.findObjectByNames(1000,terobjs) == null) {
+						//System.out.println("While loop : " + timeout);
+						timeout++;
+						if(stop)
+							break main;
+						if (timeout >= 100) {
+							timeout = 0;
+							stop();
+							break;
+						}
+						BotUtils.sleep(50);
+					}
 					if (BotUtils.findObjectByNames(1000, terobjs) == null
 							&& BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), invobjs).size() == 0)
 						break;
 					while (BotUtils.invFreeSlots() > 0) {
 						if (stop)
 							break main;
+
+
 						if (BotUtils.findObjectByNames(1000, terobjs) == null)
 							break;
 
 						Gob g = BotUtils.findObjectByNames(1000, terobjs);
-						BotUtils.pfRightClick(g, 0);
+						gameui().map.wdgmsg("click", g.sc, g.rc.floor(posres),3,1,0,(int)g.id,g.rc.floor(posres),0,-1);
+					//	gui.map.wdgmsg("click", cistern.sc, cistern.rc.floor(posres), 3, 0, 0, (int) cistern.id, cistern.rc.floor(posres), 0, -1);
+						//BotUtils.pfRightClick(g, 0);
 						int i = 0;
 						while (BotUtils.findObjectById(g.id) != null) {
 							if (i == 100)
@@ -62,6 +88,7 @@ public class TroughFiller extends Window implements GobSelectCallback {
 
 					if (stop)
 						break main;
+
 					if (BotUtils.getItemAtHand() != null)
 						BotUtils.dropItem(0);
 
@@ -121,8 +148,10 @@ public class TroughFiller extends Window implements GobSelectCallback {
 	}
 
 	public void stop() {
+		t.interrupt();
 		stop = true;
-		reqdestroy();
-		gameui().map.wdgmsg("click", Coord.z, new Coord((int)BotUtils.player().rc.x, (int)BotUtils.player().rc.y), 1, 0);
+		BotUtils.sysMsg("Stopping Trough Filler",Color.white);
+		this.destroy();
+	//	gameui().map.wdgmsg("click", Coord.z, new Coord((int)BotUtils.player().rc.x, (int)BotUtils.player().rc.y), 1, 0);
 	}
 }

@@ -34,6 +34,7 @@ public class IButton extends SIWidget {
     boolean h = false;
     boolean a = false;
     UI.Grab d = null;
+    public boolean recthit = false;
 
     @RName("ibtn")
     public static class $_ implements Factory {
@@ -71,6 +72,7 @@ public class IButton extends SIWidget {
     public boolean checkhit(Coord c) {
         if (!c.isect(Coord.z, sz))
             return (false);
+        if(recthit)return true;
         if (up.getRaster().getNumBands() < 4)
             return (true);
         return (up.getRaster().getSample(c.x, c.y, 3) >= 128);

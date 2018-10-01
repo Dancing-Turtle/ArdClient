@@ -121,9 +121,9 @@ public class FlowerMenu extends Widget {
                         nextAutoSel = null;
                         choose(p);
                         if (p.name.contains("Giddy")) {
-                                horsemounter = new Thread(new FlowerMenu.horsemounter());
-                                horsemounter.start();
-                                }
+                            horsemounter = new Thread(new FlowerMenu.horsemounter());
+                            horsemounter.start();
+                        }
                         break;
                     }
                 }
@@ -135,18 +135,18 @@ public class FlowerMenu extends Widget {
     public class horsemounter implements Runnable{
         public void run(){
             try{
-            //BotUtils.sleep(500);
-            GameUI gui = getGUI();
-            while(gui.ui.root.findchild(FlowerMenu.class) != null) {
-               // BotUtils.sysLogAppend("flowermenu present","white");
-                BotUtils.sleep(10);
-            }
-          //  BotUtils.sysLogAppend("flowermenu not present","white");
-            Gob player = gui.map.player();
-            while(player.ols.size() == 1){}
-            try {
-                Thread.sleep(50);
-            }catch(InterruptedException idkheh){}
+                //BotUtils.sleep(500);
+                GameUI gui = getGUI();
+                while(gui.ui.root.findchild(FlowerMenu.class) != null) {
+                    // BotUtils.sysLogAppend("flowermenu present","white");
+                    BotUtils.sleep(10);
+                }
+                //  BotUtils.sysLogAppend("flowermenu not present","white");
+                Gob player = gui.map.player();
+                while(player.ols.size() == 1){}
+                try {
+                    Thread.sleep(50);
+                }catch(InterruptedException idkheh){}
                 UI ui = gui.ui;
                 for (Widget widget : ui.rwidgets.keySet()) {
                     if (widget instanceof Speedget) {
@@ -156,9 +156,7 @@ public class FlowerMenu extends Widget {
                 }
             }catch(ConcurrentModificationException e){}
         }
-        }
-
-
+    }
 
     public GameUI getGUI()
     {

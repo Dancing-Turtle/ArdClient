@@ -52,7 +52,7 @@ public class OptWnd extends Window {
     public static final int VERTICAL_MARGIN = 10;
     public static final int HORIZONTAL_MARGIN = 5;
     public static final int VERTICAL_AUDIO_MARGIN = 5;
-    public final Panel main, video, audio, display, map, general, combat, control, uis, quality, flowermenus, soundalarms, hidesettings, studydesksettings;
+    public final Panel main, video, audio, display, map, general, combat, control, uis, quality, flowermenus, soundalarms, hidesettings, studydesksettings, keybindsettings;
     public Panel current;
 
     public void chpanel(Panel p) {
@@ -363,6 +363,7 @@ public class OptWnd extends Window {
         soundalarms = add(new Panel());
         hidesettings = add(new Panel());
         studydesksettings = add(new Panel());
+        keybindsettings = add(new Panel());
 
         initMain(gopts);
         initAudio();
@@ -377,6 +378,7 @@ public class OptWnd extends Window {
         initSoundAlarms();
         initHideMenu();
         initstudydesksettings();
+        initkeybindsettings();
         
         chpanel(main);
     }
@@ -395,6 +397,7 @@ public class OptWnd extends Window {
         main.add(new PButton(200, "Sound alarms", 's', soundalarms), new Coord(420, 60));
         main.add(new PButton(200, "Hide settings", 'h', hidesettings), new Coord(420, 90));
         main.add(new PButton(200, "Study Desk Options", 'o', studydesksettings), new Coord(0, 120));
+        main.add(new PButton(200, "Keybind Options", 'o', keybindsettings), new Coord(210, 120));
         if (gopts) {
             main.add(new Button(200, "Switch character") {
                 public void click() {
@@ -1531,6 +1534,34 @@ public class OptWnd extends Window {
                     }
                 }
         );
+        appender.addRow(new Label("Enter Discord channel name for village chat integration."),
+                new TextEntry(85, Config.discordchannel) {
+                    @Override
+                    public boolean type(char c, KeyEvent ev) {
+                        if (!parent.visible)
+                            return false;
+
+                        boolean ret = buf.key(ev);
+                        if (text.length() > 0) {
+                            Utils.setpref("discordchannel", text);
+                        }
+
+                        return ret;
+                    }
+                }
+        );
+        appender.add(new CheckBox("Log village chat to Discord - Warning, best used if only one person is using on an alt."){
+                {
+                        a = Config.discordchat;
+                }
+
+        public void set(boolean val) {
+            Utils.setprefb("discordchat", val);
+            Config.discordchat = val;
+            a = val;
+        }
+        });
+
         appender.add(new CheckBox("Connect to Discord on Login") {
             {
                 a = Config.autoconnectdiscord;
@@ -1792,6 +1823,40 @@ public class OptWnd extends Window {
 
         studydesksettings.add(new PButton(200, "Back", 27, main), new Coord(210, 360));
         studydesksettings.pack();
+    }
+    private void initkeybindsettings() {
+        WidgetList<KeyBinder.ShortcutWidget> list = keybindsettings.add(new WidgetList<KeyBinder.ShortcutWidget>(new Coord(300, 24), 16){
+            @Override
+            public boolean mousedown(Coord c0, int button) {
+                boolean result = super.mousedown(c0, button);
+                KeyBinder.ShortcutWidget item = itemat(c0);
+                if(item != null) {
+                    c0 = c0.add(0, sb.val * itemsz.y);
+                    item.mousedown(c0.sub(item.parentpos(this)), button);
+                }
+                return result;
+            }
+
+            @Override
+            public Object tooltip(Coord c0, Widget prev) {
+                KeyBinder.ShortcutWidget item = itemat(c0);
+                if(item != null) {
+                    c0 = c0.add(0, sb.val * itemsz.y);
+                    return item.tooltip(c0, prev);
+                }
+                return super.tooltip(c, prev);
+            }
+        });
+        list.canselect = false;
+        KeyBinder.makeWidgets(()->{
+            for(int i = 0; i< list.listitems();i++){
+                list.listitem(i).update();
+            }
+            return null;
+        }).forEach(list::additem);
+        keybindsettings.pack();
+        keybindsettings.add(new PButton(200, "Back", 27, main), new Coord(410, 360));
+        keybindsettings.pack();
     }
     
     private void initHideMenu() {
@@ -2425,6 +2490,7 @@ public class OptWnd extends Window {
     public void wdgmsg(Widget sender, String msg, Object... args) {
         if ((sender == this) && (msg == "close")) {
             hide();
+            setfocus(ui.gui.invwnd);
         } else {
             super.wdgmsg(sender, msg, args);
         }

@@ -2,11 +2,13 @@ package haven.automation;
 
 import haven.Button;
 import haven.*;
+import haven.Composite;
 import haven.Label;
 import haven.Window;
 import haven.purus.BotUtils;
 import haven.purus.SeedCropFarmer;
 import haven.automation.PepperBotRun;
+import haven.purus.pbot.PBotAPI;
 import haven.res.ui.tt.q.qbuff.QBuff;
 
 import java.awt.*;
@@ -249,9 +251,14 @@ public class PepperBot extends Window implements AreaSelectCallback, GobSelectCa
 	public void run() {
 	BotUtils.sysMsg("Started", Color.white);
 	GameUI gui = gameui();
-	Coord location = gui.map.player().rc.floor(posres);
-	int y = location.y + (int) Math.random() * 4000 - 1000;
-	System.out.println(" y : "+y);
+	List<Gob> goblist = PBotAPI.getGobs();
+	for(Gob idk : goblist)
+		if(idk.getres().basename().contains("cattle")) {
+			Composite cmp = (Composite) idk.getattr(Drawable.class);
+			for (Composited.Model idklol : cmp.comp.mod)
+				System.out.println("Models : " + idklol.id + "mod size : "+cmp.comp.mod.size()+" lay size : "+idklol.lay.size());
+			//((Composite) idk.getattr(Drawable.class)).comp.mod.clear();
+		}
 	//List<WItem> idk = BotUtils.getInventoryContents(BotUtils.playerInventory());
 	//for (WItem idkok : idk)
 	//	System.out.println("res : " + idkok.item.resource().name);

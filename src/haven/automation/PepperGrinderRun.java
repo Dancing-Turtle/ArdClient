@@ -26,7 +26,7 @@ public class PepperGrinderRun extends Window implements Runnable {
 	private boolean destroy = false;
 	public Gob htable;
 	private boolean replant = false;
-    private static final int TIMEOUT = 1000;
+	private static final int TIMEOUT = 1000;
 	public Button stopBtn;
 	public int x, y;
 	private Gob chest, water, rowmarker, cauldron, barrel, hfire, grinder;
@@ -37,6 +37,7 @@ public class PepperGrinderRun extends Window implements Runnable {
 	public Widget craftall;
 	private Boolean boilmode = false;
 	private Coord finalloc;
+	private Thread t;
 
 	public PepperGrinderRun(Coord rc1, Coord rc2, Gob grinder, int section, Gob hfire, int direction) {
 		super(new Coord(120, 45), "Pepper Grinder");
@@ -55,49 +56,51 @@ public class PepperGrinderRun extends Window implements Runnable {
 		stopBtn = new Button(120, "Stop") {
 			@Override
 			public void click() {
+				stopThread = true;
 				stop();
 			}
 		};
 		add(stopBtn, new Coord(0, 0));
+
 	}
 
-	public void run() {
+		public void run() {
 
-		//section = 4;
-		tables = Tables();
-		BotUtils.sysMsg("Pepper Grinder Bot started!", Color.white);
-		GameUI gui = gameui();
-		if(gui.getwnd("Crafting")!= null)
-			gui.getwnd("Crafting").close();
-		gui.wdgmsg("act", "craft", "blackpepper");
-		PBotAPI.waitForWindow("Crafting");
-		Window crafting =gui.getwnd("Crafting");
-		for (Widget a = crafting.lchild; a != null; a = a.prev) {
-			for (Widget aa = a.lchild; aa != null; aa = aa.prev) {
-				if (aa instanceof Button) {
-					if (((Button) aa).text.text == "Craft All") {
-						craftall = aa;
+			//section = 4;
+			tables = Tables();
+			BotUtils.sysMsg("Pepper Grinder Bot started!", Color.white);
+			GameUI gui = gameui();
+			if (gui.getwnd("Crafting") != null)
+				gui.getwnd("Crafting").close();
+			gui.wdgmsg("act", "craft", "blackpepper");
+			PBotAPI.waitForWindow("Crafting");
+			Window crafting = gui.getwnd("Crafting");
+			for (Widget a = crafting.lchild; a != null; a = a.prev) {
+				for (Widget aa = a.lchild; aa != null; aa = aa.prev) {
+					if (aa instanceof Button) {
+						if (((Button) aa).text.text == "Craft All") {
+							craftall = aa;
+						}
 					}
 				}
 			}
-		}
 
-		if (stopThread) // Checks if aborted
-			return;
+			if (stopThread) // Checks if aborted
+				return;
 
-while(tables.size()>0 && !stopThread) {
-	// Check if stamina is under 30%, drink if needed
-	gui = HavenPanel.lui.root.findchild(GameUI.class);
-	IMeter.Meter stam = gui.getmeter("stam", 0);
-	if (stam.a <= 60) {
-		lblProg.settext("Drinking");
-		new Thread(new BeltDrink(gui), "BeltDrink").start();
-		BotUtils.sleep(5000);
-	}
+			while (tables.size() > 0 && !stopThread) {
+				// Check if stamina is under 30%, drink if needed
+				gui = HavenPanel.lui.root.findchild(GameUI.class);
+				IMeter.Meter stam = gui.getmeter("stam", 0);
+				if (stam.a <= 60) {
+					lblProg.settext("Drinking");
+					new Thread(new BeltDrink(gui), "BeltDrink").start();
+					BotUtils.sleep(5000);
+				}
 
 
-	if (stopThread)
-		return;
+				if (stopThread)
+					return;
 
 
 	/*if (section == 2) {
@@ -147,175 +150,180 @@ while(tables.size()>0 && !stopThread) {
 		gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
 		BotUtils.sleep(6000);
 	}*/
-	int finishtimeout = 0;
-	while (BotUtils.invFreeSlots() > 2 && !stopThread) {
-		finishtimeout++;
-		if(finishtimeout > 10000)
-			stopBtn.click();
-		lblProg.settext("Status - Collecting");
-		//while (BotUtils.findObjectByNames(10, "gfx/terobjs/htable") == null)
-		//BotUtils.sleep(10);
-		//BotUtils.sysLogAppend("tablecoutn : "+tables.size(), "white");
-		while (htable == null) {
-			finishtimeout++;
-			if(finishtimeout > 10000)
-				stopBtn.click();
-			//BotUtils.sysLogAppend("while loop", "white");
-			for (Gob tablelol : tables) {
-				//BotUtils.sysLogAppend("table loop", "white");
-				if (tablelol.ols.size() > 0)
-					htable = tablelol;
-			}
-		}
-		//BotUtils.sleep(500);
-	//	BotUtils.sysLogAppend("Found table, clicking", "white");
-        PBotAPI.pfRightClick(htable,0);
-        try {
-            gui.map.pfthread.join();
-        } catch (InterruptedException e) {
-            return;
-        }
-        try {
-            Thread.sleep(TIMEOUT);
-        } catch (InterruptedException e) {
-            return;
-        }
-        int retrytimer = 0;
-        int retrycount = 0;
-        while(gui.getwnd("Herbalist Table")== null){
-        	retrytimer++;
-        	if(retrytimer > 1000){
-        		retrycount++;
-				if (retrycount >= 3) {
-					lblProg.settext("Unstucking");
-					BotUtils.sysLogAppend("Moving char", "white");
-					Gob player = gui.map.player();
-					Coord location = player.rc.floor(posres);
-					int x = location.x + (int) Math.random() * 4000 - 1000;
-					int y = location.y + (int) Math.random() * 4000 - 1000;
-					Coord finalloc = new Coord(x, y);
-					gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
-					retrycount = 0;
-					BotUtils.sleep(2500);
-				}
-				PBotAPI.pfRightClick(htable,0);
-				try {
-					gui.map.pfthread.join();
-				} catch (InterruptedException e) {
-					return;
-				}
-				try {
-					Thread.sleep(TIMEOUT);
-				} catch (InterruptedException e) {
-					return;
-				}
-			}
-			BotUtils.sleep(10);
-		}
-        BotUtils.waitForWindow("Herbalist Table");
-		//gui.map.wdgmsg("click", htable.sc, htable.rc.floor(posres), 3, 0, 0, (int) htable.id, htable.rc.floor(posres), 0, -1);
-		//BotUtils.sysLogAppend("Found table, clicked", "white");
-		//BotUtils.waitForWindow("Herbalist Table");
-		Window herbtable = gui.getwnd("Herbalist Table");
-        if (herbtable == null)
-            continue;
-		int freeslots = BotUtils.invFreeSlots();
-		for (Widget w = herbtable.lchild; w != null; w = w.prev) {
-			if (w instanceof Inventory) {
-				Inventory inv = (Inventory) w;
-						List <WItem> items = BotUtils.getInventoryContents(inv);
-						for(WItem item : items){
-							freeslots = BotUtils.invFreeSlots();
-							if(freeslots > 16) {
-								System.out.println("Transferring pepper freeslots : "+freeslots);
-								item.item.wdgmsg("transfer", Coord.z);
+				int finishtimeout = 0;
+				while (BotUtils.invFreeSlots() > 2 && !stopThread) {
+					finishtimeout++;
+					if (finishtimeout > 10000)
+						stopBtn.click();
+					lblProg.settext("Status - Collecting");
+					//while (BotUtils.findObjectByNames(10, "gfx/terobjs/htable") == null)
+					//BotUtils.sleep(10);
+					//BotUtils.sysLogAppend("tablecoutn : "+tables.size(), "white");
+					while (htable == null) {
+						finishtimeout++;
+						if (finishtimeout > 10000)
+							stopBtn.click();
+						//BotUtils.sysLogAppend("while loop", "white");
+						for (Gob tablelol : tables) {
+							//BotUtils.sysLogAppend("table loop", "white");
+							if (tablelol.ols.size() > 0)
+								htable = tablelol;
+						}
+					}
+					//BotUtils.sleep(500);
+					//	BotUtils.sysLogAppend("Found table, clicking", "white");
+					PBotAPI.pfRightClick(htable, 0);
+					try {
+						gui.map.pfthread.join();
+					} catch (InterruptedException e) {
+						return;
+					}
+					try {
+						Thread.sleep(TIMEOUT);
+					} catch (InterruptedException e) {
+						return;
+					}
+					int retrytimer = 0;
+					int retrycount = 0;
+					while (gui.getwnd("Herbalist Table") == null) {
+						retrytimer++;
+						if (retrytimer > 1000) {
+							retrycount++;
+							if (retrycount > 1) {
+								lblProg.settext("Unstucking");
+								BotUtils.sysLogAppend("Moving char", "white");
+								Gob player = gui.map.player();
+								Coord location = player.rc.floor(posres);
+								int x = location.x + + getrandom();
+								int y = location.y + + getrandom();
+								Coord finalloc = new Coord(x, y);
+								gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
+								retrycount = 0;
+								BotUtils.sleep(1000);
 							}
-							else if (freeslots > 2)
-							{
-								System.out.println("Transferring pepper freeslots : "+freeslots);
-								item.item.wdgmsg("transfer", Coord.z);
-								BotUtils.sleep(300);
+							PBotAPI.pfRightClick(htable, 0);
+							try {
+								gui.map.pfthread.join();
+							} catch (InterruptedException e) {
+								return;
 							}
-							else
-								break;
+							try {
+								Thread.sleep(TIMEOUT);
+							} catch (InterruptedException e) {
+								return;
 							}
-			}
-		}
-		herbtable.close();
-	//	BotUtils.sysLogAppend("Tables Size : "+tables.size(),"white");
-		htable = null;
-	}
-if(BotUtils.invFreeSlots() <= 2) {
-	GItem pepperlol = gui.maininv.getItemPartial("Dried").item;
-	java.util.List<WItem> pepper = gui.maininv.getIdenticalItems((pepperlol));
-		lblProg.settext("Status - Going to Grind");
-		BotUtils.pfRightClick(grinder, 0);
-		try {
-			gui.map.pfthread.join();
-		} catch (InterruptedException e) {
-			return;
-		}
-		try {
-			Thread.sleep(TIMEOUT);
-		} catch (InterruptedException e) {
-			return;
-		}
-		BotUtils.sleep(6000); //sleep 6 seconds to walk to grinder
-	int timeout = 0;
-	int retrycount = 0;
-	while (gui.maininv.getIdenticalItems((pepperlol)).size() > 5) {
-		timeout++;
-		if (timeout > 5000) {
-			gui.maininv.getItemPartial("Dried").item.wdgmsg("drop", Coord.z);
-			timeout = 0;
-		}
-		while (gui.prog >= 0) {
-			BotUtils.sleep(10);
-			lblProg.settext("Status - Grinding");
-		}
-		if (PBotAPI.getStamina() > 50) {
-			((Button) craftall).click();
-			BotUtils.sleep(2000);
-			retrycount++;
-			if (retrycount >= 3) {
-				lblProg.settext("Unstucking");
-				BotUtils.sysLogAppend("Moving char", "white");
-				Gob player = gui.map.player();
-				Coord location = player.rc.floor(posres);
-				int x = location.x + (int) Math.random() * 4000 - 1000;
-				int y = location.y + (int) Math.random() * 4000 - 1000;
-				Coord finalloc = new Coord(x, y);
-				gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
-				retrycount = 0;
-				BotUtils.sleep(2500);
+						}
+						BotUtils.sleep(10);
+					}
+					BotUtils.waitForWindow("Herbalist Table");
+					//gui.map.wdgmsg("click", htable.sc, htable.rc.floor(posres), 3, 0, 0, (int) htable.id, htable.rc.floor(posres), 0, -1);
+					//BotUtils.sysLogAppend("Found table, clicked", "white");
+					//BotUtils.waitForWindow("Herbalist Table");
+					Window herbtable = gui.getwnd("Herbalist Table");
+					if (herbtable == null)
+						continue;
+					int freeslots = BotUtils.invFreeSlots();
+					for (Widget w = herbtable.lchild; w != null; w = w.prev) {
+						if (w instanceof Inventory) {
+							Inventory inv = (Inventory) w;
+							List<WItem> items = BotUtils.getInventoryContents(inv);
+							for (WItem item : items) {
+								freeslots = BotUtils.invFreeSlots();
+								if (freeslots > 16) {
+									System.out.println("Transferring pepper freeslots : " + freeslots);
+									item.item.wdgmsg("transfer", Coord.z);
+								} else if (freeslots > 2) {
+									System.out.println("Transferring pepper freeslots : " + freeslots);
+									item.item.wdgmsg("transfer", Coord.z);
+									BotUtils.sleep(300);
+								} else
+									break;
+							}
+						}
+					}
+					herbtable.close();
+					//	BotUtils.sysLogAppend("Tables Size : "+tables.size(),"white");
+					htable = null;
+				}
+				if (BotUtils.invFreeSlots() <= 2) {
+					GItem pepperlol = gui.maininv.getItemPartial("Dried").item;
+					java.util.List<WItem> pepper = gui.maininv.getIdenticalItems((pepperlol));
+					lblProg.settext("Status - Going to Grind");
+					BotUtils.pfRightClick(grinder, 0);
+					try {
+						gui.map.pfthread.join();
+					} catch (InterruptedException e) {
+						return;
+					}
+					try {
+						Thread.sleep(TIMEOUT);
+					} catch (InterruptedException e) {
+						return;
+					}
+					BotUtils.sleep(6000); //sleep 6 seconds to walk to grinder
+					int timeout = 0;
+					int retrycount = 0;
+					while (gui.maininv.getIdenticalItems((pepperlol)).size() > 5) {
+						timeout++;
+						if (timeout > 5000) {
+							gui.maininv.getItemPartial("Dried").item.wdgmsg("drop", Coord.z);
+							timeout = 0;
+						}
+						while (gui.prog >= 0) {
+							BotUtils.sleep(10);
+							lblProg.settext("Status - Grinding");
+						}
+						if (PBotAPI.getStamina() > 50) {
+							((Button) craftall).click();
+							BotUtils.sleep(2000);
+							retrycount++;
+							if (retrycount > 1) {
+								lblProg.settext("Unstucking");
+								BotUtils.sysLogAppend("Moving char", "white");
+								Gob player = gui.map.player();
+								Coord location = player.rc.floor(posres);
+								int x = location.x + + getrandom();
+								int y = location.y + + getrandom();
+								Coord finalloc = new Coord(x, y);
+								gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
+								retrycount = 0;
+								BotUtils.sleep(1000);
 
-				BotUtils.pfRightClick(grinder, 0);
-				try {
-					gui.map.pfthread.join();
-				} catch (InterruptedException e) {
-					return;
-				}
-				try {
-					Thread.sleep(TIMEOUT);
-				} catch (InterruptedException e) {
-					return;
-				}
-			}
-		} else {
-			lblProg.settext("Status - Drinking");
-			new Thread(new BeltDrink(gui), "BeltDrink").start();
-			BotUtils.sleep(5000);
-		}
-	}
-	gui.map.wdgmsg("click", hfire.sc, hfire.rc.floor(posres), 1, 0, 0, (int) hfire.id, hfire.rc.floor(posres), 0, -1);
-	BotUtils.sleep(2000);
+								BotUtils.pfRightClick(grinder, 0);
+								try {
+									gui.map.pfthread.join();
+								} catch (InterruptedException e) {
+									return;
+								}
+								try {
+									Thread.sleep(TIMEOUT);
+								} catch (InterruptedException e) {
+									return;
+								}
+							}
+						} else {
+							lblProg.settext("Status - Drinking");
+							new Thread(new BeltDrink(gui), "BeltDrink").start();
+							BotUtils.sleep(5000);
+						}
+					}
+					gui.map.wdgmsg("click", hfire.sc, hfire.rc.floor(posres), 1, 0, 0, (int) hfire.id, hfire.rc.floor(posres), 0, -1);
+					BotUtils.sleep(2000);
 
 
-}
-BotUtils.sysLogAppend("end of loop","white");
-}
-		stopThread =true;
-		this.destroy();
+				}
+				BotUtils.sysLogAppend("end of loop", "white");
+				if(stopThread)
+					return;
+			}
+			BotUtils.sysMsg("Done",Color.white);
+			stopThread = true;
+		}
+
+	public int getrandom(){
+		Random r = new Random();
+		int randomNumber = r.ints(1, -6000, 6000).findFirst().getAsInt();
+		return randomNumber;
 	}
 
 
@@ -414,7 +422,7 @@ BotUtils.sysLogAppend("end of loop","white");
 	public void stop() {
 		// Stops thread
 		BotUtils.sysMsg("Pepper Grinder Stopped!", Color.white);
-		gameui().map.wdgmsg("click", Coord.z, gameui().map.player().rc.floor(posres), 1, 0);
+		//gameui().map.wdgmsg("click", Coord.z, gameui().map.player().rc.floor(posres), 1, 0);
 		if (gameui().map.pfthread != null) {
 			gameui().map.pfthread.interrupt();
 		}

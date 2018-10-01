@@ -200,8 +200,9 @@ public class Composited implements Rendered, MapView.Clickable {
 
         public boolean setup(RenderList r) {
             m.setup(r);
-            for (Layer lay : this.lay)
+            for (Layer lay : this.lay) {
                 r.add(lay, null);
+            }
             return (false);
         }
     }

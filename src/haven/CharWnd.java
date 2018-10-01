@@ -1972,7 +1972,7 @@ public class CharWnd extends Window {
                 if (q.title.contains("Visit") && !q.title.contains(Config.questdropstring)) {
                    // BotUtils.sysLogAppend("Non Gerd quest found : " + q.title, "white");
                     ui.Questnumberarray.add(q.id);
-                    System.out.println("CharWnd numberarray : "+ui.Questnumberarray.size()+" quest to drop : "+q.id);
+                  //  System.out.println("CharWnd numberarray : "+ui.Questnumberarray.size()+" quest to drop : "+q.id);
                 }
             }catch(NullPointerException pp){}
             quests.add(q);

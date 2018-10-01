@@ -81,11 +81,20 @@ public class PepperBotRun extends Window implements Runnable {
 	public void run() {
 		BotUtils.sysMsg("Pepper Bot started!", Color.white);
 		GameUI gui = gameui();
-		if(gui.getwnd("Crafting")!= null)
-			gui.getwnd("Crafting").close();
 		gui.wdgmsg("act", "craft", "boiledpepper");
-		PBotAPI.waitForWindow("Crafting");
-		Window crafting = gui.getwnd("Crafting");
+		BotUtils.waitForWindow("Crafting");
+		BotUtils.sleep(200);
+		for(Widget a = gui.makewnd.lchild;a!=null;a=a.prev){
+			for(Widget aa = a.lchild;aa!=null;aa=aa.prev){
+				if(aa instanceof Button){
+					if(((Button) aa).text.text == "Craft All"){
+						System.out.println("button found");
+						craftall = aa;
+					}
+				}
+			}
+		}
+		/*Window crafting = gui.getwnd("Crafting");
 		for (Widget a = crafting.lchild; a != null; a = a.prev) {
 			for (Widget aa = a.lchild; aa != null; aa = aa.prev) {
 				if (aa instanceof Button) {
@@ -94,7 +103,7 @@ public class PepperBotRun extends Window implements Runnable {
 					}
 				}
 			}
-		}
+		}*/
 		if (harvest) {
 			// Initialise crop list
 			crops = Crops(true);
@@ -273,10 +282,17 @@ public class PepperBotRun extends Window implements Runnable {
 							//	System.out.println("clicking table, tables size : "+tables.size()+" blacklist size "+tablesblacklist.size()+" gob id : "+htable.id);
 								//BotUtils.doClick(htable,3,0);
 								BotUtils.pfRightClick(htable,0);
-                                    while(gui.getwnd("Herbalist Table")==null)
+								int retry = 0;
+                                    while(gui.getwnd("Herbalist Table")==null) {
+										retry++;
+										if(retry > 500){
+											retry = 0;
+											System.out.println("retrying table");
+											BotUtils.pfRightClick(htable,0);
+										}
 										BotUtils.sleep(10);
-
-                                    BotUtils.waitForWindow("Herbalist Table");
+									}
+									BotUtils.sleep(100);
 									cwnd = gui.getwnd("Herbalist Table");
                                     System.out.println("Getting pepper from inv");
                                     BotUtils.sleep(2000);
@@ -311,25 +327,34 @@ public class PepperBotRun extends Window implements Runnable {
 							break;
 						pepperlist.clear();
 						lblProg2.settext("Boiling");
-						gui.map.wdgmsg("click", cauldron.sc, cauldron.rc.floor(posres), 3, 0, 0, (int) cauldron.id, cauldron.rc.floor(posres), 0, -1);
+						BotUtils.pfRightClick(cauldron,0);
+						//gui.map.wdgmsg("click", cauldron.sc, cauldron.rc.floor(posres), 3, 0, 0, (int) cauldron.id, cauldron.rc.floor(posres), 0, -1);
 						FlowerMenu.setNextSelection("Open");
 						int tryagaintimer = 0;
-						while(gui.getwnd("Cauldron") == null){
+						gui = gameui();
+						while(gameui().getwnd("Cauldron") == null){
+							BotUtils.sleep(10);
 							try {
 								Thread.sleep(10);
 								tryagaintimer++;
 								if (tryagaintimer >= 500) {
+									tryagaintimer=0;
 									BotUtils.sysLogAppend("Retrying cauldron open","white");
-									gui.map.wdgmsg("click", cauldron.sc, cauldron.rc.floor(posres), 3, 0, 0, (int) cauldron.id, cauldron.rc.floor(posres), 0, -1);
+									BotUtils.pfRightClick(cauldron,0);
+								//	gui.map.wdgmsg("click", cauldron.sc, cauldron.rc.floor(posres), 3, 0, 0, (int) cauldron.id, cauldron.rc.floor(posres), 0, -1);
 									FlowerMenu.setNextSelection("Open");
 								}
 							}catch(InterruptedException idk){}
 						}
+						BotUtils.sleep(500);
+						System.out.println("after cauldron window");
 						//BotUtils.waitForWindow("Cauldron");
-						Window cwnd = gameui().getwnd("Cauldron");
+						cwnd = gameui().getwnd("Cauldron");
 						BotUtils.sleep(200);
 						VMeter vm = cwnd.getchild(VMeter.class);
+						System.out.println("Clicking craft");
 						((Button) craftall).click();
+						System.out.println("after Clicking craft");
 						BotUtils.sleep(2000);
 						if (vm.amount < 30) {
 							List<Gob> allgobs = PBotAPI.getGobs();
