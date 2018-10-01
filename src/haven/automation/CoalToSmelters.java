@@ -440,6 +440,7 @@ if(Config.dropsmelterstones) {
                     terminateore = true;
                 }
                 BotUtils.sysMsg("Done.",Color.white);
+                stopbtn.click();
                 terminateore = true;
         }
         }

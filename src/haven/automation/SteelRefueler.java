@@ -4,10 +4,7 @@ import static haven.OCache.posres;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 import haven.*;
 import haven.purus.BotUtils;
@@ -144,10 +141,27 @@ public class SteelRefueler extends Window implements GobSelectCallback {
 
                     // get crucible fuel status
                     // wait for the window. really ugly but oh well...
-                    try {
+                    /*try {
                         Thread.sleep(TIMEOUT);
                     } catch (InterruptedException e) {
                         return;
+                    }*/
+                    int retry = 0;
+                    while(gui.getwnd("Steelbox") == null) {
+                        retry++;
+                        BotUtils.sleep(10);
+                        if (retry >= 1000) {
+                            retry=0;
+                            BotUtils.sysLogAppend("Unstucking", "white");
+                            Gob player = gui.map.player();
+                            Coord location = player.rc.floor(posres);
+                            int x = location.x + getrandom();
+                            int y = location.y + getrandom();
+                            Coord finalloc = new Coord(x, y);
+                            gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
+                            BotUtils.sleep(1000);
+                            BotUtils.pfRightClick(c,0);
+                        }
                     }
                    // System.out.println("Grab Steelbox window");
                     Window cwnd = gui.getwnd("Steelbox");
@@ -269,6 +283,13 @@ public class SteelRefueler extends Window implements GobSelectCallback {
         long tmp = Math.round(value);
         return (double) tmp / factor;
     }
+
+    public int getrandom(){
+        Random r = new Random();
+        int randomNumber = r.ints(1, -3000, 3000).findFirst().getAsInt();
+        return randomNumber;
+    }
+
     private class selectingarea implements Runnable {
         @Override
         public void run() {

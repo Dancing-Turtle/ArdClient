@@ -917,7 +917,7 @@ na.put(ChatAttribute.HEARTH_SECRET, hs);
                     if(Config.discordchat && this.name().equals(Config.chatalert) && Discord.jdalogin!=null && !cmsg.text().text.contains(Discord.botname)) {
                         for (TextChannel loop : haven.automation.Discord.channels)
                             if (loop.getName().equals(Config.discordchannel))
-                                loop.sendMessage(name + ": " + msg).queue();
+                                loop.sendMessage(name + ": " + cmsg.text().text).queue();
                     }
                   //  notify(cmsg, urgency);
                     save(name, cmsg.text().text);
