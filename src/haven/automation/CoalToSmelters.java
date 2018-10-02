@@ -717,6 +717,8 @@ if(Config.dropsmelterstones) {
 private class selectingarea implements Runnable {
     @Override
     public void run() {
+        list.clear();
+        stockpiles.clear();
         BotUtils.sysMsg("Drag area over smelters/Ovens/LowQ Fuel", Color.WHITE);
         PBotAPI.selectArea();
         //gui.map.PBotAPISelect = true;
@@ -744,6 +746,7 @@ private class selectingarea implements Runnable {
     private class hqselectingarea implements Runnable {
         @Override
         public void run() {
+            hqstockpiles.clear();
             BotUtils.sysMsg("Drag area over High Quality Coal", Color.WHITE);
             PBotAPI.selectArea();
             //gui.map.PBotAPISelect = true;
@@ -767,6 +770,7 @@ private class selectingarea implements Runnable {
     private class oreselectingarea implements Runnable {
         @Override
         public void run() {
+            orestockpiles.clear();
             BotUtils.sysMsg("Drag area over Ore", Color.WHITE);
             PBotAPI.selectArea();
             //gui.map.PBotAPISelect = true;

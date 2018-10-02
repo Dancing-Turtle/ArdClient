@@ -66,20 +66,17 @@ public class RootWidget extends ConsoleHost {
 
     @Override
     public boolean keydown(KeyEvent ev) {
-        if(ui.gui.chat.hasfocus) {
-          // System.out.println("chat has focus");
-            return false;
-        }
-        else if(ui.gui.opts.visible) {
-          //  System.out.println("Options has focus.");
-            return false;
-        }
-        else if(ui.gui.menuSearch.search.hasfocus) {
-          //  System.out.println("search has focus visible : "+ui.gui.menuSearch.visible);
-            return false;
-        }
+        try {
+            if (ui.gui.chat.hasfocus)
+                return false;
+            else if (ui.gui.opts.visible)
+                return false;
+            else if (ui.gui.menuSearch.search.hasfocus)
+                return false;
         else
                 return KeyBinder.handle(ui, ev) || super.keydown(ev);
+        }catch(NullPointerException q){}
+        return KeyBinder.handle(ui, ev) || super.keydown(ev);
     }
 
     @Override
