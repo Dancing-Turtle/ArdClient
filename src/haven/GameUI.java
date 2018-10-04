@@ -76,7 +76,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public BuddyWnd buddies;
     public Window craftbot;
     public Equipory equipory;
-    private final Zergwnd zerg;
+    public final Zergwnd zerg;
     public final Collection<Polity> polities = new ArrayList<Polity>();
     public HelpWnd help;
     public EquipProxy eqproxy;
@@ -330,6 +330,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         }
     }
 
+
     public void toggleActList() {
         if(actlist == null){
             actlist = add(new ActWindow("Act...", "paginae/act/.+|paginae/pose/.+|paginae/gov/.+|paginae/add/.+|gfx/fx/msrad|ui/tt/q/quality"));
@@ -579,7 +580,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 
         @Override
         public boolean show(boolean show) {
-            if (show)
+           if (show)
                 gameui().buddies.clearSearch();
             return super.show(show);
         }
@@ -1132,9 +1133,9 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public void wdgmsg(Widget sender, String msg, Object... args) {
    // System.out.println("############");
     //	System.out.println(sender);
-    //	System.out.println(msg);
-    //	for(Object o :args)
-    //		System.out.println(o);
+    	//System.out.println(msg);
+    	//for(Object o :args)
+    	//	System.out.println(o);
         if ((sender == chrwdg) && (msg == "close")) {
             chrwdg.hide();
         } else if((polities.contains(sender)) && (msg == "close")) {
@@ -1280,6 +1281,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         Utils.setprefb("tilecenter", Config.tilecenter);
         msg("Tile centering is now turned " + (Config.tilecenter ? "on." : "off."), Color.WHITE);
     }
+
 
     public void togglePathfinding(){
         Config.pf = !Config.pf;
@@ -1449,10 +1451,13 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         } else if ((key == 27) && (map != null) && !map.hasfocus) {
             setfocus(map);
             return true;
-        } else if (chat.hasfocus)
+        } else if (chat.hasfocus) {
             return true;
-        else
-        return(super.globtype(key, ev));
+        }
+        else {
+            System.out.println("key : "+key+" modifier : "+ev.getModifiers());
+            return (super.globtype(key, ev));
+        }
     }
 
 

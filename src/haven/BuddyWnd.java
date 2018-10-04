@@ -38,7 +38,8 @@ public class BuddyWnd extends Widget implements Iterable<BuddyWnd.Buddy> {
     private Button sbalpha;
     private Button sbgroup;
     private Button sbstatus;
-    private TextEntry pname, charpass, opass, search;
+    private TextEntry pname, charpass, opass;
+    public TextEntry search;
     private Buddy editing = null;
     private TextEntry nicksel;
     private GroupSelector grpsel;

@@ -415,6 +415,7 @@ public class MenuGrid extends Widget {
             p.add(paginafor(Resource.local().load("paginae/amber/OpenRacks")));
             p.add(paginafor(Resource.local().load("paginae/amber/CountGobs")));
             p.add(paginafor(Resource.local().load("paginae/amber/Discord")));
+            p.add(paginafor(Resource.local().load("paginae/amber/ShieldChecker")));
             p.add(paginafor(Resource.local().load("paginae/amber/PepperBot")));
             try {
                 URL url = new URL("https://ardenneslol.github.io/Hafen/WhiteList.txt");
@@ -614,6 +615,12 @@ public class MenuGrid extends Widget {
                 synchronized (GobSelectCallback.class) {
                     gui.map.registerGobSelect(sw);
                 }
+            }
+        } else if (ad[1].equals("checkshield")) {
+            if (gui.getwnd("Shield Checker") == null) {
+                ShieldChecker sw = new ShieldChecker();
+                gui.map.shieldchecker = sw;
+                gui.add(sw, new Coord(gui.sz.x / 2 - sw.sz.x / 2, gui.sz.y / 2 - sw.sz.y / 2 - 200));
             }
         } else if (ad[1].equals("torch")) {
             if (gui.getwnd("Torch Lighter") == null) {
@@ -962,7 +969,9 @@ public class MenuGrid extends Widget {
     }
 
     public boolean globtype(char k, KeyEvent ev) {
-        if (ev.isShiftDown() || ev.isAltDown()) {
+        if(Config.disablemenugrid)
+            return false;
+        else if (ev.isShiftDown() || ev.isAltDown()) {
             return false;
         } else if ((k == 27) && (this.cur != null)) {
             this.cur = null;

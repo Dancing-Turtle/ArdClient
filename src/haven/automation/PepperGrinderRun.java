@@ -39,13 +39,12 @@ public class PepperGrinderRun extends Window implements Runnable {
 	private Coord finalloc;
 	private Thread t;
 
-	public PepperGrinderRun(Coord rc1, Coord rc2, Gob grinder, int section, Gob hfire, int direction) {
+	public PepperGrinderRun(Coord rc1, Coord rc2, Gob grinder, int section, int direction) {
 		super(new Coord(120, 45), "Pepper Grinder");
 		this.grinder = grinder;
 		this.rc1 = rc1;
 		this.rc2 = rc2;
 		this.direction = direction;
-		this.hfire = hfire;
 		this.section = section;
 
 		// Initialise arraylists
@@ -307,8 +306,8 @@ public class PepperGrinderRun extends Window implements Runnable {
 							BotUtils.sleep(5000);
 						}
 					}
-					gui.map.wdgmsg("click", hfire.sc, hfire.rc.floor(posres), 1, 0, 0, (int) hfire.id, hfire.rc.floor(posres), 0, -1);
-					BotUtils.sleep(2000);
+				//	gui.map.wdgmsg("click", hfire.sc, hfire.rc.floor(posres), 1, 0, 0, (int) hfire.id, hfire.rc.floor(posres), 0, -1);
+					//BotUtils.sleep(2000);
 
 
 				}

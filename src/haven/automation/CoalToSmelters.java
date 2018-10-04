@@ -717,8 +717,8 @@ if(Config.dropsmelterstones) {
 private class selectingarea implements Runnable {
     @Override
     public void run() {
-        list.clear();
-        stockpiles.clear();
+      //  list.clear();
+      //  stockpiles.clear();
         BotUtils.sysMsg("Drag area over smelters/Ovens/LowQ Fuel", Color.WHITE);
         PBotAPI.selectArea();
         //gui.map.PBotAPISelect = true;

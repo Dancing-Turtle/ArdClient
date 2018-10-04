@@ -73,6 +73,8 @@ public class RootWidget extends ConsoleHost {
                 return false;
             else if (ui.gui.menuSearch.search.hasfocus)
                 return false;
+            else if (ui.gui.zerg.visible)
+                return false;
         else
                 return KeyBinder.handle(ui, ev) || super.keydown(ev);
         }catch(NullPointerException q){}

@@ -228,15 +228,26 @@ public class FlaxBot extends Window {
                             GItem item = seeds.item;
                             if (BotUtils.getAmount(item) >= 5) {
                                 lblProg2.settext("Picking Up Seeds");
-                                BotUtils.sysLogAppend("Replanting flax of quality : " + item.quality().q, "white");
+                                BotUtils.sysLogAppend("Replanting quality : " + item.quality().q, "white");
                                 BotUtils.takeItem(item);
                                 break;
                             }
                         }
-
+                        retryharvest = 0;
                         while (BotUtils.getItemAtHand() == null) {
                             lblProg2.settext("Waiting to Pickup Seeds");
                             BotUtils.sleep(10);
+                            retryharvest++;
+                            if(retryharvest > 500){
+                                for (WItem seeds : items) {
+                                    GItem item = seeds.item;
+                                    if (BotUtils.getAmount(item) >= 5) {
+                                        lblProg2.settext("Picking Up Seeds");
+                                        BotUtils.takeItem(item);
+                                        break;
+                                    }
+                                }
+                            }
                         }
                         // Plant the seed from hand
                         int amount = 0;
@@ -292,7 +303,7 @@ public class FlaxBot extends Window {
                                     break;
                                 if (seedslol.item.quality().q == BotUtils.getItemAtHand().quality().q) {
                                     System.out.println("Combining");
-                                    BotUtils.sysLogAppend("Combining quality : " + BotUtils.getItemAtHand().quality().q + " seeds in hand with quality : " + seedslol.item.quality().q + " seeds in inventory.", "white");
+                                    BotUtils.sysLogAppend("Combining quality : " + BotUtils.getItemAtHand().quality().q + " with quality : " + seedslol.item.quality().q + " seeds.", "white");
                                     int handAmount = BotUtils.getAmount(BotUtils.getItemAtHand());
                                     try {
                                         seedslol.item.wdgmsg("itemact", 0);

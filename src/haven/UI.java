@@ -59,6 +59,7 @@ public class UI {
     public int beltWndId = -1;
 	public GameUI gui;
 	public Widget realmchat;
+	public String VillageShield;
 
 
     {
@@ -379,7 +380,7 @@ public class UI {
     public void wdgmsg(Widget sender, String msg, Object... args) {
         int id;
         synchronized(this) {
-      // try { for(Object obj:args) if(!sender.toString().contains("Camera")) System.out.println("Sender : " + sender + " msg = " + msg + " arg 1 : " + obj); }catch(ArrayIndexOutOfBoundsException q){}
+       //try { for(Object obj:args)// if(!sender.toString().contains("Camera")) System.out.println("Sender : " + sender + " msg = " + msg + " arg 1 : " + obj); }catch(ArrayIndexOutOfBoundsException q){}
             if (msg.endsWith("-identical"))
                 return;
 
@@ -403,15 +404,23 @@ public class UI {
             if(id == realmchat.wdgid()){
                 if (msg.contains("msg") && wdg.toString().contains("Realm")) {
                     ((ChatUI.EntryChannel) realmchat).updurgency(1);
+                    if(Config.realmchatalerts)
+                    Audio.play(ChatUI.notifsfx);
                 }
             }}
                 if (wdg != null) {
-            //  try { for(Object obj:args) System.out.println("Wdg : " + wdg + " msg : "+msg+" id = " + id + " arg 1 : " + obj); }catch(ArrayIndexOutOfBoundsException qq){}
-                    wdg.uimsg(msg.intern(), args);
-                }
-                 else
-                    throw (new UIException("Uimsg to non-existent widget " + id, msg, args));
-        }
+                    try {
+                        for (Object obj : args)
+                            if (obj.toString().contains("shield")) {
+                                VillageShield = obj.toString();
+                                System.out.println("shield : " + VillageShield);
+                            }
+                    } catch (NullPointerException q) {}
+
+           //   try { for(Object obj:args) System.out.println("UI Wdg : " + wdg + " msg : "+msg+" id = " + id + " arg 1 : " + obj); }catch(ArrayIndexOutOfBoundsException qq){}
+                wdg.uimsg(msg.intern(), args); }
+                    else throw (new UIException("Uimsg to non-existent widget " + id, msg, args));
+            }
     }
 
     private void setmods(InputEvent ev) {

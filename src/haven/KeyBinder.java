@@ -41,7 +41,7 @@ public class KeyBinder {
     public static final int SHIFT = 4;
     
     private static final Gson gson;
-    private static final Map<Action, KeyBind> binds;
+    public static final Map<Action, KeyBind> binds;
     private static final List<Action> order;
     private static final KeyBind EMPTY = new KeyBind(0, 0, null);
     
@@ -84,8 +84,8 @@ public class KeyBinder {
 	add(KeyEvent.VK_I,0,TOGGLE_INVENTORY);
 	add(KeyEvent.VK_TAB,SHIFT,AGGRO_CLOSEST);
 	add(KeyEvent.VK_C,0,TOGGLE_EQUIPMENT);
-	add(KeyEvent.VK_X,NONE,TOGGLE_CHARACTER);
-	add(KeyEvent.VK_O,NONE,TOGGLE_KIN_LIST);
+	add(KeyEvent.VK_X,0,TOGGLE_CHARACTER);
+	add(KeyEvent.VK_O,0,TOGGLE_KIN_LIST);
 	add(KeyEvent.VK_C,2,TOGGLE_CHAT);
 	add(KeyEvent.VK_Q,4,CRAWL_SPEED);
 	add(KeyEvent.VK_W,4,WALK_SPEED);
@@ -95,11 +95,12 @@ public class KeyBinder {
 	add(KeyEvent.VK_N,CTRL,TOGGLE_DAYLIGHT);
 	add(KeyEvent.VK_U,CTRL,TOGGLE_UI);
 	add(KeyEvent.VK_M,CTRL,TOGGLE_STATUSOVERLAY);
-	add(KeyEvent.VK_Q,NONE,HARVEST_FORAGEABLE);
+	add(KeyEvent.VK_Q,0,HARVEST_FORAGEABLE);
 	add(KeyEvent.VK_Z,CTRL,TOGGLE_PATHFINDING);
 	add(KeyEvent.VK_S,ALT,TOGGLE_SEARCH);
 	add(KeyEvent.VK_O,SHIFT,TOGGLE_OPTIONS);
 	add(KeyEvent.VK_BACK_QUOTE,NONE,DRINK);
+	add(KeyEvent.VK_C,CTRL,TOGGLE_CAMERA);
 	//add(KeyEvent.VK_TAB,NONE,TARGET_CLOSEST);
     }
     
@@ -108,7 +109,7 @@ public class KeyBinder {
     }
     
     public static boolean handle(UI ui, KeyEvent e) {
-	return get(e).execute(ui);
+    	return get(e).execute(ui);
     }
     
     public static int getModFlags(int modflags) {
@@ -134,6 +135,7 @@ public class KeyBinder {
     }
 
     public static KeyBind get(final KeyEvent e) {
+    //	System.out.println(binds.values().stream().filter(b -> b.match(e.getKeyCode(), getModFlags(e.getModifiersEx()))).count());
 	return binds.values().stream().filter(b -> b.match(e.getKeyCode(), getModFlags(e.getModifiersEx()))).findFirst().orElse(EMPTY);
     }
     
@@ -180,7 +182,8 @@ public class KeyBinder {
 	}
 	
 	public boolean match(int code, int mods) {
-	    return code == this.code && ((mods & this.mods) == this.mods);
+	 //   return code == this.code && ((mods & this.mods) == this.mods);
+		return code == this.code && (mods == this.mods);
 	}
 
 	public boolean execute(UI ui) {

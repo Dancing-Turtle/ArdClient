@@ -86,6 +86,7 @@ public class Config {
     public static boolean errorsounds = Utils.getprefb("errorsounds", true);
     public static boolean chatsounds = Utils.getprefb("chatsounds", true);
     public static boolean discordsounds = Utils.getprefb("discordsounds", true);
+    public static boolean realmchatalerts = Utils.getprefb("realmchatalerts", false);
     public static double studyalarmvol = Utils.getprefd("studyalarmvol", 0.8);
     public static double sfxchipvol = Utils.getprefd("sfxchipvol", 0.9);
     public static double sfxquernvol = Utils.getprefd("sfxquernvol", 0.9);
@@ -147,6 +148,7 @@ public class Config {
     public static boolean dropMinedCrystals = Utils.getprefb("dropMinedCrystals", true);
     public static boolean dropsmelterstones = Utils.getprefb("dropsmelterstones", true);
     public static boolean showdframestatus = Utils.getprefb("showdframestatus", true);
+    public static boolean showcoopstatus = Utils.getprefb("showcoopstatus", true);
     public static boolean showrackstatus = Utils.getprefb("showrackstatus", true);
     public static boolean showcupboardstatus = Utils.getprefb("showcupboardstatus", true);
     public static boolean enableorthofullzoom = Utils.getprefb("enableorthofullzoom", false);
@@ -174,6 +176,7 @@ public class Config {
     public static boolean disableelev =  Utils.getprefb("disableelev", false);
     public static String treeboxclr =  Utils.getpref("treeboxclr", "D7FF00");
     public static String chatalert =  Utils.getpref("chatalert", "Null");
+    public static String AlertChannel =  Utils.getpref("AlertChannel", "Null");
     public static String discordchannel =  Utils.getpref("discordchannel", "Null");
     public static boolean discordchat =  Utils.getprefb("discordchat", false);
     public static String questdropstring =  Utils.getpref("questdropstring", "Null");
@@ -189,6 +192,7 @@ public class Config {
     public static int fontadd = Utils.getprefi("fontadd", 0);
     public static boolean proximityaggro = Utils.getprefb("proximityaggro", false);
     public static boolean proximityaggropvp = Utils.getprefb("proximityaggropvp", false);
+    public static boolean disablemenugrid = Utils.getprefb("disablemenugrid", false);
     public static boolean pf = false;
     public static String playerposfile;
     public static byte[] authck = null;

@@ -141,7 +141,7 @@ public class PepperBot extends Window implements AreaSelectCallback, GobSelectCa
 					allowrun = false;
 				}
 				if (a != null && b != null && allowrun) {
-					PepperGrinderRun bf = new PepperGrinderRun(a,b,grinder,section,hfire,direction);
+					PepperGrinderRun bf = new PepperGrinderRun(a,b,grinder,section,direction);
 					gameui().add(bf, new Coord(gameui().sz.x / 2 - bf.sz.x / 2, gameui().sz.y / 2 - bf.sz.y / 2 - 200));
 					new Thread(bf).start();
 					this.parent.destroy();
@@ -251,14 +251,52 @@ public class PepperBot extends Window implements AreaSelectCallback, GobSelectCa
 	public void run() {
 	BotUtils.sysMsg("Started", Color.white);
 	GameUI gui = gameui();
-	List<Gob> goblist = PBotAPI.getGobs();
-	for(Gob idk : goblist)
-		if(idk.getres().basename().contains("cattle")) {
-			Composite cmp = (Composite) idk.getattr(Drawable.class);
-			for (Composited.Model idklol : cmp.comp.mod)
-				System.out.println("Models : " + idklol.id + "mod size : "+cmp.comp.mod.size()+" lay size : "+idklol.lay.size());
-			//((Composite) idk.getattr(Drawable.class)).comp.mod.clear();
+	gui.wdgmsg("act", "craft", "boiledpepper");
+BotUtils.waitForWindow("Crafting");
+BotUtils.sysLogAppend("found window","white");
+/*	for(Widget a = gui.getwnd("Crafting");a!=null;a=a.prev) {
+				if (a instanceof Button) {
+					if (((Button) a).text.text == "Craft All") {
+						BotUtils.sysMsg("button found",Color.white);
+						break;
+					}
+				}
+			}*/
+	/*for(Widget a = gui.lchild;a!=null;a=a.prev) {
+		if (a instanceof CraftWindow) {
+			BotUtils.sysLogAppend("found craft window","white");
+			for (Widget aa = a.lchild; aa != null; aa = aa.prev) {
+				if(aa instanceof  Button)
+					BotUtils.sysLogAppend("Found button1 ","white");
+				for (Widget aaa = aa.lchild; aaa != null; aaa = aaa.prev) {
+					if (a instanceof Button) {
+						if (((Button) a).text.text == "Craft All") {
+							BotUtils.sysMsg("button found", Color.white);
+							break;
+						}
+					}
+				}
+			}
 		}
+	}
+	for(Widget a = gui.lchild;a!=null;a=a.prev) {
+		if (a instanceof Makewindow) {
+			BotUtils.sysLogAppend("found craft window","white");
+			for (Widget aa = a.lchild; aa != null; aa = aa.prev) {
+				if(aa instanceof  Button)
+					BotUtils.sysLogAppend("Found button2 ","white");
+				for (Widget aaa = aa.lchild; aaa != null; aaa = aaa.prev) {
+					if (aaa instanceof Button) {
+						if (((Button) aaa).text.text == "Craft All") {
+							BotUtils.sysMsg("button found", Color.white);
+							break;
+						}
+					}
+				}
+			}
+		}
+	}*/
+
 	//List<WItem> idk = BotUtils.getInventoryContents(BotUtils.playerInventory());
 	//for (WItem idkok : idk)
 	//	System.out.println("res : " + idkok.item.resource().name);

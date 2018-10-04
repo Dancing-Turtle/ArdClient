@@ -318,6 +318,10 @@ public class BotUtils {
 		gui.map.wdgmsg("itemact", getCenterScreenCoord(), player().rc.floor(posres), 3, gui.ui.modflags());
 	}
 
+	public static void mapInteractLeftClick(int mod) {
+		gui.map.wdgmsg("click", getCenterScreenCoord(), player().rc.floor(posres), 1, gui.ui.modflags());
+	}
+
 	// Destroys the given gob
 	public static void destroyGob(Gob gob) {
 		gui.menu.wdgmsg("act", new Object[] { "destroy" });

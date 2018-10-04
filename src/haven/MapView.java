@@ -30,6 +30,7 @@ import haven.GLProgram.VarID;
 import haven.automation.*;
 import haven.pathfinder.PFListener;
 import haven.pathfinder.Pathfinder;
+import haven.purus.BotUtils;
 import haven.purus.pbot.PBotAPI;
 import haven.resutil.BPRadSprite;
 
@@ -81,6 +82,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     private Pathfinder pf;
     public Thread pfthread;
     public SteelRefueler steelrefueler;
+    public ShieldChecker shieldchecker;
     public LightWithTorch torchlight;
     public static Gob shooanimal;
     public CoalToSmelters coaltosmelters;
@@ -715,6 +717,18 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         public void removed(Gob ob) {
             changed.remove(ob);
             removed.add(ob);
+        }
+    }
+
+
+    public void toggleCamera(){
+        if (camera != null && !ui.gui.chat.hasfocus) {
+            String cam = camera instanceof MapView.OrthoCam ? "bad" : "ortho";
+            String[] args = new String[0];
+            camera = makecam(camtypes.get(cam), args);
+            Utils.setpref("defcam", cam);
+            Utils.setprefb("camargs", Utils.serialize(args));
+            refreshGobsAll();
         }
     }
 
@@ -2216,17 +2230,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
             camera.wheel(Coord.z, -1);
         else if (code == KeyEvent.VK_SUBTRACT)
             camera.wheel(Coord.z, 1);
-        else if (ev.isShiftDown() && code == KeyEvent.VK_C) {
-            if (camera != null && !ui.gui.chat.hasfocus) {
-                String cam = camera instanceof OrthoCam ? "bad" : "ortho";
-                String[] args = new String[0];
-                camera = makecam(camtypes.get(cam), args);
-                Utils.setpref("defcam", cam);
-                Utils.setprefb("camargs", Utils.serialize(args));
-                refreshGobsAll();
-            }
-            return true;
-        }
+
         return (false);
     }
 

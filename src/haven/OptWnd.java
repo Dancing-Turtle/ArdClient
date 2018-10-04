@@ -52,7 +52,7 @@ public class OptWnd extends Window {
     public static final int VERTICAL_MARGIN = 10;
     public static final int HORIZONTAL_MARGIN = 5;
     public static final int VERTICAL_AUDIO_MARGIN = 5;
-    public final Panel main, video, audio, display, map, general, combat, control, uis, quality, flowermenus, soundalarms, hidesettings, studydesksettings, keybindsettings;
+    public final Panel main, video, audio, display, map, general, combat, control, uis, quality, flowermenus, soundalarms, hidesettings, studydesksettings, keybindsettings, chatsettings;
     public Panel current;
 
     public void chpanel(Panel p) {
@@ -364,6 +364,7 @@ public class OptWnd extends Window {
         hidesettings = add(new Panel());
         studydesksettings = add(new Panel());
         keybindsettings = add(new Panel());
+        chatsettings = add(new Panel());
 
         initMain(gopts);
         initAudio();
@@ -379,6 +380,7 @@ public class OptWnd extends Window {
         initHideMenu();
         initstudydesksettings();
         initkeybindsettings();
+        initchatsettings();
         
         chpanel(main);
     }
@@ -397,7 +399,8 @@ public class OptWnd extends Window {
         main.add(new PButton(200, "Sound alarms", 's', soundalarms), new Coord(420, 60));
         main.add(new PButton(200, "Hide settings", 'h', hidesettings), new Coord(420, 90));
         main.add(new PButton(200, "Study Desk Options", 'o', studydesksettings), new Coord(0, 120));
-        main.add(new PButton(200, "Keybind Options", 'o', keybindsettings), new Coord(210, 120));
+        main.add(new PButton(200, "Keybind Options", 'p', keybindsettings), new Coord(210, 120));
+        main.add(new PButton(200,"Chat Settings",'c', chatsettings), new Coord(420,120));
         if (gopts) {
             main.add(new Button(200, "Switch character") {
                 public void click() {
@@ -573,28 +576,7 @@ public class OptWnd extends Window {
                 Utils.setprefd("sfxchatvol", vol);
             }
         });
-        appender.add(new CheckBox("Enable village chat alert sounds") {
-            {
-                a = Config.chatsounds;
-            }
 
-            public void set(boolean val) {
-                Utils.setprefb("chatsounds", val);
-                Config.chatsounds = val;
-                a = val;
-            }
-        });
-        appender.add(new CheckBox("Enable discord chat alert sounds") {
-            {
-                a = Config.discordsounds;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("discordsounds", val);
-                Config.discordsounds = val;
-                a = val;
-            }
-        });
         appender.add(new CheckBox("Enable error sounds") {
             {
                 a = Config.errorsounds;
@@ -769,6 +751,17 @@ public class OptWnd extends Window {
             public void set(boolean val) {
                 Utils.setprefb("showdframestatus", val);
                 Config.showdframestatus = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Highlight chicken coops based on food/water needs.") {
+            {
+                a = Config.showcoopstatus;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showcoopstatus", val);
+                Config.showcoopstatus = val;
                 a = val;
             }
         });
@@ -1362,6 +1355,17 @@ public class OptWnd extends Window {
         appender.setHorizontalMargin(HORIZONTAL_MARGIN);
 
         appender.addRow(new Label("Language (req. restart):"), langDropdown());
+        appender.add(new CheckBox("Disable all menugrid hotkeys (Bottom Right grid)") {
+            {
+                a = Config.disablemenugrid;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("disablemenugrid", val);
+                Config.disablemenugrid = val;
+                a = val;
+            }
+        });
         appender.add(new CheckBox("Show quick hand slots") {
             {
                 a = Config.quickslots;
@@ -1518,93 +1522,7 @@ public class OptWnd extends Window {
                     }
                 }
         );
-        appender.addRow(new Label("Enter Village name for Chat Alerts,  requires relog if changed:"),
-                new TextEntry(85, Config.chatalert) {
-                    @Override
-                    public boolean type(char c, KeyEvent ev) {
-                        if (!parent.visible)
-                            return false;
 
-                        boolean ret = buf.key(ev);
-                        if (text.length() > 0) {
-                                Utils.setpref("chatalert", text);
-                            }
-
-                        return ret;
-                    }
-                }
-        );
-        appender.addRow(new Label("Enter Discord channel name for village chat integration."),
-                new TextEntry(85, Config.discordchannel) {
-                    @Override
-                    public boolean type(char c, KeyEvent ev) {
-                        if (!parent.visible)
-                            return false;
-
-                        boolean ret = buf.key(ev);
-                        if (text.length() > 0) {
-                            Utils.setpref("discordchannel", text);
-                        }
-
-                        return ret;
-                    }
-                }
-        );
-        appender.add(new CheckBox("Log village chat to Discord - Warning, best used if only one person is using on an alt."){
-                {
-                        a = Config.discordchat;
-                }
-
-        public void set(boolean val) {
-            Utils.setprefb("discordchat", val);
-            Config.discordchat = val;
-            a = val;
-        }
-        });
-
-        appender.add(new CheckBox("Connect to Discord on Login") {
-            {
-                a = Config.autoconnectdiscord;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("autoconnectdiscord", val);
-                Config.autoconnectdiscord = val;
-                a = val;
-            }
-        });
-       /* appender.addRow(new Label("Enter Discord Channel ID"),
-                new TextEntry(150, Config.discordchannel) {
-                    @Override
-                    public boolean type(char c, KeyEvent ev) {
-                        if (!parent.visible)
-                            return false;
-
-                        boolean ret = buf.key(ev);
-                        if (text.length() > 0) {
-                            Utils.setpref("discordchannel", text);
-                        }
-
-                        return ret;
-                    }
-                }
-        );*/
-        appender.addRow(new Label("Enter Discord Bot Secret Key"),
-                new TextEntry(350, Config.discordbotkey) {
-                    @Override
-                    public boolean type(char c, KeyEvent ev) {
-                        if (!parent.visible)
-                            return false;
-
-                        boolean ret = buf.key(ev);
-                        if (text.length() > 0) {
-                            Utils.setpref("discordbotkey", text);
-                        }
-
-                        return ret;
-                    }
-                }
-        );
         appender.addRow(new Label("Chat font size (req. restart):"), makeFontSizeChatDropdown());
         appender.add(new CheckBox("Font antialiasing") {
             {
@@ -1854,9 +1772,159 @@ public class OptWnd extends Window {
             }
             return null;
         }).forEach(list::additem);
+
+
+
+
         keybindsettings.pack();
         keybindsettings.add(new PButton(200, "Back", 27, main), new Coord(410, 360));
         keybindsettings.pack();
+    }
+
+    private void initchatsettings() {
+        final WidgetVerticalAppender appender = new WidgetVerticalAppender(withScrollport(chatsettings, new Coord(620, 310)));
+
+        appender.setVerticalMargin(VERTICAL_MARGIN);
+        appender.setHorizontalMargin(HORIZONTAL_MARGIN);
+
+        appender.addRow(new Label("Enter Village name for Chat Alert sound,  requires relog if changed:"),
+                new TextEntry(85, Config.chatalert) {
+                    @Override
+                    public boolean type(char c, KeyEvent ev) {
+                        if (!parent.visible)
+                            return false;
+
+                        boolean ret = buf.key(ev);
+                        if (text.length() > 0) {
+                            Utils.setpref("chatalert", text);
+                        }
+
+                        return ret;
+                    }
+                }
+        );
+        appender.addRow(new Label("Enter Discord Channel for Alerts to be sent to."),
+                new TextEntry(85, Config.AlertChannel) {
+                    @Override
+                    public boolean type(char c, KeyEvent ev) {
+                        if (!parent.visible)
+                            return false;
+
+                        boolean ret = buf.key(ev);
+                        if (text.length() > 0) {
+                            Utils.setpref("AlertChannel", text);
+                        }
+
+                        return ret;
+                    }
+                }
+        );
+        appender.add(new CheckBox("Enable village chat alert sounds") {
+            {
+                a = Config.chatsounds;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("chatsounds", val);
+                Config.chatsounds = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Enable discord chat alert sounds") {
+            {
+                a = Config.discordsounds;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("discordsounds", val);
+                Config.discordsounds = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Enable public realm chat alert sounds") {
+            {
+                a = Config.realmchatalerts;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("realmchatalertss", val);
+                Config.realmchatalerts = val;
+                a = val;
+            }
+        });
+        appender.addRow(new Label("Enter Discord Bot Secret Key"),
+                new TextEntry(350, Config.discordbotkey) {
+                    @Override
+                    public boolean type(char c, KeyEvent ev) {
+                        if (!parent.visible)
+                            return false;
+
+                        boolean ret = buf.key(ev);
+                        if (text.length() > 0) {
+                            Utils.setpref("discordbotkey", text);
+                        }
+
+                        return ret;
+                    }
+                }
+        );
+        appender.add(new CheckBox("Connect to Discord on Login") {
+            {
+                a = Config.autoconnectdiscord;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("autoconnectdiscord", val);
+                Config.autoconnectdiscord = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Log village chat to Discord - Warning, best used if only one person is using on an alt."){
+            {
+                a = Config.discordchat;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("discordchat", val);
+                Config.discordchat = val;
+                a = val;
+            }
+        });
+        appender.addRow(new Label("Enter Discord channel name for village chat output."),
+                new TextEntry(85, Config.discordchannel) {
+                    @Override
+                    public boolean type(char c, KeyEvent ev) {
+                        if (!parent.visible)
+                            return false;
+
+                        boolean ret = buf.key(ev);
+                        if (text.length() > 0) {
+                            Utils.setpref("discordchannel", text);
+                        }
+
+                        return ret;
+                    }
+                }
+        );
+
+       /* appender.addRow(new Label("Enter Discord Channel ID"),
+                new TextEntry(150, Config.discordchannel) {
+                    @Override
+                    public boolean type(char c, KeyEvent ev) {
+                        if (!parent.visible)
+                            return false;
+
+                        boolean ret = buf.key(ev);
+                        if (text.length() > 0) {
+                            Utils.setpref("discordchannel", text);
+                        }
+
+                        return ret;
+                    }
+                }
+        );*/
+        chatsettings.add(new PButton(200, "Back", 27, main), new Coord(210, 360));
+        chatsettings.pack();
     }
     
     private void initHideMenu() {

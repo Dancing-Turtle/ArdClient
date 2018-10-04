@@ -83,27 +83,21 @@ public class PepperBotRun extends Window implements Runnable {
 		GameUI gui = gameui();
 		gui.wdgmsg("act", "craft", "boiledpepper");
 		BotUtils.waitForWindow("Crafting");
-		BotUtils.sleep(200);
-		for(Widget a = gui.makewnd.lchild;a!=null;a=a.prev){
-			for(Widget aa = a.lchild;aa!=null;aa=aa.prev){
-				if(aa instanceof Button){
-					if(((Button) aa).text.text == "Craft All"){
-						System.out.println("button found");
-						craftall = aa;
+		for(Widget a = gui.lchild;a!=null;a=a.prev) {
+			if (a instanceof GameUI.Hidewnd) {
+				for (Widget aa = a.lchild; aa != null; aa = aa.prev) {
+					for (Widget aaa = aa.lchild; aaa != null; aaa = aaa.prev) {
+						if (aaa instanceof Button) {
+							if (((Button) aaa).text.text == "Craft All") {
+								craftall = aaa;
+								break;
+							}
+						}
 					}
 				}
 			}
 		}
-		/*Window crafting = gui.getwnd("Crafting");
-		for (Widget a = crafting.lchild; a != null; a = a.prev) {
-			for (Widget aa = a.lchild; aa != null; aa = aa.prev) {
-				if (aa instanceof Button) {
-					if (((Button) aa).text.text == "Craft All") {
-						craftall = aa;
-					}
-				}
-			}
-		}*/
+
 		if (harvest) {
 			// Initialise crop list
 			crops = Crops(true);

@@ -22,6 +22,7 @@ public enum Action {
   //  OPEN_CRAFT_DB(GameUI::toggleCraftDB, "Open crafting DB"),
     TOGGLE_CURSOR(GameUI::toggleHand, "Toggle cursor item", "Hide/show item on a cursor. Allows you to walk with item on cursor when hidden."),
     TOGGLE_STUDY(GameUI::toggleStudy, "Toggle study window"),
+    TOGGLE_CAMERA(gui->gui.map.toggleCamera(),"Switches between camera views."),
  //  FILTER(gui -> gui.filter.toggle(), "Show item filter"),
     TOGGLE_GOB_INFO(GameUI::toggleTreeStage, "Display info", "Display crop/tree growth and object health overlay."),
     TOGGLE_GOB_HITBOX(GameUI::toggleGobs, "Display hitboxes"),
@@ -30,7 +31,6 @@ public enum Action {
     LOCAL_SCREENSHOT(GameUI::localScreenshot,"Take and save a local screenshot."),
     TOGGLE_TILE_GRID(gui -> gui.map.togglegrid(), "Show tile grid"),
     TOGGLE_TILE_CENTERING(GameUI::toggleGridCentering, "Toggle tile centering"),
-
     TOGGLE_DAYLIGHT(GameUI::toggleDaylight,"Toggles Nightvision"),
     TOGGLE_UI(GameUI::toggleUI,"Toggles the interface."),
     TOGGLE_STATUSOVERLAY(GameUI::toggleStatusWidget,"Toggles the players/ping display."),
