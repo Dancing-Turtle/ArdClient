@@ -81,10 +81,13 @@ public class PepperBotRun extends Window implements Runnable {
 	public void run() {
 		BotUtils.sysMsg("Pepper Bot started!", Color.white);
 		GameUI gui = gameui();
+		if(gui.getwnd("Crafting")!=null)
+			gui.getwnd("Crafting").close();
+
 		gui.wdgmsg("act", "craft", "boiledpepper");
 		BotUtils.waitForWindow("Crafting");
 		for(Widget a = gui.lchild;a!=null;a=a.prev) {
-			if (a instanceof GameUI.Hidewnd) {
+			if (a instanceof CraftWindow) {
 				for (Widget aa = a.lchild; aa != null; aa = aa.prev) {
 					for (Widget aaa = aa.lchild; aaa != null; aaa = aaa.prev) {
 						if (aaa instanceof Button) {
@@ -196,9 +199,9 @@ public class PepperBotRun extends Window implements Runnable {
 							//while (gui.getwnd("Cauldron") != null)
                             gui.map.wdgmsg("click", hfire.sc, hfire.rc.floor(posres), 1, 0, 0, (int) hfire.id, hfire.rc.floor(posres), 0, -1);
 							BotUtils.sleep(2000);
-							System.out.println("before section selection");
+						//	System.out.println("before section selection");
 							if (section == 2) {
-								System.out.println("section 2");
+							//	System.out.println("section 2");
 								Gob player = gui.map.player();
 								Coord location = player.rc.floor(posres);
 								if (direction == 1) {
@@ -221,7 +224,7 @@ public class PepperBotRun extends Window implements Runnable {
 								gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
 								BotUtils.sleep(2000);
 							} else if (section != 1 && section != 2) {
-								System.out.println("section 3/4");
+							//	System.out.println("section 3/4");
 								Gob player = gui.map.player();
 								Coord location = player.rc.floor(posres);
 								if (direction == 1) {
@@ -260,13 +263,13 @@ public class PepperBotRun extends Window implements Runnable {
 											if (idklol.id == tablelol.id)
 												tablelol = idklol;
 										if (tablelol.ols.size() != 2) {
-											System.out.println("Found not full table, id : "+tablelol.id);
+										//	System.out.println("Found not full table, id : "+tablelol.id);
 											htable = tablelol;
 											break;
 										}
 										else {
                                             tablesblacklist.add(tablelol);
-                                            System.out.println("Blacklisting table : "+tablelol.id);
+                                         //   System.out.println("Blacklisting table : "+tablelol.id);
                                         }
 									}
 									tables.removeAll(tablesblacklist);
@@ -281,14 +284,14 @@ public class PepperBotRun extends Window implements Runnable {
 										retry++;
 										if(retry > 500){
 											retry = 0;
-											System.out.println("retrying table");
+										//	System.out.println("retrying table");
 											BotUtils.pfRightClick(htable,0);
 										}
 										BotUtils.sleep(10);
 									}
 									BotUtils.sleep(100);
 									cwnd = gui.getwnd("Herbalist Table");
-                                    System.out.println("Getting pepper from inv");
+                                   // System.out.println("Getting pepper from inv");
                                     BotUtils.sleep(2000);
                                     for (Widget w = BotUtils.playerInventory().child; w != null; w = w.next) {
                                         if (w instanceof GItem && ((GItem) w).getname().contains("Pepper")) {
@@ -306,10 +309,10 @@ public class PepperBotRun extends Window implements Runnable {
                                 for(Widget w = cwnd.lchild;w!=null;w = w.prev) {
                                     if (w instanceof Inventory) {
                                         int drupes = PBotAPI.getInventoryContents((Inventory) w).size();
-										System.out.println("Pepper on table : "+drupes);
+									//	System.out.println("Pepper on table : "+drupes);
                                         if (drupes == 16) {
                                             tables.remove(htable);
-                                            System.out.println("Table full, removing : "+htable.id);
+                                          //  System.out.println("Table full, removing : "+htable.id);
                                             break;
                                         }
                                     }
@@ -341,14 +344,14 @@ public class PepperBotRun extends Window implements Runnable {
 							}catch(InterruptedException idk){}
 						}
 						BotUtils.sleep(500);
-						System.out.println("after cauldron window");
+						//System.out.println("after cauldron window");
 						//BotUtils.waitForWindow("Cauldron");
 						cwnd = gameui().getwnd("Cauldron");
 						BotUtils.sleep(200);
 						VMeter vm = cwnd.getchild(VMeter.class);
-						System.out.println("Clicking craft");
+					//	System.out.println("Clicking craft");
 						((Button) craftall).click();
-						System.out.println("after Clicking craft");
+						//System.out.println("after Clicking craft");
 						BotUtils.sleep(2000);
 						if (vm.amount < 30) {
 							List<Gob> allgobs = PBotAPI.getGobs();
@@ -363,7 +366,7 @@ public class PepperBotRun extends Window implements Runnable {
 							Coord retain = barrel.rc.floor(posres);
 							if (barrel.ols.size() == 0 && water != null) {
 								lblProg2.settext("Refill Barrel");
-								System.out.println("Refill Barrel");
+							//	System.out.println("Refill Barrel");
 								//BotUtils.sysLogAppend("Barrel is empty refilling from cistern/well overlay size is : "+barrel.ols.size(),"white");
 								PBotAPI.liftGob(barrel);
 								BotUtils.sleep(1000);
@@ -382,7 +385,7 @@ public class PepperBotRun extends Window implements Runnable {
 							} else {
 								lblProg2.settext("Refill Cauldron");
 							//	BotUtils.sysLogAppend("Barrel is not empty refilling from barrel overlay size is : "+barrel.ols.size(),"white");
-								System.out.println("Refill Cauldron");
+							//	System.out.println("Refill Cauldron");
 								PBotAPI.liftGob(barrel);
 								BotUtils.sleep(1000);
 								gui.map.wdgmsg("click", cauldron.sc, cauldron.rc.floor(posres), 3, 0, 0, (int) cauldron.id, cauldron.rc.floor(posres), 0, -1);

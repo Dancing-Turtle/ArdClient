@@ -10,6 +10,7 @@ import haven.purus.SeedCropFarmer;
 import haven.automation.PepperBotRun;
 import haven.purus.pbot.PBotAPI;
 import haven.res.ui.tt.q.qbuff.QBuff;
+import net.dv8tion.jda.client.entities.Application;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -251,27 +252,18 @@ public class PepperBot extends Window implements AreaSelectCallback, GobSelectCa
 	public void run() {
 	BotUtils.sysMsg("Started", Color.white);
 	GameUI gui = gameui();
+	if(gui.getwnd("Crafting")!=null)
+		gui.getwnd("Crafting").close();
+
 	gui.wdgmsg("act", "craft", "boiledpepper");
-BotUtils.waitForWindow("Crafting");
-BotUtils.sysLogAppend("found window","white");
-/*	for(Widget a = gui.getwnd("Crafting");a!=null;a=a.prev) {
-				if (a instanceof Button) {
-					if (((Button) a).text.text == "Craft All") {
-						BotUtils.sysMsg("button found",Color.white);
-						break;
-					}
-				}
-			}*/
-	/*for(Widget a = gui.lchild;a!=null;a=a.prev) {
+	BotUtils.waitForWindow("Crafting");
+	for(Widget a = gui.lchild;a!=null;a=a.prev) {
 		if (a instanceof CraftWindow) {
-			BotUtils.sysLogAppend("found craft window","white");
 			for (Widget aa = a.lchild; aa != null; aa = aa.prev) {
-				if(aa instanceof  Button)
-					BotUtils.sysLogAppend("Found button1 ","white");
 				for (Widget aaa = aa.lchild; aaa != null; aaa = aaa.prev) {
-					if (a instanceof Button) {
-						if (((Button) a).text.text == "Craft All") {
-							BotUtils.sysMsg("button found", Color.white);
+					if (aaa instanceof Button) {
+						if (((Button) aaa).text.text == "Craft All") {
+							BotUtils.sysMsg("button found",Color.white);
 							break;
 						}
 					}
@@ -279,23 +271,7 @@ BotUtils.sysLogAppend("found window","white");
 			}
 		}
 	}
-	for(Widget a = gui.lchild;a!=null;a=a.prev) {
-		if (a instanceof Makewindow) {
-			BotUtils.sysLogAppend("found craft window","white");
-			for (Widget aa = a.lchild; aa != null; aa = aa.prev) {
-				if(aa instanceof  Button)
-					BotUtils.sysLogAppend("Found button2 ","white");
-				for (Widget aaa = aa.lchild; aaa != null; aaa = aaa.prev) {
-					if (aaa instanceof Button) {
-						if (((Button) aaa).text.text == "Craft All") {
-							BotUtils.sysMsg("button found", Color.white);
-							break;
-						}
-					}
-				}
-			}
-		}
-	}*/
+
 
 	//List<WItem> idk = BotUtils.getInventoryContents(BotUtils.playerInventory());
 	//for (WItem idkok : idk)

@@ -28,7 +28,7 @@ import static haven.Action.TOGGLE_DANGER_RADIUS;
 import static haven.Action.TOGGLE_SAFE_RADIUS;
 import static haven.Action.TOGGLE_STUDY;
 import static haven.Action.TOGGLE_TILE_CENTERING;
-import static haven.Action.TOGGLE_TILE_GRID;
+//import static haven.Action.TOGGLE_TILE_GRID;
 import static haven.WidgetList.*;
 import static haven.WidgetList.BOX;
 
@@ -73,20 +73,20 @@ public class KeyBinder {
 	add(KeyEvent.VK_H, ALT, TOGGLE_CURSOR);
 	add(KeyEvent.VK_Q, CTRL, TOGGLE_STUDY);
 	//add(KeyEvent.VK_F, ALT, FILTER);
-	add(KeyEvent.VK_I, ALT, TOGGLE_GOB_INFO);
-	add(KeyEvent.VK_B, CTRL, TOGGLE_GOB_HITBOX);
+	add(KeyEvent.VK_P, CTRL, TOGGLE_GOB_INFO);
+	add(KeyEvent.VK_B, SHIFT, TOGGLE_GOB_HITBOX);
 	add(KeyEvent.VK_D, CTRL, TOGGLE_DANGER_RADIUS);
 	add(KeyEvent.VK_D,SHIFT,TOGGLE_SAFE_RADIUS);
-	add(KeyEvent.VK_G, CTRL, TOGGLE_TILE_GRID);
+	//add(KeyEvent.VK_G, CTRL, TOGGLE_TILE_GRID);
 	add(KeyEvent.VK_S,SHIFT,LOCAL_SCREENSHOT);
-	add(KeyEvent.VK_Z, CTRL, TOGGLE_TILE_CENTERING);
+	add(KeyEvent.VK_X, CTRL, TOGGLE_TILE_CENTERING);
 	add(KeyEvent.VK_S, CTRL, TAKE_SCREENSHOT);
 	add(KeyEvent.VK_I,0,TOGGLE_INVENTORY);
 	add(KeyEvent.VK_TAB,SHIFT,AGGRO_CLOSEST);
 	add(KeyEvent.VK_C,0,TOGGLE_EQUIPMENT);
 	add(KeyEvent.VK_X,0,TOGGLE_CHARACTER);
 	add(KeyEvent.VK_O,0,TOGGLE_KIN_LIST);
-	add(KeyEvent.VK_C,2,TOGGLE_CHAT);
+	add(KeyEvent.VK_C,CTRL,TOGGLE_CHAT);
 	add(KeyEvent.VK_Q,4,CRAWL_SPEED);
 	add(KeyEvent.VK_W,4,WALK_SPEED);
 	add(KeyEvent.VK_E,4,RUN_SPEED);
@@ -100,7 +100,8 @@ public class KeyBinder {
 	add(KeyEvent.VK_S,ALT,TOGGLE_SEARCH);
 	add(KeyEvent.VK_O,SHIFT,TOGGLE_OPTIONS);
 	add(KeyEvent.VK_BACK_QUOTE,NONE,DRINK);
-	add(KeyEvent.VK_C,CTRL,TOGGLE_CAMERA);
+	add(KeyEvent.VK_C,SHIFT,TOGGLE_CAMERA);
+	add(KeyEvent.VK_A,CTRL,TOGGLE_MAP);
 	//add(KeyEvent.VK_TAB,NONE,TARGET_CLOSEST);
     }
     
@@ -182,7 +183,7 @@ public class KeyBinder {
 	}
 	
 	public boolean match(int code, int mods) {
-	 //   return code == this.code && ((mods & this.mods) == this.mods);
+	  // return code == this.code && ((mods & this.mods) == this.mods);
 		return code == this.code && (mods == this.mods);
 	}
 

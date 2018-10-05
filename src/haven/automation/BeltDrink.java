@@ -48,6 +48,13 @@ public class BeltDrink implements Runnable {
                                 drinks.add(getDrinkable((Inventory) q));
                             }
                         }
+                        if(q instanceof InventoryBelt){
+                            drinkable = getDrinkableAlt((InventoryBelt) q);
+                            if (drinkable != null) {
+                                children.add(q);
+                                drinks.add(getDrinkableAlt((InventoryBelt) q));
+                            }
+                        }
 
                     }
 
@@ -55,7 +62,11 @@ public class BeltDrink implements Runnable {
                 }
             }
             for (Widget x : children) {
+                if(x instanceof Inventory)
                 drinkable = getDrinkable((Inventory) x);
+                else
+                drinkable = getDrinkableAlt((InventoryBelt) x);
+
                 GItem drinkItem = drinkable.item;
                 if (drinkItem != null) {
                     FlowerMenu.setNextSelection("Drink");
@@ -95,6 +106,19 @@ public class BeltDrink implements Runnable {
             }
             return drinkable;
         }
+
+    private WItem getDrinkableAlt (InventoryBelt inv){
+        WItem drinkable = inv.getItemPartialDrink("Waterskin");
+        // BotUtils.sysMsg("Checking Inventory", Color.WHITE);
+        if (drinkable == null)
+            drinkable = inv.getItemPartialDrink("Waterflask");
+        if (drinkable == null)
+            drinkable = inv.getItemPartialDrink("Kuska");
+        if (drinkable == null) {
+            return null;
+        }
+        return drinkable;
+    }
     }
 
 

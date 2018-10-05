@@ -24,12 +24,12 @@ public enum Action {
     TOGGLE_STUDY(GameUI::toggleStudy, "Toggle study window"),
     TOGGLE_CAMERA(gui->gui.map.toggleCamera(),"Switches between camera views."),
  //  FILTER(gui -> gui.filter.toggle(), "Show item filter"),
-    TOGGLE_GOB_INFO(GameUI::toggleTreeStage, "Display info", "Display crop/tree growth and object health overlay."),
+    TOGGLE_GOB_INFO(GameUI::toggleTreeStage, "Display Tree/Crop Stages", "Display crop/tree growth and object health overlay."),
     TOGGLE_GOB_HITBOX(GameUI::toggleGobs, "Display hitboxes"),
     TOGGLE_DANGER_RADIUS(GameUI::toggleDangerRadius, "Display danger radius", "Displays effective radius of animals/mine supports."),
     TOGGLE_SAFE_RADIUS(GameUI::toggleSafeRadius,"Displays Beehive/Trough Radius","Displays effective radius of beehives and troughs."),
     LOCAL_SCREENSHOT(GameUI::localScreenshot,"Take and save a local screenshot."),
-    TOGGLE_TILE_GRID(gui -> gui.map.togglegrid(), "Show tile grid"),
+ //   TOGGLE_TILE_GRID(gui -> gui.map.togglegrid(), "Show tile grid"),
     TOGGLE_TILE_CENTERING(GameUI::toggleGridCentering, "Toggle tile centering"),
     TOGGLE_DAYLIGHT(GameUI::toggleDaylight,"Toggles Nightvision"),
     TOGGLE_UI(GameUI::toggleUI,"Toggles the interface."),
@@ -39,6 +39,7 @@ public enum Action {
     TOGGLE_PATHFINDING(GameUI::togglePathfinding,"Toggles pathfinding on/off."),
     TOGGLE_SEARCH(GameUI::toggleSearch,"Toggles the search menu"),
     AGGRO_CLOSEST(GameUI::aggroClosest,"Aggro closest player.");
+
 
     
     public final String name;

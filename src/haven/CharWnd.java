@@ -26,7 +26,6 @@
 
 package haven;
 
-import haven.automation.QuestAbandon;
 import haven.purus.BotUtils;
 import haven.resutil.Curiosity;
 import haven.resutil.FoodInfo;

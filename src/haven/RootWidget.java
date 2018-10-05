@@ -63,7 +63,7 @@ public class RootWidget extends ConsoleHost {
         }
         return (true);
     }
-
+/*
     @Override
     public boolean keydown(KeyEvent ev) {
         try {
@@ -78,8 +78,8 @@ public class RootWidget extends ConsoleHost {
         else
                 return KeyBinder.handle(ui, ev) || super.keydown(ev);
         }catch(NullPointerException q){}
-        return KeyBinder.handle(ui, ev) || super.keydown(ev);
-    }
+        //return KeyBinder.handle(ui, ev) || super.keydown(ev);
+    }*/
 
     @Override
     public boolean mousedown(Coord c, int button) {

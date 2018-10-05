@@ -375,7 +375,7 @@ if(Config.dropsmelterstones) {
                         while (gui.getwnd("Ore Smelter") == null) {
                             unstucktimer++;
                             System.out.println("unstucktimer : " + unstucktimer);
-                            if (unstucktimer > 200) {
+                            if (unstucktimer > 100) {
                                 System.out.println("Unstucking.");
                                 BotUtils.sysLogAppend("Moving char", "white");
                                 Gob player = gui.map.player();
@@ -396,7 +396,7 @@ if(Config.dropsmelterstones) {
                         while (gui.getwnd("Ore Smelter") == null) {
                             unstucktimer++;
                             System.out.println("unstucktimer : " + unstucktimer);
-                            if (unstucktimer > 200) {
+                            if (unstucktimer > 2100) {
                                 System.out.println("Unstucking.");
                                 BotUtils.sysLogAppend("Moving char", "white");
                                 Gob player = gui.map.player();
@@ -486,7 +486,7 @@ if(Config.dropsmelterstones) {
                                 int unstucktimer = 0;
                                 while(gui.getwnd(wndname) == null){
                                     unstucktimer++;
-                                    if(unstucktimer > 500){
+                                    if(unstucktimer > 250){
                                         BotUtils.sysLogAppend("Moving char", "white");
                                         Gob player = gui.map.player();
                                         Coord location = player.rc.floor(posres);
@@ -556,7 +556,7 @@ if(Config.dropsmelterstones) {
                                 int unstucktimer = 0;
                                 while(gui.getwnd(wndname) == null){
                                     unstucktimer++;
-                                    if(unstucktimer > 500){
+                                    if(unstucktimer > 250){
                                         BotUtils.sysLogAppend("Moving char", "white");
                                         Gob player = gui.map.player();
                                         Coord location = player.rc.floor(posres);

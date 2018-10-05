@@ -1309,6 +1309,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         i.start();
     }
 
+
     public void crawlSpeed(){
         speedget.set(0);
     }
@@ -1453,11 +1454,13 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             return true;
         } else if (chat.hasfocus) {
             return true;
+        }  else if (ev.isControlDown() && ev.getKeyCode() == KeyEvent.VK_G) {
+            if (map != null)
+            map.togglegrid();
+            return true;
         }
-        else {
-            System.out.println("key : "+key+" modifier : "+ev.getModifiers());
-            return (super.globtype(key, ev));
-        }
+        else
+         return KeyBinder.handle(ui, ev) || (super.globtype(key, ev));
     }
 
 
