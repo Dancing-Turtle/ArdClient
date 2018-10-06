@@ -284,6 +284,7 @@ if(Config.dropsmelterstones) {
                                   // return;
                                 if (Config.dropsmelterstones) {
                                     for (Widget smelter = w.lchild; smelter != null; smelter = smelter.prev) {
+                                        System.out.println("Smelter Loop!");
                                         if (smelter instanceof Inventory) {
                                             if (BotUtils.getInventoryContents((Inventory) smelter).size() != 0) {
                                                 List<WItem> stones = getstones((Inventory) smelter);
@@ -337,9 +338,10 @@ if(Config.dropsmelterstones) {
                                                     }
                                                 }
                                             }
-                                            BotUtils.sleep(100);
                                         }
                                     }
+                                    while(gui.getwnd("Ore Smelter")!= null)
+                                        BotUtils.sleep(10);
                                 }
                             } catch (NullPointerException p) {
                                 p.printStackTrace();
@@ -373,9 +375,10 @@ if(Config.dropsmelterstones) {
                         System.out.println("after click");
                         int unstucktimer = 0;
                         while (gui.getwnd("Ore Smelter") == null) {
+                            if(!BotUtils.isMoving())
                             unstucktimer++;
                             System.out.println("unstucktimer : " + unstucktimer);
-                            if (unstucktimer > 100) {
+                            if (unstucktimer > 50) {
                                 System.out.println("Unstucking.");
                                 BotUtils.sysLogAppend("Moving char", "white");
                                 Gob player = gui.map.player();
@@ -394,9 +397,10 @@ if(Config.dropsmelterstones) {
                         BotUtils.sleep(500);
                         //  BotUtils.pfRightClick(gob, 0);
                         while (gui.getwnd("Ore Smelter") == null) {
+                            if(!BotUtils.isMoving())
                             unstucktimer++;
                             System.out.println("unstucktimer : " + unstucktimer);
-                            if (unstucktimer > 2100) {
+                            if (unstucktimer > 50) {
                                 System.out.println("Unstucking.");
                                 BotUtils.sysLogAppend("Moving char", "white");
                                 Gob player = gui.map.player();
@@ -485,6 +489,7 @@ if(Config.dropsmelterstones) {
 
                                 int unstucktimer = 0;
                                 while(gui.getwnd(wndname) == null){
+                                    if(!BotUtils.isMoving())
                                     unstucktimer++;
                                     if(unstucktimer > 250){
                                         BotUtils.sysLogAppend("Moving char", "white");
@@ -555,6 +560,7 @@ if(Config.dropsmelterstones) {
 
                                 int unstucktimer = 0;
                                 while(gui.getwnd(wndname) == null){
+                                    if(!BotUtils.isMoving())
                                     unstucktimer++;
                                     if(unstucktimer > 250){
                                         BotUtils.sysLogAppend("Moving char", "white");
@@ -677,8 +683,9 @@ if(Config.dropsmelterstones) {
 
                             int unstucktimer = 0;
                             while (gui.getwnd(wndname) == null) {
+                                if(!BotUtils.isMoving())
                                 unstucktimer++;
-                                if (unstucktimer > 500) {
+                                if (unstucktimer > 250) {
                                     BotUtils.sysLogAppend("Moving char", "white");
                                     Gob player = gui.map.player();
                                     Coord location = player.rc.floor(posres);
@@ -876,6 +883,7 @@ private void getfuel() {
                 if (glob.oc.getgob(s.id) == null)
                     continue;
             }
+            int freeslots = BotUtils.invFreeSlots();
 
 
             // navigate to the stockpile and load up on fuel
@@ -886,8 +894,19 @@ private void getfuel() {
                 return;
             }
 
+            if (BotUtils.invFreeSlots() == freeslots)
+            {
+                Gob player = gui.map.player();
+                Coord location = player.rc.floor(posres);
+                int x = location.x + getrandom();
+                int y = location.y + getrandom();
+                Coord finalloc = new Coord(x, y);
+                gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
+                BotUtils.sleep(500);
+            }
+
             // return if got enough fuel
-            int freeslots = BotUtils.invFreeSlots();
+            freeslots = BotUtils.invFreeSlots();
             if (freeslots == 0)
                 return;
         }

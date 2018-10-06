@@ -42,6 +42,8 @@ public class CountGobs implements Runnable, GobSelectCallback {
            // isknocked = true;
 
         BotUtils.sysMsg("Selection is "+selection.getres().name+" res stage : "+stage,Color.white);
+        for(Gob.Overlay oly:selection.ols)
+            System.out.println("Overlays : "+oly.sdt.toString()+" idk : "+oly.spr.res.basename());
         gui.map.unregisterGobSelect();
 
     }

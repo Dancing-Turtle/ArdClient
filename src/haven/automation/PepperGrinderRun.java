@@ -151,17 +151,23 @@ public class PepperGrinderRun extends Window implements Runnable {
 	}*/
 				int finishtimeout = 0;
 				while (BotUtils.invFreeSlots() > 2 && !stopThread) {
+					if(stopThread)
+						return;
 					finishtimeout++;
-					if (finishtimeout > 10000)
-						stopBtn.click();
+					if (finishtimeout > 10000) {
+						stopThread = true;
+						return;
+					}
 					lblProg.settext("Status - Collecting");
 					//while (BotUtils.findObjectByNames(10, "gfx/terobjs/htable") == null)
 					//BotUtils.sleep(10);
 					//BotUtils.sysLogAppend("tablecoutn : "+tables.size(), "white");
 					while (htable == null) {
 						finishtimeout++;
-						if (finishtimeout > 10000)
-							stopBtn.click();
+						if (finishtimeout > 10000) {
+							stopThread = true;
+							return;
+						}
 						//BotUtils.sysLogAppend("while loop", "white");
 						for (Gob tablelol : tables) {
 							//BotUtils.sysLogAppend("table loop", "white");

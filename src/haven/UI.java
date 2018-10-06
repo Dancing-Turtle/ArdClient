@@ -60,6 +60,7 @@ public class UI {
 	public GameUI gui;
 	public Widget realmchat;
 	public String VillageShield;
+	public Widget makewnd;
 
 
     {
@@ -226,6 +227,10 @@ public class UI {
                 realmchat = wdg;
             if(type.contains("speedget"))
                 gui.speedget = (Speedget)wdg;
+            if(type.contains("make")) {
+                System.out.println("Captured make widget of ID : "+wdg.wdgid());
+                makewnd = wdg;
+            }
             if(Questwidgetarray.contains(id) && Config.autoquestdrop) {
                 wdg.wdgmsg("opt", "rm");
                 Questwidgetarray.remove(Integer.valueOf(id));
@@ -380,7 +385,7 @@ public class UI {
     public void wdgmsg(Widget sender, String msg, Object... args) {
         int id;
         synchronized(this) {
-       //try { for(Object obj:args)// if(!sender.toString().contains("Camera")) System.out.println("Sender : " + sender + " msg = " + msg + " arg 1 : " + obj); }catch(ArrayIndexOutOfBoundsException q){}
+     //  try { for(Object obj:args) if(!sender.toString().contains("Camera")) System.out.println("Sender : " + sender + " msg = " + msg + " arg 1 : " + obj); }catch(ArrayIndexOutOfBoundsException q){}
             if (msg.endsWith("-identical"))
                 return;
 
@@ -417,7 +422,7 @@ public class UI {
                             }
                     } catch (NullPointerException q) {}
 
-           //   try { for(Object obj:args) System.out.println("UI Wdg : " + wdg + " msg : "+msg+" id = " + id + " arg 1 : " + obj); }catch(ArrayIndexOutOfBoundsException qq){}
+             // try { for(Object obj:args) if(!wdg.toString().contains("CharWnd")) System.out.println("UI Wdg : " + wdg + " msg : "+msg+" id = " + id + " arg 1 : " + obj); }catch(ArrayIndexOutOfBoundsException qq){}
                 wdg.uimsg(msg.intern(), args); }
                     else throw (new UIException("Uimsg to non-existent widget " + id, msg, args));
             }

@@ -131,11 +131,6 @@ public class PepperBot extends Window implements AreaSelectCallback, GobSelectCa
 			@Override
 			public void click() {
 				allowrun = true;
-				if(hfire == null)
-				{
-					BotUtils.sysMsg("No Hearthfire Selected.",Color.white);
-					allowrun = false;
-				}
 				if(grinder == null)
 				{
 					BotUtils.sysMsg("No grinder Selected.",Color.white);
@@ -256,23 +251,8 @@ public class PepperBot extends Window implements AreaSelectCallback, GobSelectCa
 		gui.getwnd("Crafting").close();
 
 	gui.wdgmsg("act", "craft", "boiledpepper");
-	BotUtils.waitForWindow("Crafting");
-	for(Widget a = gui.lchild;a!=null;a=a.prev) {
-		if (a instanceof CraftWindow) {
-			for (Widget aa = a.lchild; aa != null; aa = aa.prev) {
-				for (Widget aaa = aa.lchild; aaa != null; aaa = aaa.prev) {
-					if (aaa instanceof Button) {
-						if (((Button) aaa).text.text == "Craft All") {
-							BotUtils.sysMsg("button found",Color.white);
-							break;
-						}
-					}
-				}
-			}
-		}
-	}
-
-
+	BotUtils.sleep(2000);
+	ui.makewnd.wdgmsg("make",1);
 	//List<WItem> idk = BotUtils.getInventoryContents(BotUtils.playerInventory());
 	//for (WItem idkok : idk)
 	//	System.out.println("res : " + idkok.item.resource().name);

@@ -70,7 +70,8 @@ public class SeedCropFarmer extends Window implements Runnable {
 			GameUI gui = HavenPanel.lui.root.findchild(GameUI.class);
 			IMeter.Meter stam = gui.getmeter("stam", 0);
 			if (stam.a <= 30) {
-				BotUtils.drink();
+				new Thread(new BeltDrink(gui), "BeltDrink").start();
+				BotUtils.sleep(5000);
 			}
 
 			if (stopThread)

@@ -548,12 +548,12 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
         if (MapView.markedGobs.contains(id))
             rl.prepc(MapView.markedFx);
     if(Config.showrackstatus && type == Type.CHEESERACK){
-                if (ols.size() == 3)
-                    rl.prepc(cRackFull);
-                if(ols.size() > 0 && ols.size()<3)
-                    rl.prepc(cRackMissing);
-                else
-                    rl.prepc(cRackEmpty);
+            if (ols.size() == 3)
+                rl.prepc(cRackFull);
+            if (ols.size() > 0 && ols.size() < 3)
+                rl.prepc(cRackMissing);
+            else
+                rl.prepc(cRackEmpty);
     }
     if(Config.showcupboardstatus && type == Type.CUPBOARD){
         int stage = getattr(ResDrawable.class).sdt.peekrbuf(0);

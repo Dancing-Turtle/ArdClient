@@ -81,25 +81,10 @@ public class PepperBotRun extends Window implements Runnable {
 	public void run() {
 		BotUtils.sysMsg("Pepper Bot started!", Color.white);
 		GameUI gui = gameui();
-		if(gui.getwnd("Crafting")!=null)
-			gui.getwnd("Crafting").close();
 
 		gui.wdgmsg("act", "craft", "boiledpepper");
 		BotUtils.waitForWindow("Crafting");
-		for(Widget a = gui.lchild;a!=null;a=a.prev) {
-			if (a instanceof CraftWindow) {
-				for (Widget aa = a.lchild; aa != null; aa = aa.prev) {
-					for (Widget aaa = aa.lchild; aaa != null; aaa = aaa.prev) {
-						if (aaa instanceof Button) {
-							if (((Button) aaa).text.text == "Craft All") {
-								craftall = aaa;
-								break;
-							}
-						}
-					}
-				}
-			}
-		}
+
 
 		if (harvest) {
 			// Initialise crop list
@@ -350,7 +335,7 @@ public class PepperBotRun extends Window implements Runnable {
 						BotUtils.sleep(200);
 						VMeter vm = cwnd.getchild(VMeter.class);
 					//	System.out.println("Clicking craft");
-						((Button) craftall).click();
+						ui.makewnd.wdgmsg("make",1);
 						//System.out.println("after Clicking craft");
 						BotUtils.sleep(2000);
 						if (vm.amount < 30) {
@@ -380,7 +365,7 @@ public class PepperBotRun extends Window implements Runnable {
 								gui.map.wdgmsg("click", cauldron.sc, cauldron.rc.floor(posres), 3, 0, 0, (int) cauldron.id, cauldron.rc.floor(posres), 0, -1);
 								FlowerMenu.setNextSelection("Open");
 								BotUtils.sleep(1000);
-								((Button) craftall).click();
+								ui.makewnd.wdgmsg("make",1);
 								BotUtils.sleep(1000);
 							} else {
 								lblProg2.settext("Refill Cauldron");
@@ -396,7 +381,7 @@ public class PepperBotRun extends Window implements Runnable {
 								gui.map.wdgmsg("click", cauldron.sc, cauldron.rc.floor(posres), 3, 0, 0, (int) cauldron.id, cauldron.rc.floor(posres), 0, -1);
 								FlowerMenu.setNextSelection("Open");
 								BotUtils.sleep(1000);
-								((Button) craftall).click();
+								ui.makewnd.wdgmsg("make",1);
 								BotUtils.sleep(1000);
 							}
 						}
@@ -405,7 +390,7 @@ public class PepperBotRun extends Window implements Runnable {
 							BotUtils.sleep(10);
 						}
 						if (stam.a > 50)
-							((Button) craftall).click();
+							ui.makewnd.wdgmsg("make",1);
 
 					}
 				}
