@@ -91,6 +91,12 @@ public class PepperBotRun extends Window implements Runnable {
 			crops = Crops(true);
 			tables = Tables();
 			BotUtils.sysLogAppend("Crops : " + crops.size() + " Htables : " + tables.size(), "white");
+			if(tables.size() == 0)
+			{
+				BotUtils.sysMsg("No tables selected, stopping.",Color.white);
+				stopThread = true;
+				stop();
+			}
 			// Initialize progression label on window
 			int totalCrops = crops.size();
 			int cropsHarvested = 0;

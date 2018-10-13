@@ -19,7 +19,7 @@ public class BotUtils {
 		this.gui = gui;
 	}
 	private static Pattern liquidPattern = Pattern.compile(String.format("[0-9.]+ l of (%s)",
-			String.join("|", new String[] { "Water", "Piping Hot Tea", "Tea" }), Pattern.CASE_INSENSITIVE));
+			String.join("|", new String[] { "Water", "Piping Hot Tea", "Tea" , "Milk" , "Cowsmilk", "Sheepsmilk", "Goatsmilk"}), Pattern.CASE_INSENSITIVE));
 
 	// Click some object with button and a modifier
 	// Button 1 = Left click and 3 = right click

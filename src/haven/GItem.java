@@ -41,6 +41,8 @@ import haven.res.ui.tt.q.qbuff.QBuff;
 
 public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owner {
     public Indir<Resource> res;
+    private static ItemFilter filter;
+    private static long lastFilter = 0;
     public MessageBuf sdt;
     public int meter = 0;
     public int num = -1;
@@ -52,8 +54,14 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
     public double studytime = 0.0;
     public boolean drop = false;
     private double dropTimer = 0;
+    public boolean matches = false;
+    public boolean sendttupdate = false;
+    private long filtered = 0;
     private boolean postProcessed = false;
-
+    public static void setFilter(ItemFilter filter) {
+        GItem.filter = filter;
+        lastFilter = System.currentTimeMillis();
+    }
     @RName("item")
     public static class $_ implements Factory {
         public Widget create(UI ui, Object[] args) {
@@ -188,6 +196,14 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
         return (spr);
     }
 
+    public String resname(){
+        Resource res = resource();
+        if(res != null){
+            return res.name;
+        }
+        return "";
+    }
+
     public void tick(double dt) {
     	super.tick(dt);
         if(drop) {
@@ -200,6 +216,16 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
         GSprite spr = spr();
         if (spr != null)
             spr.tick(dt);
+        testMatch();
+    }
+
+    public void testMatch() {
+        try {
+            if(filtered < lastFilter && spr != null) {
+                matches = filter != null && filter.matches(info());
+                filtered = lastFilter;
+            }
+        } catch (Loading ignored) {}
     }
 
     public List<ItemInfo> info() {
@@ -232,6 +258,8 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
             if (rawinfo != null)
                 quality = null;
             rawinfo = args;
+            filtered = 0;
+            if(sendttupdate){wdgmsg("ttupdate");}
         } else if (name == "meter") {
             meter = (int)((Number)args[0]).doubleValue();
             metertex = Text.renderstroked(String.format("%d%%", meter), Color.WHITE, Color.BLACK, num10Fnd).tex();

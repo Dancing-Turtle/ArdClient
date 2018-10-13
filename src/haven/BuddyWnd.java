@@ -639,6 +639,8 @@ public class BuddyWnd extends Widget implements Iterable<BuddyWnd.Buddy> {
                 nicksel.settext(b.name);
                 grpsel.group = b.group;
             }
+            if((info != null) && (info.buddy == b))
+                info.update();
             serial++;
         } else if (msg == "sel") {
             int id = (Integer) args[0];

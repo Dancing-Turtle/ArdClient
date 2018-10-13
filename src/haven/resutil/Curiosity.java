@@ -26,14 +26,12 @@
 
 package haven.resutil;
 
+import haven.*;
+
+
 import java.awt.image.BufferedImage;
 
-import haven.GItem;
-import haven.Glob;
-import haven.ItemInfo;
-import haven.Resource;
-import haven.RichText;
-import haven.Utils;
+import static haven.QualityList.SingleType.*;
 
 public class Curiosity extends ItemInfo.Tip {
     public final int exp, mw, enc;
@@ -71,5 +69,25 @@ public class Curiosity extends ItemInfo.Tip {
         if (time > 0)
             buf.append(timefmt());
         return (RichText.render(buf.toString(), 0).img);
+    }
+
+    public static class Data implements ItemData.ITipData {
+	public final int lp, weight, xp, time;
+
+	public Data(Curiosity ii, QualityList q) {
+	    QualityList.Quality single = q.single(Quality);
+	    if(single == null) {
+		single = QualityList.DEFAULT;
+	    }
+	    lp = (int) Math.round(ii.exp / single.multiplier);
+	    weight = ii.mw;
+	    xp = ii.enc;
+	    time = (int)ii.time;
+	}
+
+	@Override
+	public ItemInfo create(Session sess) {
+	    return new Curiosity(null, lp, weight, xp, time);
+	}
     }
 }

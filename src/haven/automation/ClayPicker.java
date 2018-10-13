@@ -1,22 +1,22 @@
 package haven.automation;
 
 
-import static haven.OCache.posres;
-
 import haven.GameUI;
 import haven.Gob;
 import haven.Loading;
 import haven.Resource;
 
-public class MusselPicker implements Runnable {
+import static haven.OCache.posres;
+
+public class ClayPicker implements Runnable {
     private GameUI gui;
-    private Gob initMussel;
+    private Gob initClay;
     private static final int TIMEOUT_INITIAL = 8000;
     private static final int TIMEOUT = 5000;
 
-    public MusselPicker(GameUI gui, Gob initMussel) {
+    public ClayPicker(GameUI gui, Gob initClay) {
         this.gui = gui;
-        this.initMussel = initMussel;
+        this.initClay = initClay;
     }
 
     @Override
@@ -25,7 +25,7 @@ public class MusselPicker implements Runnable {
         while (!Thread.currentThread().isInterrupted()) {
             try {
                 Thread.sleep(500);
-                if (gui.map.glob.oc.getgob(initMussel.id) == null)
+                if (gui.map.glob.oc.getgob(initClay.id) == null)
                     break;
                 else if (System.currentTimeMillis() - s > TIMEOUT_INITIAL)
                     return;
@@ -35,31 +35,31 @@ public class MusselPicker implements Runnable {
         }
 
         while (!Thread.currentThread().isInterrupted()) {
-            Gob closestsMussel = null;
+            Gob closestsClay = null;
 
             synchronized (gui.map.glob.oc) {
                 for (Gob gob : gui.map.glob.oc) {
                     try {
                         Resource res = gob.getres();
-                        if (res != null && res.name.equals("gfx/terobjs/herbs/mussels") || res != null && res.name.equals("gfx/terobjs/herbs/clay-gray")) {
-                            if (closestsMussel == null || gob.rc.dist(initMussel.rc) < closestsMussel.rc.dist(initMussel.rc))
-                                closestsMussel = gob;
+                        if (res != null && res.name.equals("gfx/terobjs/herbs/clay-gray")) {
+                            if (closestsClay == null || gob.rc.dist(initClay.rc) < closestsClay.rc.dist(initClay.rc))
+                                closestsClay = gob;
                         }
                     } catch (Loading l) {
                     }
                 }
             }
 
-            if (closestsMussel == null || closestsMussel.rc.dist(initMussel.rc) > 11 * 5)
+            if (closestsClay == null || closestsClay.rc.dist(initClay.rc) > 11 * 5)
                 return;
 
-            gui.map.wdgmsg("click", closestsMussel.sc, closestsMussel.rc.floor(posres), 3, 0, 0, (int) closestsMussel.id, closestsMussel.rc.floor(posres), 0, -1);
+            gui.map.wdgmsg("click", closestsClay.sc, closestsClay.rc.floor(posres), 3, 0, 0, (int) closestsClay.id, closestsClay.rc.floor(posres), 0, -1);
 
             s = System.currentTimeMillis();
             while (!Thread.currentThread().isInterrupted()) {
                 try {
                     Thread.sleep(500);
-                    if (gui.map.glob.oc.getgob(closestsMussel.id) == null)
+                    if (gui.map.glob.oc.getgob(closestsClay.id) == null)
                         break;
                     else if (System.currentTimeMillis() - s > TIMEOUT)
                         return;

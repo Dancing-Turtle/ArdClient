@@ -68,6 +68,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     private Text lastmsg;
     private double msgtime;
     public Window invwnd, equwnd;
+    public FilterWnd filter;
     public Inventory maininv;
     Runnable BeltDrink;
     public CharWnd chrwdg;
@@ -211,6 +212,8 @@ public class GameUI extends ConsoleHost implements Console.Directory {
                 }
             }
         }, new Coord(HavenPanel.w / 2 - 300 / 2, umpanel.sz.y));
+        filter = new FilterWnd();
+        add(filter,300,300);
         syslog = chat.add(new ChatUI.Log(Resource.getLocString(Resource.BUNDLE_LABEL, "System")));
         opts = add(new OptWnd());
         opts.hide();
@@ -267,8 +270,10 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         PBotScriptlist.hide();
         BotUtils.gui = this;
         PBotAPI.gui = this;
-        if(!chat.visible)
+        if(!chat.visible) {
+            chat.resize(0, chat.savedh);
             chat.show();
+        }
     }
 
     @Override
@@ -829,8 +834,8 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             add(invwnd, new Coord(100, 100));
         } else if (place == "equ") {
             equwnd = new Hidewnd(Coord.z, "Equipment");
-          //  equipory = equwnd.add((Equipory) child, Coord.z);
-            equwnd.add(child, Coord.z);
+            equipory = equwnd.add((Equipory) child, Coord.z);
+          //  equwnd.add(child, Coord.z);
             equwnd.pack();
             equwnd.hide();
             add(equwnd, new Coord(400, 10));
@@ -1133,12 +1138,12 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     }
 
     public void wdgmsg(Widget sender, String msg, Object... args) {
-   // System.out.println("############");
+    //System.out.println("############");
     //	if(!sender.toString().contains("Camera"))
-      //  System.out.println(sender);
+     //   System.out.println(sender);
     //	System.out.println(msg);
    // 	for(Object o :args)
-    //		System.out.println(o);
+   // 		System.out.println(o);
         if ((sender == chrwdg) && (msg == "close")) {
             chrwdg.hide();
         } else if((polities.contains(sender)) && (msg == "close")) {
@@ -1216,6 +1221,17 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         Utils.setprefb("showboundingboxes", Config.showboundingboxes);
         if (map != null)
             map.refreshGobsAll();
+    }
+
+    public void logout(){
+        if(Discord.jdalogin != null)
+            DiscordToggle();
+        act("lo");
+    }
+    public void logoutChar() {
+        if(Discord.jdalogin != null)
+            DiscordToggle();
+        act("lo", "cs");
     }
 
     public void toggleTreeStage(){
@@ -1623,7 +1639,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             super(nkeybg.sz());
             adda(new IButton("gfx/hud/hb-btn-chat", "", "-d", "-h") {
                 Tex glow;
-
                 {
                     this.tooltip = RichText.render(Resource.getLocString(Resource.BUNDLE_LABEL, "Chat ($col[255,255,0]{Ctrl+C})"), 0);
                     glow = new TexI(PUtils.rasterimg(PUtils.blurmask(up.getRaster(), 2, 2, Color.WHITE)));

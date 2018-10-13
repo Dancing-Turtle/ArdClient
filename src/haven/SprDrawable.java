@@ -49,4 +49,5 @@ public class SprDrawable extends Drawable {
     public Object staticp() {
         return(spr.staticp());
     }
+
 }

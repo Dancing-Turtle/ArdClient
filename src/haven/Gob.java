@@ -78,7 +78,8 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
     public Type type = null;
 
     public enum Type {
-        OTHER(0), DFRAME(1), TREE(2), BUSH(3), BOULDER(4), PLAYER(5), SIEGE_MACHINE(6), MAMMOTH(7), BAT(8), OLDTRUNK(9), GARDENPOT(10), MUSSEL(11), LOC_RESOURCE(12), FU_YE_CURIO(13), EAGLE(15), TANTUB(20),CUPBOARD(19),COOP(21),
+        OTHER(0), DFRAME(1), TREE(2), BUSH(3), BOULDER(4), PLAYER(5), SIEGE_MACHINE(6), MAMMOTH(7), BAT(8), OLDTRUNK(9), GARDENPOT(10), MUSSEL(11), LOC_RESOURCE(12), CLAY(14),
+        FU_YE_CURIO(13), EAGLE(15), TANTUB(20),CUPBOARD(19),COOP(21),HUTCH(22),
         PLANT(16), MULTISTAGE_PLANT(17), CHEESERACK(18), SLIME(40), PROXAGGRO(41), LIVESTOCK(42),
         MOB(32), BEAR(34), LYNX(35), SEAL(37), TROLL(38), WALRUS(39),
         WOODEN_SUPPORT(64), STONE_SUPPORT(65), METAL_SUPPORT(66), TROUGH(67), BEEHIVE(68), WAGON(600), WALL(602), DREAMCATCHER(603), HOUSE(604);
@@ -272,6 +273,9 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
         return (null);
     }
 
+
+
+
     public void tick() {
         for (GAttrib a : attr.values())
             a.tick();
@@ -459,6 +463,8 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             type = Type.TANTUB;
         else if (name.startsWith("gfx/terobjs/chicken"))
             type = Type.COOP;
+        else if(name.startsWith("gfx/terobjs/rabbit"))
+            type = Type.HUTCH;
         else if (name.endsWith("terobjs/plants/carrot") || name.endsWith("terobjs/plants/hemp"))
             type = Type.MULTISTAGE_PLANT;
         else if (name.startsWith("gfx/terobjs/plants") && !name.endsWith("trellis"))
@@ -505,6 +511,8 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             type = Type.GARDENPOT;
         else if (name.endsWith("/mussels"))
             type = Type.MUSSEL;
+        else if(name.endsWith("/clay-gray"))
+            type = Type.CLAY;
         else if(name.endsWith("/cupboard"))
             type = Type.CUPBOARD;
         else if (name.endsWith("/goldeneagle"))
@@ -583,6 +591,42 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             if(stage == 1)
                 rl.prepc(cRackMissing);
             if(stage == 2)
+                rl.prepc(dframeWater);
+        }
+        if(Config.showhutchstatus && type == Type.HUTCH){
+          /*  no rabbits -stage 2 = no food or water
+            stage 1  = no food or water doors open
+            stage 6  = water no food
+            stage 5 = water no food doors open
+            stage 62 = food water doors closed
+            stage 61 = food water doors open
+            stage 58 = food no water
+            stage 57 = food no water door open
+
+            1-11 rabbits
+            stage 125 food and water doors open
+            stage 126 food and water doors closed
+            stage 69 no food water doors open
+            stage 70 no food water doors closed
+            stage 66 no food no water doors closed
+            stage 65 no food no water doors open
+            stage 122 food no water doors closed
+            stage 121 food no water doors open
+
+            12 rabbits - stage -2 = food and water doors closed
+            stage -3  = food and water doors open
+            stage -6 = food no water doors closed
+            stage -7 = food no water doors open
+            stage -62 no food no water doors closed
+            stage -63 no food no water doors open
+            stage -58 no food water doors closed
+            stage -59 no food water doors open*/
+            int stage = getattr(ResDrawable.class).sdt.peekrbuf(0);
+            if (stage == 2 || stage == 1 || stage == -62 || stage == -63 || stage == 66 || stage == 65)
+                rl.prepc(cRackFull);
+            if (stage == 6 || stage == 5 || stage == -58 || stage == -59 || stage == 69 || stage == 70)
+                rl.prepc(cRackMissing);
+            if(stage == 58 || stage == 57 || stage == -6 || stage == -7 || stage == 122 || stage == 121)
                 rl.prepc(dframeWater);
         }
 
@@ -687,7 +731,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             }
 
             if (Config.showplantgrowstage) {
-                if (Type.PLANT.has(type) && type != Type.WALL && type != Type.WAGON && type != Type.TANTUB && type != Type.CUPBOARD && type != Type.COOP) {
+                if (Type.PLANT.has(type) && type != Type.WALL && type != Type.WAGON && type != Type.TANTUB && type != Type.CUPBOARD && type != Type.COOP && type != Type.HUTCH) {
                     int stage = getattr(ResDrawable.class).sdt.peekrbuf(0);
                     if (cropstgmaxval == 0) {
                         for (FastMesh.MeshRes layer : getres().layers(FastMesh.MeshRes.class)) {

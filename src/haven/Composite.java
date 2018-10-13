@@ -156,6 +156,8 @@ public class Composite extends Drawable {
         return (base.get());
     }
 
+
+
     public Pose getpose() {
         init();
         return (comp.pose);

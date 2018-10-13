@@ -42,6 +42,7 @@ import static haven.PUtils.blurmask2;
 import static haven.PUtils.convolvedown;
 import static haven.PUtils.imgblur;
 import static haven.PUtils.rasterimg;
+import static java.awt.Color.green;
 import static java.awt.Color.white;
 
 import java.awt.Color;
@@ -49,6 +50,7 @@ import java.awt.Graphics;
 import java.awt.font.TextAttribute;
 import java.awt.image.BufferedImage;
 import java.util.*;
+import java.util.stream.IntStream;
 
 import haven.PUtils.BlurFurn;
 import haven.PUtils.Convolution;
@@ -72,13 +74,14 @@ public class CharWnd extends Window {
     public static final Color every = new Color(255, 255, 255, 16), other = new Color(255, 255, 255, 32);
     public final Collection<Attr> base;
     public final Collection<SAttr> skill;
+   // public final List<Attr> base;
+   // public final List<SAttr> skill;
     public final FoodMeter feps;
     public final GlutMeter glut;
     public final Constipations cons;
     public final SkillGrid skg;
     public final CredoGrid credos;
     public final ExpGrid exps;
-    public int autoquestdroptimer = 0;
     public final Widget woundbox;
     public static boolean abandonquest = false;
     public final WoundList wounds;
@@ -342,11 +345,16 @@ public class CharWnd extends Window {
         public final List<El> els = new ArrayList<El>();
         private Integer[] order = {};
 
+	public static Color color(double a) {
+	    return (a > 1.0)?buffed:Utils.blendcol(none, full, a);
+	}
+
         public static class El {
             public static final int h = elf.height() + 2;
             public final Indir<Resource> t;
             public double a;
             private Tex tt, at;
+	    private BufferedImage tip;
             private boolean hl;
 
             public El(Indir<Resource> t, double a) {
@@ -493,22 +501,37 @@ public class CharWnd extends Window {
         public final Glob.CAttr attr;
         public final Tex img;
         public final Color bg;
+	    public final Resource res;
         private double lvlt = 0.0;
+	private Text ct;
         private int cbv, ccv;
 
         private Attr(Glob glob, String attr, Color bg) {
             super(new Coord(attrw, attrf.height() + 2));
-            Resource res = Resource.local().loadwait("gfx/hud/chr/" + attr);
+            res = Resource.local().loadwait("gfx/hud/chr/" + attr);
             this.nm = attr;
             this.img = res.layer(Resource.imgc).tex();
-            String tooltip = res.layer(Resource.tooltip).t;
-            this.rnm = attrf.render(tooltip);
+	    this.rnm = attrf.render(res.layer(Resource.tooltip).t);
             this.attr = glob.cattr.get(attr);
             this.bg = bg;
         }
 
         public void tick(double dt) {
-            if ((lvlt > 0.0) && ((lvlt -= dt) < 0))
+	    if((attr.base != cbv) || (attr.comp != ccv)) {
+		cbv = attr.base; ccv = attr.comp;
+		Color c = Color.WHITE;
+		if(ccv > cbv) {
+		    c = buff;
+		    tooltip = Text.render(String.format("%d + %d", cbv, ccv - cbv));
+		} else if(ccv < cbv) {
+		    c = debuff;
+		    tooltip = Text.render(String.format("%d - %d", cbv, cbv - ccv));
+		} else {
+		    tooltip = null;
+		}
+		ct = attrf.render(Integer.toString(ccv), c);
+	    }
+	    if((lvlt > 0.0) && ((lvlt -= dt) < 0))
                 lvlt = 0.0;
         }
 
@@ -539,6 +562,10 @@ public class CharWnd extends Window {
 
         public void lvlup() {
             lvlt = 1.0;
+	    if(ui != null){
+		//ui.message(String.format("Your %s leveled up!", rnm.text), GameUI.MsgType.GOOD);
+		BotUtils.sysMsg("Your "+rnm.text+" leveled up!", green);
+	    }
         }
     }
 
@@ -548,13 +575,14 @@ public class CharWnd extends Window {
         public final Glob.CAttr attr;
         public final Tex img;
         public final Color bg;
-        public int tbv, tcv, cost;
+	public final Resource res;
+	public int tbv, tcv, cost;
         private Text ct;
         private int cbv, ccv;
 
         private SAttr(Glob glob, String attr, Color bg) {
             super(new Coord(attrw, attrf.height() + 2));
-            Resource res = Resource.local().loadwait("gfx/hud/chr/" + attr);
+	    res = Resource.local().loadwait("gfx/hud/chr/" + attr);
             this.nm = attr;
             this.img = res.layer(Resource.imgc).tex();
             this.rnm = attrf.render(res.layer(Resource.tooltip).t);
@@ -595,6 +623,8 @@ public class CharWnd extends Window {
         public void tick(double dt) {
             if ((attr.base != cbv) || (attr.comp != ccv)) {
                 cbv = attr.base;
+	    }
+	    if(attr.comp != ccv) {
                 ccv = attr.comp;
                 if (tbv <= cbv) {
                     tbv = cbv;
@@ -829,9 +859,9 @@ public class CharWnd extends Window {
         private final Text.UText<?> rnm = new Text.UText<String>(attrf) {
             public String value() {
                 try {
-                    return (res.get().layer(Resource.tooltip).t);
-                } catch (Loading l) {
-                    return ("...");
+		    return(res.get().layer(Resource.tooltip).t);
+		} catch(Loading l) {
+		    return("...");
                 }
             }
         };
@@ -899,6 +929,7 @@ public class CharWnd extends Window {
     public class Experience {
         public final Indir<Resource> res;
         public final int mtime, score;
+	private String sortkey = "\uffff";
         private Tex small;
         private final Text.UText<?> rnm = new Text.UText<String>(attrf) {
             public String value() {
@@ -943,14 +974,40 @@ public class CharWnd extends Window {
         public int level;
         private String sortkey = "\uffff";
         private Tex small;
+	private int namew;
         private final Text.UText<?> rnm = new Text.UText<String>(attrf) {
             public String value() {
                 try {
-                    return (res.get().layer(Resource.tooltip).t);
-                } catch (Loading l) {
-                    return ("...");
+		    return(res.get().layer(Resource.tooltip).t);
+		} catch(Loading l) {
+		    return("...");
                 }
             }
+
+	    public Text render(String text) {
+		Text.Foundry fnd = (Text.Foundry)this.fnd;
+		Text.Line full = fnd.render(text);
+		if(full.sz().x <= namew)
+		    return(full);
+		int ew = fnd.strsize("...").x;
+		for(int i = full.text.length() - 1; i > 0; i--) {
+		    if((full.advance(i) + ew) < namew)
+			return(fnd.render(text.substring(0, i) + "..."));
+		}
+		return(full);
+	    }
+
+	    /*
+	    public Text render(String text) {
+		Text.Foundry fnd = (Text.Foundry)this.fnd;
+		Text.Line ret = fnd.render(text);
+		while(ret.sz().x > namew) {
+		    fnd = new Text.Foundry(fnd.font, fnd.font.getSize() - 1, fnd.defcol).aa(true);
+		    ret = fnd.render(text);
+		}
+		return(ret);
+	    }
+	    */
         };
         private final Text.UText<?> rqd = new Text.UText<Object>(attrf) {
             public Object value() {
@@ -974,11 +1031,7 @@ public class CharWnd extends Window {
                 bg = null;
                 this.id = id;
                 this.res = res;
-                settext(new Indir<String>() {
-                    public String get() {
-                        return (rendertext());
-                    }
-                });
+		settext(new Indir<String>() {public String get() {return(rendertext());}});
             }
 
             protected void added() {
@@ -1173,8 +1226,8 @@ public class CharWnd extends Window {
         public static class Box extends Widget implements Info, QView.QVInfo {
             public final int id;
             public final Indir<Resource> res;
+	    public final String title;
             public Condition[] cond = {};
-            public final String title;
             private QView cqv;
 
             public Box(int id, Indir<Resource> res, String title) {
@@ -1906,19 +1959,6 @@ public class CharWnd extends Window {
         }
 
         protected void drawitem(GOut g, Quest q, int idx) {
-            try{
-                for(Quest i : quests) {
-                    if (ui.Questnumberarray.contains(Integer.valueOf(i.id)) && ui.readytodrop) {
-                        if (i.title.contains("Visit") && !i.title.contains(Config.questdropstring) && Config.autoquestdrop && ui.readytodrop) {
-                            BotUtils.sysLogAppend("Queing removal of : " + q.title, "white");
-                            ui.Questnumberarray.remove(Integer.valueOf(i.id));
-                            change(q);
-                            remove(q);
-                            ui.readytodrop = false;
-                        }
-                    }
-                }
-            }catch(NullPointerException qip){}
            // if(ui.Questnumberarray.contains(q.id)) remove(q);
             if ((quest != null) && (quest.questid() == q.id))
                 drawsel(g);
@@ -1941,7 +1981,7 @@ public class CharWnd extends Window {
                 abandonquest = true;
                 CharWnd.this.wdgmsg("qsel", (Object) null);
                 CharWnd.this.wdgmsg("qsel", q.id);
-                BotUtils.sysMsg("Dropping quest : "+q.title,white);
+                BotUtils.sysMsg("Dropping quest : "+q.title,green);
                 remove(q);
             } else
             change(q);
@@ -1967,13 +2007,6 @@ public class CharWnd extends Window {
         }
 
         public void add(Quest q) {
-            try {
-                if (q.title.contains("Visit") && !q.title.contains(Config.questdropstring)) {
-                   // BotUtils.sysLogAppend("Non Gerd quest found : " + q.title, "white");
-                    ui.Questnumberarray.add(q.id);
-                  //  System.out.println("CharWnd numberarray : "+ui.Questnumberarray.size()+" quest to drop : "+q.id);
-                }
-            }catch(NullPointerException pp){}
             quests.add(q);
         }
 
@@ -2342,6 +2375,67 @@ public class CharWnd extends Window {
 
         resize(contentsz().add(15, 10));
     }
+    public Glob.CAttr findattr(String name) {
+        for (SAttr skill : this.skill) {
+            if(name.equals(skill.attr.nm)) {
+                return skill.attr;
+            }
+        }
+        for (Attr stat : base) {
+            if(name.equals(stat.attr.nm)) {
+                return stat.attr;
+            }
+        }
+        return null;
+    }
+
+    public Glob.CAttr findattr(Resource res) {
+        for (SAttr skill : this.skill) {
+            if(res == skill.res) {
+                return skill.attr;
+            }
+        }
+        for (Attr stat : base) {
+            if(res == stat.res) {
+                return stat.attr;
+            }
+        }
+        return null;
+    }
+    public int statIndex(Resource res) {
+        if(base != null) {
+            return IntStream.range(0, base.size())
+                    .filter(i -> base.stream().equals(res))
+                    .findFirst().orElse(Integer.MAX_VALUE);
+        }
+        return Integer.MAX_VALUE;
+    }
+
+    public int skillIndex(Resource res) {
+        if(skill != null) {
+            return IntStream.range(0, skill.size())
+                    .filter(i -> skill.stream().equals(res))
+                    .findFirst().orElse(Integer.MAX_VALUE);
+        }
+        return Integer.MAX_VALUE;
+    }
+
+    public int BY_PRIORITY(Resource r1, Resource r2 ) {
+        int b1 = statIndex(r1);
+        int b2 = statIndex(r2);
+
+        if(b1 == b2) {
+            b1 = skillIndex(r1);
+            b2 = skillIndex(r2);
+            if(b1 == b2) {
+                return r1.name.compareTo(r2.name);
+            } else {
+                return Integer.compare(b1, b2);
+            }
+        } else {
+            return Integer.compare(b1, b2);
+        }
+    }
 
     public void addchild(Widget child, Object... args) {
 
@@ -2461,6 +2555,7 @@ public class CharWnd extends Window {
             while (a < args.length) {
                 Indir<Resource> t = ui.sess.getres((Integer) args[a++]);
                 double m = ((Number) args[a++]).doubleValue();
+                ui.sess.character.constipation.update(t, m);
                 cons.update(t, m);
             }
         } else if (nm == "csk") {

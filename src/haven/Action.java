@@ -1,5 +1,7 @@
 package haven;
 
+import haven.purus.BotUtils;
+
 public enum Action {
     TOGGLE_INVENTORY(GameUI::toggleInventory, "Inventory"),
     TOGGLE_EQUIPMENT(GameUI::toggleEquipment, "Equipment"),
@@ -10,12 +12,15 @@ public enum Action {
     TOGGLE_MAP(GameUI::toggleMap, "Toggle Map"),
     TAKE_SCREENSHOT(GameUI::takeScreenshot, "Take Screenshot"),
     CRAWL_SPEED(GameUI::crawlSpeed,"Crawling Speed"),
+    LOGOUT(GameUI::logout,"Initiates Logout"),
+    LOGOUTSELECT(GameUI::logoutChar,"Logs out to char select."),
     WALK_SPEED(GameUI::walkSpeed,"Walking Speed"),
     RUN_SPEED(GameUI::runSpeed,"Run Speed"),
     SPRINT_SPEED(GameUI::sprintSpeed,"Sprinting Speed"),
     DRINK(GameUI::Drink,"Drinks from inventory or open belts."),
     ACT_HAND_0(GameUI::leftHand, "Left hand", "Left click on left hand slot."),
     ACT_HAND_1(GameUI::rightHand, "Right hand", "Left click on right hand slot."),
+    FILTER(gui -> gui.filter.toggle(), "Show item filter"),
    // OPEN_QUICK_CRAFT(GameUI::toggleCraftList, "Open craft list", "Opens list of items you can craft. Start typing to narrow the list. Press Enter or double-click to select recipe."),
    // OPEN_QUICK_BUILD(GameUI::toggleBuildList, "Open building list", "Opens list of objects you can build. Start typing to narrow the list. Press Enter or double-click to select building."),
    // OPEN_QUICK_ACTION(GameUI::toggleActList, "Open actions list", "Opens list of actions you can perform. Start typing to narrow the list. Press Enter or double-click to perform action."),

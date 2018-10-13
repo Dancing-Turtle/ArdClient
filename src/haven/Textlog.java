@@ -91,9 +91,9 @@ public class Textlog extends Widget {
             line = RichText.Parser.quote(line);
         }
         if (col == null)
-            rl = fnd.render(RichText.Parser.quote(line), sz.x - (margin * 2) - sflarp.sz().x);
+            rl = fnd.render(line, sz.x - (margin * 2) - sflarp.sz().x);
         else
-            rl = fnd.render(RichText.Parser.quote(line), sz.x - (margin * 2) - sflarp.sz().x, TextAttribute.FOREGROUND, col);
+            rl = fnd.render(line, sz.x - (margin * 2) - sflarp.sz().x, TextAttribute.FOREGROUND, col);
         synchronized (lines) {
             lines.add(rl);
             if((maxLines > 0)&&(lines.size() > maxLines)){

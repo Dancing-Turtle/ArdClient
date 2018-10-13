@@ -17,6 +17,7 @@ public class PepperGrinderRun extends Window implements Runnable {
 	private Coord rc1, rc2;
 	private ArrayList<Gob> crops = new ArrayList<Gob>();
 	private ArrayList<Gob> tables = new ArrayList<Gob>();
+	public ArrayList<Gob> blacklist = new ArrayList<Gob>();
 	private boolean stopThread = false;
 	private Label lblProg;
 	private ArrayList<String> cropName = new ArrayList<String>();
@@ -32,7 +33,7 @@ public class PepperGrinderRun extends Window implements Runnable {
 	private Gob chest, water, rowmarker, cauldron, barrel, hfire, grinder;
 	private final int rowgap = 4200;
 	private final int travel = 20000;
-	public List<Gob> blacklist;
+
 	private int section, direction;
 	public Widget craftall;
 	private Boolean boilmode = false;
@@ -67,7 +68,7 @@ public class PepperGrinderRun extends Window implements Runnable {
 
 			//section = 4;
 			tables = Tables();
-			BotUtils.sysMsg("Pepper Grinder Bot started!", Color.white);
+			BotUtils.sysMsg("Pepper Grinder Bot started! Tables selected : "+tables.size(), Color.white);
 			GameUI gui = gameui();
 			if (gui.getwnd("Crafting") != null)
 				gui.getwnd("Crafting").close();
@@ -173,8 +174,12 @@ public class PepperGrinderRun extends Window implements Runnable {
 							//BotUtils.sysLogAppend("table loop", "white");
 							if (tablelol.ols.size() > 0)
 								htable = tablelol;
+							else
+								blacklist.add(tablelol);
 						}
 					}
+					tables.removeAll(blacklist);
+					blacklist.clear();
 					//BotUtils.sleep(500);
 					//	BotUtils.sysLogAppend("Found table, clicking", "white");
 					PBotAPI.pfRightClick(htable, 0);
@@ -378,7 +383,10 @@ public class PepperGrinderRun extends Window implements Runnable {
 				}
 			}
 		}
-		gobs.sort(new CoordSort());
+		if(section==1)
+			gobs.sort(new CoordSortNS());
+		else
+			gobs.sort(new CoordSort());
 		return gobs;
 	}
 
@@ -397,7 +405,7 @@ public class PepperGrinderRun extends Window implements Runnable {
 				}
 			}
 		}
-		gobs.sort(new CoordSort());
+			gobs.sort(new CoordSort());
 		return gobs;
 	}
 
@@ -411,7 +419,7 @@ public class PepperGrinderRun extends Window implements Runnable {
 	}
 
 	// Sorts coordinate array to efficient sequence
-	class CoordSort implements Comparator<Gob> {
+	class CoordSort implements Comparator<Gob> { // sorts high Y to low Y along same X Axis
 		public int compare(Gob a, Gob b) {
 
 			if (a.rc.x == b.rc.x) {
@@ -421,6 +429,18 @@ public class PepperGrinderRun extends Window implements Runnable {
 					return (a.rc.y < b.rc.y) ? -1 : (a.rc.y > b.rc.y) ? 1 : 0;
 			} else
 				return (a.rc.x < b.rc.x) ? -1 : (a.rc.x > b.rc.x) ? 1 : 0;
+		}
+	}
+	class CoordSortNS implements Comparator<Gob> { // sorts high X to low X along the same Y Axis
+		public int compare(Gob a, Gob b) {
+
+			if (a.rc.y == b.rc.y) {
+				if (a.rc.y % 2 == 0)
+					return (a.rc.x < b.rc.x) ? 1 : (a.rc.x > b.rc.x) ? -1 : 0;
+				else
+					return (a.rc.x < b.rc.x) ? -1 : (a.rc.x > b.rc.x) ? 1 : 0;
+			} else
+				return (a.rc.y < b.rc.y) ? -1 : (a.rc.y > b.rc.y) ? 1 : 0;
 		}
 	}
 

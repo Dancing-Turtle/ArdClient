@@ -27,20 +27,22 @@ public class SeedCropFarmer extends Window implements Runnable {
 	private boolean replant;
 	private boolean replantcontainer; // True = Only Container, False = Only replant
 	private boolean containeronly;
-	private Gob barrel;
+	private ArrayList<Gob> containers = new ArrayList<>();
+	//private Gob barrel;
 
-	public SeedCropFarmer(Coord rc1, Coord rc2, String cropName, String seedName, int stage,boolean replant, boolean containeronly, boolean replantcontainer, Gob barrel) {
+	public SeedCropFarmer(Coord rc1, Coord rc2, String cropName, String seedName, int stage,boolean replant, boolean containeronly, boolean replantcontainer, ArrayList<Gob> containers) {
 		super(new Coord(120, 65), cropName.substring(cropName.lastIndexOf("/") + 1).substring(0, 1).toUpperCase()
 				+ cropName.substring(cropName.lastIndexOf("/") + 1).substring(1) + " Farmer");
 		this.rc1 = rc1;
 		this.rc2 = rc2;
 		this.cropName = cropName;
 		this.stage = stage;
+		this.containers = containers;
 		this.seedName = seedName;
 		this.replantcontainer = replantcontainer;
 		this.replant = replant;
 		this.containeronly = containeronly;
-		this.barrel = barrel;
+	//	this.barrel = barrel;
 
 		Label lblstxt = new Label("Progress:");
 		add(lblstxt, new Coord(15, 35));
@@ -180,7 +182,6 @@ public class SeedCropFarmer extends Window implements Runnable {
 
 
 						// Merge seed from hand into inventory or put it in inventory
-						if (!seedName.contains("carrot")) {
 							for (Widget w = BotUtils.playerInventory().child; w != null; w = w.next) {
 								if (w instanceof GItem && ((GItem) w).resource().name.equals(seedName)) {
 									GItem item = (GItem) w;
@@ -195,7 +196,6 @@ public class SeedCropFarmer extends Window implements Runnable {
 									}
 								}
 							}
-						}
 						if (BotUtils.getItemAtHand() != null) {
 							Coord slot = BotUtils.getFreeInvSlot(BotUtils.playerInventory());
 							if (slot != null) {
@@ -208,18 +208,36 @@ public class SeedCropFarmer extends Window implements Runnable {
 						if (BotUtils.invFreeSlots() == 0) {
 							if (BotUtils.getItemAtHand() != null)
 								BotUtils.dropItem(0);
-							BotUtils.pfRightClick(barrel, 0);
-							if (barrel.getres().basename().contains("barrel"))
+							BotUtils.pfRightClick(containers.get(0), 0);
+							if (containers.get(0).getres().basename().contains("barrel"))
 								BotUtils.waitForWindow("Barrel");
 							else
 								BotUtils.waitForWindow("Trough");
 							if (BotUtils.getItemAtHand() != null) {
-								gameui().map.wdgmsg("itemact", Coord.z, barrel.rc.floor(posres), 0, 0, (int) barrel.id,
-										barrel.rc.floor(posres), 0, -1);
+								gameui().map.wdgmsg("itemact", Coord.z, containers.get(0).rc.floor(posres), 0, 0, (int) containers.get(0).id,
+										containers.get(0).rc.floor(posres), 0, -1);
 								int i = 0;
 								while (BotUtils.getItemAtHand() != null) {
 									if (i == 60000)
 										break;
+									if(containers.size() == 1 && i > 250){
+										BotUtils.sysMsg("Only container in list appears to be full, stopping.",Color.white);
+										stopThread = true;
+										stop();
+										break;
+									}else if(i > 250){
+										BotUtils.sysMsg("Container appears to be full, removing.",Color.white);
+										Coord slot = BotUtils.getFreeInvSlot(BotUtils.playerInventory());
+										BotUtils.dropItemToInventory(slot,BotUtils.playerInventory());
+										BotUtils.sleep(250);
+										containers.remove(0);
+										BotUtils.pfRightClick(containers.get(0), 0);
+										if (containers.get(0).getres().basename().contains("barrel"))
+											BotUtils.waitForWindow("Barrel");
+										else
+											BotUtils.waitForWindow("Trough");
+										break;
+									}
 									BotUtils.sleep(10);
 									i++;
 								}
@@ -230,12 +248,30 @@ public class SeedCropFarmer extends Window implements Runnable {
 								GItem item = BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), Arrays.asList(seedName)).get(0).item;
 								BotUtils.takeItem(item);
 
-								gameui().map.wdgmsg("itemact", Coord.z, barrel.rc.floor(posres), 0, 0, (int) barrel.id,
-										barrel.rc.floor(posres), 0, -1);
+								gameui().map.wdgmsg("itemact", Coord.z, containers.get(0).rc.floor(posres), 0, 0, (int) containers.get(0).id,
+										containers.get(0).rc.floor(posres), 0, -1);
 								int i = 0;
 								while (BotUtils.getItemAtHand() != null) {
 									if (i == 60000)
 										break;
+									if(containers.size() == 1 && i > 250){
+										BotUtils.sysMsg("Only container in list appears to be full, stopping.",Color.white);
+										stopThread = true;
+										stop();
+										break;
+									}else if(i > 250){
+										BotUtils.sysMsg("Container appears to be full, removing.",Color.white);
+										Coord slot = BotUtils.getFreeInvSlot(BotUtils.playerInventory());
+										BotUtils.dropItemToInventory(slot,BotUtils.playerInventory());
+										BotUtils.sleep(250);
+										containers.remove(0);
+										BotUtils.pfRightClick(containers.get(0), 0);
+										if (containers.get(0).getres().basename().contains("barrel"))
+											BotUtils.waitForWindow("Barrel");
+										else
+											BotUtils.waitForWindow("Trough");
+										break;
+									}
 									BotUtils.sleep(10);
 									i++;
 								}
@@ -248,11 +284,11 @@ public class SeedCropFarmer extends Window implements Runnable {
 					if (containeronly) { // Put items into container if inventory is full
 						GItem item;
 						if (BotUtils.invFreeSlots() == 0) {
-							BotUtils.pfRightClick(barrel, 0);
+							BotUtils.pfRightClick(containers.get(0), 0);
 							BotUtils.waitForWindow("Barrel");
 							if (BotUtils.getItemAtHand() != null) {
-								gameui().map.wdgmsg("itemact", Coord.z, barrel.rc.floor(posres), 0, 0, (int) barrel.id,
-										barrel.rc.floor(posres), 0, -1);
+								gameui().map.wdgmsg("itemact", Coord.z, containers.get(0).rc.floor(posres), 0, 0, (int) containers.get(0).id,
+										containers.get(0).rc.floor(posres), 0, -1);
 								int i = 0;
 								while (BotUtils.getItemAtHand() != null) {
 									if (i == 60000)
@@ -267,8 +303,8 @@ public class SeedCropFarmer extends Window implements Runnable {
 								item = BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), Arrays.asList(seedName)).get(0).item;
 								BotUtils.takeItem(item);
 
-								gameui().map.wdgmsg("itemact", Coord.z, barrel.rc.floor(posres), 0, 0, (int) barrel.id,
-										barrel.rc.floor(posres), 0, -1);
+								gameui().map.wdgmsg("itemact", Coord.z, containers.get(0).rc.floor(posres), 0, 0, (int) containers.get(0).id,
+										containers.get(0).rc.floor(posres), 0, -1);
 								int i = 0;
 								while (BotUtils.getItemAtHand() != null) {
 									if (i == 60000)
@@ -288,8 +324,8 @@ public class SeedCropFarmer extends Window implements Runnable {
 		if(replantcontainer) {
 			if (BotUtils.getItemAtHand() != null)
 				BotUtils.dropItem(0);
-			BotUtils.pfRightClick(barrel, 0);
-			if(barrel.getres().basename().contains("barrel"))
+			BotUtils.pfRightClick(containers.get(0), 0);
+			if(containers.get(0).getres().basename().contains("barrel"))
 			BotUtils.waitForWindow("Barrel");
 			else
 				BotUtils.waitForWindow("Trough");
@@ -300,8 +336,8 @@ public class SeedCropFarmer extends Window implements Runnable {
 				GItem item = BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), Arrays.asList(seedName)).get(0).item;
 				BotUtils.takeItem(item);
 	
-				gameui().map.wdgmsg("itemact", Coord.z, barrel.rc.floor(posres), 0, 0, (int) barrel.id,
-						barrel.rc.floor(posres), 0, -1);
+				gameui().map.wdgmsg("itemact", Coord.z, containers.get(0).rc.floor(posres), 0, 0, (int) containers.get(0).id,
+						containers.get(0).rc.floor(posres), 0, -1);
 				int i = 0;
 				while (BotUtils.getItemAtHand() != null) {
 					if (i == 60000)

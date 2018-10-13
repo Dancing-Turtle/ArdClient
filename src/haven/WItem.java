@@ -60,6 +60,10 @@ public class WItem extends Widget implements DTarget {
 	public GItem item;
 	public static final Color famountclr = new Color(24, 116, 205);
 	private static final Color qualitybg = new Color(20, 20, 20, 255 - Config.qualitybgtransparency);
+	public static final Color DURABILITY_COLOR = new Color(214, 253, 255);
+	public static final Color ARMOR_COLOR = new Color(255, 227, 191);
+	//public static final Color MATCH_COLOR = new Color(255, 32, 255, 255);
+	public static final Color MATCH_COLOR = new Color(0, 255, 0, 255);
 	public static final Color[] wearclr = new Color[]{
 			new Color(233, 0, 14), new Color(218, 128, 87), new Color(246, 233, 87), new Color(145, 225, 60)
 	};
@@ -159,6 +163,25 @@ public class WItem extends Widget implements DTarget {
 		}
 	}
 
+	public final AttrCache<List<ItemInfo>> gilding = new AttrCache<List<ItemInfo>>(this::info, AttrCache.cache(info -> ItemInfo.findall("Slotted", info)));
+
+	public final AttrCache<List<ItemInfo>> slots = new AttrCache<List<ItemInfo>>(this::info, AttrCache.cache(info -> ItemInfo.findall("ISlots", info)));
+
+	public final AttrCache<Boolean> gildable = new AttrCache<Boolean>(this::info, AttrCache.cache(info -> {
+		List<ItemInfo> slots = ItemInfo.findall("ISlots", info);
+		for(ItemInfo slot : slots) {
+			if(Reflect.getFieldValueInt(slot, "left") > 0) {
+				return true;
+			}
+		}
+		return false;
+	}));
+
+	public final AttrCache<String> name = new AttrCache<>(this::info, AttrCache.cache(info -> {
+		ItemInfo.Name name = ItemInfo.find(ItemInfo.Name.class, info);
+		return (name != null && name.str != null && name.str.text != null) ? name.str.text : "";
+	}));
+
 	private List<ItemInfo> info() {return(item.info());}
 	public final AttrCache<Color> olcol = new AttrCache<>(this::info, info -> {
 		Color ret = null;
@@ -183,27 +206,72 @@ public class WItem extends Widget implements DTarget {
 		return(() -> ret);
 	});
 
-	public final AttrCache<Double> itemmeter = new AttrCache<>(this::info, AttrCache.map1(GItem.MeterInfo.class, minf -> {
-		GItem itm = WItem.this.item;
-		if (minf != null) {
-			double meter = minf.meter();
-			if (itm.studytime > 0 && parent instanceof InventoryStudy) {
-				int timeleft = (int) (itm.studytime * (1.0 - meter));
-				int hoursleft = timeleft / 60;
-				int minutesleft = timeleft - hoursleft * 60;
-				if(hoursleft < 1){
-					itm.metertex = Text.renderstroked(String.format("%d:%02d", hoursleft, minutesleft), Color.YELLOW, Color.BLACK, num10Fnd).tex();
+    public final AttrCache<Double> itemmeter = new AttrCache<>(this::info, AttrCache.map1(GItem.MeterInfo.class, minf -> {
+        GItem itm = WItem.this.item;
+        if (minf != null) {
+            double meter = minf.meter();
+            if (itm.studytime > 0 && parent instanceof InventoryStudy) {
+                int timeleft = (int) (itm.studytime * (1.0 - meter));
+                int hoursleft = timeleft / 60;
+                int minutesleft = timeleft - hoursleft * 60;
+                itm.metertex = Text.renderstroked(String.format("%d:%02d", hoursleft, minutesleft), Color.WHITE, Color.BLACK, num10Fnd).tex();
+            } else {
+                itm.metertex = Text.renderstroked(String.format("%d%%", (int) (meter * 100)), Color.WHITE, Color.BLACK, num10Fnd).tex();
+	}
+            return minf::meter;
+	}
+        itm.metertex = null;
+        return minf::meter;
+    }));
+	public final AttrCache<QualityList> itemq = new AttrCache<QualityList>(this::info, AttrCache.cache(info -> {
+		List<ItemInfo.Contents> contents = ItemInfo.findall(ItemInfo.Contents.class, info);
+		List<ItemInfo> qualities = null;
+		if(!contents.isEmpty()) {
+			for(ItemInfo.Contents content : contents) {
+				List<ItemInfo> tmp = ItemInfo.findall(QualityList.classname, content.sub);
+				if(!tmp.isEmpty()) {
+					qualities = tmp;
 				}
-				else
-					itm.metertex = Text.renderstroked(String.format("%d:%02d", hoursleft, minutesleft), Color.WHITE, Color.BLACK, num10Fnd).tex();
-			} else {
-				itm.metertex = Text.renderstroked(String.format("%.1f%%", (meter * 100)), Color.WHITE, Color.BLACK, num10Fnd).tex();
 			}
-			return minf::meter;
 		}
-		itm.metertex = null;
-		return minf::meter;
+		if(qualities == null || qualities.isEmpty()) {
+			qualities = ItemInfo.findall(QualityList.classname, info);
+		}
+
+		QualityList qualityList = new QualityList(qualities);
+		return !qualityList.isEmpty() ? qualityList : null;
 	}));
+
+    public final AttrCache<Tex> heurnum = new AttrCache<Tex>(this::info, AttrCache.cache(info -> {
+	String num = ItemInfo.getCount(info);
+	if(num == null) return null;
+	return Text.renderstroked(num, Color.WHITE, Color.BLACK).tex();
+    }));
+
+    public final AttrCache<Tex> durability = new AttrCache<Tex>(this::info, AttrCache.cache(info -> {
+	Pair<Integer, Integer> wear = ItemInfo.getWear(info);
+	if(wear == null) return (null);
+	return Text.renderstroked(String.valueOf(wear.b - wear.a), DURABILITY_COLOR, Color.BLACK).tex();
+    })) {
+	@Override
+	public Tex get() {
+	    return Config.showwearbars ? super.get() : null;
+	}
+    };
+
+    public final AttrCache<Pair<Integer, Integer>> wear = new AttrCache<Pair<Integer, Integer>>(this::info, AttrCache.cache(ItemInfo::getWear));
+
+    public final AttrCache<Tex> armor = new AttrCache<Tex>(this::info, AttrCache.cache(info -> {
+	Pair<Integer, Integer> armor = ItemInfo.getArmor(info);
+	if(armor == null) return (null);
+	return Text.renderstroked(String.format("%d/%d", armor.a, armor.b), ARMOR_COLOR, Color.BLACK).tex();
+    })) {
+	@Override
+	public Tex get() {
+	    return Config.showwearbars ? super.get() : null;
+	}
+    };
+
 
 	private GSprite lspr = null;
 
@@ -230,11 +298,16 @@ public class WItem extends Widget implements DTarget {
 			g.defstate();
 			if (olcol.get() != null)
 				g.usestate(new ColorMask(olcol.get()));
+			if (item.matches) {
+				g.chcolor(MATCH_COLOR);
+				g.rect(Coord.z, sz);
+				g.chcolor();
+			}
 			drawmain(g, spr);
 			g.defstate();
 			GItem.InfoOverlay<?>[] ols = itemols.get();
-			if(ols != null) {
-				for(GItem.InfoOverlay<?> ol : ols)
+			if (ols != null) {
+				for (GItem.InfoOverlay<?> ol : ols)
 					ol.draw(g);
 			}
 			Double meter = item.meter > 0 ? Double.valueOf(item.meter / 100.0) : itemmeter.get();
@@ -281,11 +354,11 @@ public class WItem extends Widget implements DTarget {
 					}
 				} catch (Exception e) { // fail silently if info is not ready
 				}
+			} else {
+				g.image(missing.layer(Resource.imgc).tex(), Coord.z, sz);
 			}
-		} else {
-			g.image(missing.layer(Resource.imgc).tex(), Coord.z, sz);
 		}
-	}
+    }
 
 	private void drawamountbar(GOut g, double content, boolean isseeds) {
 		double capacity;
@@ -358,6 +431,9 @@ public class WItem extends Widget implements DTarget {
 		item.wdgmsg("itemact", ui.modflags());
 		return (true);
 	}
+	public boolean drop(WItem target, Coord cc, Coord ul) {
+		return(false);
+	}
 
 	@Override
 	public void reqdestroy() {
@@ -368,6 +444,12 @@ public class WItem extends Widget implements DTarget {
 
 	public void registerDestroyCallback(WItemDestroyCallback cb) {
 		this.destroycb = cb;
+	}
+	public boolean iteminteract(WItem target, Coord cc, Coord ul) {
+		if(!GildingWnd.processGilding(ui,this, target)) {
+			item.wdgmsg("itemact", ui.modflags());
+		}
+		return(true);
 	}
 
 	public Coord size() {

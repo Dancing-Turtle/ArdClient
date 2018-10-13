@@ -176,7 +176,7 @@ public class MenuGrid extends Widget {
         }
     };
 
-    public static class Pagina {
+    public static class Pagina implements ItemInfo.Owner{
         public final MenuGrid scm;
         public final Indir<Resource> res;
         public State st;
@@ -233,7 +233,12 @@ public class MenuGrid extends Widget {
         public void button(PagButton btn) {
             button = btn;
         }
-
+        private List<ItemInfo> info = null;
+        public List<ItemInfo> info() {
+            if(info == null)
+                info = ItemInfo.buildinfo(this, rawinfo);
+            return(info);
+        }
         private static final OwnerContext.ClassResolver<Pagina> ctxr = new OwnerContext.ClassResolver<Pagina>()
                 .add(Glob.class, p -> p.scm.ui.sess.glob)
                 .add(Session.class, p -> p.scm.ui.sess)
@@ -742,6 +747,7 @@ public class MenuGrid extends Widget {
         	gui.add(w, new Coord(gui.sz.x/2 - w.sz.x/2, gui.sz.y/2 - w.sz.y/2 - 200));
             synchronized (GobSelectCallback.class) {
                 gameui().map.registerAreaSelect(f);
+                gui.map.registerGobSelect(f);
             }
 
         } else if(ad[1].equals("troughfill")) {

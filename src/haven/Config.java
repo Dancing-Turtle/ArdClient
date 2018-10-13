@@ -149,6 +149,7 @@ public class Config {
     public static boolean dropsmelterstones = Utils.getprefb("dropsmelterstones", true);
     public static boolean showdframestatus = Utils.getprefb("showdframestatus", true);
     public static boolean showcoopstatus = Utils.getprefb("showcoopstatus", true);
+    public static boolean showhutchstatus = Utils.getprefb("showhutchstatus", true);
     public static boolean showrackstatus = Utils.getprefb("showrackstatus", true);
     public static boolean showcupboardstatus = Utils.getprefb("showcupboardstatus", true);
     public static boolean enableorthofullzoom = Utils.getprefb("enableorthofullzoom", false);
@@ -164,6 +165,7 @@ public class Config {
     public static int combatkeys =  Utils.getprefi("combatkeys", 0);
     public static boolean logcombatactions =  Utils.getprefb("logcombatactions", false);
     public static boolean autopickmussels =  Utils.getprefb("autopickmussels", false);
+    public static boolean autopickclay =  Utils.getprefb("autopickclay", false);
     //public static boolean studydeskalerts =  Utils.getprefb("studydeskalerts", false);
     public static boolean confirmmagic =  Utils.getprefb("confirmmagic", true);
     public static boolean altfightui =  Utils.getprefb("altfightui", false);
@@ -179,14 +181,11 @@ public class Config {
     public static String AlertChannel =  Utils.getpref("AlertChannel", "Null");
     public static String discordchannel =  Utils.getpref("discordchannel", "Null");
     public static boolean discordchat =  Utils.getprefb("discordchat", false);
-    public static String questdropstring =  Utils.getpref("questdropstring", "Null");
-  //  public static String discordchannel =  Utils.getpref("discordchannel", "Null");
     public static String discordbotkey =  Utils.getpref("discordbotkey", "Null");
     public static boolean highlightpots = Utils.getprefb("highlightpots", false);
     public static boolean bonsai = Utils.getprefb("bonsai", false);
     public static int fontsizechat = Utils.getprefi("fontsizechat", 14);
     public static boolean fontaa = Utils.getprefb("fontaa", false);
-    public static boolean autoquestdrop = Utils.getprefb("autoquestdrop", false);
     public static boolean usefont = Utils.getprefb("usefont", false);
     public static String font = Utils.getpref("font", "SansSerif");
     public static int fontadd = Utils.getprefi("fontadd", 0);

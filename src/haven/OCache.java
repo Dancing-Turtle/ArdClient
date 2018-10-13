@@ -119,7 +119,7 @@ public class OCache implements Iterable<Gob> {
                 copy.add(g);
             for (Gob g : copy) {
                 g.ctick(dt);
-                if (Config.showdmgop) {
+               /* if (Config.showdmgop) {
                     Gob.Overlay dmgol = g.findol(DamageSprite.ID);
                     if (dmgol != null)
                         g.ols.remove(dmgol);
@@ -134,7 +134,7 @@ public class OCache implements Iterable<Gob> {
                             }
                         }
                     }
-                }
+                }*/
             }
         }
     }

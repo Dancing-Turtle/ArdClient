@@ -221,6 +221,7 @@ public class PepperBot extends Window implements AreaSelectCallback, GobSelectCa
 	}
 	}
 
+
 	private void registerGobSelect() {
 		synchronized (GobSelectCallback.class) {
 			BotUtils.gui.map.registerGobSelect(this);
@@ -247,12 +248,11 @@ public class PepperBot extends Window implements AreaSelectCallback, GobSelectCa
 	public void run() {
 	BotUtils.sysMsg("Started", Color.white);
 	GameUI gui = gameui();
-	if(gui.getwnd("Crafting")!=null)
-		gui.getwnd("Crafting").close();
+	Window w = gui.getwnd("Trough");
+	VMeter vm = w.getchild(VMeter.class);
+	BotUtils.sysMsg("Meter : "+vm.amount,Color.white);
 
-	gui.wdgmsg("act", "craft", "boiledpepper");
-	BotUtils.sleep(2000);
-	ui.makewnd.wdgmsg("make",1);
+
 	//List<WItem> idk = BotUtils.getInventoryContents(BotUtils.playerInventory());
 	//for (WItem idkok : idk)
 	//	System.out.println("res : " + idkok.item.resource().name);

@@ -78,6 +78,7 @@ public class KeyBinder {
 	add(KeyEvent.VK_D, CTRL, TOGGLE_DANGER_RADIUS);
 	add(KeyEvent.VK_D,SHIFT,TOGGLE_SAFE_RADIUS);
 	//add(KeyEvent.VK_G, CTRL, TOGGLE_TILE_GRID);
+	add(KeyEvent.VK_F,ALT,FILTER);
 	add(KeyEvent.VK_S,SHIFT,LOCAL_SCREENSHOT);
 	add(KeyEvent.VK_X, CTRL, TOGGLE_TILE_CENTERING);
 	add(KeyEvent.VK_S, CTRL, TAKE_SCREENSHOT);
@@ -102,6 +103,8 @@ public class KeyBinder {
 	add(KeyEvent.VK_BACK_QUOTE,NONE,DRINK);
 	add(KeyEvent.VK_C,SHIFT,TOGGLE_CAMERA);
 	add(KeyEvent.VK_A,CTRL,TOGGLE_MAP);
+	add(KeyEvent.VK_L,CTRL,LOGOUT);
+	add(KeyEvent.VK_K,CTRL,LOGOUTSELECT);
 	//add(KeyEvent.VK_TAB,NONE,TARGET_CLOSEST);
     }
     

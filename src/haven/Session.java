@@ -34,11 +34,7 @@ import java.net.DatagramSocket;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class Session implements Resource.Resolver {
     public static final int PVER = 17;
@@ -57,8 +53,13 @@ public class Session implements Resource.Resolver {
     public static final int SESSERR_CONN = 3;
     public static final int SESSERR_PVER = 4;
     public static final int SESSERR_EXPR = 5;
-
+    public final CharacterInfo character;
     static final int ackthresh = 30;
+
+    private static final String[] LOCAL_CACHED = new String[]{
+            "gfx/hud/chr/custom/ahard",
+            "gfx/hud/chr/custom/asoft"
+    };
 
     DatagramSocket sk;
     SocketAddress server;
@@ -78,6 +79,7 @@ public class Session implements Resource.Resolver {
     final Map<Integer, CachedRes> rescache = new TreeMap<Integer, CachedRes>();
     public final Glob glob;
     public byte[] sesskey;
+    private int localCacheId = -1;
 
     @SuppressWarnings("serial")
     public static class MessageException extends RuntimeException {
@@ -122,7 +124,7 @@ public class Session implements Resource.Resolver {
         }
 
         private class Ref implements Indir<Resource> {
-            private Resource res;
+            public Resource res;
 
             public Resource get() {
                 if (resnm == null)
@@ -145,6 +147,12 @@ public class Session implements Resource.Resolver {
             }
         }
 
+	private class SRef extends Ref {
+	    public SRef(Resource res) {
+		this.res = res;
+	    }
+	}
+
         private Ref get() {
             Ref ind = (this.ind == null) ? null : (this.ind.get());
             if (ind == null)
@@ -161,6 +169,15 @@ public class Session implements Resource.Resolver {
                 notifyAll();
             }
         }
+
+	public void set(Resource res){
+	    synchronized(this) {
+		this.resnm = res.name;
+		this.resver = res.ver;
+		ind = new WeakReference<Ref>(new SRef(res));
+		notifyAll();
+	    }
+	}
     }
 
     private CachedRes cachedres(int id) {
@@ -173,9 +190,37 @@ public class Session implements Resource.Resolver {
             return (ret);
         }
     }
+    private int cacheres(String resname){
+        return cacheres(Resource.local().loadwait(resname));
+    }
+
+    private int cacheres(Resource res){
+        cachedres(--localCacheId).set(res);
+        return localCacheId;
+    }
 
     public Indir<Resource> getres(int id) {
         return (cachedres(id).get());
+    }
+    public int getresid(Resource res) {
+        synchronized (rescache) {
+            for (Map.Entry<Integer, CachedRes> entry : rescache.entrySet()) {
+                try {
+                    if(entry.getValue().get().get() == res) {
+                        return entry.getKey();
+                    }
+                } catch (Loading ignored) {}
+            }
+        }
+        return -1;
+    }
+
+    public int getresidf(Resource res) {
+        int id = getresid(res);
+        if(id == -1) {
+            id = cacheres(res);
+        }
+        return id;
     }
 
     private class ObjAck {
@@ -467,7 +512,7 @@ public class Session implements Resource.Resolver {
                             }
                             PMessage msg = new PMessage(MSG_SESS);
                             msg.adduint16(2);
-                            msg.addstring("Hafen/Purus-Pasta");
+                            msg.addstring("Hafen/ArdClient");
                             msg.adduint16(PVER);
                             msg.addstring(username);
                             msg.adduint16(cookie.length);
@@ -609,6 +654,7 @@ public class Session implements Resource.Resolver {
         this.cookie = cookie;
         this.args = args;
         glob = new Glob(this);
+        character = new CharacterInfo();
         try {
             sk = new DatagramSocket();
         } catch (SocketException e) {
@@ -620,6 +666,8 @@ public class Session implements Resource.Resolver {
         sworker.start();
         ticker = new Ticker();
         ticker.start();
+
+        Arrays.stream(LOCAL_CACHED).forEach(this::cacheres);
     }
 
     private void sendack(int seq) {

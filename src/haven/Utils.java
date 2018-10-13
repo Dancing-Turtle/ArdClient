@@ -1711,6 +1711,11 @@ public class Utils {
         }
         return null;
     }
+
+    public static double round(double a, int order){
+        double o = Math.pow(10, order);
+        return Math.round(o * a) / o;
+    }
     
     public static String timeLeft(long at) {
 		long t = at - System.currentTimeMillis();

@@ -101,6 +101,13 @@ public class ShieldChecker extends Window {
               }
         }
         }
+    @Override
+    public void wdgmsg(Widget sender, String msg, Object... args) {
+        if (sender == cbtn)
+            reqdestroy();
+        else
+            super.wdgmsg(sender, msg, args);
+    }
 
     }
 

@@ -92,6 +92,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     public MinerAlert mineralert;
     public CraftAllBot craftbot;
     private Thread musselPicker;
+    private Thread clayPicker;
     private final PartyHighlight partyHighlight;
     public static final Set<Long> markedGobs = new HashSet<>();
     public static final Material.Colors markedFx = new Material.Colors(new Color(21, 127, 208, 255));
@@ -1519,12 +1520,12 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     public void tick(double dt) {
         camload = null;
         try {
-            camera.tick(dt);
             if ((shake = shake * Math.pow(100, -dt)) < 0.01)
                 shake = 0;
             camoff.x = (float) ((Math.random() - 0.5) * shake);
             camoff.y = (float) ((Math.random() - 0.5) * shake);
             camoff.z = (float) ((Math.random() - 0.5) * shake);
+            camera.tick(dt);
         } catch (Loading e) {
             camload = e;
         }
@@ -1949,6 +1950,8 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                     wdgmsg("click", args);
                     if (Config.autopickmussels && gob.type == Gob.Type.MUSSEL)
                         startMusselsPicker(gob);
+                        if(Config.autopickclay && gob.type == Gob.Type.CLAY)
+                        startClayPicker(gob);
                 }
             }
         }
@@ -2582,5 +2585,9 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     public void startMusselsPicker(Gob gob) {
         musselPicker = new Thread(new MusselPicker(gameui(), gob), "MusselPicker");
         musselPicker.start();
+    }
+    public void startClayPicker(Gob gob) {
+        clayPicker = new Thread(new ClayPicker(gameui(), gob), "ClayPicker");
+        clayPicker.start();
     }
 }

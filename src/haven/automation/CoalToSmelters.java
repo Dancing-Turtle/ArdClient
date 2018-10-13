@@ -174,6 +174,7 @@ public class CoalToSmelters extends Window implements GobSelectCallback {
                 terminate();
                 runbtn3.show();
                 clearbtn.show();
+                orefill.show();
                 fuelbtn.show();
                 areaSelBtn.show();
                 lightallbtn.show();
@@ -457,6 +458,7 @@ if(Config.dropsmelterstones) {
                         activelist.addAll(list);
                     while (!terminaterun) {
                         BotUtils.sysLogAppend("Filling : " + activelist.size() + " Smelters/Ovens.", "white");
+                        int remaining = activelist.size();
                         for (Gob gob : activelist) {
 
                             int availableFuelCoal = gui.maininv.getItemPartialCount("Coal");
@@ -464,10 +466,10 @@ if(Config.dropsmelterstones) {
 
                             if(availableFuelCoal < 24 && availableFuelBranch < 24 && count != 1)
                                 getfuel();
-                            else if (availableFuelCoal < 24 && availableFuelBranch < 24)
+                            else if (availableFuelCoal < remaining && availableFuelBranch < remaining)
                                 getHQfuel();
 
-
+                            remaining --;
                             count = countretain;
                             WItem coalw = gui.maininv.getItemPartial("Coal");
                             WItem coalw2 = gui.maininv.getItemPartial("Branch");
@@ -735,8 +737,14 @@ private class selectingarea implements Runnable {
         try {
             selectedAreaA = PBotAPI.getSelectedAreaA();
             selectedAreaB = PBotAPI.getSelectedAreaB();
-            list.addAll(Smelters());
-            stockpiles.addAll(Stockpiles());
+            for(Gob gob : Smelters())
+                if(!list.contains(gob))
+                    list.add(gob);
+          //  list.addAll(Smelters());
+            for(Gob gob : Stockpiles())
+                if(!stockpiles.contains(gob))
+                    stockpiles.add(gob);
+           // stockpiles.addAll(Stockpiles());
             selectedAreaA = null;
             selectedAreaA = null;
 

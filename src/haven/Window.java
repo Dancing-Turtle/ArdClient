@@ -28,14 +28,18 @@ package haven;
 
 import static haven.PUtils.blurmask2;
 import static haven.PUtils.rasterimg;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
-import java.awt.Color;
+import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map.Entry;
+import java.util.*;
 import java.util.List;
+import java.util.Map.Entry;
+import java.awt.Color;
+import java.awt.Font;
+
 
 import haven.glsl.Array;
 import haven.purus.BotUtils;
@@ -65,9 +69,9 @@ public class Window extends Widget implements DTarget {
     public boolean justclose = false;
     public static final Coord dlmrgn = new Coord(23, 14), dsmrgn = new Coord(9, 9);
     public static final BufferedImage ctex = Resource.loadimg("gfx/hud/fonttex");
-    public static final Text.Furnace cf = new Text.Imager(new PUtils.TexFurn(new Text.Foundry(Text.sans, Text.cfg.wndCap).aa(true), ctex)) {
+    public static final Text.Furnace cf = new Text.Imager(new PUtils.TexFurn(new Text.Foundry(Text.serif.deriveFont(Font.BOLD, 16)).aa(true), ctex)) {
         protected BufferedImage proc(Text text) {
-            return (rasterimg(blurmask2(text.img.getRaster(), 1, 1, Color.BLACK)));
+            return(rasterimg(blurmask2(text.img.getRaster(), 1, 1, Color.BLACK)));
         }
     };
     public static final IBox wbox = new IBox("gfx/hud/wnd", "tl", "tr", "bl", "br", "extvl", "extvr", "extht", "exthb") {
@@ -102,6 +106,7 @@ public class Window extends Widget implements DTarget {
     public int cmw;
     private UI.Grab dm = null;
     private Coord doff;
+    private final Collection<Widget> twdgs = new LinkedList<Widget>();
 
     @RName("wnd")
     public static class $_ implements Factory {
@@ -419,18 +424,32 @@ public class Window extends Widget implements DTarget {
 
     public Coord contentsz() {
         Coord max = new Coord(0, 0);
-        for (Widget wdg = child; wdg != null; wdg = wdg.next) {
-            if (wdg == cbtn)
+        for(Widget wdg = child; wdg != null; wdg = wdg.next) {
+            if(wdg == cbtn || twdgs.contains(wdg))
                 continue;
-            if (!wdg.visible)
+            if(!wdg.visible)
                 continue;
             Coord br = wdg.c.add(wdg.sz);
-            if (br.x > max.x)
+            if(br.x > max.x)
                 max.x = br.x;
-            if (br.y > max.y)
+            if(br.y > max.y)
                 max.y = br.y;
         }
-        return (max);
+        return(max);
+    }
+
+    public void addtwdg(Widget wdg) {
+        twdgs.add(wdg);
+        placetwdgs();
+    }
+
+    protected void placetwdgs() {
+        int x = sz.x - 20;
+        for(Widget ch : twdgs) {
+            if(ch.visible){
+                ch.c = xlate(new Coord(x -= ch.sz.x + 5, ctl.y - ch.sz.y/2), false);
+            }
+        }
     }
 
     private void placecbtn() {

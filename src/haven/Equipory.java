@@ -34,6 +34,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import haven.purus.BotUtils;
 import haven.res.ui.tt.Armor;
 
 public class Equipory extends Widget implements DTarget {
@@ -87,6 +88,7 @@ public class Equipory extends Widget implements DTarget {
 
     Map<GItem, WItem[]> wmap = new HashMap<GItem, WItem[]>();
     private final Avaview ava;
+    AttrBonusesWdg bonuses;
     public WItem[] quickslots = new WItem[ecoords.length];
     WItem[] slots = new WItem[ecoords.length];
 
@@ -133,6 +135,8 @@ public class Equipory extends Widget implements DTarget {
             }
         }, new Coord(34, 0));
         ava.color = null;
+        bonuses = add(new AttrBonusesWdg(isz.y), isz.x + 5, 0);
+        pack();
     }
 
     @Override
@@ -164,14 +168,18 @@ public class Equipory extends Widget implements DTarget {
     }
 
     public void addchild(Widget child, Object... args) {
-        if (child instanceof GItem) {
+	if(child instanceof GItem) {
             add(child);
-            GItem g = (GItem) child;
+	    GItem g = (GItem)child;
             WItem[] v = new WItem[args.length];
-            for (int i = 0; i < args.length; i++) {
-                int ep = (Integer) args[i];
-                v[i] = quickslots[ep] = add(new WItem(g), ecoords[ep].add(1, 1));
+	    for(int i = 0; i < args.length; i++) {
+		int ep = (Integer)args[i];
+		v[i] = quickslots[ep] = slots[ep]  = add(new WItem(g), ecoords[ep].add(1, 1));
+		//v[i] = add(new WItem(g), ecoords[ep].add(1, 1));
+	    	//slots[ep] = v[i];
+	    	//quickslots[ep] = v[i];
             }
+	    g.sendttupdate = true;
             wmap.put(g, v);
             if(Config.leechdrop)
             	checkForDrop.add(g);
@@ -183,24 +191,28 @@ public class Equipory extends Widget implements DTarget {
             super.addchild(child, args);
         }
     }
-
+    @Override
+    public void wdgmsg(Widget sender, String msg, Object... args) {
+	if (sender  instanceof GItem && wmap.containsKey(sender) && msg.equals("ttupdate")) {
+	    bonuses.update(slots);
+	} else {
+	    super.wdgmsg(sender, msg, args);
+	}
+    }
     public void cdestroy(Widget w) {
         super.cdestroy(w);
-        if (w instanceof GItem) {
-            GItem i = (GItem) w;
-            for (WItem v : wmap.remove(i)) {
+	if(w instanceof GItem) {
+	    GItem i = (GItem)w;
+	    for(WItem v : wmap.remove(i)) {
                 ui.destroy(v);
-                for (int qsi = 0; qsi < ecoords.length; qsi++) {
-                    if (quickslots[qsi] == v) {
-                        quickslots[qsi] = null;
-                        break;
-                    }
+		for(int s = 0; s < slots.length; s++) {
+		    if(slots[s] == v)
+			slots[s] = null;
+		    if(quickslots[s] == v)
+		        quickslots[s] = null;
                 }
             }
-            if (armorclass != null) {
-                armorclass.dispose();
-                armorclass = null;
-            }
+	    bonuses.update(slots);
         }
     }
 
@@ -213,36 +225,38 @@ public class Equipory extends Widget implements DTarget {
     }
 
     public int epat(Coord c) {
-        for (int i = 0; i < ecoords.length; i++) {
-            if (c.isect(ecoords[i], invsq.sz()))
-                return (i);
+	for(int i = 0; i < ecoords.length; i++) {
+	    if(c.isect(ecoords[i], invsq.sz()))
+		return(i);
         }
-        return (-1);
+	return(-1);
     }
 
     public boolean drop(Coord cc, Coord ul) {
         wdgmsg("drop", epat(cc));
-        return (true);
+	return(true);
     }
 
     public void drawslots(GOut g) {
         int slots = 0;
         GameUI gui = getparent(GameUI.class);
-        if ((gui != null) && (gui.vhand != null)) {
+	if((gui != null) && (gui.vhand != null)) {
             try {
                 SlotInfo si = ItemInfo.find(SlotInfo.class, gui.vhand.item.info());
-                if (si != null)
+		if(si != null)
                     slots = si.slots();
-            } catch (Loading l) {
+	    } catch(Loading l) {
             }
         }
-        for (int i = 0; i < 16; i++) {
-            if ((slots & (1 << i)) != 0) {
+	for(int i = 0; i < 16; i++) {
+	    if((slots & (1 << i)) != 0) {
                 g.chcolor(255, 255, 0, 64);
                 g.frect(ecoords[i].add(1, 1), invsq.sz().sub(2, 2));
                 g.chcolor();
             }
             g.image(invsq, ecoords[i]);
+	    if(ebgs[i] != null)
+		g.image(ebgs[i], ecoords[i]);
         }
     }
 

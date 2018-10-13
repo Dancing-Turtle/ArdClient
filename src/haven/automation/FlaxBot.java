@@ -239,6 +239,10 @@ public class FlaxBot extends Window {
                             BotUtils.sleep(10);
                             retryharvest++;
                             if(retryharvest > 500){
+                                flax = gui.maininv.getItemPartial("Flax");
+                                flax2 = flax.item;
+                                items = gui.maininv.getIdenticalItems((flax2));
+                                sort(items);
                                 for (WItem seeds : items) {
                                     GItem item = seeds.item;
                                     if (BotUtils.getAmount(item) >= 5) {

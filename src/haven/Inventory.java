@@ -36,6 +36,26 @@ public class Inventory extends Widget implements DTarget {
     public static final Coord sqsz = new Coord(33, 33);
     public boolean dropul = true;
     public Coord isz;
+    public static final Comparator<WItem> ITEM_COMPARATOR_ASC = new Comparator<WItem>() {
+	@Override
+	public int compare(WItem o1, WItem o2) {
+	    QualityList ql1 = o1.itemq.get();
+	    double q1 = (ql1 != null && !ql1.isEmpty()) ? ql1.single(QualityList.SingleType.Average).value : 0;
+
+	    QualityList ql2 = o2.itemq.get();
+	    double q2 = (ql2 != null && !ql2.isEmpty()) ? ql2.single(QualityList.SingleType.Average).value : 0;
+
+	    return Double.compare(q1, q2);
+	}
+    };
+    public static final Comparator<WItem> ITEM_COMPARATOR_DESC = new Comparator<WItem>() {
+	@Override
+	public int compare(WItem o1, WItem o2) {
+	    return ITEM_COMPARATOR_ASC.compare(o2, o1);
+	}
+    };
+
+    public boolean locked = false;
     Map<GItem, WItem> wmap = new HashMap<GItem, WItem>();
     @RName("inv")
     public static class $_ implements Factory {
@@ -70,6 +90,11 @@ public class Inventory extends Widget implements DTarget {
             }
         }
         return (true);
+    }
+
+    @Override
+    public boolean mousedown(Coord c, int button) {
+	return !locked && super.mousedown(c, button);
     }
 
     public void addchild(Widget child, Object... args) {

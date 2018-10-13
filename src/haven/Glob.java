@@ -81,14 +81,17 @@ public class Glob {
     }
 
     public static class CAttr extends Observable {
+        public static final Text.Foundry fnd = new Text.Foundry(Text.sans, 12);
         String nm;
         int base, comp;
+        private Text.Line compLine = null;
         public Tex comptex;
 
         public CAttr(String nm, int base, int comp) {
             this.nm = nm.intern();
             this.base = base;
             this.comp = comp;
+            compLine = null;
             this.comptex = Text.renderstroked(comp + "", Color.WHITE, Color.BLACK, Text.num12boldFnd).tex();
         }
 
@@ -97,9 +100,22 @@ public class Glob {
                 return;
             this.base = base;
             this.comp = comp;
+            compLine = null;
             setChanged();
             notifyObservers(null);
             this.comptex = Text.renderstroked(comp + "", Color.WHITE, Color.BLACK, Text.num12boldFnd).tex();
+        }
+        public Text.Line compline() {
+            if(compLine == null) {
+                Color c = Color.WHITE;
+                if(comp > base) {
+                    c = CharWnd.buff;
+                } else if(comp < base) {
+                    c = CharWnd.debuff;
+                }
+                compLine = Text.renderstroked(Integer.toString(comp), c, Color.BLACK, fnd);
+            }
+            return compLine;
         }
     }
 

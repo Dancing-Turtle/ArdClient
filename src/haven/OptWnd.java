@@ -51,6 +51,7 @@ import java.util.stream.Collectors;
 public class OptWnd extends Window {
     public static final int VERTICAL_MARGIN = 10;
     public static final int HORIZONTAL_MARGIN = 5;
+    private static final Text.Foundry fonttest = new Text.Foundry(Text.sans, 10).aa(true);
     public static final int VERTICAL_AUDIO_MARGIN = 5;
     public final Panel main, video, audio, display, map, general, combat, control, uis, quality, flowermenus, soundalarms, hidesettings, studydesksettings, keybindsettings, chatsettings;
     public Panel current;
@@ -405,6 +406,7 @@ public class OptWnd extends Window {
             main.add(new Button(200, "Switch character") {
                 public void click() {
                     GameUI gui = gameui();
+                    if(Discord.jdalogin != null)
                     gui.DiscordToggle();
                     gui.act("lo", "cs");
                     if (gui != null & gui.map != null)
@@ -414,6 +416,7 @@ public class OptWnd extends Window {
             main.add(new Button(200, "Log out") {
                 public void click() {
                     GameUI gui = gameui();
+                    if(Discord.jdalogin !=null)
                     gui.DiscordToggle();
                     gui.act("lo");
                     if (gui != null & gui.map != null)
@@ -762,6 +765,17 @@ public class OptWnd extends Window {
             public void set(boolean val) {
                 Utils.setprefb("showcoopstatus", val);
                 Config.showcoopstatus = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Highlight rabbit hutches based on food/water needs.") {
+            {
+                a = Config.showhutchstatus;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showhutchstatus", val);
+                Config.showhutchstatus = val;
                 a = val;
             }
         });
@@ -1545,8 +1559,9 @@ public class OptWnd extends Window {
                 Config.usefont = val;
                 a = val;
             }
-        }, makeFontsDropdown());
-
+        },
+                makeFontsDropdown());
+                final Label fonttest = new Label("Font Example");
         final Label fontAdd = new Label("");
         appender.addRow(
                 new Label("Increase font size by (req. restart):"),
@@ -1565,34 +1580,6 @@ public class OptWnd extends Window {
                 },
                 fontAdd
         );
-        appender.add(new CheckBox("Enable commune auto quest drop.") {
-            {
-                a = Config.autoquestdrop;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("autoquestdrop", val);
-                Config.autoquestdrop = val;
-                a = val;
-            }
-        });
-        appender.addRow(new Label("Drop all Commune quests not from this quest giver. Requires client restart if changed."),
-                new TextEntry(85, Config.questdropstring) {
-                    @Override
-                    public boolean type(char c, KeyEvent ev) {
-                        if (!parent.visible)
-                            return false;
-
-                        boolean ret = buf.key(ev);
-                        if (text.length() > 0) {
-                            Utils.setpref("questdropstring", text);
-                        }
-
-                        return ret;
-                    }
-                }
-        );
-
 
 
         Button resetWndBtn = new Button(220, "Reset Windows (req. logout)") {
@@ -1689,6 +1676,17 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
+        appender.add(new CheckBox("Automatically pick all clustered gray clay (auto 'Pick' needs to be enabled)") {
+            {
+                a = Config.autopickclay;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("autopickclay", val);
+                Config.autopickclay = val;
+                a = val;
+            }
+        });
         appender.add(new Label("Automatic selecton:"));
 
         CheckListbox flowerlist = new CheckListbox(140, 17) {
@@ -1702,7 +1700,7 @@ public class OptWnd extends Window {
         Utils.loadprefchklist("flowersel", Config.flowermenus);
         for (CheckListboxItem itm : Config.flowermenus.values())
             flowerlist.items.add(itm);
-        flowermenus.add(flowerlist, new Coord(0, 50));
+        flowermenus.add(flowerlist, new Coord(0, 70));
 
         flowermenus.add(new PButton(200, "Back", 27, main), new Coord(210, 360));
         flowermenus.pack();
@@ -1847,7 +1845,7 @@ public class OptWnd extends Window {
             }
 
             public void set(boolean val) {
-                Utils.setprefb("realmchatalertss", val);
+                Utils.setprefb("realmchatalerts", val);
                 Config.realmchatalerts = val;
                 a = val;
             }

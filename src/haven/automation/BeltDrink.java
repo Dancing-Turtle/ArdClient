@@ -71,10 +71,6 @@ public class BeltDrink implements Runnable {
                 if (drinkItem != null) {
                     FlowerMenu.setNextSelection("Drink");
                     drinkItem.wdgmsg("iact", new Coord(drinkItem.sz.x / 2, drinkItem.sz.y / 2), 3);
-                    BotUtils.sleep(250);
-                    while (gui.prog >= 0) {
-                        BotUtils.sleep(100);
-                    }
                     FlowerMenu menu = gui.ui.root.findchild(FlowerMenu.class);
                     if (menu != null) {
                         for (FlowerMenu.Petal opt : menu.opts) {
@@ -83,11 +79,25 @@ public class BeltDrink implements Runnable {
                             }
                         }
                     }
+                    BotUtils.sleep(1000);
+                    while (gui.prog >= 0)
+                        BotUtils.sleep(100);
                     return;
                 }
             }
              if (drinks.size() == 0) {
-                 BotUtils.sysMsg("No water found! Belt Closed?", Color.WHITE);
+                try {
+                    BotUtils.sysMsg("No water found, opening belts! Please try again.", Color.WHITE);
+                    gui.maininv.getItemsPartial("Belt");
+                    for (WItem w : gui.maininv.getItemsPartial("Belt"))
+                        w.item.wdgmsg("iact", Coord.z, -1);
+                    Equipory e = gui.equipory;
+                    for (WItem g : e.quickslots) {
+                        if (g.name.get().contains("Belt")) {
+                            g.item.wdgmsg("iact", Coord.z, -1);
+                        }
+                    }
+                }catch(NullPointerException q){}
                  //gui.error("No water found!");
                  // }
              }

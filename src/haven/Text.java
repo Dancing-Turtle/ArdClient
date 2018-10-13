@@ -36,6 +36,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.text.Format;
 
 public class Text {
     // Following block of fonts and foundries should not be removed even if unused,
@@ -255,7 +256,7 @@ public class Text {
             return (m.getAscent() + m.getDescent());
         }
 
-        private Coord strsize(String text) {
+        public Coord strsize(String text) {
             return (new Coord(m.stringWidth(text), height()));
         }
 
