@@ -1,3 +1,140 @@
+1.00.52
+Added all types of milk to Beltdrink. Will not stop drinking on it's own, if you're drinking something other than water you'll need to stop it by moving or something.
+Added the ability to select multiple containers to Farmer so that in theory, it should switch to a backup barrel/trough if the first one is full. Seed crops only. Alt click to select, removed the select button.
+Added overlays to rabbit hutches to show food/water needs.
+Fixed the buddy window group selector not updating to show your new selection.
+Merged latest changes so that recipes that can be made with spices show the optional spice ingredient. 
+Changed the logic for adding ovens/smelters so you can add multiple locations easier. 
+Added ender's equipment bonus GUI element. 
+Added ender's Fight menu GUI element, under character sheet.
+Added ender's filter function, alt F is default. Has a help button that explains how it works.
+Adding hotkeys for logout and logout to char select.
+Drink macro should now only throw one error if no drinks are found, and attempt to open all belts in your posession so that the second press starts drinking.
+Added a menu option to autopick clusters of gray clay.
+Removed auto quest drop since it was clunky, right clicking to abandon a quest still works. 
+Fixed fruit trees/bushes not showing their contents. 
+~
+
+1.00.51
+Fixed the unstuck timer on the ore filler accidentally being 20x higher than it was supposed to be.
+Added "Break" to autoselect options.
+Improvements to stockpile bot, pathfinds to stockpiles and uses the built in shift + right click to pick stuff up faster. Let me know how it goes.
+Fixed drinking with farmer bot.
+Removed flat cupboard res, optional install now.
+
+~
+1.00.50
+Fixed drinking from belt not working if you use the alternative belt window. Works now.
+Moved where the keybinds are triggered from so that it won't interfere with any textboxes now, removed all logic that blocked keybinds such as when options window was open.
+Removed toggle grid from the keybind list and hard bound it to Ctrl G because of some witchcraft that causes an error sound when using it.
+~
+
+1.00.49
+Added option under "UI Settings" to disable all menugrid hotkeys. (C to craft and such)
+Fixed keybind conflicts where for example, Shift C wouldn't work because C was also keybound. 
+Moved chat specific settings to a new tab "Chat Settings" under options.
+Added keybind for toggle trough/beehive radius.
+Added optional realm chat audible alert for public realm chat, under chat settings.
+Fixed issue with coal bot that would accidentally clear your fuel or smelter list.
+Fixed keybinds still working while buddy window search was focused.
+Added a village shield checker bot. Reports out to the Discord channel you set in chat settings.
+Added an option under display settings to highlight chicken coops based on if they need food/water. Please give me feedback on the color choices for the 3 possible stages.
+~
+
+1.00.48
+Fixed dumb crash when typing before actually getting ingame.
+~
+
+1.00.47
+Fixed Discord village chat
+Added character Unstucking to Steel Bot.
+~
+
+1.00.46
+Added ability to use an alt to relay ingame village chat messages to Discord. Requires Chat Alerts to be filled out with your village name.
+Added 1 second delay timer to the "FEP gain" sound to prevent eardrum explosion when using eat all button.
+Implemented Ender's craft window with built in history.
+Implemented Ender's keybinding system. SETUP UR BINDZ
+Massive overhaul to the Oven/Smelter bot. Icon is now an oven. 
+Fixed alerts on public realm chat once and for all.
+~
+
+1.00.45
+Maybe fixed farmer crash when using replant option (non seed crops)
+~
+
+1.00.44
+Trough Filler maybe fixed
+Stockpile Bot improved, maybe not totally fixed.
+~
+
+1.00.43
+Added "Visit" quest autodropper for people who spam communes for one tree. Don't turn this on if you don't know what I'm talking about.
+Improvements? Maybe? To PepperBot. 
+Improvements to PepperGrindBot
+Broke out Cat Gold/Seashells/Strange crystals so you can drop/keep any combination of them.
+Steel bot added, runs every 30 minutes to refill. If used in conjunction with Discord, it will send an alert to any channel with "steel" in the name.
+~
+
+1.00.42
+Improvements to Pepperbot.
+Added peppergrinder bot, needs the same layout as pepperbot. I don't care if you built your setup wrong. 
+Improved seed crop farmer to always replant the highest quality in your inventory. Let me know if this causes issues, works best with replant+container.
+~
+
+1.00.41
+Merged Loftar's changes in preperation for next week's patch which will make wounds even more annoying than they already are.
+Added Discord shutdown to switch character and logout buttons so that threads do not persist and multiply when switching chars.  
+~
+
+1.00.40
+Fixed a Discord crash when switching characters with the "switch character" button. 
+Added "Cargo" to the quick selection options.
+Added layout buttons to pepper bot to accomodate different directions to build the setup.
+
+~
+
+
+1.00.39
+Connecting to Discord ingame will now load the last 10 messages of every channel that the bot can see, IE the channels that it is creating ingame windows for. 
+Messages with embedded pictures or attachments will now properly link a URL ingame so it can be clicked. 
+Ingame Discord chat will no longer show the name of your Haven bot as well the character name that sent the chat as long as you have "Haven" in your bot name. 
+Reworked logic of Discord script, running the script will now connect you if not connected, and disconnect you if you are and delete all chat windows. 
+
+~
+
+1.00.38
+Added truffle snout to the livestock manager window for pigs.
+Fixed long Discord messages not going to next line when hitting the end of your chat window and instead extending on forever.
+Discord Channel list now sorts aphabetically before loading them in, since it seems not to have any sort of logic to how it finds the channels in the first place.
+~
+
+1.00.37
+Maybe fixed a discord crash.
+~
+
+1.00.36
+Changed it from a manual message append to just show you the feedback from the Discord Bot that actually sent the message, as a verification that the message went through. Also so that if you utilize other discord bots you will see those messages as well, they were previously hidden. Also enables chats between multiple people in-game via discord.
+~
+
+1.00.35
+Discord bot will no longer load channels that it doesn't have access to read, should make it a lot easier to keep the list small.
+~
+
+1.00.34
+Massive update to Discord functionality. Upon connecting to your discord server, the client will now read in all text-channels and create an in-game channel for each one.
+Messages sent to/from those channels will all be routed through the corresponding in-game channel.
+Additionally, added a toggleable option for discord audible chat alerts.
+~
+
+1.00.33
+Re-enabled public realm chat notifications after fixing a bug that was basically caused by ghosts.
+~
+
+1.00.32
+Fixed crash
+~
+
 1.00.31
 Fixed area chat not triggering the alert sound and notification highlighting. 
 Added blue highlighting to alert for messages in public realm chat. 
