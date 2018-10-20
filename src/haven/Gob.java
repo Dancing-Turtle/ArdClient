@@ -80,7 +80,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
     public enum Type {
         OTHER(0), DFRAME(1), TREE(2), BUSH(3), BOULDER(4), PLAYER(5), SIEGE_MACHINE(6), MAMMOTH(7), BAT(8), OLDTRUNK(9), GARDENPOT(10), MUSSEL(11), LOC_RESOURCE(12), CLAY(14),
         FU_YE_CURIO(13), EAGLE(15), TANTUB(20),CUPBOARD(19),COOP(21),HUTCH(22),
-        PLANT(16), MULTISTAGE_PLANT(17), CHEESERACK(18), SLIME(40), PROXAGGRO(41), LIVESTOCK(42),
+        PLANT(16), MULTISTAGE_PLANT(17), CHEESERACK(18), SLIME(40), LIVESTOCK(42),
         MOB(32), BEAR(34), LYNX(35), SEAL(37), TROLL(38), WALRUS(39),
         WOODEN_SUPPORT(64), STONE_SUPPORT(65), METAL_SUPPORT(66), TROUGH(67), BEEHIVE(68), WAGON(600), WALL(602), DREAMCATCHER(603), HOUSE(604);
 
@@ -493,7 +493,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             type = Type.TROLL;
         else if (name.endsWith("/bat"))
             type = Type.BAT;
-        else if (name.endsWith("/boar") || name.endsWith("/badger") || name.endsWith("/wolverine") || name.endsWith("/adder"))
+        else if (name.endsWith("/boar") || name.endsWith("/badger") || name.endsWith("/wolverine") || name.endsWith("/adder") || name.endsWith("/bat"))
             type = Type.MOB;
         else if (name.endsWith("/minesupport") || name.endsWith("/ladder"))
             type = Type.WOODEN_SUPPORT;
@@ -535,8 +535,6 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             type = Type.FU_YE_CURIO;
         else if (Config.locres.contains(name))
             type = Type.LOC_RESOURCE;
-        else if(name.startsWith("gfx/kritter/"))
-            type = Type.PROXAGGRO;
         else
             type = Type.OTHER;
     }
@@ -670,51 +668,54 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
         if (d != null) {
 
         	// Replace hide stuff with Purus Pasta hide
-        	if(Config.hidegobs) {
-        		if(Config.hideTrees && type == Type.TREE) {
-        			GobHitbox.BBox bbox = GobHitbox.getBBox(this, true);
-        			if(bbox != null && Config.showoverlay) {
-        				rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, true)), null);
-        			}
-        		} else if(Config.hideCrops && (type == Type.PLANT || type == Type.MULTISTAGE_PLANT)) {
-        			// Crops don't have bounding boxes
-                    if(Config.showoverlay) {
-                        rl.add(new Overlay(new GobHitbox(this, new Coord(-5, -5), new Coord(5, 5), true)), null);
-                    }
-        		} else if(Config.hideWalls && type == Type.WALL) {
-        			GobHitbox.BBox bbox = GobHitbox.getBBox(this, true);
-        			if(bbox != null && Config.showoverlay) {
-        				rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, true)), null);
-        			}
-                } else if(Config.hideanimals && type == Type.PROXAGGRO) {
-                    GobHitbox.BBox bbox = GobHitbox.getBBox(this, true);
-                    if(bbox != null && Config.showoverlay) {
-                        rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, true)), null);
-                    }
-        		} else if(Config.hideBushes && type == Type.BUSH) {
-        			GobHitbox.BBox bbox = GobHitbox.getBBox(this, true);
-        			if(bbox != null && Config.showoverlay) {
-        				rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, true)), null);
-        			}
-        		} else if(Config.hideDFrames && type == Type.DFRAME) {
-        			GobHitbox.BBox bbox = GobHitbox.getBBox(this, true);
-        			if(bbox != null && Config.showoverlay) {
-        				rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, true)), null);
-        			}
-        		} else if(Config.hideWagons && type == Type.WAGON) {
-        			GobHitbox.BBox bbox = GobHitbox.getBBox(this, true);
-        			if(bbox != null && Config.showoverlay) {
-        				rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, true)), null);
-        			}
-        		} else if(Config.hideHouses && type == Type.HOUSE) {
-        			GobHitbox.BBox bbox = GobHitbox.getBBox(this, true);
-        			if(bbox != null && Config.showoverlay) {
-        				rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, true)), null);
-        			}
-        		} else
-        			d.setup(rl);
-        	} else
-        		d.setup(rl);
+            try {
+                if (Config.hidegobs) {
+                    if (Config.hideTrees && type == Type.TREE) {
+                        GobHitbox.BBox bbox = GobHitbox.getBBox(this, true);
+                        if (bbox != null && Config.showoverlay) {
+                            rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, true)), null);
+                        }
+                    } else if (Config.hideCrops && (type == Type.PLANT || type == Type.MULTISTAGE_PLANT)) {
+                        // Crops don't have bounding boxes
+                        if (Config.showoverlay) {
+                            rl.add(new Overlay(new GobHitbox(this, new Coord(-5, -5), new Coord(5, 5), true)), null);
+                        }
+                    } else if (Config.hideWalls && type == Type.WALL) {
+                        GobHitbox.BBox bbox = GobHitbox.getBBox(this, true);
+                        if (bbox != null && Config.showoverlay) {
+                            rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, true)), null);
+                        }
+                    } else if (Config.hideanimals && getres().name.startsWith("gfx/kritter/")) {
+                        GobHitbox.BBox bbox = GobHitbox.getBBox(this, true);
+                        if (bbox != null && Config.showoverlay) {
+                            rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, true)), null);
+                        }
+                    } else if (Config.hideBushes && type == Type.BUSH) {
+                        GobHitbox.BBox bbox = GobHitbox.getBBox(this, true);
+                        if (bbox != null && Config.showoverlay) {
+                            rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, true)), null);
+                        }
+                    } else if (Config.hideDFrames && type == Type.DFRAME) {
+                        GobHitbox.BBox bbox = GobHitbox.getBBox(this, true);
+                        if (bbox != null && Config.showoverlay) {
+                            rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, true)), null);
+                        }
+                    } else if (Config.hideWagons && type == Type.WAGON) {
+                        GobHitbox.BBox bbox = GobHitbox.getBBox(this, true);
+                        if (bbox != null && Config.showoverlay) {
+                            rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, true)), null);
+                        }
+                    } else if (Config.hideHouses && type == Type.HOUSE) {
+                        GobHitbox.BBox bbox = GobHitbox.getBBox(this, true);
+                        if (bbox != null && Config.showoverlay) {
+                            rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, true)), null);
+                        }
+                    } else
+                        d.setup(rl);
+
+                } else
+                    d.setup(rl);
+            }catch(NullPointerException q){}
           /*if (Config.hidegobs && (type == Type.TREE || type == Type.BUSH)) {
                 GobHitbox.BBox bbox = GobHitbox.getBBox(this, true);
                 if (bbox != null) {
@@ -766,7 +767,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
                 }
             }
 
-            if (Config.showanimalrad && Type.MOB.has(type) && type != Type.PROXAGGRO) {
+            if (Config.showanimalrad && Type.MOB.has(type)  || type == Type.BAT && Config.showanimalrad) {
                 boolean hasradius = ols.contains(animalradius);
                 if ((knocked == null || knocked == Boolean.FALSE) && !hasradius)
                     ols.add(animalradius);

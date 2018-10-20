@@ -580,7 +580,7 @@ public class OptWnd extends Window {
             }
         });
 
-        appender.add(new CheckBox("Enable error sounds") {
+        appender.add(new CheckBox("Enable error sounds.") {
             {
                 a = Config.errorsounds;
             }
@@ -588,6 +588,17 @@ public class OptWnd extends Window {
             public void set(boolean val) {
                 Utils.setprefb("errorsounds", val);
                 Config.errorsounds = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Enable Cleave sound.") {
+            {
+                a = Config.cleavesound;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("cleavesound", val);
+                Config.cleavesound = val;
                 a = val;
             }
         });
@@ -959,6 +970,17 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
+        appender.add(new CheckBox("Logout on afk 5 minutes.") {
+            {
+                a = Config.afklogout;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("afklogout", val);
+                Config.afklogout = val;
+                a = val;
+            }
+        });
         appender.add(new CheckBox("Run on login") {
             {
                 a = Config.runonlogin;
@@ -967,6 +989,39 @@ public class OptWnd extends Window {
             public void set(boolean val) {
                 Utils.setprefb("runonlogin", val);
                 Config.runonlogin = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Character Equipment on Login") {
+            {
+                a = Config.logincharsheet;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("logincharsheet", val);
+                Config.logincharsheet = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Show inventory on login") {
+            {
+                a = Config.showinvonlogin;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showinvonlogin", val);
+                Config.showinvonlogin = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Study Window on Login") {
+            {
+                a = Config.loginstudywnd;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("loginstudywnd", val);
+                Config.loginstudywnd = val;
                 a = val;
             }
         });
@@ -1000,6 +1055,17 @@ public class OptWnd extends Window {
             public void set(boolean val) {
                 Utils.setprefb("enabletracking", val);
                 Config.enabletracking = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Enable swimming on login") {
+            {
+                a = Config.enableswimming;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("enableswimming", val);
+                Config.enableswimming = val;
                 a = val;
             }
         });
@@ -1453,17 +1519,6 @@ public class OptWnd extends Window {
             public void set(boolean val) {
                 Utils.setprefb("fepmeter", val);
                 Config.fepmeter = val;
-                a = val;
-            }
-        });
-        appender.add(new CheckBox("Show inventory on login") {
-            {
-                a = Config.showinvonlogin;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("showinvonlogin", val);
-                Config.showinvonlogin = val;
                 a = val;
             }
         });

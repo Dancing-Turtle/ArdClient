@@ -18,14 +18,16 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 	private ArrayList<Gob> containers = new ArrayList<>();
 
 	public Farmer() {
-		super(new Coord(180, 525), "Farming Bots");
+		super(new Coord(180, 550), "Farming Bots");
 		int y = 0;
+		BotUtils.sysMsg("Hold alt and left click containers to select them.",Color.white);
 		Button carrotBtn = new Button(140, "Carrot") {
 			@Override
 			public void click() {
 				if (containeronly || replantcontainer) {
 					BotUtils.sysMsg("Choose replant for carrots!", Color.WHITE);
-				} else if (a != null && b != null) {
+				}
+				else if (a != null && b != null) {
 					gameui().map.unregisterAreaSelect();
 					// Start carrot farmer and close this window
 					SeedCropFarmer SCF = new SeedCropFarmer(b, a, "gfx/terobjs/plants/carrot", "gfx/invobjs/carrot", 4, replant, containeronly, replantcontainer, containers);
@@ -44,7 +46,10 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 		Button carrotseedBtn = new Button(140, "Carrot Seeds") {
 			@Override
 			public void click() {
-				if (a != null && b != null) {
+				if(replantcontainer && containers.size() == 0 || containeronly && containers.size() == 0) {
+					BotUtils.sysMsg("Please select a container by holding alt and clicking it before starting if using barrel or replantbarrel.", Color.white);
+				}
+				else if (a != null && b != null) {
 					SeedCropFarmer bf =
 							new SeedCropFarmer(a, b, "gfx/terobjs/plants/carrot", "gfx/invobjs/seed-carrot", 3, replant, containeronly, replantcontainer, containers);
 
@@ -124,7 +129,10 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 		Button barleyBtn = new Button(140, "Barley") {
 			@Override
 			public void click() {
-				if (a != null && b != null) {
+				if(replantcontainer && containers.size() == 0 || containeronly && containers.size() == 0) {
+					BotUtils.sysMsg("Please select a container by holding alt and clicking it before starting if using barrel or replantbarrel.", Color.white);
+				}
+				else if (a != null && b != null) {
 				//	System.out.println(a + "" + b);
 					// Start barley farmer and close this window
 					SeedCropFarmer bf =
@@ -144,7 +152,10 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 		Button wheatBtn = new Button(140, "Wheat") {
 			@Override
 			public void click() {
-				if (a != null && b != null) {
+				if(replantcontainer && containers.size() == 0 || containeronly && containers.size() == 0) {
+					BotUtils.sysMsg("Please select a container by holding alt and clicking it before starting if using barrel or replantbarrel.", Color.white);
+				}
+				else if (a != null && b != null) {
 					// Start yellow onion farmer and close this window
 					SeedCropFarmer bf =
 							new SeedCropFarmer(a, b, "gfx/terobjs/plants/wheat", "gfx/invobjs/seed-wheat", 3, replant, containeronly, replantcontainer, containers);
@@ -163,7 +174,10 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 		Button flaxBtn = new Button(140, "Flax") {
 			@Override
 			public void click() {
-				if (a != null && b != null) {
+				if(replantcontainer && containers.size() == 0 || containeronly && containers.size() == 0) {
+					BotUtils.sysMsg("Please select a container by holding alt and clicking it before starting if using barrel or replantbarrel.", Color.white);
+				}
+				else if (a != null && b != null) {
 					// Start flax farmer and close this window
 					SeedCropFarmer bf = new SeedCropFarmer(a, b, "gfx/terobjs/plants/flax", "gfx/invobjs/seed-flax", 3, replant, containeronly, replantcontainer, containers);
 
@@ -181,7 +195,10 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 		Button poppyBtn = new Button(140, "Poppy") {
 			@Override
 			public void click() {
-				if (a != null && b != null) {
+				if(replantcontainer && containers.size() == 0 || containeronly && containers.size() == 0) {
+					BotUtils.sysMsg("Please select a container by holding alt and clicking it before starting if using barrel or replantbarrel.", Color.white);
+				}
+				else if (a != null && b != null) {
 					// Start poppy farmer and close this window
 					SeedCropFarmer bf =
 							new SeedCropFarmer(a, b, "gfx/terobjs/plants/poppy", "gfx/invobjs/seed-poppy", 4, replant, containeronly, replantcontainer, containers);
@@ -200,7 +217,10 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 		Button hempBtn = new Button(140, "Hemp") {
 			@Override
 			public void click() {
-				if (a != null && b != null) {
+				if(replantcontainer && containers.size() == 0 || containeronly && containers.size() == 0) {
+					BotUtils.sysMsg("Please select a container by holding alt and clicking it before starting if using barrel or replantbarrel.", Color.white);
+				}
+				else if (a != null && b != null) {
 					// Start hemp farmer and close this window
 					SeedCropFarmer bf = new SeedCropFarmer(a, b, "gfx/terobjs/plants/hemp", "gfx/invobjs/seed-hemp", 4, replant, containeronly, replantcontainer, containers);
 
@@ -354,8 +374,10 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 
 	@Override
 	public void wdgmsg(Widget sender, String msg, Object... args) {
-		if (sender == cbtn)
-			reqdestroy();
+		if (sender == cbtn) {
+			BotUtils.gui.map.unregisterGobSelect();
+			this.destroy();
+		}
 		else
 			super.wdgmsg(sender, msg, args);
 	}

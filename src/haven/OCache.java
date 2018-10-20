@@ -119,7 +119,7 @@ public class OCache implements Iterable<Gob> {
                 copy.add(g);
             for (Gob g : copy) {
                 g.ctick(dt);
-               /* if (Config.showdmgop) {
+                if (Config.showdmgop) {
                     Gob.Overlay dmgol = g.findol(DamageSprite.ID);
                     if (dmgol != null)
                         g.ols.remove(dmgol);
@@ -134,7 +134,7 @@ public class OCache implements Iterable<Gob> {
                             }
                         }
                     }
-                }*/
+                }
             }
         }
     }
@@ -614,28 +614,28 @@ public class OCache implements Iterable<Gob> {
                         synchronized (gobdmgs) {
                             DamageSprite dmgspr = gobdmgs.get(g.id);
                             if (dmgspr == null) {
-                                int blue = Fightsess.blue;
-                                int red = Fightsess.red;
-                                int myblue = Fightsess.myblue;
-                                int myred = Fightsess.myred;
-                                KinInfo kininfo = g.getattr(KinInfo.class);
-                                if (g.isplayer())
-                                    BotUtils.sysMsg("I got hit for " + dmg + " Damage. I had " + myblue + " blue opening and " + myred + " red opening.",Color.white);
-                                else
-                                if(kininfo != null)
-                                    BotUtils.sysMsg("Hit " + kininfo.name + " For " + dmg + " Damage. Had "+blue+" blue opening and "+red+" red opening.",Color.green);
-                                else
-                                if(g.getres().basename().contains("Body"))
-                                   BotUtils.sysMsg("Hit Unknown player For " + dmg + " Damage. Had "+blue+" blue opening and "+red+" red opening.",Color.green);
-                                else
-                                    BotUtils.sysMsg("Hit " + g.getres().basename() + " For " + dmg + " Damage. Had "+blue+" blue opening and "+red+" red opening.",Color.green);
+                                if(Config.logcombatactions) {
+                                    int blue = Fightsess.blue;
+                                    int red = Fightsess.red;
+                                    int myblue = Fightsess.myblue;
+                                    int myred = Fightsess.myred;
+                                    KinInfo kininfo = g.getattr(KinInfo.class);
+                                    if (g.isplayer())
+                                        BotUtils.sysMsg("I got hit for " + dmg + " Damage. I had " + myblue + " blue opening and " + myred + " red opening.", Color.white);
+                                    else if (kininfo != null)
+                                        BotUtils.sysMsg("Hit " + kininfo.name + " For " + dmg + " Damage. Had " + blue + " blue opening and " + red + " red opening.", Color.green);
+                                    else if (g.getres().basename().contains("Body"))
+                                        BotUtils.sysMsg("Hit Unknown player For " + dmg + " Damage. Had " + blue + " blue opening and " + red + " red opening.", Color.green);
+                                    else
+                                        BotUtils.sysMsg("Hit " + g.getres().basename() + " For " + dmg + " Damage. Had " + blue + " blue opening and " + red + " red opening.", Color.green);
+                                }
                                 gobdmgs.put(g.id, new DamageSprite(dmg, clr == 36751, g));
-                            }
+                                }
                             else
                                 dmgspr.update(dmg, clr == 36751);
+                            }
                         }
-                    }
-                } catch (Loading le) {
+                    } catch (Loading le) {
                     Defer.later(this);
                 }
                 return null;

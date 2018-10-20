@@ -190,18 +190,18 @@ public class LocalMiniMap extends Widget {
         OCache oc = ui.sess.glob.oc;
         List<Gob> dangergobs = new ArrayList<Gob>();
         synchronized (oc) {
+            Gob player = mv.player();
             for (Gob gob : oc) {
                 try {
                     Resource res = gob.getres();
                     if (res == null)
                         continue;
+
                     GobIcon icon = gob.getattr(GobIcon.class);
                     if (icon != null || Config.additonalicons.containsKey(res.name)) {
-                        if (Gob.Type.MOB.has(gob.type) || gob.type == Gob.Type.BAT) {
-                            dangergobs.add(gob);
-                            continue;
-                        }
-
+                        if (Gob.Type.MOB.has(gob.type)){
+                            dangergobs.add(0,gob);
+                       }else{
                         CheckListboxItem itm = Config.icons.get(res.basename());
                         if (itm == null || !itm.selected) {
                             Tex tex;
@@ -211,6 +211,10 @@ public class LocalMiniMap extends Widget {
                                 tex = Config.additonalicons.get(res.name);
                             g.image(tex, p2c(gob.rc).sub(tex.sz().div(2)).add(delta));
                         }
+                    }
+                    } else if (gob.type == Gob.Type.PLAYER && player != null && gob.id != player.id) {
+                        dangergobs.add(gob);
+                        continue;
                     }
 
                     String basename = res.basename();
@@ -227,8 +231,7 @@ public class LocalMiniMap extends Widget {
                         if (itm != null && itm.selected)
                             g.image(treeicn, p2c(gob.rc).add(delta).sub(treeicn.sz().div(2)));
                     }
-                } catch (Loading l) {
-                }
+                } catch (Loading l) {}
             }
 
             for (Gob gob : dangergobs) {

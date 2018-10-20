@@ -246,11 +246,11 @@ if(delta.intValue() > 10000)
         updatepos();
         currentopeningblue();
         currentopeningred();
-        if (blue-oldblue > 1) {
+        if (blue-oldblue > 1 && Config.logcombatactions) {
             lastactopened = (double)blue - (double)oldblue;
            delta = checkdelta();
         }
-        if (red-oldred > 1) {
+        if (red-oldred > 1 && Config.logcombatactions) {
             lastactopened = (double)red - (double)oldred;
            delta = checkdelta();
         }

@@ -95,7 +95,7 @@ public class KeyBinder {
 	add(KeyEvent.VK_H,CTRL,TOGGLE_HIDEGOBS);
 	add(KeyEvent.VK_N,CTRL,TOGGLE_DAYLIGHT);
 	add(KeyEvent.VK_U,CTRL,TOGGLE_UI);
-	add(KeyEvent.VK_M,CTRL,TOGGLE_STATUSOVERLAY);
+	add(KeyEvent.VK_M,ALT,TOGGLE_STATUSOVERLAY);
 	add(KeyEvent.VK_Q,0,HARVEST_FORAGEABLE);
 	add(KeyEvent.VK_Z,CTRL,TOGGLE_PATHFINDING);
 	add(KeyEvent.VK_S,ALT,TOGGLE_SEARCH);
@@ -105,6 +105,8 @@ public class KeyBinder {
 	add(KeyEvent.VK_A,CTRL,TOGGLE_MAP);
 	add(KeyEvent.VK_L,CTRL,LOGOUT);
 	add(KeyEvent.VK_K,CTRL,LOGOUTSELECT);
+	add(KeyEvent.VK_P,SHIFT,TOGGLEDEBUG);
+	add(KeyEvent.VK_M,CTRL,TOGGLE_MUTE);
 	//add(KeyEvent.VK_TAB,NONE,TARGET_CLOSEST);
     }
     

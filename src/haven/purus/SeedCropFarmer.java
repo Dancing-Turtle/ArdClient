@@ -19,7 +19,7 @@ public class SeedCropFarmer extends Window implements Runnable {
 
 	private boolean stopThread = false;
 
-	private Label lblProg;
+	private Label lblProg, lblProg2;
 
 	private int stage;
 	private String cropName;
@@ -47,7 +47,9 @@ public class SeedCropFarmer extends Window implements Runnable {
 		Label lblstxt = new Label("Progress:");
 		add(lblstxt, new Coord(15, 35));
 		lblProg = new Label("Initialising...");
-		add(lblProg, new Coord(65, 35));
+		add(lblProg, new Coord(67, 35));
+		lblProg2 = new Label("Initialising...");
+		add(lblProg2, new Coord(15,55));
 
 		Button stopBtn = new Button(120, "Stop") {
 			@Override
@@ -61,10 +63,12 @@ public class SeedCropFarmer extends Window implements Runnable {
 
 	public void run() {
 		// Initialise crop list
+		BotUtils.gui.map.unregisterGobSelect();
 		crops = Crops();
 		int totalCrops = crops.size();
 		int cropsHarvested = 0;
 		lblProg.settext(cropsHarvested + "/" + totalCrops);
+		lblProg2.settext("Starting");
 		for (Gob g : crops) {
 			if (stopThread)
 				return;
@@ -80,6 +84,7 @@ public class SeedCropFarmer extends Window implements Runnable {
 				return;
 
 			// Right click the crop
+			lblProg2.settext("Harvesting");
 			BotUtils.doClick(g, 1, 0);
 			BotUtils.gui.map.wdgmsg("click", Coord.z, g.rc.floor(posres), 1, 0);
 			while (BotUtils.player().rc.x != g.rc.x || BotUtils.player().rc.y != g.rc.y)
@@ -115,6 +120,7 @@ public class SeedCropFarmer extends Window implements Runnable {
 				try {
 					GItem item = null;
 					while (BotUtils.getItemAtHand() == null) {
+						lblProg2.settext("Grabbing seeds");
 						Inventory inv = BotUtils.playerInventory();
 						for (Widget w = inv.child; w != null; w = w.next) {
 							if (w instanceof GItem && ((GItem) w).resource().name.equals(seedName) && (!seedName.contains("seed") || BotUtils.getAmount((GItem) w) >= 5)) {
@@ -134,11 +140,13 @@ public class SeedCropFarmer extends Window implements Runnable {
 					int amount = 0;
 					if (seedName.contains("seed"))
 						BotUtils.getAmount(BotUtils.getItemAtHand());
+					lblProg2.settext("Planting");
 					BotUtils.mapInteractClick(0);
 					while (BotUtils.findNearestStageCrop(5, 0, cropName) == null || (BotUtils.getItemAtHand() != null && (seedName.contains("seed") && amount == BotUtils.getAmount(BotUtils.getItemAtHand())))) {
 						BotUtils.sleep(10);
 					}
 					BotUtils.dropItem(0);
+					lblProg2.settext("Dropping seeds");
 					for (Widget w = BotUtils.playerInventory().child; w != null; w = w.next) {
 						if (w instanceof GItem && ((GItem) w).resource().name.equals(seedName)) {
 							item = (GItem) w;
@@ -151,61 +159,61 @@ public class SeedCropFarmer extends Window implements Runnable {
 				}catch(NullPointerException | Loading | Sprite.ResourceException q){}
 			} else if (replantcontainer) {
 				try {
-					while (BotUtils.getItemAtHand() == null) {
+					while (BotUtils.getItemAtHand() == null) { // loops until successfully picked up seeds
+						lblProg2.settext("Grabbing seeds");
 						while(gui.maininv.getItemPartial("seed") == null)
 							BotUtils.sleep(10);
 						WItem flax = gui.maininv.getItemPartial("seed");
 						GItem flax2 = flax.item;
-						java.util.List<WItem> items = gui.maininv.getIdenticalItems((flax2));
-						sort(items);
+						java.util.List<WItem> items = gui.maininv.getIdenticalItems((flax2)); // acquires all seed stacks in inventory
+						sort(items); // sorts by quality
 						for (WItem seeds : items) {
 							GItem item = seeds.item;
 							if (BotUtils.getAmount(item) >= 5) {
-								//BotUtils.sysLogAppend("Replanting flax of quality : " + item.quality().q, "white");
 								BotUtils.takeItem(item);
 								break;
 							}
 						}
 					}
-
-						while (BotUtils.getItemAtHand() == null)
+						while (BotUtils.getItemAtHand() == null) // just a double verification that we have successfully picked up seeds, should account for lag
 							BotUtils.sleep(10);
 
 						// Plant the seed from hand
 						int amount = 0;
 						if (seedName.contains("seed"))
-							BotUtils.getAmount(BotUtils.getItemAtHand());
+							BotUtils.getAmount(BotUtils.getItemAtHand()); // logs the seed count in your hand so it can use the count to verify it successfully planted
+					lblProg2.settext("Planting");
 						BotUtils.mapInteractClick(0);
 						while (BotUtils.findNearestStageCrop(5, 0, cropName) == null || (BotUtils.getItemAtHand() != null && (seedName.contains("seed") && amount == BotUtils.getAmount(BotUtils.getItemAtHand())))) {
 							BotUtils.sleep(10);
 						}
-
-
 						// Merge seed from hand into inventory or put it in inventory
 							for (Widget w = BotUtils.playerInventory().child; w != null; w = w.next) {
 								if (w instanceof GItem && ((GItem) w).resource().name.equals(seedName)) {
 									GItem item = (GItem) w;
-									if (BotUtils.getItemAtHand() != null && BotUtils.getAmount(item) < 50) {
+									if (BotUtils.getItemAtHand() != null && BotUtils.getAmount(item) < 50) {//finds other seeds in inventory with less than 50 count
+										lblProg2.settext("Merging stacks");
 										int handAmount = BotUtils.getAmount(BotUtils.getItemAtHand());
 										try {
-											item.wdgmsg("itemact", 0);
+											item.wdgmsg("itemact", 0);//merges
 										} catch (Exception e) {
 										}
-										while (BotUtils.getItemAtHand() != null && BotUtils.getAmount(BotUtils.getItemAtHand()) == handAmount)
+										while (BotUtils.getItemAtHand() != null && BotUtils.getAmount(BotUtils.getItemAtHand()) == handAmount)//waits until the count changes to account for lag
 											BotUtils.sleep(50);
 									}
 								}
 							}
-						if (BotUtils.getItemAtHand() != null) {
+						if (BotUtils.getItemAtHand() != null) {//still have seeds on cursor, dropping them in an empty inventory slot
+							lblProg2.settext("Dropping to inv");
 							Coord slot = BotUtils.getFreeInvSlot(BotUtils.playerInventory());
 							if (slot != null) {
-								int freeSlots = BotUtils.invFreeSlots();
 								BotUtils.dropItemToInventory(slot, BotUtils.playerInventory());
 								while (BotUtils.getItemAtHand() != null)
 									BotUtils.sleep(50);
 							}
 						}
-						if (BotUtils.invFreeSlots() == 0) {
+						if (BotUtils.invFreeSlots() == 0) {//inv full, time to barrel
+							lblProg2.settext("Barreling");
 							if (BotUtils.getItemAtHand() != null)
 								BotUtils.dropItem(0);
 							BotUtils.pfRightClick(containers.get(0), 0);
@@ -284,6 +292,7 @@ public class SeedCropFarmer extends Window implements Runnable {
 					if (containeronly) { // Put items into container if inventory is full
 						GItem item;
 						if (BotUtils.invFreeSlots() == 0) {
+							lblProg2.settext("Barreling");
 							BotUtils.pfRightClick(containers.get(0), 0);
 							BotUtils.waitForWindow("Barrel");
 							if (BotUtils.getItemAtHand() != null) {
@@ -322,6 +331,7 @@ public class SeedCropFarmer extends Window implements Runnable {
 			lblProg.settext(cropsHarvested + "/" + totalCrops);
 		}
 		if(replantcontainer) {
+			lblProg2.settext("Barreling");
 			if (BotUtils.getItemAtHand() != null)
 				BotUtils.dropItem(0);
 			BotUtils.pfRightClick(containers.get(0), 0);

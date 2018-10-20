@@ -106,6 +106,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public static boolean trackon = false;
     public static boolean partyperm = false;
     public boolean crimeautotgld = false;
+    public boolean swimautotgld = false;
     public boolean trackautotgld = false;
     public FBelt fbelt;
     public CraftHistoryBelt histbelt;
@@ -327,7 +328,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         }
     }*/
 
-    public void toggleBuildList() {
+    /*public void toggleBuildList() {
         if(buildlist == null){
             buildlist = add(new ActWindow("Build...", "paginae/bld/.+"));
         } else if(buildlist.visible) {
@@ -346,6 +347,10 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         } else {
             actlist.show();
         }
+    }*/
+
+    public void toggleDebug(){
+        Config.dbtext = !Config.dbtext;
     }
 
     public void toggleInventory() {
@@ -839,9 +844,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             equwnd.pack();
             equwnd.hide();
             add(equwnd, new Coord(400, 10));
-            equwnd.show(Config.showinvonlogin);
-
-
+            equwnd.show(Config.logincharsheet);
         } else if (place == "hand") {
             GItem g = add((GItem) child);
             Coord lc = (Coord) args[1];
@@ -849,7 +852,8 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             updhand();
         } else if (place == "chr") {
         	studywnd = add(new StudyWnd(), new Coord(400,100));
-        	//studywnd.hide();
+        	if(!Config.loginstudywnd)
+        	studywnd.hide();
             chrwdg = add((CharWnd) child, new Coord(300, 50));
             chrwdg.hide();
             if(Config.hungermeter)
@@ -1035,6 +1039,8 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         if (!afk && (idle > 300)) {
             afk = true;
             wdgmsg("afk");
+            if(Config.afklogout)
+                logoutChar();
         } else if (afk && (idle <= 300)) {
             afk = false;
         }
@@ -1070,6 +1076,11 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             String text = (String) args[0];
             if (text.startsWith("Swimming is now turned")) {
                 togglebuff(text, Bufflist.buffswim);
+                if (swimautotgld) {
+                    msgnosfx(text);
+                    swimautotgld = false;
+                    return;
+                }
             } else if (text.startsWith("Tracking is now turned")) {
                 togglebuff(text, Bufflist.bufftrack);
                 if (trackautotgld) {
@@ -1221,6 +1232,17 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         Utils.setprefb("showboundingboxes", Config.showboundingboxes);
         if (map != null)
             map.refreshGobsAll();
+    }
+
+    public void toggleMute(){
+        if(Audio.volume > 0) {
+            BotUtils.sysMsg("Audio muted.",Color.white);
+            Audio.volume = 0;
+        }
+        else {
+            Audio.volume = Double.parseDouble(Utils.getpref("sfxvol", "1.0"));
+            BotUtils.sysMsg("Audio un-muted.",Color.white);
+        }
     }
 
     public void logout(){

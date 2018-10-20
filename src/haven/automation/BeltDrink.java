@@ -87,7 +87,7 @@ public class BeltDrink implements Runnable {
             }
              if (drinks.size() == 0) {
                 try {
-                    BotUtils.sysMsg("No water found, opening belts! Please try again.", Color.WHITE);
+                    BotUtils.sysLogAppend("No water found, opening belts! Please try again. This can also happen spamming the hotkey.", "white");
                     gui.maininv.getItemsPartial("Belt");
                     for (WItem w : gui.maininv.getItemsPartial("Belt"))
                         w.item.wdgmsg("iact", Coord.z, -1);

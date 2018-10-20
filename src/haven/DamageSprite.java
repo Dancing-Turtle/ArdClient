@@ -74,25 +74,25 @@ public class DamageSprite extends Sprite implements PView.Render2D {
             this.arm += dmg;
             this.armtex = afrn.render(this.arm + "").tex();
         } else {
-            int blue = Fightsess.blue;
-            int red = Fightsess.red;
-            int myblue = Fightsess.myblue;
-            int myred = Fightsess.myred;
-            KinInfo kininfo = gob.getattr(KinInfo.class);
-            if(kininfo != null)
-                BotUtils.sysLogAppend("Hit " + kininfo.name + " For " + dmg + " Damage and "+arm+" armor damage. Had "+blue+" blue opening and "+red+" red opening.","green");
-            else
-            if (gob.isplayer())
-                BotUtils.sysLogAppend("I got hit for " + dmg + " Damage and "+arm+" armor damage. I had "+myblue+" blue opening and "+myred+" red opening.","red");
-            else
-                if(gob.getres().basename().contains("Body"))
-                    BotUtils.sysLogAppend("Hit Unknown player For " + dmg + " Damage and "+arm+" armor damage. Had "+blue+" blue opening and "+red+" red opening.","green");
-                    else
-                BotUtils.sysLogAppend("Hit " + gob.getres().basename() + " For " + dmg + " Damage and "+arm+" armor damage. Had "+blue+" blue opening and "+red+" red opening.","green");
+            if(Config.logcombatactions) {
+                int blue = Fightsess.blue;
+                int red = Fightsess.red;
+                int myblue = Fightsess.myblue;
+                int myred = Fightsess.myred;
+                KinInfo kininfo = gob.getattr(KinInfo.class);
+                if (kininfo != null)
+                    BotUtils.sysLogAppend("Hit " + kininfo.name + " For " + dmg + " Damage and " + arm + " armor damage. Had " + blue + " blue opening and " + red + " red opening.", "green");
+                else if (gob.isplayer())
+                    BotUtils.sysLogAppend("I got hit for " + dmg + " Damage and " + arm + " armor damage. I had " + myblue + " blue opening and " + myred + " red opening.", "red");
+                else if (gob.getres().basename().contains("Body"))
+                    BotUtils.sysLogAppend("Hit Unknown player For " + dmg + " Damage and " + arm + " armor damage. Had " + blue + " blue opening and " + red + " red opening.", "green");
+                else
+                    BotUtils.sysLogAppend("Hit " + gob.getres().basename() + " For " + dmg + " Damage and " + arm + " armor damage. Had " + blue + " blue opening and " + red + " red opening.", "green");
+            }
             this.dmg += dmg;
             this.dmgtex = dfrn.render(this.dmg + "").tex();
+            }
         }
-    }
     public GameUI getGUI()
     {
         return HavenPanel.lui.root.findchild(GameUI.class);

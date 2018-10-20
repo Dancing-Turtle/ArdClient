@@ -214,6 +214,10 @@ public class WItem extends Widget implements DTarget {
                 int timeleft = (int) (itm.studytime * (1.0 - meter));
                 int hoursleft = timeleft / 60;
                 int minutesleft = timeleft - hoursleft * 60;
+				if(hoursleft < 1){
+					itm.metertex = Text.renderstroked(String.format("%d:%02d", hoursleft, minutesleft), Color.YELLOW, Color.BLACK, num10Fnd).tex();
+				}
+				else
                 itm.metertex = Text.renderstroked(String.format("%d:%02d", hoursleft, minutesleft), Color.WHITE, Color.BLACK, num10Fnd).tex();
             } else {
                 itm.metertex = Text.renderstroked(String.format("%d%%", (int) (meter * 100)), Color.WHITE, Color.BLACK, num10Fnd).tex();
@@ -352,13 +356,15 @@ public class WItem extends Widget implements DTarget {
 							break;
 						}
 					}
-				} catch (Exception e) { // fail silently if info is not ready
+				} catch (Exception e) {
 				}
-			} else {
-				g.image(missing.layer(Resource.imgc).tex(), Coord.z, sz);
 			}
 		}
-    }
+				else
+				g.image(missing.layer(Resource.imgc).tex(), Coord.z, sz);
+
+		}
+
 
 	private void drawamountbar(GOut g, double content, boolean isseeds) {
 		double capacity;

@@ -84,6 +84,7 @@ public class Config {
     public static double chatalarmvol = Utils.getprefd("chatalarmvol", 0.8);
     public static boolean studyalarm = Utils.getprefb("studyalarm", false);
     public static boolean errorsounds = Utils.getprefb("errorsounds", true);
+    public static boolean cleavesound = Utils.getprefb("cleavesound", true);
     public static boolean chatsounds = Utils.getprefb("chatsounds", true);
     public static boolean discordsounds = Utils.getprefb("discordsounds", true);
     public static boolean realmchatalerts = Utils.getprefb("realmchatalerts", false);
@@ -101,6 +102,9 @@ public class Config {
     public static boolean showfarmrad = Utils.getprefb("showfarmrad", false);
     public static boolean showweather = Utils.getprefb("showweather", true);
     public static boolean simplecrops = Utils.getprefb("simplecrops", false);
+    public static boolean logincharsheet = Utils.getprefb("logincharsheet", false);
+    public static boolean loginstudywnd = Utils.getprefb("loginstudywnd", false);
+    public static boolean afklogout = Utils.getprefb("afklogout", false);
     public static boolean simpleforage = Utils.getprefb("simpleforage", false);
     //public static boolean hidecrops = Utils.getprefb("hidecrops", false);
     public static boolean showfps = Utils.getprefb("showfps", false);
@@ -123,6 +127,7 @@ public class Config {
     public static boolean reversebadcamy = Utils.getprefb("reversebadcamy", false);
     public static boolean showservertime = Utils.getprefb("showservertime", false);
     public static boolean enabletracking = Utils.getprefb("enabletracking", false);
+    public static boolean enableswimming = Utils.getprefb("enableswimming", false);
     public static boolean autoconnectdiscord = Utils.getprefb("autoconnectdiscord", false);
     public static boolean enablecrime = Utils.getprefb("enablecrime", false);
     public static boolean resinfo = Utils.getprefb("resinfo", false);
@@ -335,6 +340,7 @@ public class Config {
         put("rowboat", new CheckListboxItem("Rowboat"));
         put("arrow", new CheckListboxItem("Arrow"));
         put("boarspear", new CheckListboxItem("Boar Spear"));
+        put("cavemoth", new CheckListboxItem("Cave Moth"));
         put("frog", new CheckListboxItem("Frog"));
         put("wagon", new CheckListboxItem("Wagon"));
         put("wheelbarrow", new CheckListboxItem("Wheelbarrow"));

@@ -12,6 +12,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 
 public class DestroyArea extends Window implements GobSelectCallback {
@@ -106,7 +107,7 @@ public class DestroyArea extends Window implements GobSelectCallback {
                     lblc3.settext(remaining+"");
                 }
                 runbtn.click();
-            }catch(NullPointerException ip){}
+            }catch(NullPointerException | ConcurrentModificationException ip){}
         }
     }
 

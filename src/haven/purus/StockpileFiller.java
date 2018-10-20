@@ -102,24 +102,32 @@ public class StockpileFiller extends Window implements GobSelectCallback, ItemCl
 						gob = BotUtils.findObjectByNames(1000, terobj);
 					}*/
 
-					while (BotUtils.invFreeSlots() > 0) {
+				//	while (BotUtils.invFreeSlots() > 0) {
+					while(BotUtils.getItemAtHand() == null){
 						if (stop)
 							break;
-						if (BotUtils.findObjectByNames(1000, terobj) == null)
+						if (BotUtils.findObjectByNames(1000, terobj) == null) {
+							BotUtils.sysLogAppend("Out of items to stockpile, finishing.", "white");
 							break;
+						}
+						BotUtils.sysLogAppend("Grabbing stuff.", "white");
 						Gob g = BotUtils.findObjectByNames(1000, terobj);
 						//if (g == null) {
 						//	BotUtils.sysMsg("No more items on ground found!", Color.GREEN);
 							//break;
 						//}
 						gameui().map.wdgmsg("click", g.sc, g.rc.floor(posres), 3, 1, 0, (int) g.id, g.rc.floor(posres), 0, -1);
+						BotUtils.sleep(1000);
 						//	gui.map.wdgmsg("click", cistern.sc, cistern.rc.floor(posres), 3, 0, 0, (int) cistern.id, cistern.rc.floor(posres), 0, -1);
 						//BotUtils.pfRightClick(g, 0);
-						while(BotUtils.invFreeSlots() > 0 && BotUtils.findObjectByNames(1000,terobj)!= null)
+						while(BotUtils.getItemAtHand() == null & BotUtils.findObjectByNames(1000,terobj)!=null && BotUtils.isMoving())
 							BotUtils.sleep(10);
+						//while(BotUtils.invFreeSlots() > 0 && BotUtils.findObjectByNames(1000,terobj)!= null)
+						//	BotUtils.sleep(10);
 						System.out.println("inv free slots : "+BotUtils.invFreeSlots());
 					}
-System.out.println("After pickup");
+
+					BotUtils.sysLogAppend("Done Grabbing stuff.", "white");
 
 
 					//if (BotUtils.getItemAtHand() == null && BotUtils.getInventoryItemsByName(BotUtils.playerInventory(), invobj).size() > 0) {
@@ -173,6 +181,8 @@ System.out.println("After pickup");
 						//	BotUtils.takeItem(BotUtils.getInventoryItemsByName(BotUtils.playerInventory(), invobj).get(0).item);
 						//}
 					}
+					if (BotUtils.findObjectByNames(1000, terobj) == null)
+						break;
 				}
 				BotUtils.sysMsg("Stockpile Filler finished!", Color.GREEN);
 				reqdestroy();

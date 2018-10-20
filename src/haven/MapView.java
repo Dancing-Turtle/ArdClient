@@ -1031,28 +1031,30 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
 
         // This solution is bad but currently no better avaible
         if (!Config.hidesky) {
-            boolean skyb = true;
+            try {
+                boolean skyb = true;
 
-            if (player() != null) {
-                Coord pltc = new Coord((int) player().getc().x / 11, (int) player().getc().y / 11);
-                for (int x = -44; x < 44; x++) {
-                    for (int y = -44; y < 44; y++) {
-                        int t = glob.map.gettile(pltc.sub(x, y));
-                        Resource res = glob.map.tilesetr(t);
-                        if (res == null)
-                            continue;
+                if (player() != null) {
+                    Coord pltc = new Coord((int) player().getc().x / 11, (int) player().getc().y / 11);
+                    for (int x = -44; x < 44; x++) {
+                        for (int y = -44; y < 44; y++) {
+                            int t = glob.map.gettile(pltc.sub(x, y));
+                            Resource res = glob.map.tilesetr(t);
+                            if (res == null)
+                                continue;
 
-                        String name = res.name;
-                        if (name.equals("gfx/tiles/mine") ||
-                                name.equals("gfx/tiles/boards")) {
-                            skyb = false;
-                            break;
+                            String name = res.name;
+                            if (name.equals("gfx/tiles/mine") ||
+                                    name.equals("gfx/tiles/boards")) {
+                                skyb = false;
+                                break;
+                            }
                         }
                     }
                 }
-            }
-            if (skyb)
-                rl.add(new DropSky(sky), Rendered.last);
+                if (skyb)
+                    rl.add(new DropSky(sky), Rendered.last);
+            }catch(NullPointerException | Loading q){}
         }
     }
 
@@ -1831,9 +1833,13 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                 synchronized (glob.oc) {
                     for (Gob gob : glob.oc) {
                        // BotUtils.sysMsg("Test : "+gob.getres().name,Color.white);
-                        if (gob.type == Gob.Type.PLAYER || gob.type == Gob.Type.PROXAGGRO || gob.type == Gob.Type.MAMMOTH || gob.type == Gob.Type.BAT || gob.type == Gob.Type.EAGLE
+                       /* if (gob.type == Gob.Type.PLAYER || gob.type == Gob.Type.PROXAGGRO || gob.type == Gob.Type.MAMMOTH || gob.type == Gob.Type.BAT || gob.type == Gob.Type.EAGLE
                                 || gob.type == Gob.Type.SLIME || gob.type == Gob.Type.BEAR || gob.type == Gob.Type.LYNX || gob.type == Gob.Type.SEAL
-                                || gob.type == Gob.Type.TROLL || gob.type == Gob.Type.WALRUS && !gob.isplayer()) {
+                                || gob.type == Gob.Type.TROLL || gob.type == Gob.Type.WALRUS && !gob.isplayer()) {*/
+                       if(!gob.isplayer())
+                       if(gob.type == Gob.Type.PLAYER || gob.type == Gob.Type.MAMMOTH || gob.type == Gob.Type.BAT || gob.type == Gob.Type.EAGLE || gob.type == Gob.Type.SLIME
+                               || gob.type == Gob.Type.BEAR || gob.type == Gob.Type.LYNX || gob.type == Gob.Type.SEAL || gob.type == Gob.Type.TROLL || gob.type == Gob.Type.WALRUS
+                               || gob.type == Gob.Type.MOB){
                             double dist = gob.rc.dist(mc);
                             if ((target == null || dist < target.rc.dist(mc)) && dist <= 5 * tilesz.x)
                                 target = gob;
@@ -1865,9 +1871,13 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                 Gob target = null;
                 synchronized (glob.oc) {
                     for (Gob gob : glob.oc) {
-                        if (gob.type == Gob.Type.PROXAGGRO || gob.type == Gob.Type.MAMMOTH || gob.type == Gob.Type.BAT || gob.type == Gob.Type.EAGLE
+                      /*  if (gob.type == Gob.Type.PROXAGGRO || gob.type == Gob.Type.MAMMOTH || gob.type == Gob.Type.BAT || gob.type == Gob.Type.EAGLE
                                  || gob.type == Gob.Type.SLIME || gob.type == Gob.Type.BEAR || gob.type == Gob.Type.LYNX || gob.type == Gob.Type.SEAL
-                                || gob.type == Gob.Type.TROLL || gob.type == Gob.Type.WALRUS && !gob.isplayer()) {
+                                || gob.type == Gob.Type.TROLL || gob.type == Gob.Type.WALRUS && !gob.isplayer()) {*/
+                      if(!gob.isplayer())
+                        if(gob.type == Gob.Type.MAMMOTH || gob.type == Gob.Type.BAT || gob.type == Gob.Type.EAGLE || gob.type == Gob.Type.SLIME
+                                || gob.type == Gob.Type.BEAR || gob.type == Gob.Type.LYNX || gob.type == Gob.Type.SEAL || gob.type == Gob.Type.TROLL || gob.type == Gob.Type.WALRUS
+                                || gob.type == Gob.Type.MOB){
                             double dist = gob.rc.dist(mc);
                             if ((target == null || dist < target.rc.dist(mc)) && dist <= 5 * tilesz.x)
                                 target = gob;

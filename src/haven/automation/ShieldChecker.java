@@ -24,7 +24,9 @@ public class ShieldChecker extends Window {
     private boolean terminate;
     ChatUI.Channel.Message sentmsg;
     private static final int SLEEP = 30 * 60 * 1000 * 2; // 60 min
+    private static final int SLEEP5 = 1000*60*5; //5 min
     private boolean firstrun = true;
+    private int iteration;
     private static final Text.Foundry infof = new Text.Foundry(Text.sans, 10).aa(true);
 
     public ShieldChecker() {
@@ -69,25 +71,26 @@ public class ShieldChecker extends Window {
             GameUI gui = gameui();
               while (!terminate) {
                   PBotAPI.doAct("inspect");
-                  BotUtils.sleep(1000);
-
-                //  Gob player = BotUtils.player();
-                //  gui.map.wdgmsg("click", player.sc, player.rc.floor(posres), 1, 0, 0, (int) player.id, player.rc.floor(posres), 1, 0);
+                  BotUtils.sleep(2000);
                   BotUtils.mapInteractLeftClick(0);
                   BotUtils.sleep(2000);
                //   BotUtils.sysMsg(ui.VillageShield, Color.white);
                   lblc.settext("Result : "+ui.VillageShield);
+                  iteration++;
                   if(Discord.jdalogin!=null && !Config.AlertChannel.equals("Null")) {
                       for (TextChannel loop : haven.automation.Discord.channels) {
                           if (loop.getName().equals(Config.AlertChannel)) {
                               if (!firstrun) {
-                                  if (!curshield.equals(ui.VillageShield))
+                                  if (curshield.equals(ui.VillageShield) && iteration == 14) {
+                                      iteration = 1;
                                       loop.sendMessage("Shield Checker: Check result was : " + ui.VillageShield).queue();
-                                  else
-                                      loop.sendMessage("Shield Checker: everyone Check result changed! Is now : " + ui.VillageShield + " old value was : " + curshield).queue();
+                                  }
+                                  else if(!curshield.equals(ui.VillageShield))
+                                      loop.sendMessage("Shield Checker: @everyone Check result changed! Is now : " + ui.VillageShield + " old value was : " + curshield).queue();
                               } else {
-                                  loop.sendMessage("Shield Checker: Check result was : " + ui.VillageShield).queue();
+                                  loop.sendMessage("First Run Shield Checker: Check result was : " + ui.VillageShield).queue();
                                   firstrun = false;
+                                  iteration = 2;
                               }
                           }
                       }
@@ -96,7 +99,7 @@ public class ShieldChecker extends Window {
                       BotUtils.sysLogAppend("Checked shield but Discord is not connected, unable to send result.","white");
                   curshield = ui.VillageShield;
                   try{
-                      Thread.sleep(SLEEP);
+                      Thread.sleep(SLEEP5);
                   }catch(InterruptedException q){}
               }
         }
@@ -105,7 +108,16 @@ public class ShieldChecker extends Window {
     public void wdgmsg(Widget sender, String msg, Object... args) {
         if (sender == cbtn)
             reqdestroy();
-        else
+        else if(msg.equals("terminate"))
+        {
+            for(TextChannel loop:haven.automation.Discord.channels)
+                if (Config.AlertChannel.equals(loop.getName())) {
+                    loop.sendMessage(gameui().getparent(GameUI.class).buddies.getCharName() + ": Detected stop command, disabling shield monitoring.").queue();
+                    break;
+                }
+            terminate = true;
+            reqdestroy();
+        }
             super.wdgmsg(sender, msg, args);
     }
 

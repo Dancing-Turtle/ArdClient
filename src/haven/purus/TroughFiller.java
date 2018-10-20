@@ -65,7 +65,8 @@ public class TroughFiller extends Window implements GobSelectCallback {
 					if (BotUtils.findObjectByNames(1000, terobjs) == null
 							&& BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), invobjs).size() == 0)
 						break;
-					while (BotUtils.invFreeSlots() > 0) {
+					while(BotUtils.getItemAtHand() == null){
+					//while (BotUtils.invFreeSlots() > 0) {
 						if (stop)
 							break main;
 
@@ -75,15 +76,18 @@ public class TroughFiller extends Window implements GobSelectCallback {
 
 						Gob g = BotUtils.findObjectByNames(1000, terobjs);
 						gameui().map.wdgmsg("click", g.sc, g.rc.floor(posres),3,1,0,(int)g.id,g.rc.floor(posres),0,-1);
+						BotUtils.sleep(1000);
 					//	gui.map.wdgmsg("click", cistern.sc, cistern.rc.floor(posres), 3, 0, 0, (int) cistern.id, cistern.rc.floor(posres), 0, -1);
 						//BotUtils.pfRightClick(g, 0);
-						int i = 0;
+						while(BotUtils.getItemAtHand() == null & BotUtils.findObjectByNames(1000,terobjs)!=null && BotUtils.isMoving())
+							BotUtils.sleep(10);
+						/*int i = 0;
 						while (BotUtils.findObjectById(g.id) != null) {
 							if (i == 100)
 								break;
 							BotUtils.sleep(50);
 							i++;
-						}
+						}*/
 					}
 
 					if (stop)
@@ -106,7 +110,7 @@ public class TroughFiller extends Window implements GobSelectCallback {
 					}
 					//BotUtils.waitForWindow("Trough");
 
-					while (BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), invobjs).size() != 0) {
+					while (BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), invobjs).size() != 0 && !stop) {
 						if (stop)
 							break main;
 						GItem item = BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), invobjs).get(0).item;

@@ -724,7 +724,8 @@ public class FightWndEx extends Widget {
 	    saves[i] = unused;
 
 	Widget p;
-	info = add(new FightWnd.ImageInfoBox(new Coord(223, 177)), new Coord(5, 35).add(wbox.btloff()));
+	//info = add(new FightWnd.ImageInfoBox(new Coord(223, 177)), new Coord(5, 35).add(wbox.btloff()));
+		info = add(new FightWnd.ImageInfoBox(new Coord(223, 152)), new Coord(5, 35).add(wbox.btloff()));
 	//info.bg = new Color(0, 0, 0, 128);
 	Frame.around(this, Collections.singletonList(info));
 

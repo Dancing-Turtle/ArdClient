@@ -209,6 +209,14 @@ public class Discord extends ListenerAdapter implements Runnable {
         for (Widget w = gui.chat.lchild; w != null; w = w.prev) {
             if (w instanceof ChatUI.DiscordChat) {
                 ChatUI.DiscordChat chat = (ChatUI.DiscordChat) w;
+                //this checks to see if you're remotely disconnecting shield alert bot.
+                if(channelname.equals(Config.AlertChannel)) {
+                    if (msg.contains("!stop")) {
+                        if (gui.map.shieldchecker != null) {
+                            gui.map.shieldchecker.wdgmsg("terminate");
+                        }
+                    }
+                }
                 if (chat.name().equals(Resource.getLocString(Resource.BUNDLE_LABEL, channelname))) {
                     if (!author.getName().contains("Haven")) {
                         if (!msg.contains(Config.discordchannel)) {

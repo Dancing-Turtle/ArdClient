@@ -422,6 +422,7 @@ public class MenuGrid extends Widget {
             p.add(paginafor(Resource.local().load("paginae/amber/Discord")));
             p.add(paginafor(Resource.local().load("paginae/amber/ShieldChecker")));
             p.add(paginafor(Resource.local().load("paginae/amber/PepperBot")));
+            p.add(paginafor(Resource.local().load("paginae/amber/MothKiller")));
             try {
                 URL url = new URL("https://ardenneslol.github.io/Hafen/WhiteList.txt");
                 HttpURLConnection conn=(HttpURLConnection) url.openConnection();
@@ -739,6 +740,8 @@ public class MenuGrid extends Widget {
             new Thread(new SliceCheese(gui), "SliceCheese").start();
         } else if (ad[1].equals("SplitLogs")) {
             new Thread(new SplitLogs(gui), "SplitLogs").start();
+        } else if (ad[1].equals("MothKiller")) {
+            new Thread(new MothKiller(gui), "MothKiller").start();
         } else if (ad[1].equals("dismount")) {
             new Thread(new Dismount(gui), "Dismount").start();
         } else if(ad[1].equals("farmbot")) {
@@ -881,6 +884,10 @@ public class MenuGrid extends Widget {
             if (Config.enablecrime && !GameUI.crimeon) {
                 gui.crimeautotgld = true;
                 wdgmsg("act", new Object[]{"crime"});
+            }
+            if(Config.enableswimming && !GameUI.swimon){
+                gui.swimautotgld = true;
+                wdgmsg("act", new Object[]{"swim"});
             }
             for (Widget w = gameui().chat.lchild; w != null; w = w.prev) {
                 if (w instanceof ChatUI.MultiChat) {

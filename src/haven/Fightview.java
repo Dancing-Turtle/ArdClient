@@ -36,6 +36,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Fightview extends Widget {
+    private static final Resource oof = Resource.local().loadwait("sfx/hit1");
     static Tex bg = Resource.loadtex("gfx/hud/bosq");
     static int height = 5;
     static int ymarg = 5;
@@ -105,10 +106,13 @@ public class Fightview extends Widget {
         }
 
         public void use(Indir<Resource> act) {
+            try {
             lastact = act;
             lastuse = Utils.rtime();
+            if(lastact != null)
+            if(lastact.get().basename().contains("cleave"))
+                Audio.play(oof, 2);
             if (lastact != null && Config.logcombatactions) {
-                try {
                     Resource res = lastact.get();
                     Resource.Tooltip tt = res.layer(Resource.tooltip);
                     ttretaincur = tt.t;
@@ -126,14 +130,16 @@ public class Fightview extends Widget {
                         gameui().syslog.append(String.format("Enemy Player, %s, ip %d - %d", tt.t, ip, oip), combatLogOpClr);
                     else
                             gameui().syslog.append(String.format("Enemy :%s, %s, ip %d - %d",gob.getres().basename(), tt.t, ip, oip), combatLogOpClr);
-                } catch (Loading | NullPointerException l) {
                 }
-            }
+            } catch (Loading | NullPointerException l) { }
         }
     }
     public void use(Indir<Resource> act) {
         lastact = act;
         lastuse = Utils.rtime();
+        if(lastact != null)
+            if(lastact.get().basename().contains("cleave"))
+                Audio.play(oof, 2);
         if (lastact != null && Config.logcombatactions) {
             try {
                 Resource res = lastact.get();
