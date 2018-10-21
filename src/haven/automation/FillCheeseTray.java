@@ -1,15 +1,22 @@
 package haven.automation;
 
 
-import haven.Coord;
-import haven.GameUI;
-import haven.Inventory;
-import haven.WItem;
-import haven.Widget;
-import haven.Window;
+import haven.*;
+import haven.purus.BotUtils;
+import net.dv8tion.jda.client.entities.Application;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static haven.OCache.posres;
 
 public class FillCheeseTray implements Runnable {
     private GameUI gui;
+    WItem tray = null;
+    List<WItem> trays = new ArrayList<>();
+    List<WItem> trays2 = new ArrayList<>();
     private static final int TIMEOUT = 2000;
 
     public FillCheeseTray(GameUI gui) {
@@ -18,37 +25,68 @@ public class FillCheeseTray implements Runnable {
 
     @Override
     public void run() {
-        WItem curd;
-        while ((curd = Utils.findItemByPrefixInInv(gui.maininv, "gfx/invobjs/curd")) != null) {
-            WItem tray = null;
-            for (Widget w = gui.lchild; w != null && tray == null; w = w.prev) {
-                if (!(w instanceof Window))
-                    continue;
-                for (Widget inv = w.lchild; inv != null; inv = inv.prev) {
-                    if (!(inv instanceof Inventory))
-                        continue;
-                    tray = Utils.findItemInInv((Inventory) inv, "gfx/invobjs/cheesetray");
-                    if (tray != null)
-                        break;
-                }
-            }
-
-            if (tray == null)
-                return;
-
-            curd.item.wdgmsg("take", Coord.z);
-
+        synchronized (gui.ui.root.lchild) {
             try {
-                if (!Utils.waitForOccupiedHand(gui, TIMEOUT, "waitForOccupiedHand timed-out"))
-                    return;
-
-                tray.item.wdgmsg("itemact", 0);
-
-                if (!Utils.waitForEmptyHand(gui, TIMEOUT, "waitForEmptyHand timed-out"))
-                    return;
-            } catch (InterruptedException e) {
-                return;
-            }
+                for (Widget q = gui.ui.root.lchild; q != null; q = q.rnext()) {
+                    if (q instanceof Inventory) {
+                        tray = getTrays2((Inventory) q);
+                        if (tray != null) {
+                            trays = getTrays((Inventory) q);
+                            System.out.println("trays size : "+trays.size());
+                        }
+                    }
+                }
+                for (WItem item : trays){
+                    if(item.item.getcontents() != null)
+                    System.out.println("contents not null");
+                    else
+                        System.out.println("contents null");
+                    if(item.item.getcontents() == null)
+                        trays2.add(item);
+                    else if(item.item.getcontents().iscurds)
+                        trays2.add(item);
+                    }
+            } catch (NullPointerException q) {q.printStackTrace();}
         }
-    }
+        if(trays2.size() == 0){
+            BotUtils.sysMsg("No trays with space found, not running.",Color.white);
+            return;
+        }
+            if(BotUtils.getItemAtHand() == null) {
+                WItem curd = gui.maininv.getItemPartial("Curd");
+                BotUtils.takeItem(curd.item);
+                BotUtils.sleep(250);
+            }
+            System.out.println("Number of Cheese trays found is : "+trays2.size());
+            for (int i = 0; i < trays2.size(); i++) {
+                if(gui.maininv.getItemPartial("Curd") == null)
+                    break;
+                System.out.println("Tray number "+i);
+                    for(int l=0;l<5;l++) {
+                        if(gui.maininv.getItemPartial("Curd") == null)
+                            break;
+                        trays2.get(i).item.wdgmsg("itemact", 1);
+                        BotUtils.sleep(50);
+                    }
+                }
+                Coord slot = BotUtils.getFreeInvSlot(BotUtils.playerInventory());
+                if(BotUtils.getItemAtHand()!=null)
+                    BotUtils.dropItemToInventory(slot,BotUtils.playerInventory());
+                BotUtils.sysMsg("Done",Color.white);
+        }
+        private java.util.List<WItem> getTrays (Inventory inv){
+            List<WItem> trays = inv.getItemsPartial("Cheese Tray");
+            // BotUtils.sysMsg("trying to find trays", Color.WHITE);
+            if(trays == null)
+                return null;
+            return trays;
+        }
+
+        private WItem getTrays2 (Inventory inv){
+            WItem trays = inv.getItemPartialTrays("Tray");
+            // BotUtils.sysMsg("trying to find trays", Color.WHITE);
+            if(trays == null)
+                return null;
+            return trays;
+        }
 }

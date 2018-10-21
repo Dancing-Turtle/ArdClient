@@ -13,9 +13,7 @@ import haven.res.ui.tt.q.qbuff.QBuff;
 import net.dv8tion.jda.client.entities.Application;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.*;
 import java.util.List;
 
 import static haven.OCache.posres;
@@ -248,14 +246,28 @@ public class PepperBot extends Window implements AreaSelectCallback, GobSelectCa
 	public void run() {
 	BotUtils.sysMsg("Started", Color.white);
 	GameUI gui = gameui();
-	Window w = gui.getwnd("Trough");
-	VMeter vm = w.getchild(VMeter.class);
-	BotUtils.sysMsg("Meter : "+vm.amount,Color.white);
-
-
-	//List<WItem> idk = BotUtils.getInventoryContents(BotUtils.playerInventory());
-	//for (WItem idkok : idk)
-	//	System.out.println("res : " + idkok.item.resource().name);
+	BotUtils.pfRightClick(barrel,0);
+	BotUtils.waitForWindow("Barrel");
+	GItem item = BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), Arrays.asList("gfx/invobjs/seed-flax")).get(0).item;
+	BotUtils.takeItem(item);
+	while(BotUtils.getInventoryItemsByName(BotUtils.playerInventory(),"gfx/invobjs/seed-flax").size() > 0){
+		System.out.println("Looping");
+		if(BotUtils.getItemAtHand() == null){
+			System.out.println("Hand null, breaking");
+			break;
+		}
+		List<WItem> list = BotUtils.getInventoryItemsByName(BotUtils.playerInventory(),"gfx/invobjs/seed-flax");
+		gameui().map.wdgmsg("itemact", Coord.z, barrel.rc.floor(posres), 1, 0, (int) barrel.id,barrel.rc.floor(posres), 0, -1);
+		while(BotUtils.getInventoryItemsByName(BotUtils.playerInventory(),"gfx/invobjs/seed-flax").size() == list.size()) {
+			System.out.println("Waiting for lists to update");
+			BotUtils.sleep(10);
+		}
+	}
+    if (BotUtils.getItemAtHand() != null) {//still have seeds on cursor, dropping them in an empty inventory slot
+        gameui().map.wdgmsg("itemact",Coord.z, barrel.rc.floor(posres), 0, 0, (int) barrel.id, barrel.rc.floor(posres), 0, -1);
+        BotUtils.sleep(250);
+    }
+	System.out.println("Finished");
 }
 
 	public double round(double value, int places) {

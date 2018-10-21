@@ -205,8 +205,8 @@ public class SteelRefueler extends Window implements GobSelectCallback {
                         }
                     }
                     int curbranches = gui.maininv.getItemPartialCount("Branch");
-                    System.out.println("branches : "+curbranches);
-                    System.out.println("Loading : "+fueltoload);
+                 //   System.out.println("branches : "+curbranches);
+                 //   System.out.println("Loading : "+fueltoload);
                     int freeslots = BotUtils.invFreeSlots();
                     for (; fueltoload > 0; fueltoload--) {
 
@@ -244,8 +244,8 @@ public class SteelRefueler extends Window implements GobSelectCallback {
                                 BotUtils.sleep(10);
                         }
                     }
-                    System.out.println("Refueled with "+(curbranches - gui.maininv.getItemPartialCount("Branch")));
-                    System.out.println("Branches in inv : "+gui.maininv.getItemPartialCount("Branch"));
+                 //   System.out.println("Refueled with "+(curbranches - gui.maininv.getItemPartialCount("Branch")));
+                 //   System.out.println("Branches in inv : "+gui.maininv.getItemPartialCount("Branch"));
                 }
                 Collections.sort(completepercent);
                 lowest = completepercent.get(0);
@@ -267,6 +267,35 @@ public class SteelRefueler extends Window implements GobSelectCallback {
                 reportouttimer++;
                 completepercent.clear();
                 lowest = 0;
+                stockpiles.clear();
+                stockpiles.addAll(Stockpiles());
+                lbls.settext(stockpiles.size() + "");
+                if(stockpiles.size() == 0){
+                    if (Discord.jdalogin != null) {
+                        for (Widget w = gui.chat.lchild; w != null; w = w.prev) {
+                            if (w instanceof ChatUI.DiscordChannel) {
+                                if (((ChatUI.DiscordChannel) w).name().contains("steel")) {
+                                    ((ChatUI.DiscordChannel) w).send("Hey, I appear to have run out of fuel. Stopping :(");
+                                    terminate = true;
+                                    terminate();
+                                }
+                            }
+                        }
+                    }
+                }
+                if(stockpiles.size() < 5) {
+                    if (Discord.jdalogin != null) {
+                        for (Widget w = gui.chat.lchild; w != null; w = w.prev) {
+                            if (w instanceof ChatUI.DiscordChannel) {
+                                if (((ChatUI.DiscordChannel) w).name().contains("steel")) {
+                                    ((ChatUI.DiscordChannel) w).send("Hey, by the way, I only have "+stockpiles.size()+" stockpiles of fuel left.");
+                                }
+                            }
+                        }
+                    }
+                }
+                if(terminate)
+                    return;
                 try {
                     Thread.sleep(SLEEP);
                 } catch (InterruptedException e) {

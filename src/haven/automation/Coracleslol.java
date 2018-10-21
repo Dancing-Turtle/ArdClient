@@ -25,9 +25,9 @@ public class Coracleslol implements Runnable {
         if(coracle != null)
             havecoracle = true;
         if(!havecoracle){
+            try {
             while(BotUtils.findObjectByNames(10,"gfx/terobjs/vehicle/coracle")==null)
                 BotUtils.sleep(10);
-            try {
                 coraclegob = BotUtils.findObjectByNames(10, "gfx/terobjs/vehicle/coracle");
             }catch(NullPointerException ip){}
             if (coraclegob == null){
@@ -42,24 +42,30 @@ public class Coracleslol implements Runnable {
                    List<Coord> slots = BotUtils.getFreeInvSlots(BotUtils.playerInventory());
                         for (Coord i : slots) {
                             BotUtils.dropItemToInventory(i, BotUtils.playerInventory());
+                            BotUtils.sleep(10);
                         }
 
             }
         }
         else {
             coracle.item.wdgmsg("drop", Coord.z);
-            while(gui.maininv.getItemPartial("Coracle")!=null){BotUtils.sleep(10);}
-            while(BotUtils.findObjectByNames(10,"gfx/terobjs/vehicle/coracle") == null)
-                BotUtils.sleep(10);
-            Gob coraclegob = BotUtils.findObjectByNames(10, "gfx/terobjs/vehicle/coracle");
-            if (coraclegob == null) {
-                BotUtils.sysMsg("Coracle not found, breaking.", Color.white);
-                return;
-            } else {//Into the blue yonder!
-                FlowerMenu.setNextSelection("Into the blue yonder!");
-                BotUtils.doClick(coraclegob, 3, 1);
-                while (gui.ui.root.findchild(FlowerMenu.class) == null) {}
-            }
+            try {
+                while (gui.maininv.getItemPartial("Coracle") != null) {
+                    BotUtils.sleep(10);
+                }
+                while (BotUtils.findObjectByNames(10, "gfx/terobjs/vehicle/coracle") == null)
+                    BotUtils.sleep(10);
+                Gob coraclegob = BotUtils.findObjectByNames(10, "gfx/terobjs/vehicle/coracle");
+                if (coraclegob == null) {
+                    BotUtils.sysMsg("Coracle not found, breaking.", Color.white);
+                    return;
+                } else {//Into the blue yonder!
+                    FlowerMenu.setNextSelection("Into the blue yonder!");
+                    BotUtils.doClick(coraclegob, 3, 1);
+                    while (gui.ui.root.findchild(FlowerMenu.class) == null) {
+                    }
+                }
+            }catch(NullPointerException qqq){}
         }
     }
 }

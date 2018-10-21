@@ -81,13 +81,13 @@ public class DamageSprite extends Sprite implements PView.Render2D {
                 int myred = Fightsess.myred;
                 KinInfo kininfo = gob.getattr(KinInfo.class);
                 if (kininfo != null)
-                    BotUtils.sysLogAppend("Hit " + kininfo.name + " For " + dmg + " Damage and " + arm + " armor damage. Had " + blue + " blue opening and " + red + " red opening.", "green");
+                    BotUtils.sysLogAppend("Hit " + kininfo.name + " For " + dmg + " Damage. Had " + blue + " blue opening and " + red + " red opening.", "green");
                 else if (gob.isplayer())
-                    BotUtils.sysLogAppend("I got hit for " + dmg + " Damage and " + arm + " armor damage. I had " + myblue + " blue opening and " + myred + " red opening.", "red");
+                    BotUtils.sysLogAppend("I got hit for " + dmg + " Damage. I had " + myblue + " blue opening and " + myred + " red opening.", "red");
                 else if (gob.getres().basename().contains("Body"))
-                    BotUtils.sysLogAppend("Hit Unknown player For " + dmg + " Damage and " + arm + " armor damage. Had " + blue + " blue opening and " + red + " red opening.", "green");
+                    BotUtils.sysLogAppend("Hit Unknown player For " + dmg + " Damage. Had " + blue + " blue opening and " + red + " red opening.", "green");
                 else
-                    BotUtils.sysLogAppend("Hit " + gob.getres().basename() + " For " + dmg + " Damage and " + arm + " armor damage. Had " + blue + " blue opening and " + red + " red opening.", "green");
+                    BotUtils.sysLogAppend("Hit " + gob.getres().basename() + " For " + dmg + " Damage. Had " + blue + " blue opening and " + red + " red opening.", "green");
             }
             this.dmg += dmg;
             this.dmgtex = dfrn.render(this.dmg + "").tex();

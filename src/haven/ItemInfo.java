@@ -262,6 +262,7 @@ public abstract class ItemInfo {
         private static final Text.Line ch = Text.render(Resource.getLocString(Resource.BUNDLE_LABEL, "Contents:"));
         public double content = 0;
         public boolean isseeds;
+        public boolean iscurds;
 
         public Contents(Owner owner, List<ItemInfo> sub) {
             super(owner);
@@ -275,6 +276,8 @@ public abstract class ItemInfo {
                         // the absence of decimal separator (this will work irregardless of current localization)
                         int amountend = name.str.text.indexOf(' ');
                         isseeds = name.str.text.lastIndexOf('.', amountend) < 0;
+                        //determines if its a tray partially full of curds, maybe.
+                        iscurds = name.str.text.lastIndexOf('/', amountend) > 0;
                         if (amountend > 0) {
                             try {
                                 content = Double.parseDouble(name.str.text.substring(0, amountend));

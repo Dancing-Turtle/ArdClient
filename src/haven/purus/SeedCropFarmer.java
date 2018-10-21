@@ -85,7 +85,9 @@ public class SeedCropFarmer extends Window implements Runnable {
 
 			// Right click the crop
 			lblProg2.settext("Harvesting");
-			BotUtils.doClick(g, 1, 0);
+			try {
+				BotUtils.doClick(g, 1, 0);
+			}catch(NullPointerException ii){continue;}
 			BotUtils.gui.map.wdgmsg("click", Coord.z, g.rc.floor(posres), 1, 0);
 			while (BotUtils.player().rc.x != g.rc.x || BotUtils.player().rc.y != g.rc.y)
 				BotUtils.sleep(10);
@@ -221,7 +223,7 @@ public class SeedCropFarmer extends Window implements Runnable {
 								BotUtils.waitForWindow("Barrel");
 							else
 								BotUtils.waitForWindow("Trough");
-							if (BotUtils.getItemAtHand() != null) {
+							/*if (BotUtils.getItemAtHand() != null) {
 								gameui().map.wdgmsg("itemact", Coord.z, containers.get(0).rc.floor(posres), 0, 0, (int) containers.get(0).id,
 										containers.get(0).rc.floor(posres), 0, -1);
 								int i = 0;
@@ -249,8 +251,57 @@ public class SeedCropFarmer extends Window implements Runnable {
 									BotUtils.sleep(10);
 									i++;
 								}
+							}*/
+							GItem item = BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), Arrays.asList(seedName)).get(0).item;
+							BotUtils.takeItem(item);
+							while(BotUtils.getInventoryItemsByName(BotUtils.playerInventory(),seedName).size() > 0){
+								System.out.println("Looping");
+								if(BotUtils.getItemAtHand() == null){
+									System.out.println("Hand null, breaking");
+									break;
+								}
+								List<WItem> list = BotUtils.getInventoryItemsByName(BotUtils.playerInventory(),seedName);
+								gameui().map.wdgmsg("itemact", Coord.z, containers.get(0).rc.floor(posres), 1, 0, (int) containers.get(0).id, containers.get(0).rc.floor(posres), 0, -1);
+								int i = 0;
+								while(BotUtils.getInventoryItemsByName(BotUtils.playerInventory(),seedName).size() == list.size()) {
+									if(containers.size() == 1 && i > 250){
+										BotUtils.sysMsg("Only container in list appears to be full, stopping.",Color.white);
+										stopThread = true;
+										stop();
+										break;
+									}else if(i > 250){
+										BotUtils.sysMsg("Container appears to be full, removing.",Color.white);
+										Coord slot = BotUtils.getFreeInvSlot(BotUtils.playerInventory());
+										BotUtils.dropItemToInventory(slot,BotUtils.playerInventory());
+										BotUtils.sleep(250);
+										containers.remove(0);
+										BotUtils.pfRightClick(containers.get(0), 0);
+										if (containers.get(0).getres().basename().contains("barrel"))
+											BotUtils.waitForWindow("Barrel");
+										else
+											BotUtils.waitForWindow("Trough");
+										item = BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), Arrays.asList(seedName)).get(0).item;
+										BotUtils.takeItem(item);
+										break;
+									}
+									BotUtils.sleep(10);
+									i++;
+								}
 							}
-							while (BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), Arrays.asList(seedName)).size() != 0) {
+							BotUtils.sleep(250);
+							if (BotUtils.getItemAtHand() != null) {//still have seeds on cursor, dropping them in an empty inventory slot
+								gameui().map.wdgmsg("itemact",Coord.z, containers.get(0).rc.floor(posres), 0, 0, (int) containers.get(0).id, containers.get(0).rc.floor(posres), 0, -1);
+							}
+							if (BotUtils.getItemAtHand() != null) {//still have seeds on cursor, dropping them in an empty inventory slot
+								lblProg2.settext("Dropping to inv");
+								Coord slot = BotUtils.getFreeInvSlot(BotUtils.playerInventory());
+								if (slot != null) {
+									BotUtils.dropItemToInventory(slot, BotUtils.playerInventory());
+									while (BotUtils.getItemAtHand() != null)
+										BotUtils.sleep(10);
+								}
+							}
+							/*while (BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), Arrays.asList(seedName)).size() != 0) {
 								if (stopThread)
 									break;
 								GItem item = BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), Arrays.asList(seedName)).get(0).item;
@@ -283,7 +334,7 @@ public class SeedCropFarmer extends Window implements Runnable {
 									BotUtils.sleep(10);
 									i++;
 								}
-							}
+							}*/
 						}
 				} catch (NullPointerException | Loading | Resource.LoadException x) { }
 			}
@@ -295,7 +346,58 @@ public class SeedCropFarmer extends Window implements Runnable {
 							lblProg2.settext("Barreling");
 							BotUtils.pfRightClick(containers.get(0), 0);
 							BotUtils.waitForWindow("Barrel");
-							if (BotUtils.getItemAtHand() != null) {
+							item = BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), Arrays.asList(seedName)).get(0).item;
+							BotUtils.takeItem(item);
+							while(BotUtils.getInventoryItemsByName(BotUtils.playerInventory(),seedName).size() > 0){
+								System.out.println("Looping");
+								if(BotUtils.getItemAtHand() == null){
+									System.out.println("Hand null, breaking");
+									break;
+								}
+								List<WItem> list = BotUtils.getInventoryItemsByName(BotUtils.playerInventory(),seedName);
+								gameui().map.wdgmsg("itemact", Coord.z, containers.get(0).rc.floor(posres), 1, 0, (int) containers.get(0).id, containers.get(0).rc.floor(posres), 0, -1);
+								while(BotUtils.getInventoryItemsByName(BotUtils.playerInventory(),seedName).size() == list.size()) {
+									int i = 0;
+									while (BotUtils.getInventoryItemsByName(BotUtils.playerInventory(), seedName).size() == list.size()) {
+										if (containers.size() == 1 && i > 250) {
+											BotUtils.sysMsg("Only container in list appears to be full, stopping.", Color.white);
+											stopThread = true;
+											stop();
+											break;
+										} else if (i > 250) {
+											BotUtils.sysMsg("Container appears to be full, removing.", Color.white);
+											Coord slot = BotUtils.getFreeInvSlot(BotUtils.playerInventory());
+											BotUtils.dropItemToInventory(slot, BotUtils.playerInventory());
+											BotUtils.sleep(250);
+											containers.remove(0);
+											BotUtils.pfRightClick(containers.get(0), 0);
+											if (containers.get(0).getres().basename().contains("barrel"))
+												BotUtils.waitForWindow("Barrel");
+											else
+												BotUtils.waitForWindow("Trough");
+											item = BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), Arrays.asList(seedName)).get(0).item;
+											BotUtils.takeItem(item);
+											break;
+										}
+										BotUtils.sleep(10);
+										i++;
+									}
+								}
+							}
+							BotUtils.sleep(250);
+							if (BotUtils.getItemAtHand() != null) {//still have seeds on cursor, dropping them in an empty inventory slot
+								gameui().map.wdgmsg("itemact",Coord.z, containers.get(0).rc.floor(posres), 0, 0, (int) containers.get(0).id, containers.get(0).rc.floor(posres), 0, -1);
+							}
+							if (BotUtils.getItemAtHand() != null) {//still have seeds on cursor, dropping them in an empty inventory slot
+								lblProg2.settext("Dropping to inv");
+								Coord slot = BotUtils.getFreeInvSlot(BotUtils.playerInventory());
+								if (slot != null) {
+									BotUtils.dropItemToInventory(slot, BotUtils.playerInventory());
+									while (BotUtils.getItemAtHand() != null)
+										BotUtils.sleep(10);
+								}
+							}
+							/*if (BotUtils.getItemAtHand() != null) {
 								gameui().map.wdgmsg("itemact", Coord.z, containers.get(0).rc.floor(posres), 0, 0, (int) containers.get(0).id,
 										containers.get(0).rc.floor(posres), 0, -1);
 								int i = 0;
@@ -305,8 +407,8 @@ public class SeedCropFarmer extends Window implements Runnable {
 									BotUtils.sleep(10);
 									i++;
 								}
-							}
-							while (BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), Arrays.asList(seedName)).size() != 0) {
+							}*/
+							/*while (BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), Arrays.asList(seedName)).size() != 0) {
 								if (stopThread)
 									break;
 								item = BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), Arrays.asList(seedName)).get(0).item;
@@ -321,7 +423,7 @@ public class SeedCropFarmer extends Window implements Runnable {
 									BotUtils.sleep(10);
 									i++;
 								}
-							}
+							}*/
 						}
 					}
 						} catch(NullPointerException | Loading | Resource.LoadException p){

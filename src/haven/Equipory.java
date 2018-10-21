@@ -212,6 +212,10 @@ public class Equipory extends Widget implements DTarget {
 		        quickslots[s] = null;
                 }
             }
+        if (armorclass != null) {
+            armorclass.dispose();
+            armorclass = null;
+        }
 	    bonuses.update(slots);
         }
     }

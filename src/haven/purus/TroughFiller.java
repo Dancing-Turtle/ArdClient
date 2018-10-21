@@ -46,40 +46,51 @@ public class TroughFiller extends Window implements GobSelectCallback {
 
 	Thread t = new Thread(new Runnable() {
 		public void run() {
-			try {
+
 				main:
 				while (true) {
+					try {
+					System.out.println("Main loop start");
 					int timeout = 0;
-					while(BotUtils.findObjectByNames(1000,terobjs) == null) {
-						//System.out.println("While loop : " + timeout);
+					while(BotUtils.findObjectByNames(5000,terobjs) == null) {
+						System.out.println("Waiting to detect objects");
 						timeout++;
-						if(stop)
+						if(stop) {
+							stop = true;
 							break main;
+						}
 						if (timeout >= 100) {
-							timeout = 0;
+							System.out.println("Timeout expired, stopping");
 							stop();
 							break;
 						}
 						BotUtils.sleep(50);
 					}
-					if (BotUtils.findObjectByNames(1000, terobjs) == null
-							&& BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), invobjs).size() == 0)
+					if (BotUtils.findObjectByNames(5000, terobjs) == null && BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), invobjs).size() == 0) {
+						System.out.println("No objects on ground or in inv, breaking.");
 						break;
+					}
 					while(BotUtils.getItemAtHand() == null){
+						System.out.println("Waiting for item on cursor");
 					//while (BotUtils.invFreeSlots() > 0) {
-						if (stop)
+						if (stop) {
+							System.out.println("Stop detected, breaking.");
+							stop = true;
 							break main;
+						}
 
 
-						if (BotUtils.findObjectByNames(1000, terobjs) == null)
+						if (BotUtils.findObjectByNames(5000, terobjs) == null) {
+							System.out.println("No objects on ground, breaking.");
 							break;
+						}
 
-						Gob g = BotUtils.findObjectByNames(1000, terobjs);
+						Gob g = BotUtils.findObjectByNames(5000, terobjs);
 						gameui().map.wdgmsg("click", g.sc, g.rc.floor(posres),3,1,0,(int)g.id,g.rc.floor(posres),0,-1);
 						BotUtils.sleep(1000);
 					//	gui.map.wdgmsg("click", cistern.sc, cistern.rc.floor(posres), 3, 0, 0, (int) cistern.id, cistern.rc.floor(posres), 0, -1);
 						//BotUtils.pfRightClick(g, 0);
-						while(BotUtils.getItemAtHand() == null & BotUtils.findObjectByNames(1000,terobjs)!=null && BotUtils.isMoving())
+						while(BotUtils.getItemAtHand() == null & BotUtils.findObjectByNames(5000,terobjs)!=null && BotUtils.isMoving())
 							BotUtils.sleep(10);
 						/*int i = 0;
 						while (BotUtils.findObjectById(g.id) != null) {
@@ -90,8 +101,12 @@ public class TroughFiller extends Window implements GobSelectCallback {
 						}*/
 					}
 
-					if (stop)
+					if (stop) {
+						System.out.println("stop detected ,breaking");
 						break main;
+					}
+
+					BotUtils.sleep(500);
 
 					if (BotUtils.getItemAtHand() != null)
 						BotUtils.dropItem(0);
@@ -110,7 +125,7 @@ public class TroughFiller extends Window implements GobSelectCallback {
 					}
 					//BotUtils.waitForWindow("Trough");
 
-					while (BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), invobjs).size() != 0 && !stop) {
+				/*	while (BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), invobjs).size() != 0 && !stop) {
 						if (stop)
 							break main;
 						GItem item = BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), invobjs).get(0).item;
@@ -125,12 +140,41 @@ public class TroughFiller extends Window implements GobSelectCallback {
 							BotUtils.sleep(10);
 							i++;
 						}
-					}
+					}*/
 
-				}
-			}catch(Loading | Resource.LoadException | NullPointerException idklol) {BotUtils.sysLogAppend("Error captured in main thread.","white");}
+					while(BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), invobjs).size() > 0 && !stop){
+						if(BotUtils.getItemAtHand() == null){
+							GItem item = BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), invobjs).get(0).item;
+							BotUtils.takeItem(item);
+							BotUtils.sleep(100);
+						}
+						System.out.println("Looping");
+						if(BotUtils.getItemAtHand() == null){
+							System.out.println("Hand null, breaking");
+							break;
+						}
+						List<WItem> list = BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(),invobjs);
+						gameui().map.wdgmsg("itemact", Coord.z, trough.rc.floor(posres), 1, 0, (int) trough.id, trough.rc.floor(posres), 0, -1);
+						int i = 0;
+						while(BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), invobjs).size() == list.size()) {
+							if(i > 500){
+								System.out.println("Trough appears to be full, breaking.");
+								break;
+							}
+							BotUtils.sleep(10);
+							i++;
+						}
+					}
+					BotUtils.sleep(250);
+					if(BotUtils.getItemAtHand() != null)
+						gameui().map.wdgmsg("itemact", Coord.z, trough.rc.floor(posres), 0, 0, (int) trough.id, trough.rc.floor(posres), 0, -1);
+				}catch(Loading | Resource.LoadException | NullPointerException idklol) {
+						BotUtils.sysLogAppend("Error captured in main thread.","white");
+					}
+			}
 			BotUtils.sysMsg("Trough Filler finished", Color.WHITE);
-			reqdestroy();
+			stop = true;
+			stop();
 		}
 	});
 

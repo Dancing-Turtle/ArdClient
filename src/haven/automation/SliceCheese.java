@@ -23,7 +23,6 @@ public class SliceCheese implements Runnable {
         WItem tray = null;
         List<WItem> trays = new ArrayList<>();
         List<WItem> trays2 = new ArrayList<>();
-        List<Widget> children = new ArrayList<>();
         Window cupboard = null;
         synchronized (gui.ui.root.lchild) {
             try {
@@ -31,7 +30,6 @@ public class SliceCheese implements Runnable {
                     if (q instanceof Inventory) {
                         tray = getTrays2((Inventory) q);
                         if (tray != null) {
-                            children.add(q);
                             trays = getTrays((Inventory) q);
                         }
                     }
@@ -53,6 +51,7 @@ public class SliceCheese implements Runnable {
         gui.error("Number of Cheese trays found is : "+trays2.size());
             for (int i = 0; i < trays2.size(); i++) {
                     if (trays2.get(i).item.getcontents() != null) {
+                        FlowerMenu.setNextSelection("Slice up");
                         trays2.get(i).item.wdgmsg("iact", Coord.z, -1);
                         while(trays2.get(i).item.getcontents() != null)
                             BotUtils.sleep(10);
