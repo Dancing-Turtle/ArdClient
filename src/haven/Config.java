@@ -123,6 +123,7 @@ public class Config {
     public static boolean tilecenter = Utils.getprefb("tilecenter", false);
     public static boolean userazerty = Utils.getprefb("userazerty", false);
     public static boolean hlightcuropp = Utils.getprefb("hlightcuropp", false);
+    public static boolean cRackmissing = Utils.getprefb("cRackmissing", false);
     public static boolean reversebadcamx = Utils.getprefb("reversebadcamx", false);
     public static boolean reversebadcamy = Utils.getprefb("reversebadcamy", false);
     public static boolean showservertime = Utils.getprefb("showservertime", false);
@@ -228,6 +229,9 @@ public class Config {
     public static int smatdangerred = Utils.getprefi("smatdangerred",255);
     public static int smatdangergreen= Utils.getprefi("smatdangergreen",0);
     public static int smatdangerblue = Utils.getprefi("smatdangerblue",0);
+    public static int cRackred = Utils.getprefi("cRackred",255);
+    public static int cRackgreen = Utils.getprefi("cRackgreen",0);
+    public static int cRackblue = Utils.getprefi("cRackblue",255);
     public static String confid = "amber";
     public static final boolean isUpdate;
 

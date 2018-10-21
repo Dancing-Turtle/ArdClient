@@ -65,7 +65,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
     private static final Material.Colors dframeEmpty = new Material.Colors(new Color(0, 255, 0, 200));
     private static final Material.Colors cRackEmpty = new Material.Colors(new Color(0, 255, 0, 255));
     private static final Material.Colors cRackFull = new Material.Colors(new Color(255, 0, 0, 255));
-    private static final Material.Colors cRackMissing = new Material.Colors(new Color(255, 0, 255, 255));
+    private static final Material.Colors coopMissing = new Material.Colors(new Color(255, 0, 255, 255));
     private static final Material.Colors dframeDone = new Material.Colors(new Color(255, 0, 0, 200));
     private static final Material.Colors cupboardfull = new Material.Colors(new Color(255, 0, 0, 175));
     private static final Material.Colors cupboardempty = new Material.Colors(new Color(0, 255, 0, 175));
@@ -556,8 +556,8 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
     if(Config.showrackstatus && type == Type.CHEESERACK){
             if (ols.size() == 3)
                 rl.prepc(cRackFull);
-          //  if (ols.size() > 0 && ols.size() < 3)
-             //   rl.prepc(cRackMissing);
+           if (ols.size() > 0 && ols.size() < 3 && Config.cRackmissing)
+                rl.prepc(BPRadSprite.cRackMissing);
             else
                 rl.prepc(cRackEmpty);
     }
@@ -587,7 +587,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             if (stage == 0)
                 rl.prepc(cRackFull);
             if(stage == 1)
-                rl.prepc(cRackMissing);
+                rl.prepc(coopMissing);
             if(stage == 2)
                 rl.prepc(dframeWater);
         }
@@ -623,7 +623,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             if (stage == 2 || stage == 1 || stage == -62 || stage == -63 || stage == 66 || stage == 65)
                 rl.prepc(cRackFull);
             if (stage == 6 || stage == 5 || stage == -58 || stage == -59 || stage == 69 || stage == 70)
-                rl.prepc(cRackMissing);
+                rl.prepc(coopMissing);
             if(stage == 58 || stage == 57 || stage == -6 || stage == -7 || stage == 122 || stage == 121)
                 rl.prepc(dframeWater);
         }

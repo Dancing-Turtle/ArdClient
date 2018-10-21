@@ -812,6 +812,65 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
+        appender.add(new CheckBox("Highlight partially full cheese racks.") {
+            {
+                a = Config.cRackmissing;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("cRackmissing", val);
+                Config.cRackmissing = val;
+                a = val;
+            }
+        });
+        appender.add(new Label("Radius RGB Red Cheese Rack Missing Color"));
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(150, 0, 255, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (Config.cRackred);
+            }
+
+            public void changed() {
+                int vol = val;
+                Config.cRackred = vol;
+                Utils.setprefi("cRackred", vol);
+                BPRadSprite.cRackMissing = new Material.Colors(new Color(Config.cRackred, Config.cRackgreen, Config.cRackblue, 255));
+            }
+        });
+
+        appender.setVerticalMargin(0);
+        appender.add(new Label("Radius RGB Green Cheese Rack Missing Color"));
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(150, 0, 255, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (Config.cRackgreen);
+            }
+
+            public void changed() {
+                int vol = val;
+                Config.cRackgreen = vol;
+                Utils.setprefi("cRackgreen", vol);
+                BPRadSprite.cRackMissing = new Material.Colors(new Color(Config.cRackred, Config.cRackgreen, Config.cRackblue, 255));
+            }
+        });
+
+        appender.setVerticalMargin(0);
+        appender.add(new Label("Radius RGB Blue Cheese Rack Missing Color"));
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(150, 0, 255, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (Config.cRackblue);
+            }
+            public void changed() {
+                int vol = val;
+                Config.cRackblue = vol;
+                Utils.setprefi("cRackblue", vol);
+                BPRadSprite.cRackMissing = new Material.Colors(new Color(Config.cRackred, Config.cRackgreen, Config.cRackblue, 255));
+            }
+        });
         appender.add(new CheckBox("Highlight finished garden pots. Requires restart.") {
             {
                 a = Config.highlightpots;
