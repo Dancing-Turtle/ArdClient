@@ -216,6 +216,7 @@ public class FlaxBot extends Window {
 
                     if (stopThread)
                         return;
+                    BotUtils.sleep(200);
 
                     try {
                         while (gui.maininv.getItemPartial("Flax") == null)

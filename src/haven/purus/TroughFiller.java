@@ -34,7 +34,7 @@ public class TroughFiller extends Window implements GobSelectCallback {
 
 		}, new Coord(10, 10).add(wbox.btloff()));
 		Frame.around(this, Collections.singletonList(inf));
-		Label infolbl = inf.add(new Label("Alt + Click to select trough"), new Coord(5, 0));
+		Label infolbl = inf.add(new Label("Alt + Click to select trough/compost bin"), new Coord(5, 0));
 		stopBtn = new Button(120, "Stop") {
 			@Override
 			public void click() {
@@ -180,7 +180,7 @@ public class TroughFiller extends Window implements GobSelectCallback {
 
 	@Override
 	public void gobselect(Gob gob) {
-		if (gob.getres().basename().contains("trough")) {
+		if (gob.getres().basename().contains("trough") || gob.getres().basename().contains("compostbin")) {
 			trough = gob;
 			t.start();
 		}

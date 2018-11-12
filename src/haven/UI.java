@@ -58,7 +58,8 @@ public class UI {
     public int beltWndId = -1;
 	public GameUI gui;
 	public Widget realmchat;
-	public String VillageShield;
+	public String VillageShield = "";
+	public String PrivateShield = "";
 	public Widget makewnd;
 
 
@@ -293,7 +294,7 @@ public class UI {
         if (cap.equals("Charter Stone") || cap.equals("Sublime Portico")) {
             // show secrets list only for already built chartes/porticos
             if (wdg.wsz.y >= 80) {
-                wdg.add(new CharterList(150, 5), new Coord(0, 50));
+                wdg.add(new CharterList(150, 20), new Coord(0, 50));
                 wdg.presize();
             }
         } else if (gui != null && gui.livestockwnd != null && gui.livestockwnd.getAnimalPanel(cap) != null) {
@@ -400,11 +401,16 @@ public class UI {
             }}
                 if (wdg != null) {
                     try {
-                        for (Object obj : args)
-                            if (obj.toString().contains("shield")) {
+                        for (Object obj : args) {
+                            if (obj.toString().contains("Village shield")) {
                                 VillageShield = obj.toString();
-                                System.out.println("shield : " + VillageShield);
+                                System.out.println("Village shield : " + VillageShield);
                             }
+                            if (obj.toString().contains("Claim shield")) {
+                                PrivateShield = obj.toString();
+                                System.out.println("Claim shield : " + PrivateShield);
+                            }
+                        }
                     } catch (NullPointerException q) {}
 
          //     try { for(Object obj:args) if(!wdg.toString().contains("CharWnd")) System.out.println("UI Wdg : " + wdg + " msg : "+msg+" id = " + id + " arg 1 : " + obj); }catch(ArrayIndexOutOfBoundsException qq){}

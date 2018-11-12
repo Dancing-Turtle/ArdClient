@@ -304,27 +304,14 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
 
     private void dropItMaybe() {
         Resource curs = ui.root.getcurs(Coord.z);
-        GameUI gui = gameui();
+      //  GameUI gui = gameui();
         if (curs != null && curs.name.equals("gfx/hud/curs/mine")) {
-         //   try {
-             //   Window MinerAlert = gui.getwnd("Miner Alert");
-               // if (MinerAlert != null){
-                 //   for (Widget a = MinerAlert.lchild; a != null; a = a.prev) {
-                     //       if (a instanceof Button) {
-                            //    if (((Button) a).text.text == "Run") {
-                                   // ((Button) a).click();
-                              //  }
-                      //  }
-                  //  }
-              //  }
-         //   }catch(NullPointerException q){}
-
-            String name = this.resource().basename();
-            IMeter.Meter stam = gui.getmeter("stam", 0);
+           /* IMeter.Meter stam = gui.getmeter("stam", 0);
             if (stam.a < 40) {
                 Thread i = new Thread(new BeltDrink(gui), "BeltDrink");
                 i.start();
-            }
+            }*/
+            String name = this.resource().basename();
             if (Config.dropMinedStones && Config.mineablesStone.contains(name) ||
                     Config.dropMinedOre && Config.mineablesOre.contains(name) ||
                     Config.dropMinedOrePrecious && Config.mineablesOrePrecious.contains(name) ||

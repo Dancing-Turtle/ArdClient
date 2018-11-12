@@ -562,10 +562,10 @@ public class CharWnd extends Window {
 
         public void lvlup() {
             lvlt = 1.0;
-	    if(ui != null){
+	  //  if(ui != null){
 		//ui.message(String.format("Your %s leveled up!", rnm.text), GameUI.MsgType.GOOD);
-		BotUtils.sysMsg("Your "+rnm.text+" leveled up!", green);
-	    }
+		//BotUtils.sysMsg("Your "+rnm.text+" leveled up!", green);
+	  //  }
         }
     }
 

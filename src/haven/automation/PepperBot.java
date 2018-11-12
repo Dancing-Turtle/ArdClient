@@ -200,9 +200,9 @@ public class PepperBot extends Window implements AreaSelectCallback, GobSelectCa
 		if (gob.getres().basename().contains("barrel")) {
 			barrel = gob;
 			BotUtils.sysMsg("Barrel selected!x : " + gob.rc.x + " y : " + gob.rc.y, Color.WHITE);
-		} else if (gob.getres().basename().contains("well") || (gob.getres().basename().contains("Cistern"))) {
+		} else if (gob.getres().basename().contains("well") || (gob.getres().basename().contains("cistern"))) {
 			water = gob;
-			BotUtils.sysMsg("Well selected! x : " + gob.rc.x + " y : " + gob.rc.y, Color.white);
+			BotUtils.sysMsg("Well/Cistern selected! x : " + gob.rc.x + " y : " + gob.rc.y, Color.white);
 		} else if (gob.getres().basename().contains("pow")) {
 			hfire = gob;
 			BotUtils.sysMsg("Hearthfire selected!x : " + gob.rc.x + " y : " + gob.rc.y, Color.white);

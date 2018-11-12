@@ -1726,10 +1726,10 @@ public class Resource implements Serializable {
 
 	private static final String[] fmtLocStringsFlower = new String[]{
 			"Gild (%s%% chance)",
-			"Follow %s",
-			"Travel along %s",
-			"Connect %s",
-			"Extend %s"
+			//"Follow %s",
+			//"Travel along %s",
+			//"Connect %s",
+		//	"Extend %s"
 	};
 
 	private static final String[] fmtLocStringsMsg = new String[]{

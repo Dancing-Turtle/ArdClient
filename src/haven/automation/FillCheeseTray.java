@@ -54,7 +54,12 @@ public class FillCheeseTray implements Runnable {
         }
             if(BotUtils.getItemAtHand() == null) {
                 WItem curd = gui.maininv.getItemPartial("Curd");
-                BotUtils.takeItem(curd.item);
+                try {
+                    BotUtils.takeItem(curd.item);
+                }catch(NullPointerException q){
+                    BotUtils.sysMsg("Don't appear to have curds, stopping.",Color.white);
+                    return;
+                }
                 BotUtils.sleep(250);
             }
             System.out.println("Number of Cheese trays found is : "+trays2.size());

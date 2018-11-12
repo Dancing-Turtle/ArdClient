@@ -239,6 +239,8 @@ public class Window extends Widget implements DTarget {
                     public void click() {
                         Resource curs = ui.root.getcurs(c);
                         if (curs.name.equals("gfx/hud/curs/eat")) {
+                            Map idk = getStats();
+                            System.out.println("Clicked, "+idk.size());
                           //  for (Widget table = parent.lchild; table != null; table = table.prev) {
                                // if (table instanceof Inventory) {
                                   //  List<WItem> foods = getfoods((Inventory) table);
@@ -259,13 +261,21 @@ public class Window extends Widget implements DTarget {
                                                 food.wdgmsg("iact",Coord.z,-1);
                                             }
                                         }
-
                                     }
 
                                 } catch (NullPointerException q) {
                                 }
                             }
-
+                            BotUtils.sleep(1000);
+                        Map idk2 = getStats();
+                            idk2.forEach((k,v) ->{
+                                if((Integer)idk2.get(k) - (Integer)idk.get(k) > 0) {
+                                    System.out.println("Bulk Stats gained : " + k + " value : " + ((Integer) idk2.get(k) - (Integer) idk.get(k)));
+                                    BotUtils.sysLogAppend("Bulk Stats gained : " + k + " value : " + ((Integer) idk2.get(k) - (Integer) idk.get(k)),"green");
+                                }
+                                else
+                                    System.out.println("Old : "+idk.get(k)+" new : "+v);
+                            });
                         }
                         else{
                             BotUtils.sysMsg("Click Feast First!",Color.white);
@@ -290,8 +300,10 @@ public class Window extends Widget implements DTarget {
                 for (Widget wdg = this.lchild; wdg != null; wdg = wdg.prev) {
                     if (wdg instanceof Inventory) {
                         for (WItem item : ((Inventory) wdg).wmap.values()) {
-                            Curiosity ci = ItemInfo.find(Curiosity.class, item.item.info());
-                            totalLP += ci.exp;
+                            try {
+                                Curiosity ci = ItemInfo.find(Curiosity.class, item.item.info());
+                                totalLP += ci.exp;
+                            }catch(NullPointerException qq){}
                             studyTimes.put(item.item.getname(), studyTimes.get(item.item.getname()) == null ? item.item.studytime : studyTimes.get(item.item.getname()) + item.item.studytime);
                         }
                     }
@@ -579,6 +591,50 @@ public class Window extends Widget implements DTarget {
             return (ret);
         else
             return ("");
+    }
+
+    private Map<String, Integer> getStats(){
+        CharWnd chrwdg = null;
+        Map<String, Integer> statmap = new HashMap<String, Integer>();
+        try {
+            chrwdg = ((GameUI) parent).chrwdg;
+        } catch (Exception e) { // fail silently
+        }
+        if(chrwdg != null){
+            for (CharWnd.Attr attr2 : chrwdg.base) {
+                System.out.println("name : "+attr2.attr.nm);
+                if(attr2.attr.nm.contains("str")){
+                    statmap.put("str",attr2.attr.comp);
+                }
+                if(attr2.attr.nm.contains("agi")){
+                    statmap.put("agi",attr2.attr.comp);
+                }
+                if(attr2.attr.nm.contains("int")){
+                    statmap.put("int",attr2.attr.comp);
+                }
+                if(attr2.attr.nm.contains("con")){
+                    statmap.put("con",attr2.attr.comp);
+                }
+                if(attr2.attr.nm.contains("prc")){
+                    statmap.put("prc",attr2.attr.comp);
+                }
+                if(attr2.attr.nm.contains("csm")){
+                    statmap.put("csm",attr2.attr.comp);
+                }
+                if(attr2.attr.nm.contains("dex")){
+                    statmap.put("dex",attr2.attr.comp);
+                }
+                if(attr2.attr.nm.contains("wil")){
+                    statmap.put("wil",attr2.attr.comp);
+                }
+                if(attr2.attr.nm.contains("psy")){
+                    statmap.put("psy",attr2.attr.comp);
+                }
+            }
+        }
+
+        statmap.forEach((k, v) -> System.out.println("Key : "+k+" value : "+v));
+        return statmap;
     }
 
     public boolean ismousegrab() {

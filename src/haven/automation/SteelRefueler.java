@@ -9,6 +9,7 @@ import java.util.*;
 import haven.*;
 import haven.purus.BotUtils;
 import haven.purus.pbot.PBotAPI;
+import net.dv8tion.jda.core.entities.TextChannel;
 
 
 public class SteelRefueler extends Window implements GobSelectCallback {
@@ -108,6 +109,18 @@ public class SteelRefueler extends Window implements GobSelectCallback {
         public void run() {
             GameUI gui = gameui();
             while (!terminate) {
+                if(!ui.sess.alive()) {
+                    if (Discord.jdalogin != null) {
+                        for (TextChannel loop : haven.automation.Discord.channels) {
+                            if (loop.getName().contains("steel")) {
+                                loop.sendMessage("Steel Bot : I seem to have disconnected, please reconnect when convenient.").queue();
+                                stopbtn.click();
+                                terminate = true;
+                                return;
+                            }
+                        }
+                    }
+                }
                 cloop:
                 for (Gob c : crucibles) {
                     // take fuel from stockpiles if we don't have enough in the inventory

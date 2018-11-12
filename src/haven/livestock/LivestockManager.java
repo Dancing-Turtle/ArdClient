@@ -169,7 +169,8 @@ public class LivestockManager extends Window {
         public Panel() {
             visible = false;
             c = Coord.z;
-            scrollPort = new Scrollport(new Coord(WINDOW_WIDTH - 40, 290)) {
+           // scrollPort = new Scrollport(new Coord(WINDOW_WIDTH - 40, 290)) {
+                scrollPort = new Scrollport(new Coord(WINDOW_WIDTH - 40, 300), 25) {
                 @Override
                 public void draw(GOut g) {
                     g.chcolor(0, 0, 0, 128);
@@ -178,7 +179,8 @@ public class LivestockManager extends Window {
                     super.draw(g);
                 }
             };
-            add(scrollPort, new Coord(0, 25));
+           // add(scrollPort, new Coord(0, 25));
+            add(scrollPort, new Coord(0, 22));
         }
 
         public void delete(Animal animal) {
@@ -326,8 +328,12 @@ public class LivestockManager extends Window {
             }
 
             DetailsWdg details = new DetailsWdg(pendingAnimal);
-            p.scrollPort.cont.add(details, new Coord(0, y));
-            details.sz = new Coord(p.scrollPort.cont.sz.x, DetailsWdg.HEIGHT);
+            //p.scrollPort.cont.add(details, new Coord(0, y));
+          //  details.sz = new Coord(p.scrollPort.cont.sz.x, DetailsWdg.HEIGHT);
+            Scrollport.Scrollcont scrollCont = p.scrollPort.cont;
+            scrollCont.add(details, new Coord(0, y));
+            p.scrollPort.bar.max = Math.max(0, scrollCont.contentsz().y - scrollCont.sz.y + DetailsWdg.HEIGHT);
+            details.sz = new Coord(scrollCont.sz.x, DetailsWdg.HEIGHT);
 
             chpanel(p);
             pendingAnimal = null;

@@ -2,7 +2,7 @@
 
 <project name="hafen" default="deftgt">
   <property name="name" value="ArdClient"/>
-  <property name="version" value="1.00.55"/>
+  <property name="version" value="1.00.56"/>
 
   <target name="build-env">
     <mkdir dir="build" />
@@ -147,6 +147,11 @@
     </target>
 
     <target name="New Distribute">
+        <delete file="D:\GithubFolder\Ardenneslol.github.io\Hafen\amber-res.jar"/>
+        <delete file="D:\GithubFolder\Ardenneslol.github.io\Hafen\hafen.jar"/>
+        <delete file="D:\GithubFolder\Ardenneslol.github.io\Hafen\HavenDiscord.jar"/>
+        <delete file="D:\GithubFolder\Ardenneslol.github.io\Hafen\rxjava-1.1.5.jar"/>
+        <delete file="D:\GithubFolder\Ardenneslol.github.io\Hafen\rxjava-1.1.5-javadoc.jar"/>
         <copy todir="D:\GithubFolder\Ardenneslol.github.io\Hafen">
             <fileset dir="build" includes="amber-res.jar, hafen.jar, HavenDiscord.jar, rxjava-1.1.5.jar, rxjava-1.1.5-javadoc.jar" />
         </copy>

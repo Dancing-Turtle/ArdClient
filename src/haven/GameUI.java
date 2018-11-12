@@ -83,6 +83,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public OptWnd opts;
     public Collection<DraggedItem> hand = new LinkedList<DraggedItem>();
     private Collection<DraggedItem> handSave = new LinkedList<DraggedItem>();
+    private int MinerDrinkTimer;
     public WItem vhand;
     public ChatUI chat;
     public Speedget speedget;
@@ -112,7 +113,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     private ErrorSysMsgCallback errmsgcb;
     public StudyWnd studywnd;
     public LivestockManager livestockwnd;
-    public GameUI gui = null;
     public ItemClickCallback itemClickCallback;
     public CraftWindow makewnd;
     public ActWindow craftlist, buildlist, actlist;
@@ -1034,6 +1034,17 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 
     public void tick(double dt) {
         super.tick(dt);
+        Resource curs = ui.root.getcurs(Coord.z);
+        if (curs != null && curs.name.equals("gfx/hud/curs/mine")) {
+        MinerDrinkTimer++;
+        if(MinerDrinkTimer > 300) {
+            MinerDrinkTimer = 0;
+                IMeter.Meter stam = getmeter("stam", 0);
+                if (stam.a < 60) {
+                    Drink();
+                }
+            }
+        }
         double idle = Utils.rtime() - ui.lastevent;
         if (!afk && (idle > 300)) {
             afk = true;
@@ -1148,7 +1159,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     }
 
     public void wdgmsg(Widget sender, String msg, Object... args) {
-  /*  System.out.println("############");
+   /* System.out.println("############");
     	if(!sender.toString().contains("Camera"))
         System.out.println(sender);
     	System.out.println(msg);

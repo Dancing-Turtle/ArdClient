@@ -2663,6 +2663,18 @@ public class OptWnd extends Window {
             iconslist.items.add(itm);
         map.add(iconslist, new Coord(475, 15));
 
+        map.add(new CheckBox("Hide ALL (yes ALL) Icons") {
+            {
+                a = Config.hideallicons;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("hideallicons", val);
+                Config.hideallicons = val;
+                a = val;
+            }
+        },475,350);
+
 
         map.pack();
     }

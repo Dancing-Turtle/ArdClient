@@ -126,6 +126,26 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 		add(beetBtn, new Coord(20, y));
 		y += 35;
 
+		Button leekBtn = new Button(140, "Leeks") {
+			@Override
+			public void click() {
+				if (containeronly || replantcontainer) {
+					BotUtils.sysMsg("Choose replant for leeks!", Color.WHITE);
+				} else if (a != null && b != null) {
+					// Start beetroot onion farmer and close this window
+					SeedCropFarmer bf = new SeedCropFarmer(a, b, "gfx/terobjs/plants/leek", "gfx/invobjs/leek", 5, replant, containeronly, replantcontainer, containers);
+
+					gameui().add(bf, new Coord(gameui().sz.x / 2 - bf.sz.x / 2, gameui().sz.y / 2 - bf.sz.y / 2 - 200));
+					new Thread(bf).start();
+					this.parent.destroy();
+				} else {
+					BotUtils.sysMsg("Area not selected!", Color.WHITE);
+				}
+			}
+		};
+		add(leekBtn, new Coord(20, y));
+		y += 35;
+
 		Button barleyBtn = new Button(140, "Barley") {
 			@Override
 			public void click() {

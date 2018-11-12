@@ -49,7 +49,20 @@ public class PBotAPI {
 	public static void sysMsg(String str, int r, int g, int b) {
 		gui.msg(str, new Color(r, g, b));
 	}
-	
+	/* Get tile type
+         * @param x X-Coordinate
+         * @param y Y-Coordinate
+         * @return Tile type (integer)
+         */
+	public static int getTile(int x, int y) {
+		return gui.ui.sess.glob.map.gettile(new Coord(x, y));
+	}
+
+       /* Teleport to you hearthfire
+         */
+	public static void travelHearth() {
+		gui.act("travel", "hearth");
+	}
 	/**
 	 * Click an object
 	 * @param gob Gob to click

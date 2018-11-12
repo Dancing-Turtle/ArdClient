@@ -104,13 +104,15 @@ public class PepperBotRun extends Window implements Runnable {
 			crops = Crops(true);
 			for (Gob g : crops) {
 				if (stopThread) // Checks if aborted
-					return;
+					break;
 
 
 				// Check if stamina is under 30%, drink if needed
 				gui = HavenPanel.lui.root.findchild(GameUI.class);
 				IMeter.Meter stam = gui.getmeter("stam", 0);
 				if (stam.a <= 60) {
+					if (stopThread)
+						break;
 					lblProg2.settext("Drinking");
 					new Thread(new BeltDrink(gui), "BeltDrink").start();
 					BotUtils.sleep(5000);
@@ -118,13 +120,15 @@ public class PepperBotRun extends Window implements Runnable {
 
 
 				if (stopThread)
-					return;
+					break;
 
 				int stageBefore = g.getStage();
 
 
 				// Right click the crop
 				try {
+					if (stopThread)
+						break;
 					lblProg2.settext("Harvesting");
 					BotUtils.doClick(g,3,0);
 				} catch (NullPointerException qq) {
@@ -135,6 +139,8 @@ public class PepperBotRun extends Window implements Runnable {
 
 				// Wait for harvest menu to appear
 				while (ui.root.findchild(FlowerMenu.class) == null) {
+					if (stopThread)
+						break;
 					retryharvest++;
 					BotUtils.sleep(10);
 					if (retryharvest >= 500) {
@@ -144,8 +150,7 @@ public class PepperBotRun extends Window implements Runnable {
 						retryharvest = 0;
 					}
 
-					if (stopThread)
-						return;
+
 				}
 
 				// Select the harvest option
@@ -161,6 +166,8 @@ public class PepperBotRun extends Window implements Runnable {
 
 				// Wait until stage has changed = harvested
 				while (true) {
+					if (stopThread)
+						break;
 					retryharvest++;
 					if (retryharvest >= 500) {
 						BotUtils.sysLogAppend("Retrying harvest", "white");
@@ -173,8 +180,7 @@ public class PepperBotRun extends Window implements Runnable {
 						break;
 					else
 						BotUtils.sleep(20);
-					if (stopThread)
-						return;
+
 				}
 
 				if (BotUtils.invFreeSlots() < 4 && !stopThread) {
@@ -183,6 +189,8 @@ public class PepperBotRun extends Window implements Runnable {
 					gui.act("travel", "hearth");
 					BotUtils.sleep(6000);
 					while (BotUtils.invFreeSlots() < 4 && !stopThread) {
+						if (stopThread) // Checks if aborted
+							break;
 						List<WItem> pepperlist = gameui().maininv.getItemsPartial("Peppercorn");
 						if (pepperlist.size() == 0) {
 							lblProg2.settext("Tables");
@@ -240,6 +248,8 @@ public class PepperBotRun extends Window implements Runnable {
 								BotUtils.sleep(6000);
 							}
 							while (gui.maininv.getItemPartialCount("Drupe") > 0) {
+								if (stopThread) // Checks if aborted
+									break;
 								lblProg2.settext("Tables");
 								while (htable == null) {
 									if(tables.size() == 0)
@@ -321,6 +331,8 @@ public class PepperBotRun extends Window implements Runnable {
 						int tryagaintimer = 0;
 						gui = gameui();
 						while(gameui().getwnd("Cauldron") == null){
+							if (stopThread) // Checks if aborted
+								break;
 							BotUtils.sleep(10);
 							try {
 								Thread.sleep(10);
@@ -392,6 +404,8 @@ public class PepperBotRun extends Window implements Runnable {
 							}
 						}
 						while (gui.prog >= 0) {
+							if (stopThread) // Checks if aborted
+								break;
 							lblProg2.settext("Boiling");
 							BotUtils.sleep(10);
 						}
@@ -401,6 +415,8 @@ public class PepperBotRun extends Window implements Runnable {
 					}
 				}
 				if(boilmode) {
+					if (stopThread) // Checks if aborted
+						break;
 					lblProg2.settext("Moving to harvest");
 					boilmode = false;
 					gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
@@ -464,7 +480,18 @@ public class PepperBotRun extends Window implements Runnable {
 				}
 			}
 		}
-		gobs.sort(new CoordSort());
+		if(direction == 1)
+			gobs.sort(new CoordSort1());
+
+		else if (direction == 2)
+			gobs.sort(new CoordSort2());
+
+		else if (direction == 3)
+			gobs.sort(new CoordSort3());
+
+		else if (direction == 4)
+			gobs.sort(new CoordSort4());
+
 		return gobs;
 	}
 	public ArrayList<Gob> Tables() {
@@ -482,26 +509,17 @@ public class PepperBotRun extends Window implements Runnable {
 				}
 			}
 		}
-		gobs.sort(new CoordSort());
-		return gobs;
-	}
+		if(direction == 1)
+			gobs.sort(new CoordSort1());
 
-	public ArrayList<Gob> Trellises() {
-		// Initialises list of crops to harvest between selected coordinates
-		ArrayList<Gob> gobs = new ArrayList<Gob>();
-		double bigX = rc1.x > rc2.x ? rc1.x : rc2.x;
-		double smallX = rc1.x < rc2.x ? rc1.x : rc2.x;
-		double bigY = rc1.y > rc2.y ? rc1.y : rc2.y;
-		double smallY = rc1.y < rc2.y ? rc1.y : rc2.y;
-		synchronized (ui.sess.glob.oc) {
-			for (Gob gob : ui.sess.glob.oc) {
-				if (gob.rc.x <= bigX && gob.rc.x >= smallX && gob.getres() != null && gob.rc.y <= bigY
-						&& gob.rc.y >= smallY && gob.getres().name.equals(trellis)) {
-					gobs.add(gob);
-				}
-			}
-		}
-		gobs.sort(new CoordSort());
+		else if (direction == 2)
+			gobs.sort(new CoordSort2());
+
+		else if (direction == 3)
+			gobs.sort(new CoordSort3());
+
+		else if (direction == 4)
+			gobs.sort(new CoordSort4());
 		return gobs;
 	}
 
@@ -514,10 +532,21 @@ public class PepperBotRun extends Window implements Runnable {
 			super.wdgmsg(sender, msg, args);
 	}
 
-	// Sorts coordinate array to efficient sequence
-	class CoordSort implements Comparator<Gob> {
+	// Sorts coordinate array High Y to Low Y along Identical X Axis Tables West
+	class CoordSort1 implements Comparator<Gob> {
 		public int compare(Gob a, Gob b) {
-
+			if (a.rc.x == b.rc.x) {
+				if (a.rc.x % 2 == 0)
+					return (a.rc.y < b.rc.y) ? 1 : (a.rc.y > b.rc.y) ? -1 : 0;
+				else
+					return (a.rc.y < b.rc.y) ? -1 : (a.rc.y > b.rc.y) ? 1 : 0;
+			} else
+				return (a.rc.x < b.rc.x) ? 1 : (a.rc.x > b.rc.x) ? -1 : 0;
+		}
+	}
+	// Sorts coordinate array High Y to Low Y along Identical X Axis Tables East
+	class CoordSort2 implements Comparator<Gob> {
+		public int compare(Gob a, Gob b) {
 			if (a.rc.x == b.rc.x) {
 				if (a.rc.x % 2 == 0)
 					return (a.rc.y < b.rc.y) ? 1 : (a.rc.y > b.rc.y) ? -1 : 0;
@@ -525,6 +554,30 @@ public class PepperBotRun extends Window implements Runnable {
 					return (a.rc.y < b.rc.y) ? -1 : (a.rc.y > b.rc.y) ? 1 : 0;
 			} else
 				return (a.rc.x < b.rc.x) ? -1 : (a.rc.x > b.rc.x) ? 1 : 0;
+		}
+	}
+	// Sorts coordinate array High Y to Low Y along Identical X Axis Tables North
+	class CoordSort3 implements Comparator<Gob> {
+		public int compare(Gob a, Gob b) {
+			if (a.rc.y == b.rc.y) {
+				if (a.rc.y % 2 == 0)
+					return (a.rc.x < b.rc.x) ? 1 : (a.rc.x > b.rc.x) ? -1 : 0;
+				else
+					return (a.rc.x < b.rc.x) ? -1 : (a.rc.x > b.rc.x) ? 1 : 0;
+			} else
+				return (a.rc.y < b.rc.y) ? -1 : (a.rc.y > b.rc.y) ? 1 : 0;
+		}
+	}
+	// Sorts coordinate array High Y to Low Y along Identical X Axis Tables South
+	class CoordSort4 implements Comparator<Gob> {
+		public int compare(Gob a, Gob b) {
+			if (a.rc.y == b.rc.y) {
+				if (a.rc.y % 2 == 0)
+					return (a.rc.y < b.rc.y) ? 1 : (a.rc.y > b.rc.y) ? -1 : 0;
+				else
+					return (a.rc.y < b.rc.y) ? -1 : (a.rc.y > b.rc.y) ? 1 : 0;
+			} else
+				return (a.rc.x < b.rc.x) ? 1 : (a.rc.x > b.rc.x) ? -1 : 0;
 		}
 	}
 

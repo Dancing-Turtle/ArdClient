@@ -198,7 +198,7 @@ public class LocalMiniMap extends Widget {
                         continue;
 
                     GobIcon icon = gob.getattr(GobIcon.class);
-                    if (icon != null || Config.additonalicons.containsKey(res.name)) {
+                    if (icon != null && !Config.hideallicons || Config.additonalicons.containsKey(res.name) && !Config.hideallicons) {
                         if (Gob.Type.MOB.has(gob.type)){
                             dangergobs.add(0,gob);
                        }else{

@@ -47,6 +47,7 @@ public class StaticSprite extends Sprite {
 
     public StaticSprite(Owner owner, Resource res, Rendered[] parts) {
         super(owner, res);
+      //  System.out.println(res.name);
         this.parts = parts;
     }
 

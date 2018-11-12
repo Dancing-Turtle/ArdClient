@@ -18,8 +18,9 @@ import static haven.OCache.posres;
 
 public class ShieldChecker extends Window {
     private Thread runner;
-    private final Label lblc;
+    private final Label lblc, lblc2;
     private String curshield = "";
+    private String curshield2 = "";
     private Button runbtn, stopbtn;
     private boolean terminate;
     ChatUI.Channel.Message sentmsg;
@@ -37,6 +38,8 @@ public class ShieldChecker extends Window {
 
         lblc = new Label("0", Text.num12boldFnd, Color.WHITE);
         add(lblc, new Coord(0, 70));
+        lblc2 = new Label("0", Text.num12boldFnd, Color.WHITE);
+        add(lblc2, new Coord(0, 85));
 
         runbtn = new Button(140, "Run") {
             @Override
@@ -75,20 +78,43 @@ public class ShieldChecker extends Window {
                   BotUtils.mapInteractLeftClick(0);
                   BotUtils.sleep(2000);
                //   BotUtils.sysMsg(ui.VillageShield, Color.white);
-                  lblc.settext("Result : "+ui.VillageShield);
+                  lblc.settext("V Result : "+ui.VillageShield);
+                  lblc2.settext("P Result : "+ui.PrivateShield);
                   iteration++;
                   if(Discord.jdalogin!=null && !Config.AlertChannel.equals("Null")) {
                       for (TextChannel loop : haven.automation.Discord.channels) {
                           if (loop.getName().equals(Config.AlertChannel)) {
-                              if (!firstrun) {
-                                  if (curshield.equals(ui.VillageShield) && iteration == 14) {
+                              if(!ui.sess.alive()){
+                                  loop.sendMessage("Shield Checker : I seem to have disconnected, disabling alerts. Please reconnect me at your earliest convenience.").queue();
+                                  stopbtn.click();
+                                  terminate = true;
+                                  return;
+                              }
+                              else if (!firstrun) {
+                                  if (curshield.equals(ui.VillageShield) && curshield2.equals(ui.PrivateShield) && iteration == 14) {
                                       iteration = 1;
-                                      loop.sendMessage("Shield Checker: Check result was : " + ui.VillageShield).queue();
+                                      if(!curshield.equals("") && !curshield2.equals("")) //village and personal
+                                      loop.sendMessage("Shield Checker: Village result was : " + ui.VillageShield+ " and personal result was : "+ui.PrivateShield).queue();
+                                      else if(!curshield.equals("") && curshield2.equals("")) // village only
+                                          loop.sendMessage("Shield Checker: Village result was : " + ui.VillageShield).queue();
+                                      else if(curshield.equals("") && !curshield2.equals("")) //personal only
+                                          loop.sendMessage("Shield Checker: Personal result was : " + ui.PrivateShield).queue();
                                   }
-                                  else if(!curshield.equals(ui.VillageShield))
-                                      loop.sendMessage("Shield Checker: @everyone Check result changed! Is now : " + ui.VillageShield + " old value was : " + curshield).queue();
+                                  else if(!curshield.equals(ui.VillageShield) || !curshield2.equals(ui.PrivateShield)) {
+                                      if (!curshield.equals("") && !curshield2.equals("")) //village and personal
+                                          loop.sendMessage("@everyone Shield result changed! Village result was : " + curshield + "is now : " + ui.VillageShield+" and personal result was : " + curshield2 + " is now : " + ui.PrivateShield).queue();
+                                      else if (!curshield.equals("") && curshield2.equals("")) // village only
+                                          loop.sendMessage("@everyone Shield result changed! Village result was : " + curshield + " is now  : " + ui.VillageShield).queue();
+                                      else if (curshield.equals("") && !curshield2.equals("")) //personal only
+                                          loop.sendMessage("@everyone Shield result changed! Personal result was : " + curshield2 + " is now : " + ui.PrivateShield).queue();
+                                  }
                               } else {
-                                  loop.sendMessage("First Run Shield Checker: Check result was : " + ui.VillageShield).queue();
+                                  if(!ui.VillageShield.equals("") && !ui.PrivateShield.equals("")) //print both shields
+                                  loop.sendMessage("First Run Shield Checker: Village result was : " + ui.VillageShield + " and Personal result was : "+ui.PrivateShield).queue();
+                                  else if(!ui.VillageShield.equals("") && ui.PrivateShield.equals("")) // print only village shield
+                                      loop.sendMessage("First Run Shield Checker: Village result was : " + ui.VillageShield).queue();
+                                  else if(ui.VillageShield.equals("") && !ui.PrivateShield.equals("")) //print only personal shield
+                                      loop.sendMessage("First Run Shield Checker: Personal result was : " + ui.PrivateShield).queue();
                                   firstrun = false;
                                   iteration = 2;
                               }
@@ -98,6 +124,8 @@ public class ShieldChecker extends Window {
                   else
                       BotUtils.sysLogAppend("Checked shield but Discord is not connected, unable to send result.","white");
                   curshield = ui.VillageShield;
+                  if(terminate)
+                      return;
                   try{
                       Thread.sleep(SLEEP5);
                   }catch(InterruptedException q){}
