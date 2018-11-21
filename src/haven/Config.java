@@ -93,6 +93,7 @@ public class Config {
     public static double sfxquernvol = Utils.getprefd("sfxquernvol", 0.9);
     public static double sfxfirevol = Utils.getprefd("sfxfirevol", 1.0);
     public static double sfxclapvol = Utils.getprefd("sfxclapvol", 1.0);
+    public static double sfxbeehivevol = Utils.getprefd("sfxbeehivevol", 1.0);
     public static double sfxchatvol = Utils.getprefd("sfxchatvol", 1.0);
     public static boolean showcraftcap = Utils.getprefb("showcraftcap", true);
     public static boolean showgobhp = Utils.getprefb("showgobhp", false);
@@ -163,7 +164,9 @@ public class Config {
     public static boolean partycircles =  Utils.getprefb("partycircles", false);
     public static boolean noquests =  Utils.getprefb("noquests", false);
     public static boolean alarmbram =  Utils.getprefb("alarmbram", false);
+    public static boolean alarmwball =  Utils.getprefb("alarmwball", true);
     public static double alarmbramvol = Utils.getprefd("alarmbramvol", 1.0D);
+    public static double alarmwballvol = Utils.getprefd("alarmwballvol", 1.0D);
     public static double sfxwhipvol = Utils.getprefd("sfxwhipvol", 0.9);
     public static boolean showarchvector =  Utils.getprefb("showarchvector", false);
     //public static boolean showcddelta =  Utils.getprefb("showcddelta", false);
@@ -214,6 +217,7 @@ public class Config {
     public static boolean hungermeter = Utils.getprefb("hungermeter", true);
     public static boolean leechdrop = Utils.getprefb("leechdrop", false);
     public static boolean hideTrees = Utils.getprefb("hideTrees", true);
+    public static boolean hidemoths = Utils.getprefb("hidemoths", false);
     public static boolean hideCrops = Utils.getprefb("hideCrops", true);
     public static boolean hideWalls = Utils.getprefb("hideWalls", true);
     public static boolean hideanimals = Utils.getprefb("hideanimals", false);

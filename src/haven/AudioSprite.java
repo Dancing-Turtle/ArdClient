@@ -74,7 +74,6 @@ public class AudioSprite {
         public ClipSprite(Owner owner, Resource res, Resource.Audio clip) {
             super(owner, res);
             haven.Audio.CS stream = clip.stream();
-
             if (Config.sfxchipvol != 1.0 && "sfx/chip".equals(res.name))
                 stream = new Audio.VolAdjust(stream, Config.sfxchipvol);
             else if ("sfx/squeak".equals(res.name))
@@ -123,18 +122,35 @@ public class AudioSprite {
         public RepeatSprite(Owner owner, Resource res, final Resource.Audio beg, final Resource.Audio clip, Resource.Audio end) {
             super(owner, res);
             this.end = end;
-            CS rep = new Audio.Repeater() {
-                private boolean f = true;
+            System.out.println("repeat audio : "+res);
+            if(res.basename().contains("beeswarm")){
+                CS rep = new Audio.Repeater() {
+                    private boolean f = true;
 
-                public CS cons() {
-                    if (f && (beg != null)) {
-                        f = false;
-                        return (beg.stream());
+                    public CS cons() {
+                        if (f && (beg != null)) {
+                            f = false;
+                            return (beg.stream());
+                        }
+                        return (new Audio.VolAdjust(clip.stream(), Config.sfxbeehivevol));
                     }
-                    return (clip.stream());
-                }
-            };
-            this.clip = new ActAudio.PosClip(rep);
+                };
+                this.clip = new ActAudio.PosClip(rep);
+            }
+                else {
+                CS rep = new Audio.Repeater() {
+                    private boolean f = true;
+
+                    public CS cons() {
+                        if (f && (beg != null)) {
+                            f = false;
+                            return (beg.stream());
+                        }
+                        return (clip.stream());
+                    }
+                };
+                this.clip = new ActAudio.PosClip(rep);
+            }
         }
 
         public boolean setup(RenderList r) {

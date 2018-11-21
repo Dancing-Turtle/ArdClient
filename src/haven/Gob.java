@@ -79,7 +79,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
 
     public enum Type {
         OTHER(0), DFRAME(1), TREE(2), BUSH(3), BOULDER(4), PLAYER(5), SIEGE_MACHINE(6), MAMMOTH(7), BAT(8), OLDTRUNK(9), GARDENPOT(10), MUSSEL(11), LOC_RESOURCE(12), CLAY(14),
-        FU_YE_CURIO(13), EAGLE(15), TANTUB(20),CUPBOARD(19),COOP(21),HUTCH(22),
+        FU_YE_CURIO(13), EAGLE(15), TANTUB(20),CUPBOARD(19),COOP(21),HUTCH(22),MOTH(23),
         PLANT(16), MULTISTAGE_PLANT(17), CHEESERACK(18), SLIME(40), LIVESTOCK(42),
         MOB(32), BEAR(34), LYNX(35), SEAL(37), TROLL(38), WALRUS(39),
         WOODEN_SUPPORT(64), STONE_SUPPORT(65), METAL_SUPPORT(66), TROUGH(67), BEEHIVE(68), WAGON(600), WALL(602), DREAMCATCHER(603), HOUSE(604);
@@ -465,6 +465,8 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             type = Type.COOP;
         else if(name.startsWith("gfx/terobjs/rabbit"))
             type = Type.HUTCH;
+        else if(name.startsWith("gfx/kritter/cavemoth"))
+            type = Type.MOTH;
         else if (name.endsWith("terobjs/plants/carrot") || name.endsWith("terobjs/plants/hemp"))
             type = Type.MULTISTAGE_PLANT;
         else if (name.startsWith("gfx/terobjs/plants") && !name.endsWith("trellis"))
@@ -475,7 +477,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             type = Type.PLAYER;
         else if (name.startsWith("gfx/terobjs/bumlings"))
             type = Type.BOULDER;
-        else  if (name.endsWith("vehicle/bram") || name.endsWith("vehicle/catapult"))
+        else  if (name.endsWith("vehicle/bram") || name.endsWith("vehicle/catapult") || name.endsWith("vehicle/wreckingball"))
             type = Type.SIEGE_MACHINE;
         else if (name.endsWith("/bear"))
             type = Type.BEAR;
@@ -527,7 +529,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
         	type = Type.DREAMCATCHER;
         else if (name.startsWith("gfx/terobjs/arch/pali") && !name.equals("gfx/terobjs/arch/palisadegate") &&
    			 !name.equals("gfx/terobjs/arch/palisadebiggate") || name.startsWith("gfx/terobjs/arch/brick")
-   			 && !name.equals("gfx/terobjs/arch/brickwallgate") &&!name.equals("gfx/terobjs/arch/brickwallbiggate")
+   			 && !name.equals("gfx/terobjs/arch/brickwallgate") &&!name.equals("gfx/terobjs/arch/brickbiggate")
    			 || name.startsWith("gfx/terobjs/arch/pole") && !name.equals("gfx/terobjs/arch/polegate") &&
 !name.equals("gfx/terobjs/arch/polebiggate")) // Excludes gates
         	type = Type.WALL;
@@ -669,7 +671,10 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
 
         	// Replace hide stuff with Purus Pasta hide
             try {
-                if (Config.hidegobs) {
+                if(Config.hidemoths && type == Type.MOTH){
+                    //Do nothing since moths don't have a bounding box.
+                     }
+                else if (Config.hidegobs) {
                     if (Config.hideTrees && type == Type.TREE) {
                         GobHitbox.BBox bbox = GobHitbox.getBBox(this, true);
                         if (bbox != null && Config.showoverlay) {

@@ -139,23 +139,22 @@ public class FlowerMenu extends Widget {
             try{
                 //BotUtils.sleep(500);
                 GameUI gui = getGUI();
+                int timeout = 0;
                 while(gui.ui.root.findchild(FlowerMenu.class) != null) {
                     // BotUtils.sysLogAppend("flowermenu present","white");
+                    timeout++;
+                    if(timeout > 500)
+                        return;
                     BotUtils.sleep(10);
                 }
                 //  BotUtils.sysLogAppend("flowermenu not present","white");
                 Gob player = gui.map.player();
-                while(player.ols.size() == 1){}
+                while(BotUtils.isMoving()){}
                 try {
                     Thread.sleep(50);
                 }catch(InterruptedException idkheh){}
-                UI ui = gui.ui;
-                for (Widget widget : ui.rwidgets.keySet()) {
-                    if (widget instanceof Speedget) {
-                        ((Speedget) widget).set(2);
-                        horsemounter.interrupt();
-                    }
-                }
+                gui.speedget.set(2);
+                System.out.println("Horsemounter exited");
             }catch(ConcurrentModificationException e){}
         }
     }

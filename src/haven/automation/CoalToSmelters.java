@@ -270,8 +270,6 @@ if(Config.dropsmelterstones) {
 }
 
     }
-
-
         public class autodropper implements Runnable {
         @Override
              public void run() {
@@ -458,18 +456,19 @@ if(Config.dropsmelterstones) {
                         activelist.addAll(list);
                     while (!terminaterun) {
                         BotUtils.sysLogAppend("Filling : " + activelist.size() + " Smelters/Ovens.", "white");
-                        int remaining = activelist.size();
+                        int remaining = activelist.size() * count;
                         for (Gob gob : activelist) {
 
                             int availableFuelCoal = gui.maininv.getItemPartialCount("Coal");
                             int availableFuelBranch = gui.maininv.getItemPartialCount("Branch");
 
-                            if(availableFuelCoal < 24 && availableFuelBranch < 24 && count != 1)
-                                getfuel();
-                            else if (availableFuelCoal < remaining && availableFuelBranch < remaining)
+                            if (availableFuelCoal < remaining && count == 1)
                                 getHQfuel();
+                            else if(availableFuelCoal < remaining && availableFuelBranch < remaining)
+                                getfuel();
 
-                            remaining --;
+
+                            remaining = remaining - count;
                             count = countretain;
                             WItem coalw = gui.maininv.getItemPartial("Coal");
                             WItem coalw2 = gui.maininv.getItemPartial("Branch");
@@ -631,7 +630,6 @@ if(Config.dropsmelterstones) {
                 }catch(NullPointerException ie){}
             }
         }
-
         private class light implements Runnable {
             @Override
             public void run() {
@@ -1012,7 +1010,7 @@ private void getfuel() {
                 }
             }
         }
-        gobs.sort(new CoordSort());
+        gobs.sort(new CoordSortSmelters());
         return gobs;
     }
 
@@ -1051,6 +1049,17 @@ private void getfuel() {
                     return (a.rc.floor().y < b.rc.floor().y) ? -1 : (a.rc.floor().y > b.rc.floor().y) ? 1 : 0;
             } else
                 return (a.rc.floor().x < b.rc.floor().x) ? -1 : (a.rc.floor().x > b.rc.floor().x) ? 1 : 0;
+        }
+    }
+    class CoordSortSmelters implements Comparator<Gob> {
+        public int compare(Gob a, Gob b) {
+            if (a.rc.floor().y == b.rc.floor().y) {
+                if (a.rc.floor().y % 2 == 0)
+                    return (a.rc.floor().x < b.rc.floor().x) ? 1 : (a.rc.floor().x > b.rc.floor().x) ? -1 : 0;
+                else
+                    return (a.rc.floor().x < b.rc.floor().x) ? -1 : (a.rc.floor().x > b.rc.floor().x) ? 1 : 0;
+            } else
+                return (a.rc.floor().y < b.rc.floor().y) ? -1 : (a.rc.floor().y > b.rc.floor().y) ? 1 : 0;
         }
     }
 }

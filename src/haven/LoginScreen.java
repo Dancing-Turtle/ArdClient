@@ -69,7 +69,7 @@ public class LoginScreen extends Widget {
     }
 
     private void showChangeLog() {
-        log = ui.root.add(new Window(new Coord(50, 50), "Changelog"), new Coord(100, 50));
+        log = gameui().ui.root.add(new Window(new Coord(50, 50), "Changelog"), new Coord(100, 50));
         log.justclose = true;
         Textlog txt = log.add(new Textlog(new Coord(450, 500)));
         txt.quote = false;

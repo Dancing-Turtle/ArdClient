@@ -1503,7 +1503,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         } else if ((key == 27) && (map != null) && !map.hasfocus) {
             setfocus(map);
             return true;
-        } else if (chat.hasfocus) {
+        } else if (chat.hasfocus && chat.visible) {
             return true;
         }  else if (ev.isControlDown() && ev.getKeyCode() == KeyEvent.VK_G) {
             if (map != null)

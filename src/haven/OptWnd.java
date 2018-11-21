@@ -33,8 +33,9 @@ import haven.resutil.BPRadSprite;
 import java.awt.Color;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.KeyEvent;
-import java.io.IOException;
+import java.io.*;
 import java.net.JarURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -403,6 +404,21 @@ public class OptWnd extends Window {
         main.add(new PButton(200, "Keybind Options", 'p', keybindsettings), new Coord(210, 120));
         main.add(new PButton(200,"Chat Settings",'c', chatsettings), new Coord(420,120));
         if (gopts) {
+            main.add(new Button(200, "Join ArdClient Discord") {
+                public void click() {
+                    try {
+                        WebBrowser.self.show(new URL(String.format("https://disc"+"ord.gg/Rx"+"gVh5j")));
+                    } catch (WebBrowser.BrowserException e) {
+                        getparent(GameUI.class).error("Could not launch web browser.");
+                    } catch (MalformedURLException e) {
+                    }
+                }
+            }, new Coord(210, 240));
+            main.add(new Button(200, "Show Client Changelog") {
+                public void click() {
+                   showChangeLog();
+                }
+            }, new Coord(210, 270));
             main.add(new Button(200, "Switch character") {
                 public void click() {
                     GameUI gui = gameui();
@@ -562,6 +578,21 @@ public class OptWnd extends Window {
                 double vol = val / 1000.0;
                 Config.sfxclapvol = vol;
                 Utils.setprefd("sfxclapvol", vol);
+            }
+        });
+        appender.setVerticalMargin(0);
+        appender.add(new Label("Beehive sound volume"));
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (int) (Config.sfxbeehivevol * 1000);
+            }
+
+            public void changed() {
+                double vol = val / 1000.0;
+                Config.sfxbeehivevol = vol;
+                Utils.setprefd("sfxbeehivevol", vol);
             }
         });
         appender.setVerticalMargin(0);
@@ -2046,7 +2077,17 @@ public class OptWnd extends Window {
         appender.setHorizontalMargin(HORIZONTAL_MARGIN);
         
         appender.add(new Label("Toggle hide by pressing ctrl + h"));
-        
+        appender.add(new CheckBox("Hide Cave Moths - Standalone Option, doesn't require toggling Hide.") {
+            {
+                a = Config.hidemoths;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("hidemoths", val);
+                Config.hidemoths = val;
+                a = val;
+            }
+        });
         appender.add(new CheckBox("Hide trees") {
             {
                 a = Config.hideTrees;
@@ -2376,6 +2417,31 @@ public class OptWnd extends Window {
             }
         });
         appender.setVerticalMargin(0);
+        appender.add(new CheckBox("Alarm on wrecking balls") {
+            {
+                a = Config.alarmwball;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("alarmwball", val);
+                Config.alarmwball = val;
+                a = val;
+            }
+        });
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (int) (Config.alarmwballvol * 1000);
+            }
+
+            public void changed() {
+                double vol = val / 1000.0;
+                Config.alarmwballvol = vol;
+                Utils.setprefd("alarmwballvol", vol);
+            }
+        });
+        appender.setVerticalMargin(0);
         appender.add(new Label("Alarm on bears, lynx, mammoths."));
         appender.setVerticalMargin(5);
         appender.add(new HSlider(200, 0, 1000, 0) {
@@ -2691,5 +2757,31 @@ public class OptWnd extends Window {
     public void show() {
         chpanel(main);
         super.show();
+    }
+    private void showChangeLog() {
+        Window log = gameui().ui.root.add(new Window(new Coord(50, 50), "Changelog"), new Coord(100, 50));
+        log.justclose = true;
+        Textlog txt = log.add(new Textlog(new Coord(450, 500)));
+        txt.quote = false;
+        int maxlines = txt.maxLines = 200;
+        log.pack();
+        try {
+            InputStream in = LoginScreen.class.getResourceAsStream("/changelog.txt");
+            BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+            File f = Config.getFile("changelog.txt");
+            FileOutputStream out = new FileOutputStream(f);
+            String strLine;
+            int count = 0;
+            while((count < maxlines) && (strLine = br.readLine()) != null) {
+                txt.append(strLine);
+                out.write((strLine + Config.LINE_SEPARATOR).getBytes());
+                count++;
+            }
+            br.close();
+            out.close();
+            in.close();
+        } catch(IOException ignored) {
+        }
+        txt.setprog(0);
     }
 }

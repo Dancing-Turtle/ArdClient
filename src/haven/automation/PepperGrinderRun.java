@@ -365,7 +365,7 @@ public class PepperGrinderRun extends Window implements Runnable {
 				}
 			}
 		}
-		gobs.sort(new CoordSort());
+		gobs.sort(new CoordSortEW());
 		return gobs;
 	}
 	public ArrayList<Gob> Tables() {
@@ -383,29 +383,10 @@ public class PepperGrinderRun extends Window implements Runnable {
 				}
 			}
 		}
-		if(section==1)
+		if(direction==1 || direction == 2)
 			gobs.sort(new CoordSortNS());
 		else
-			gobs.sort(new CoordSort());
-		return gobs;
-	}
-
-	public ArrayList<Gob> Trellises() {
-		// Initialises list of crops to harvest between selected coordinates
-		ArrayList<Gob> gobs = new ArrayList<Gob>();
-		double bigX = rc1.x > rc2.x ? rc1.x : rc2.x;
-		double smallX = rc1.x < rc2.x ? rc1.x : rc2.x;
-		double bigY = rc1.y > rc2.y ? rc1.y : rc2.y;
-		double smallY = rc1.y < rc2.y ? rc1.y : rc2.y;
-		synchronized (ui.sess.glob.oc) {
-			for (Gob gob : ui.sess.glob.oc) {
-				if (gob.rc.x <= bigX && gob.rc.x >= smallX && gob.getres() != null && gob.rc.y <= bigY
-						&& gob.rc.y >= smallY && gob.getres().name.equals(trellis)) {
-					gobs.add(gob);
-				}
-			}
-		}
-			gobs.sort(new CoordSort());
+			gobs.sort(new CoordSortEW());
 		return gobs;
 	}
 
@@ -419,7 +400,7 @@ public class PepperGrinderRun extends Window implements Runnable {
 	}
 
 	// Sorts coordinate array to efficient sequence
-	class CoordSort implements Comparator<Gob> { // sorts high Y to low Y along same X Axis
+	class CoordSortEW implements Comparator<Gob> { // sorts high Y to low Y along same X Axis
 		public int compare(Gob a, Gob b) {
 
 			if (a.rc.x == b.rc.x) {
@@ -443,6 +424,7 @@ public class PepperGrinderRun extends Window implements Runnable {
 				return (a.rc.y < b.rc.y) ? -1 : (a.rc.y > b.rc.y) ? 1 : 0;
 		}
 	}
+
 
 	public void stop() {
 		// Stops thread

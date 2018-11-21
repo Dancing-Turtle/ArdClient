@@ -53,8 +53,16 @@ public class SliceCheese implements Runnable {
                     if (trays2.get(i).item.getcontents() != null) {
                         FlowerMenu.setNextSelection("Slice up");
                         trays2.get(i).item.wdgmsg("iact", Coord.z, -1);
-                        while(trays2.get(i).item.getcontents() != null)
+                        int timeout = 0;
+                        while(trays2.get(i).item.getcontents() != null) {
+                            timeout++;
+                            if(timeout > 500)
+                            {
+                                BotUtils.sysMsg("Cheese Slicer interrupted, exited.",Color.white);
+                                return;
+                            }
                             BotUtils.sleep(10);
+                        }
                     }
             }
        BotUtils.sysMsg("Done",Color.white);

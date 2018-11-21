@@ -51,6 +51,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     public static long plgob = -1;
     public static Coord2d pllastcc;
     public Coord2d cc;
+    public String curcamera;
     public final Glob glob;
     private static final int view = 2;
     private Collection<Delayed> delayed = new LinkedList<Delayed>();
@@ -724,7 +725,28 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
 
     public void toggleCamera(){
         if (camera != null && !ui.gui.chat.hasfocus) {
-            String cam = camera instanceof MapView.OrthoCam ? "bad" : "ortho";
+            String cam = "";
+            if(camera instanceof MapView.FollowCam)
+                curcamera = "follow";
+            if(camera instanceof MapView.OrthoCam)
+                curcamera = "ortho";
+            if(camera instanceof MapView.FreeCam)
+                curcamera = "bad";
+
+            if(curcamera.equals("follow")) {
+                cam = "ortho";
+                BotUtils.sysMsg("Switched to Ortho Cam",Color.white);
+            }
+            else if(curcamera.equals("ortho")) {
+                cam = "bad";
+                BotUtils.sysMsg("Switched to Bad Cam",Color.white);
+            }
+            else if(curcamera.equals("bad")) {
+                cam = "follow";
+                BotUtils.sysMsg("Switched to Follow Cam",Color.white);
+            }
+
+           // String cam = camera instanceof MapView.OrthoCam ? "bad" : "ortho";
             String[] args = new String[0];
             camera = makecam(camtypes.get(cam), args);
             Utils.setpref("defcam", cam);

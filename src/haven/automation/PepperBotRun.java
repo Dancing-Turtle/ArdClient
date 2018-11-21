@@ -520,6 +520,7 @@ public class PepperBotRun extends Window implements Runnable {
 
 		else if (direction == 4)
 			gobs.sort(new CoordSort4());
+
 		return gobs;
 	}
 
@@ -573,11 +574,11 @@ public class PepperBotRun extends Window implements Runnable {
 		public int compare(Gob a, Gob b) {
 			if (a.rc.y == b.rc.y) {
 				if (a.rc.y % 2 == 0)
-					return (a.rc.y < b.rc.y) ? 1 : (a.rc.y > b.rc.y) ? -1 : 0;
+					return (a.rc.x < b.rc.x) ? 1 : (a.rc.x > b.rc.x) ? -1 : 0;
 				else
-					return (a.rc.y < b.rc.y) ? -1 : (a.rc.y > b.rc.y) ? 1 : 0;
+					return (a.rc.x < b.rc.x) ? -1 : (a.rc.x > b.rc.x) ? 1 : 0;
 			} else
-				return (a.rc.x < b.rc.x) ? 1 : (a.rc.x > b.rc.x) ? -1 : 0;
+				return (a.rc.y < b.rc.y) ? 1 : (a.rc.y > b.rc.y) ? -1 : 0;
 		}
 	}
 

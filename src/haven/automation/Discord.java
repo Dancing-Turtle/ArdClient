@@ -13,6 +13,7 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import net.dv8tion.jda.core.utils.MiscUtil;
 
 import java.util.*;
+import haven.UI;
 
 import javax.security.auth.login.LoginException;
 import javax.swing.*;
@@ -20,6 +21,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+import java.util.Timer;
 
 public class Discord extends ListenerAdapter implements Runnable {
 
@@ -41,6 +43,8 @@ public class Discord extends ListenerAdapter implements Runnable {
     public int iw;
     ChatUI.Channel.Message sentmsg;
     public String LoadMSG;
+    private Boolean connected;
+    javax.swing.Timer timer;
 
 
 
@@ -80,6 +84,7 @@ public class Discord extends ListenerAdapter implements Runnable {
     @Override
     public void onReady(ReadyEvent event) {
         System.out.println("Ready!");
+        connected = true;
         BotUtils.sysMsg("Discord Loaded", Color.white);
         readytogo = true;
         jdalogin = event.getJDA();
@@ -159,6 +164,20 @@ public class Discord extends ListenerAdapter implements Runnable {
             }
         }
 
+
+        ActionListener checkDisconnect = new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if(!gui.ui.sess.alive() && jdalogin != null && connected){
+                    System.out.println("Discord Disconnected");
+                    jdalogin.shutdownNow();
+                    timer.stop();
+                }
+            }
+        };
+        if(connected) {
+            timer = new javax.swing.Timer(5000, checkDisconnect);
+            timer.start();
+        }
     }
 
     @Override

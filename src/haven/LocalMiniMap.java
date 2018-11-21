@@ -58,6 +58,7 @@ public class LocalMiniMap extends Widget {
     private static final Resource mammothsfx = Resource.local().loadwait("sfx/mammoth");
     private static final Resource eaglesfx = Resource.local().loadwait("sfx/eagle");
     private static final Resource doomedsfx = Resource.local().loadwait("sfx/doomed");
+    private static final Resource wballsfx = Resource.local().loadwait("sfx/wball");
     private static final Resource swagsfx = Resource.local().loadwait("sfx/swag");
 
 	private final HashSet<Long> sgobs = new HashSet<Long>();
@@ -324,7 +325,12 @@ public class LocalMiniMap extends Widget {
                         Audio.play(eaglesfx);
                     } else if (Config.alarmbram && gob.type == Gob.Type.SIEGE_MACHINE) {
                         sgobs.add(gob.id);
+                        if(!gob.getres().basename().contains("ball"))
                         Audio.play(doomedsfx, Config.alarmbramvol);
+                    }else if (Config.alarmwball && gob.type == Gob.Type.SIEGE_MACHINE){
+                        sgobs.add(gob.id);
+                        if(gob.getres().basename().contains("ball"))
+                            Audio.play(wballsfx, Config.alarmwballvol);
                     }
                 } catch (Exception e) { // fail silently
                 }
