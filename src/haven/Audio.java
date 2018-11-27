@@ -579,18 +579,19 @@ public class Audio {
             if (Config.sfxwhipvol != 1.0 && "sfx/balders".equals(res.name))
                 return new Audio.VolAdjust(clip.stream(), Config.sfxwhipvol);
 
-            if(res.name.equals("sfx/lvlup") || res.name.equals("sfx/msg")){
+            try{
+
+            if(res.name.equals("sfx/lvlup") || res.name.equals("sfx/msg")) {
                 Date thislvlup = new Date();
-                if(lastlvlup != null) {
+                if (lastlvlup != null) {
                     if ((Math.abs(lastlvlup.getTime() - thislvlup.getTime()) / 1000) < 1)
-                        return new Audio.VolAdjust(clip.stream(),0);
+                        return new Audio.VolAdjust(clip.stream(), 0);
                     else
                         lastlvlup = thislvlup;
-                }
-                else
+                } else
                     lastlvlup = thislvlup;
             }
-
+            }catch(NoClassDefFoundError q){}
             return (clip.stream());
         }
     }

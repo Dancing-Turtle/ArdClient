@@ -26,43 +26,17 @@
 
 package haven.resutil;
 
-import static haven.glsl.Cons.add;
-import static haven.glsl.Cons.l;
-import static haven.glsl.Cons.mul;
-import static haven.glsl.Cons.pick;
-import static haven.glsl.Cons.sub;
-import static haven.glsl.Cons.texture2D;
-import static haven.glsl.Type.SAMPLER2D;
-import static haven.glsl.Type.VEC3;
+import haven.*;
+import haven.glsl.*;
 
+import static haven.glsl.Cons.*;
+import static haven.glsl.Type.*;
+
+import haven.MapMesh.Scan;
+
+import java.util.*;
 import java.nio.FloatBuffer;
-import java.util.Collection;
-
-import javax.media.opengl.GL;
-
-import haven.BGL;
-import haven.GLState;
-import haven.GOut;
-import haven.Indir;
-import haven.Material;
-import haven.MeshBuf;
-import haven.Message;
-import haven.MorphedMesh;
-import haven.Resource;
-import haven.TexGL;
-import haven.TexR;
-import haven.Utils;
-import haven.VertexBuf;
-import haven.glsl.Attribute;
-import haven.glsl.AutoVarying;
-import haven.glsl.Expression;
-import haven.glsl.MiscLib;
-import haven.glsl.ProgramContext;
-import haven.glsl.ShaderMacro;
-import haven.glsl.Tex2D;
-import haven.glsl.Uniform;
-import haven.glsl.ValBlock;
-import haven.glsl.VertexContext;
+import javax.media.opengl.*;
 
 public class BumpMap extends GLState {
     public static final Slot<BumpMap> slot = new Slot<BumpMap>(Slot.Type.DRAW, BumpMap.class);
@@ -168,41 +142,30 @@ public class BumpMap extends GLState {
         }
     }
 
-    @VertexBuf.ResName("tan")
+    @VertexBuf.ResName("tan2")
     public static class Tangents extends VertexBuf.Vec3Array implements MorphedMesh.MorphArray {
-        public Tangents(FloatBuffer data) {
-            super(data, tan);
-        }
-
-        public Tangents(Resource res, Message buf, int nv) {
-            this(VertexBuf.loadbuf(Utils.wfbuf(nv * 3), buf));
-        }
-
-        public MorphedMesh.MorphType morphtype() {
-            return (MorphedMesh.MorphType.DIR);
-        }
-
-        public Tangents dup() {
-            return (new Tangents(Utils.bufcp(data)));
+        public Tangents(FloatBuffer data) {super(data, tan);}
+        public Tangents(Resource res, Message buf, int nv) {this(VertexBuf.loadbuf2(Utils.wfbuf(nv * 3), buf));}
+        public MorphedMesh.MorphType morphtype() {return(MorphedMesh.MorphType.DIR);}
+        public Tangents dup() {return(new Tangents(Utils.bufcp(data)));}
+    }
+    @VertexBuf.ResName("bit2")
+    public static class BiTangents extends VertexBuf.Vec3Array implements MorphedMesh.MorphArray {
+        public BiTangents(FloatBuffer data) {super(data, bit);}
+        public BiTangents(Resource res, Message buf, int nv) {this(VertexBuf.loadbuf2(Utils.wfbuf(nv * 3), buf));}
+        public MorphedMesh.MorphType morphtype() {return(MorphedMesh.MorphType.DIR);}
+        public BiTangents dup() {return(new BiTangents(Utils.bufcp(data)));}
+    }
+    @VertexBuf.ResName("tan")
+    public static class TanDecode implements VertexBuf.ArrayCons {
+        public void cons(Collection<VertexBuf.AttribArray> dst, Resource res, Message buf, int nv) {
+            dst.add(new Tangents(VertexBuf.loadbuf(Utils.wfbuf(nv * 3), buf)));
         }
     }
-
     @VertexBuf.ResName("bit")
-    public static class BiTangents extends VertexBuf.Vec3Array implements MorphedMesh.MorphArray {
-        public BiTangents(FloatBuffer data) {
-            super(data, bit);
-        }
-
-        public BiTangents(Resource res, Message buf, int nv) {
-            this(VertexBuf.loadbuf(Utils.wfbuf(nv * 3), buf));
-        }
-
-        public MorphedMesh.MorphType morphtype() {
-            return (MorphedMesh.MorphType.DIR);
-        }
-
-        public BiTangents dup() {
-            return (new BiTangents(Utils.bufcp(data)));
+    public static class BitDecode implements VertexBuf.ArrayCons {
+        public void cons(Collection<VertexBuf.AttribArray> dst, Resource res, Message buf, int nv) {
+            dst.add(new BiTangents(VertexBuf.loadbuf(Utils.wfbuf(nv * 3), buf)));
         }
     }
 }

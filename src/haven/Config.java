@@ -234,6 +234,9 @@ public class Config {
     public static int smatdangerred = Utils.getprefi("smatdangerred",255);
     public static int smatdangergreen= Utils.getprefi("smatdangergreen",0);
     public static int smatdangerblue = Utils.getprefi("smatdangerblue",0);
+    public static int smatSupportsred = Utils.getprefi("smatSupportsred",255);
+    public static int smatSupportsgreen= Utils.getprefi("smatSupportsgreen",0);
+    public static int smatSupportsblue = Utils.getprefi("smatSupportsblue",0);
     public static int cRackred = Utils.getprefi("cRackred",255);
     public static int cRackgreen = Utils.getprefi("cRackgreen",0);
     public static int cRackblue = Utils.getprefi("cRackblue",255);

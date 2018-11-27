@@ -11,6 +11,7 @@ import net.dv8tion.jda.client.entities.Application;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 
 import static haven.OCache.posres;
@@ -357,13 +358,15 @@ public class PepperBotRun extends Window implements Runnable {
 						//System.out.println("after Clicking craft");
 						BotUtils.sleep(2000);
 						if (vm.amount < 30) {
-							List<Gob> allgobs = PBotAPI.getGobs();
+							try {
+								List<Gob> allgobs = PBotAPI.getGobs();
 							for (Gob gobz : allgobs){
 								if (gobz.id == barrel.id){
 									barrel = gobz;
 									break;
 								}
 							}
+							}catch(ConcurrentModificationException idklolok){}
 						//	BotUtils.sysLogAppend("filling cauldron, barrel is : "+barrel.ols.size(),"white");
 							BotUtils.sleep(600);
 							Coord retain = barrel.rc.floor(posres);

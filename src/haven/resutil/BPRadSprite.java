@@ -11,6 +11,7 @@ import haven.VertexBuf.VertexArray;
 
 public class BPRadSprite extends Sprite {
     public static GLState smatDanger = new ColState(new Color(Config.smatdangerred, Config.smatdangergreen, Config.smatdangerblue, 100));
+    public static GLState smatSupports = new ColState(new Color(Config.smatSupportsred, Config.smatSupportsgreen, Config.smatSupportsblue, 100));
     public static Material.Colors cRackMissing = new Material.Colors(new Color(Config.cRackred, Config.cRackgreen, Config.cRackblue, 255));
     public static final GLState smatBeehive = new ColState(new Color(233, 234, 134, 80));
     public static final GLState smatTrough = new ColState(new Color(147, 234, 133, 80));

@@ -51,24 +51,15 @@ public class OpenRacks implements Runnable {
 
         }
 
-if (Racks.size() == 0){
+        if (Racks.size() == 0)
             return;
-}
+
         try {
-            for (int i = 0; i < 7; i++) {
-                gui.map.wdgmsg("click", Coord.z, Racks.get(i).rc.floor(posres), 3, 0, 0, (int) Racks.get(i).id, Racks.get(i).rc.floor(posres), 0, -1);// timeout = 0;
-                //gui.map.wdgmsg("click", herb.sc, herb.rc.floor(posres), 3, 0, 0, (int) herb.id, herb.rc.floor(posres), 0, -1);
-               // BotUtils.sleep(120);
+            for (Gob rack : Racks) {
+                gui.map.wdgmsg("click", Coord.z, rack.rc.floor(posres), 3, 0, 0, (int) rack.id, rack.rc.floor(posres), 0, -1);
             }
         } catch (IndexOutOfBoundsException f) {
         }
-
-        // List<WItem> items = items(Inventory inv)
-        // for (WItem item : items)
-        // item.item.wdgmsg("transfer", Coord.z);
-Racks = null;
-        allGobs = null;
-
     }
 }
 

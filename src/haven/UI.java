@@ -37,6 +37,7 @@ import haven.purus.BotUtils;
 
 public class UI {
     public RootWidget root;
+    public static int MOD_SHIFT = 1, MOD_CTRL = 2, MOD_META = 4, MOD_SUPER = 8;
     final private LinkedList<Grab> keygrab = new LinkedList<Grab>(), mousegrab = new LinkedList<Grab>();
     public Map<Integer, Widget> widgets = new TreeMap<Integer, Widget>();
     public Map<Widget, Integer> rwidgets = new HashMap<Widget, Integer>();
@@ -371,7 +372,7 @@ public class UI {
     public void wdgmsg(Widget sender, String msg, Object... args) {
         int id;
         synchronized(this) {
-     //  try { for(Object obj:args) if(!sender.toString().contains("Camera")) System.out.println("Sender : " + sender + " msg = " + msg + " arg 1 : " + obj); }catch(ArrayIndexOutOfBoundsException q){}
+      // try { for(Object obj:args) if(!sender.toString().contains("Camera")) System.out.println("Sender : " + sender + " msg = " + msg + " arg 1 : " + obj); }catch(ArrayIndexOutOfBoundsException q){}
             if (msg.endsWith("-identical"))
                 return;
 
@@ -413,7 +414,7 @@ public class UI {
                         }
                     } catch (NullPointerException q) {}
 
-         //     try { for(Object obj:args) if(!wdg.toString().contains("CharWnd")) System.out.println("UI Wdg : " + wdg + " msg : "+msg+" id = " + id + " arg 1 : " + obj); }catch(ArrayIndexOutOfBoundsException qq){}
+          //    try { for(Object obj:args) if(!wdg.toString().contains("CharWnd")) System.out.println("UI Wdg : " + wdg + " msg : "+msg+" id = " + id + " arg 1 : " + obj); }catch(ArrayIndexOutOfBoundsException qq){}
                 wdg.uimsg(msg.intern(), args); }
                     else throw (new UIException("Uimsg to non-existent widget " + id, msg, args));
             }
@@ -522,11 +523,19 @@ public class UI {
         root.mousewheel(c, amount);
     }
 
+    public static int modflags(InputEvent ev) {
+        int mod = ev.getModifiersEx();
+        return((((mod & InputEvent.SHIFT_DOWN_MASK) != 0) ? MOD_SHIFT : 0) |
+                (((mod & InputEvent.CTRL_DOWN_MASK) != 0)  ? MOD_CTRL : 0) |
+                (((mod & (InputEvent.META_DOWN_MASK | InputEvent.ALT_DOWN_MASK)) != 0) ? MOD_META : 0)
+                /* (((mod & InputEvent.SUPER_DOWN_MASK) != 0) ? MOD_SUPER : 0) */);
+    }
+
     public int modflags() {
-        return ((modshift ? 1 : 0) |
-                (modctrl ? 2 : 0) |
-                (modmeta ? 4 : 0) |
-                (modsuper ? 8 : 0));
+        return((modshift ? MOD_SHIFT : 0) |
+                (modctrl  ? MOD_CTRL  : 0) |
+                (modmeta  ? MOD_META  : 0) |
+                (modsuper ? MOD_SUPER : 0));
     }
 
 

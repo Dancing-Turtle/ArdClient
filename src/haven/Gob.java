@@ -624,9 +624,9 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             int stage = getattr(ResDrawable.class).sdt.peekrbuf(0);
             if (stage == 2 || stage == 1 || stage == -62 || stage == -63 || stage == 66 || stage == 65)
                 rl.prepc(cRackFull);
-            if (stage == 6 || stage == 5 || stage == -58 || stage == -59 || stage == 69 || stage == 70)
+            if (stage == 6 || stage == 5 || stage == -58 || stage == -59 || stage == 69 || stage == 70 || stage == -51 || stage == -50)
                 rl.prepc(coopMissing);
-            if(stage == 58 || stage == 57 || stage == -6 || stage == -7 || stage == 122 || stage == 121)
+            if(stage == -38 || stage == 58 || stage == 57 || stage == -6 || stage == -7 || stage == 122 || stage == 121)
                 rl.prepc(dframeWater);
         }
 

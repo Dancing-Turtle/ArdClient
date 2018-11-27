@@ -293,8 +293,7 @@ public class Window extends Widget implements DTarget {
             if (cap.text.equals("Study Desk")) {
                 if (checkcurios != null)
                     checkcurios.destroy();
-
-                int sizeY = 250;
+                int sizeY = 285;
                 int totalLP = 0;
                 HashMap<String, Double> studyTimes = new HashMap<String, Double>();
                 for (Widget wdg = this.lchild; wdg != null; wdg = wdg.prev) {
@@ -308,8 +307,8 @@ public class Window extends Widget implements DTarget {
                         }
                     }
                 }
-                g.image(Text.labelFnd.render("Total LP: " + String.format("%,d", totalLP)).tex(), new Coord(30, 271));
-                int y = 285;
+                g.image(Text.labelFnd.render("Total LP: " + String.format("%,d", totalLP)).tex(), new Coord(30, 306));
+                int y = 320;
                 for (Entry<String, Double> entry : studyTimes.entrySet()) {
 
                     if (entry.getValue() > 4320) {
@@ -354,9 +353,9 @@ public class Window extends Widget implements DTarget {
                     public void click() {
                         CurioReport = true;
                     }
-                }, new Coord(60, y - 30));
+                }, new Coord(80, y - 30));
                 sizeY += 50;
-                resize(230, sizeY);
+                resize(265,sizeY);
                 if (CurioReport) {
                     CurioReport = false;
                     Curios.removeAll(GetCurios);

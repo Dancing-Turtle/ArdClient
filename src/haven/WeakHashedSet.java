@@ -26,13 +26,8 @@
 
 package haven;
 
-import java.lang.ref.Reference;
-import java.lang.ref.ReferenceQueue;
-import java.lang.ref.WeakReference;
-import java.util.AbstractSet;
-import java.util.ConcurrentModificationException;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.*;
+import java.lang.ref.*;
 
 public class WeakHashedSet<E> extends AbstractSet<E> {
     private final ReferenceQueue<E> cleanq = new ReferenceQueue<>();

@@ -1159,7 +1159,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     }
 
     public void wdgmsg(Widget sender, String msg, Object... args) {
-   /* System.out.println("############");
+  /*  System.out.println("############");
     	if(!sender.toString().contains("Camera"))
         System.out.println(sender);
     	System.out.println(msg);

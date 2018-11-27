@@ -71,9 +71,9 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     private boolean showgrid;
     private TileOutline gridol;
     private Coord lasttc = Coord.z;
-    private static final Gob.Overlay rovlsupport = new Gob.Overlay(new BPRadSprite(100.0F, 0, BPRadSprite.smatDanger));
-    private static final Gob.Overlay rovlcolumn = new Gob.Overlay(new BPRadSprite(125.0F, 0, BPRadSprite.smatDanger));
-    private static final Gob.Overlay rovlbeam = new Gob.Overlay(new BPRadSprite(150.0F, 0, BPRadSprite.smatDanger));
+    private static final Gob.Overlay rovlsupport = new Gob.Overlay(new BPRadSprite(100.0F, 0, BPRadSprite.smatSupports));
+    private static final Gob.Overlay rovlcolumn = new Gob.Overlay(new BPRadSprite(125.0F, 0, BPRadSprite.smatSupports));
+    private static final Gob.Overlay rovlbeam = new Gob.Overlay(new BPRadSprite(150.0F, 0, BPRadSprite.smatSupports));
     private static final Gob.Overlay rovltrough = new Gob.Overlay(new BPRadSprite(200.0F, -10.0F, BPRadSprite.smatTrough));
     private static final Gob.Overlay rovlbeehive = new Gob.Overlay(new BPRadSprite(151.0F, -10.0F, BPRadSprite.smatBeehive));
     private long lastmmhittest = System.currentTimeMillis();
@@ -955,7 +955,13 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     private final Rendered gobs;
 
     public String toString() {
-        return (String.format("Camera[%s (%s)], Caches[%s]", getcc(), camera, gobs));
+        String cc;
+        try {
+            cc = getcc().toString();
+        } catch(Loading l) {
+            cc = "<nil>";
+        }
+        return(String.format("Camera[%s (%s)], Caches[%s]", cc, camera, gobs));
     }
 
     public GLState camera() {
@@ -2254,6 +2260,12 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     }
 
     public boolean keydown(KeyEvent ev) {
+        if (placing != null) {
+            if ((ev.getKeyCode() == KeyEvent.VK_LEFT) && placing.adjust.rotate(placing, -1, ui.modflags()))
+                return (true);
+            if ((ev.getKeyCode() == KeyEvent.VK_RIGHT) && placing.adjust.rotate(placing, 1, ui.modflags()))
+                return (true);
+        }
         if (camera.keydown(ev))
             return (true);
         return (super.keydown(ev));

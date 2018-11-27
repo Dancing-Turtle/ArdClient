@@ -740,7 +740,7 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
-        appender.add(new Label("Radius RGB Red Animals/Mine Supports"));
+        appender.add(new Label("Radius RGB Red Animals"));
         appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
         appender.add(new HSlider(150, 0, 255, 0) {
             protected void attach(UI ui) {
@@ -757,7 +757,7 @@ public class OptWnd extends Window {
         });
 
         appender.setVerticalMargin(0);
-        appender.add(new Label("Radius RGB Green Animals/Mine Supports"));
+        appender.add(new Label("Radius RGB Green Animals"));
         appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
         appender.add(new HSlider(150, 0, 255, 0) {
             protected void attach(UI ui) {
@@ -774,7 +774,7 @@ public class OptWnd extends Window {
         });
 
         appender.setVerticalMargin(0);
-        appender.add(new Label("Radius RGB Blue Animals/Mine Supports"));
+        appender.add(new Label("Radius RGB Blue Animals"));
         appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
         appender.add(new HSlider(150, 0, 255, 0) {
             protected void attach(UI ui) {
@@ -786,6 +786,54 @@ public class OptWnd extends Window {
                 Config.smatdangerblue = vol;
                 Utils.setprefi("smatdangerblue", vol);
                 BPRadSprite.smatDanger = new States.ColState(new Color(Config.smatdangerred, Config.smatdangergreen, Config.smatdangerblue, 100));
+            }
+        });
+        appender.add(new Label("Radius RGB Red Mine Supports"));
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(150, 0, 255, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (Config.smatSupportsred);
+            }
+
+            public void changed() {
+                int vol = val;
+                Config.smatSupportsred = vol;
+                Utils.setprefi("smatSupportsred", vol);
+                BPRadSprite.smatSupports = new States.ColState(new Color(Config.smatSupportsred, Config.smatSupportsgreen, Config.smatSupportsblue, 100));
+            }
+        });
+
+        appender.setVerticalMargin(0);
+        appender.add(new Label("Radius RGB Green Mine Supports"));
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(150, 0, 255, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (Config.smatSupportsgreen);
+            }
+
+            public void changed() {
+                int vol = val;
+                Config.smatSupportsgreen = vol;
+                Utils.setprefi("smatSupportsgreen", vol);
+                BPRadSprite.smatSupports = new States.ColState(new Color(Config.smatSupportsred, Config.smatSupportsgreen, Config.smatSupportsblue, 100));
+            }
+        });
+
+        appender.setVerticalMargin(0);
+        appender.add(new Label("Radius RGB Blue Mine Supports"));
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(150, 0, 255, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (Config.smatSupportsblue);
+            }
+            public void changed() {
+                int vol = val;
+                Config.smatSupportsblue = vol;
+                Utils.setprefi("smatSupportsblue", vol);
+                BPRadSprite.smatSupports = new States.ColState(new Color(Config.smatSupportsred, Config.smatSupportsgreen, Config.smatSupportsblue, 100));
             }
         });
         appender.add(new CheckBox("Highlight empty/finished drying frames and full/empty tanning tubs. Requires restart.") {

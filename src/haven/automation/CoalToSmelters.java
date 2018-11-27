@@ -277,13 +277,19 @@ if(Config.dropsmelterstones) {
                         while(autodropperon) {
                             try {
                                 BotUtils.waitForWindow("Ore Smelter");
+                                while(gui.getwnd("Ore Smelter") == null){
+                                    BotUtils.sleep(10);
+                                    if(!autodropperon)
+                                        break;
+                                }
+                                if(!autodropperon)
+                                    break;
                                 BotUtils.sleep(100);
                                 Window w = gui.getwnd("Ore Smelter");
                               //  if (w == null)
                                   // return;
                                 if (Config.dropsmelterstones) {
                                     for (Widget smelter = w.lchild; smelter != null; smelter = smelter.prev) {
-                                        System.out.println("Smelter Loop!");
                                         if (smelter instanceof Inventory) {
                                             if (BotUtils.getInventoryContents((Inventory) smelter).size() != 0) {
                                                 List<WItem> stones = getstones((Inventory) smelter);
@@ -376,7 +382,6 @@ if(Config.dropsmelterstones) {
                         while (gui.getwnd("Ore Smelter") == null) {
                             if(!BotUtils.isMoving())
                             unstucktimer++;
-                            System.out.println("unstucktimer : " + unstucktimer);
                             if (unstucktimer > 50) {
                                 System.out.println("Unstucking.");
                                 BotUtils.sysLogAppend("Moving char", "white");
@@ -454,21 +459,22 @@ if(Config.dropsmelterstones) {
                 countretain = count;
                 try {
                         activelist.addAll(list);
+                    int remaining = activelist.size() * count;
+                    System.out.println("Coal needed : "+remaining);
                     while (!terminaterun) {
                         BotUtils.sysLogAppend("Filling : " + activelist.size() + " Smelters/Ovens.", "white");
-                        int remaining = activelist.size() * count;
                         for (Gob gob : activelist) {
 
                             int availableFuelCoal = gui.maininv.getItemPartialCount("Coal");
                             int availableFuelBranch = gui.maininv.getItemPartialCount("Branch");
 
-                            if (availableFuelCoal < remaining && count == 1)
+                            if (availableFuelCoal < activelist.size() && countretain == 1)
                                 getHQfuel();
-                            else if(availableFuelCoal < remaining && availableFuelBranch < remaining)
+                            else if(availableFuelCoal < 24 && availableFuelBranch < 24 && countretain != 1)
                                 getfuel();
+                            System.out.println("Coal : "+availableFuelCoal+" Branches : "+availableFuelBranch+" count : "+countretain);
 
-
-                            remaining = remaining - count;
+                            remaining = remaining - countretain;
                             count = countretain;
                             WItem coalw = gui.maininv.getItemPartial("Coal");
                             WItem coalw2 = gui.maininv.getItemPartial("Branch");

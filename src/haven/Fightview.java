@@ -110,7 +110,7 @@ public class Fightview extends Widget {
             lastact = act;
             lastuse = Utils.rtime();
             if(lastact != null)
-            if(lastact.get().basename().contains("cleave"))
+            if(lastact.get().basename().contains("cleave") && Config.cleavesound)
                 Audio.play(oof, 2);
             if (lastact != null && Config.logcombatactions) {
                     Resource res = lastact.get();
@@ -138,7 +138,7 @@ public class Fightview extends Widget {
         lastact = act;
         lastuse = Utils.rtime();
         if(lastact != null)
-            if(lastact.get().basename().contains("cleave"))
+            if(lastact.get().basename().contains("cleave") && Config.cleavesound)
                 Audio.play(oof, 2);
         if (lastact != null && Config.logcombatactions) {
             try {
