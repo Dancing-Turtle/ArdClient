@@ -961,7 +961,7 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
-        appender.add(new CheckBox("Draw circles around party members") {
+        appender.add(new CheckBox("Draw circles around kinned players") {
             {
                 a = Config.partycircles;
             }
@@ -1119,6 +1119,18 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
+        appender.add(new CheckBox("Repeat Starvation Alert Warning/Sound") {
+            {
+                a = Config.StarveAlert;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("StarveAlert", val);
+                Config.StarveAlert = val;
+                a = val;
+            }
+        });
+        appender.addRow(new Label("Attribute Increase per mouse scroll"), makeStatGainDropdown());
         appender.add(new CheckBox("Run on login") {
             {
                 a = Config.runonlogin;
@@ -2716,6 +2728,36 @@ public class OptWnd extends Window {
                 super.change(item);
                 Config.fontsizechat = item;
                 Utils.setprefi("fontsizechat", item);
+            }
+        };
+    }
+    private static final List<Integer> statSize = Arrays.asList(1, 2, 5, 10, 25, 50, 100, 200, 500, 1000);
+    private Dropbox<Integer> makeStatGainDropdown() {
+        List<String> values = statSize.stream().map(x -> x.toString()).collect(Collectors.toList());
+        return new Dropbox<Integer>(statSize.size(), values) {
+            {
+                super.change(Config.statgainsize);
+            }
+            @Override
+            protected Integer listitem(int i) {
+                return statSize.get(i);
+            }
+
+            @Override
+            protected int listitems() {
+                return statSize.size();
+            }
+
+            @Override
+            protected void drawitem(GOut g, Integer item, int i) {
+                g.text(item.toString(), Coord.z);
+            }
+
+            @Override
+            public void change(Integer item) {
+                super.change(item);
+                Config.statgainsize = item;
+                Utils.setprefi("statgainsize", item);
             }
         };
     }

@@ -26,15 +26,10 @@
 
 package haven;
 
-import java.io.IOException;
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.SocketAddress;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
+import java.net.*;
 import java.util.*;
+import java.io.*;
+import java.lang.ref.*;
 
 public class Session implements Resource.Resolver {
     public static final int PVER = 17;

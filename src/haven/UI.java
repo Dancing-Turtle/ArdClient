@@ -372,7 +372,7 @@ public class UI {
     public void wdgmsg(Widget sender, String msg, Object... args) {
         int id;
         synchronized(this) {
-      // try { for(Object obj:args) if(!sender.toString().contains("Camera")) System.out.println("Sender : " + sender + " msg = " + msg + " arg 1 : " + obj); }catch(ArrayIndexOutOfBoundsException q){}
+     //  try { for(Object obj:args) if(!sender.toString().contains("Camera")) System.out.println("Sender : " + sender + " msg = " + msg + " arg 1 : " + obj); }catch(ArrayIndexOutOfBoundsException q){}
             if (msg.endsWith("-identical"))
                 return;
 
@@ -413,8 +413,7 @@ public class UI {
                             }
                         }
                     } catch (NullPointerException q) {}
-
-          //    try { for(Object obj:args) if(!wdg.toString().contains("CharWnd")) System.out.println("UI Wdg : " + wdg + " msg : "+msg+" id = " + id + " arg 1 : " + obj); }catch(ArrayIndexOutOfBoundsException qq){}
+             // try { for(Object obj:args) if(!wdg.toString().contains("CharWnd")) System.out.println("UI Wdg : " + wdg + " msg : "+msg+" id = " + id + " arg 1 : " + obj); }catch(ArrayIndexOutOfBoundsException qq){}
                 wdg.uimsg(msg.intern(), args); }
                     else throw (new UIException("Uimsg to non-existent widget " + id, msg, args));
             }
@@ -488,6 +487,7 @@ public class UI {
    // }
 
     public void mousedown(MouseEvent ev, Coord c, int button) {
+       // System.out.println("Mousedown Detected UI");
         setmods(ev);
         lcc = mc = c;
         for (Grab g : c(mousegrab)) {

@@ -26,22 +26,10 @@
 
 package haven;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.nio.Buffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
-import javax.media.opengl.GL;
-import javax.media.opengl.GL2;
+import java.nio.*;
+import java.util.*;
+import java.lang.annotation.*;
+import javax.media.opengl.*;
 
 import haven.GLProgram.VarID;
 

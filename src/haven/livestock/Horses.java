@@ -12,7 +12,7 @@ public class Horses extends Animal {
     private static final Tex texMare = Resource.loadtex("gfx/livestockava/mare");
     private static final Tex texStallion = Resource.loadtex("gfx/livestockava/stallion");
 
-    public static final Map<String, Column> columns = new HashMap<>(11);
+    public static final Map<String, Column> columns = new HashMap<>(15);
 
     static {
         int x = 0;
@@ -27,7 +27,12 @@ public class Horses extends Animal {
         x = addColumn(columns, "Endurance:", "Endurance", 8, x);
         x = addColumn(columns, "Stamina:", "Stamina", 9, x);
         x = addColumn(columns, "Metabolism:", "Metabolism", 10, x);
-            addColumn(columns, "X", "", 11, x);
+
+        x = addColumn(columns, "Meat quality2:", "Meat Final", 11, x);
+        x = addColumn(columns, "Milk quality2:", "Milk Final", 12, x);
+        x = addColumn(columns, "Hide quality2:", "Hide Final", 13, x);
+
+            addColumn(columns, "X", "", 14, x);
     }
 
     public Horses(long wndid, String type) {

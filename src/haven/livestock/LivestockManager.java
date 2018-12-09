@@ -12,21 +12,22 @@ import haven.purus.BotUtils;
 import java.awt.Color;
 
 public class LivestockManager extends Window {
-    private final Panel cattle, horses, sheep, pigs, goats, ResetHighlights, Inspect, Slaughter;
+    private final Panel cattle, horses, sheep, pigs, goats, ResetHighlights, Inspect, Slaughter, DropEntrails, DropIntestines, DropMeat, DropBones;
     private Panel current;
     public static final int COLUMN_TITLE_X = 60;
     public static final int ENTRY_X = 20;
-    private static final int WINDOW_WIDTH = 790;
+    private static final int WINDOW_WIDTH = 1000;
+    public CheckBox DropEntrailsBox, DropIntestinesBox, DropMeatBox, DropBonesBox, InspectBox, SlaughterBox;
     public Animal pendingAnimal;
     private GameUI gui;
-    public static int quality, breedquality;
-    public static boolean combined = false;
+    public static int quality, breedquality, hide, meat, milk;
+    public static boolean combined, combinedhide, combinedmeat, combinedmilk = false;
 
 
 
     public LivestockManager() {
 
-        super(new Coord(WINDOW_WIDTH, 380), "Livestock Manager");
+        super(new Coord(WINDOW_WIDTH, 600), "Livestock Manager");
         Coord pc = new Coord(20, 55);
         cattle = add(new Panel(), pc);
         horses = add(new Panel(), pc);
@@ -36,6 +37,11 @@ public class LivestockManager extends Window {
         ResetHighlights = add(new Panel(), pc);
         Inspect = add(new Panel(), pc);
         Slaughter = add(new Panel(), pc);
+        DropEntrails = add(new Panel(), pc);
+        DropIntestines = add(new Panel(), pc);
+        DropMeat = add(new Panel(), pc);
+        DropBones = add(new Panel(), pc);
+
 
 
         add(new PButton(80, "Cattle", cattle), new Coord(20, 10));
@@ -46,10 +52,15 @@ public class LivestockManager extends Window {
         add(new PButton(80, "Reset Highlights", ResetHighlights), new Coord(470, 10));
         add(new PButton(80, "Inspect", Inspect), new Coord(600, 10));
         add(new PButton(80, "Slaughter", Slaughter), new Coord(690, 10));
+        add(new PButton(80, "Drop Entrails", DropEntrails), new Coord(20, 40));
+        add(new PButton(80, "Drop Intestines", DropIntestines), new Coord(155, 40));
+        add(new PButton(80, "Drop Meat", DropMeat), new Coord(300, 40));
+        add(new PButton(80, "Drop Bones", DropBones), new Coord(420, 40));
+
 
         Utils.loadprefchklist("flowersel", Config.flowermenus);
 
-        CheckBox Inspectbox = new CheckBox("") {
+         InspectBox = new CheckBox("") {
             {
                 for(CheckListboxItem itm :Config.flowermenus.values()) {
                     if (itm.name.equals("Inspect")) {
@@ -74,11 +85,9 @@ public class LivestockManager extends Window {
 
 
         };
+    add(InspectBox,640,40);
 
-
-    add(Inspectbox,640,40);
-
-        CheckBox Slaughterbox = new CheckBox("") {
+    SlaughterBox = new CheckBox("") {
             {
                 for(CheckListboxItem itm :Config.flowermenus.values()) {
                     if (itm.name.equals("Slaughter")) {
@@ -101,11 +110,71 @@ public class LivestockManager extends Window {
                 }
             }
         };
+    add(SlaughterBox,730,40);
 
-    add(Slaughterbox,730,40);
+        DropEntrailsBox = new CheckBox("") {
+            {
+              if(Config.DropEntrails)
+                            a = true;
+                         else
+                            a = false;
+            }
 
+            public void set(boolean val) {
+                Config.DropEntrails =val;
+                        a = val;
+                Utils.setprefb("DropEntrails", val);
+                    }
+        };
+        add(DropEntrailsBox,120,45);
 
+        DropIntestinesBox = new CheckBox("") {
+            {
+                if(Config.DropIntestines)
+                    a = true;
+                else
+                    a = false;
+            }
 
+            public void set(boolean val) {
+                Config.DropIntestines =val;
+                a = val;
+                Utils.setprefb("DropIntestines", val);
+            }
+        };
+        add(DropIntestinesBox,270,45);
+
+        DropMeatBox = new CheckBox("") {
+            {
+                if(Config.DropMeat)
+                    a = true;
+                else
+                    a = false;
+            }
+
+            public void set(boolean val) {
+                Config.DropMeat =val;
+                a = val;
+                Utils.setprefb("DropMeat", val);
+            }
+        };
+        add(DropMeatBox,390,45);
+
+        DropBonesBox = new CheckBox("") {
+            {
+                if(Config.DropBones)
+                    a = true;
+                else
+                    a = false;
+            }
+
+            public void set(boolean val) {
+                Config.DropBones =val;
+                a = val;
+                Utils.setprefb("DropBones", val);
+            }
+        };
+        add(DropBonesBox,520,45);
 
         createHeader(horses, Horses.columns);
         createHeader(cattle, Cattle.columns);
@@ -132,7 +201,7 @@ public class LivestockManager extends Window {
 
         for (Map.Entry<String, Column> col : cols) {
             Column pos = col.getValue();
-            panel.add(pos.lbl, new Coord(pos.x + offx, 0));
+            panel.add(pos.lbl, new Coord(pos.x + offx, 10));
         }
 
         panel.pack();
@@ -140,8 +209,26 @@ public class LivestockManager extends Window {
 
     @Override
     public void wdgmsg(Widget sender, String msg, Object... args) {
-        if (sender == cbtn)
+        if (sender == cbtn) {
+            Config.DropEntrails =false;
+            Config.DropBones = false;
+            Config.DropMeat = false;
+            Config.DropIntestines = false;
+            InspectBox.a = false;
+            SlaughterBox.a = false;
+            DropEntrailsBox.a = false;
+            DropIntestinesBox.a = false;
+            DropMeatBox.a = false;
+            DropBonesBox.a = false;
+            Utils.loadprefchklist("flowersel", Config.flowermenus);
+            for(CheckListboxItem itm :Config.flowermenus.values()) {
+                if (itm.name.equals("Inspect"))
+                    itm.selected = false;
+                if (itm.name.equals("Slaughter"))
+                    itm.selected = false;
+            }
             hide();
+        }
         else
             super.wdgmsg(sender, msg, args);
     }
@@ -149,6 +236,23 @@ public class LivestockManager extends Window {
     @Override
     public boolean type(char key, java.awt.event.KeyEvent ev) {
         if (key == 27) {
+            Config.DropEntrails =false;
+            Config.DropBones = false;
+            Config.DropMeat = false;
+            Config.DropIntestines = false;
+            InspectBox.a = false;
+            SlaughterBox.a = false;
+            DropEntrailsBox.a = false;
+            DropIntestinesBox.a = false;
+            DropMeatBox.a = false;
+            DropBonesBox.a = false;
+            Utils.loadprefchklist("flowersel", Config.flowermenus);
+            for(CheckListboxItem itm :Config.flowermenus.values()) {
+                if (itm.name.equals("Inspect"))
+                    itm.selected = false;
+                if (itm.name.equals("Slaughter"))
+                    itm.selected = false;
+            }
             hide();
             return true;
         }
@@ -170,7 +274,7 @@ public class LivestockManager extends Window {
             visible = false;
             c = Coord.z;
            // scrollPort = new Scrollport(new Coord(WINDOW_WIDTH - 40, 290)) {
-                scrollPort = new Scrollport(new Coord(WINDOW_WIDTH - 40, 300), 25) {
+                scrollPort = new Scrollport(new Coord(WINDOW_WIDTH - 40, 520), 25) {
                 @Override
                 public void draw(GOut g) {
                     g.chcolor(0, 0, 0, 128);
@@ -210,9 +314,65 @@ public class LivestockManager extends Window {
 
             if (tgt == ResetHighlights)
                 MapView.markedGobs.clear();
-                else chpanel(tgt);
-
+            else if (tgt == Inspect)
+                BotUtils.sysMsg("Not yet implemented.",Color.white);
+            else if (tgt == Slaughter)
+                BotUtils.sysMsg("Not yet implemented.",Color.white);
+            else if (tgt==DropEntrails){
+                if (Config.DropEntrails) {
+                    Config.DropEntrails = false;
+                    DropEntrailsBox.a = false;
+                    BotUtils.sysMsg("No longer dropping entrails.",Color.white);
+                }
+                else
+                    {
+                    Config.DropEntrails =true;
+                    DropEntrailsBox.a = true;
+                    BotUtils.sysMsg("Auto dropping Entrails.",Color.white);
+                }
             }
+            else if (tgt==DropIntestines){
+                if (Config.DropIntestines) {
+                    Config.DropIntestines = false;
+                    BotUtils.sysMsg("No longer dropping Intestines.",Color.white);
+                    DropIntestinesBox.a = false;
+                }
+                else
+                {
+                    Config.DropIntestines =true;
+                    DropIntestinesBox.a = true;
+                    BotUtils.sysMsg("Auto dropping Intestines.",Color.white);
+                }
+            }
+            else if(tgt==DropMeat){
+                if (Config.DropMeat) {
+                    Config.DropMeat = false;
+                    DropMeatBox.a = false;
+                    BotUtils.sysMsg("No longer dropping Meat.",Color.white);
+                }
+                else
+                {
+                    Config.DropMeat =true;
+                    DropMeatBox.a = true;
+                    BotUtils.sysMsg("Auto dropping Meat.",Color.white);
+                }
+            }
+            else if(tgt==DropBones){
+                if (Config.DropBones) {
+                    Config.DropBones = false;
+                    DropBonesBox.a = false;
+                    BotUtils.sysMsg("No longer dropping Bones.",Color.white);
+                }
+                else
+                {
+                    Config.DropBones =true;
+                    DropBonesBox.a = true;
+                    BotUtils.sysMsg("Auto dropping Bones.",Color.white);
+                }
+            }
+            else chpanel(tgt);
+            }
+
 
 
 
@@ -297,21 +457,49 @@ public class LivestockManager extends Window {
         quality = val;
         if (name.equals("Breeding quality:"))
             breedquality = val;
+        if(name.equals("Meat quality:"))
+            meat = val;
+        if(name.equals("Hide quality:"))
+            hide = val;
+        if(name.equals("Milk quality:"))
+            milk = val;
+        if(meat > 0 && quality > 0 && !combinedmeat){
+            pendingAnimal.put("Meat quality2:", quality * meat / 100);
+         //   System.out.println("attributes status : "+pendingAnimal.hasAllAttributes()+" size : "+pendingAnimal.size()+" resolved combined meat");
+            pendingAnimal.attributeResolved();
+            combinedmeat = true;
+        }
+        if(milk > 0 && quality > 0 && !combinedmilk){
+            pendingAnimal.put("Milk quality2:", quality * milk / 100);
+          //  System.out.println("attributes status : "+pendingAnimal.hasAllAttributes()+" size : "+pendingAnimal.size()+" resolved combined milk");
+            pendingAnimal.attributeResolved();
+            combinedmilk = true;
+        }
+        if(hide > 0 && quality > 0 && !combinedhide){
+            pendingAnimal.put("Hide quality2:", quality * hide / 100);
+          //  System.out.println("attributes status : "+pendingAnimal.hasAllAttributes()+" size : "+pendingAnimal.size()+" resolved combined hide");
+            pendingAnimal.attributeResolved();
+            combinedhide = true;
+        }
         if (quality > 0 && breedquality > 0 && !combined) {
             pendingAnimal.put("Combined quality:", quality + breedquality);
+          //  System.out.println("attributes status : "+pendingAnimal.hasAllAttributes()+" size : "+pendingAnimal.size()+" resolved combined quality");
             pendingAnimal.attributeResolved();
             combined = true;
         }
         pendingAnimal.put(name, val);
         pendingAnimal.attributeResolved();
-        System.out.println("attributes status : "+pendingAnimal.hasAllAttributes()+" size : "+pendingAnimal.size());
+      //  System.out.println("attributes status : "+pendingAnimal.hasAllAttributes()+" size : "+pendingAnimal.size()+" resolved is "+name);
 
 
 
 
         if (pendingAnimal.hasAllAttributes()) {
-            System.out.println("has all attributes");
+          //  System.out.println("has all attributes");
             combined = false;
+            combinedmeat = false;
+            combinedmilk = false;
+            combinedhide = false;
             Panel p = getAnimalPanel(type);
 
             if (p.list.stream().anyMatch(x -> x.gobid == pendingAnimal.gobid)) {
@@ -339,6 +527,9 @@ public class LivestockManager extends Window {
             pendingAnimal = null;
             quality = 0;
             breedquality = 0;
+            hide = 0;
+            milk = 0;
+            meat = 0;
         }
     }
 }

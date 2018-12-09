@@ -12,7 +12,7 @@ public class Goat extends Animal {
     private static final Tex texNanny = Resource.loadtex("gfx/livestockava/nanny");
     private static final Tex texBilly = Resource.loadtex("gfx/livestockava/billy");
 
-    public static final Map<String, Column> columns = new HashMap<>(10);
+    public static final Map<String, Column> columns = new HashMap<>(14);
 
     static {
         int x = 0;
@@ -26,7 +26,12 @@ public class Goat extends Animal {
         x = addColumn(columns, "Milk quantity:", "Milk #", 7, x);
         x = addColumn(columns, "Wool quality:", "Wool", 8, x);
         x = addColumn(columns, "Wool quantity:", "Wool #", 9, x);
-            addColumn(columns, "X", "", 10, x);
+
+        x = addColumn(columns, "Meat quality2:", "Meat Final", 10, x);
+        x = addColumn(columns, "Milk quality2:", "Milk Final", 11, x);
+        x = addColumn(columns, "Hide quality2:", "Hide Final", 12, x);
+
+            addColumn(columns, "X", "", 13, x);
     }
 
     public Goat(long wndid, String type) {

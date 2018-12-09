@@ -356,16 +356,16 @@ if(Config.dropsmelterstones) {
         }
         private class orefiller implements Runnable{
         @Override
-            public void run(){
-            gui = gameui();
-            BotUtils.sysMsg("Ore filler started.",Color.white);
-                if(list.size() == 0)
-                {
-                    BotUtils.sysMsg("No Smelters selected.",Color.white);
+            public void run() {
+            try {
+                gui = gameui();
+                BotUtils.sysMsg("Ore filler started.", Color.white);
+                if (list.size() == 0) {
+                    BotUtils.sysMsg("No Smelters selected.", Color.white);
                     stopbtn.click();
                     return;
                 }
-                while(!terminateore) {
+                while (!terminateore) {
                     for (Gob gob : list) {
                         if (terminateore)
                             break;
@@ -380,8 +380,8 @@ if(Config.dropsmelterstones) {
                         System.out.println("after click");
                         int unstucktimer = 0;
                         while (gui.getwnd("Ore Smelter") == null) {
-                            if(!BotUtils.isMoving())
-                            unstucktimer++;
+                            if (!BotUtils.isMoving())
+                                unstucktimer++;
                             if (unstucktimer > 50) {
                                 System.out.println("Unstucking.");
                                 BotUtils.sysLogAppend("Moving char", "white");
@@ -401,8 +401,8 @@ if(Config.dropsmelterstones) {
                         BotUtils.sleep(500);
                         //  BotUtils.pfRightClick(gob, 0);
                         while (gui.getwnd("Ore Smelter") == null) {
-                            if(!BotUtils.isMoving())
-                            unstucktimer++;
+                            if (!BotUtils.isMoving())
+                                unstucktimer++;
                             System.out.println("unstucktimer : " + unstucktimer);
                             if (unstucktimer > 50) {
                                 System.out.println("Unstucking.");
@@ -447,9 +447,11 @@ if(Config.dropsmelterstones) {
                     }
                     terminateore = true;
                 }
-                BotUtils.sysMsg("Done.",Color.white);
+                BotUtils.sysMsg("Done.", Color.white);
                 stopbtn.click();
                 terminateore = true;
+            } catch (Loading loadingerrorslol) {
+            }
         }
         }
         private class Runner implements Runnable {

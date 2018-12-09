@@ -26,8 +26,7 @@
 
 package haven;
 
-import haven.purus.BotUtils;
-
+import java.awt.*;
 import java.awt.event.KeyEvent;
 
 public class RootWidget extends ConsoleHost {
@@ -81,10 +80,8 @@ public class RootWidget extends ConsoleHost {
         //return KeyBinder.handle(ui, ev) || super.keydown(ev);
     }*/
 
-    @Override
-    public boolean mousedown(Coord c, int button) {
-        return super.mousedown(c, button);
-    }
+   @Override
+    public boolean mousedown(Coord c, int button) { return super.mousedown(c, button); }
 
     public void draw(GOut g) {
         super.draw(g);

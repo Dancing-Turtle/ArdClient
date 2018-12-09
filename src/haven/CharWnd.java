@@ -612,7 +612,7 @@ public class CharWnd extends Window {
                 }
 
                 public boolean mousewheel(Coord c, int a) {
-                    int b = a * 100;
+                    int b = a * Config.statgainsize;
                     adj(-b);
                     return (true);
                 }
@@ -680,7 +680,7 @@ public class CharWnd extends Window {
         }
 
         public boolean mousewheel(Coord c, int a) {
-            int b = a * 100;
+            int b = a * Config.statgainsize;
             adj(-b);
             return (true);
         }

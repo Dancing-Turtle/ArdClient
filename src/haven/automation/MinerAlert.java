@@ -150,153 +150,154 @@ public class MinerAlert extends Window {
         @Override
         public void run() {
             while (!terminate) {
-                countiron = 0;
-                countgold = 0;
-                countsilver = 0;
-                MCache mcache = gui.map.glob.map;
-                Glob g = gui.map.glob;
-                Gob player = gui.map.player();
-                List<Gob> allGobs = PBotAPI.getGobs();
-                List<Gob> list = new ArrayList<>();
+                try {
+                    countiron = 0;
+                    countgold = 0;
+                    countsilver = 0;
+                    MCache mcache = gui.map.glob.map;
+                    Glob g = gui.map.glob;
+                    Gob player = gui.map.player();
+                    List<Gob> allGobs = PBotAPI.getGobs();
+                    List<Gob> list = new ArrayList<>();
 
 
-                for (int i = 0; i < allGobs.size(); i++) {
-                    try {
-                        Resource res = allGobs.get(i).getres();
-                        if (allGobs.get(i).getres().name.endsWith("greenooze") && !allGobs.get(i).knocked) {
-                            list.add(allGobs.get(i));
-                            if (!slimecount.contains(allGobs.get(i)))
-                                slimecount.add(allGobs.get(i));
+                    for (int i = 0; i < allGobs.size(); i++) {
+                        try {
+                            Resource res = allGobs.get(i).getres();
+                            if (allGobs.get(i).getres().name.endsWith("greenooze") && !allGobs.get(i).knocked) {
+                                list.add(allGobs.get(i));
+                                if (!slimecount.contains(allGobs.get(i)))
+                                    slimecount.add(allGobs.get(i));
+                            }
+                        } catch (NullPointerException | Loading e) {
                         }
                     }
-                    catch(NullPointerException | Loading e){ }
-                }
-                countslimes = list.size();
-                // Gob player = ((plgob < 0) ? null : glob.oc.getgob(plgob));
-                Coord pltc = new Coord((int) player.getc().x / 11, (int) player.getc().y / 11);
+                    countslimes = list.size();
+                    // Gob player = ((plgob < 0) ? null : glob.oc.getgob(plgob));
+                    Coord pltc = new Coord((int) player.getc().x / 11, (int) player.getc().y / 11);
 
-                for (int x = -44; x < 44; x++) {
-                    for (int y = -44; y < 44; y++) {
-                        int t = g.map.gettile(pltc.sub(x, y));
-                        Resource res = g.map.tilesetr(t);
-                        if (res == null)
-                            continue;
+                    for (int x = -44; x < 44; x++) {
+                        for (int y = -44; y < 44; y++) {
+                            int t = g.map.gettile(pltc.sub(x, y));
+                            Resource res = g.map.tilesetr(t);
+                            if (res == null)
+                                continue;
 
-                        String name = res.name;
-                        if (name.equals("gfx/tiles/rocks/cassiterite")) {
-                            counttin = counttin + 1;
-                            countcassiterite = countcassiterite + 1;
-                        }
-                        if (name.equals("gfx/tiles/rocks/chalcopyrite")) {
-                            countiron = countiron + 1;
-                            countcopper = countcopper + 1;
-                            countchalcopyrite = countchalcopyrite + 1;
-                        }
-                        if (name.equals("gfx/tiles/rocks/malachite")) {
-                            countcopper = countcopper + 1;
-                            countmalachite = countmalachite + 1;
-                        }
-                        if (name.equals("gfx/tiles/rocks/ilmenite")) {
-                            countiron = countiron + 1;
-                            countilmenite = countilmenite + 1;
-                        }
-                        if (name.equals("gfx/tiles/rocks/limonite")) {
-                            countiron = countiron + 1;
-                            countlimonite = countlimonite + 1;
-                        }
-                        if (name.equals("gfx/tiles/rocks/hematite")) {
-                            countiron = countiron + 1;
-                            counthematite = counthematite + 1;
-                        }
-                        if (name.equals("gfx/tiles/rocks/magnetite")) {
-                            countiron = countiron + 1;
-                            countmagnetite = countmagnetite + 1;
-                        }
-                        if (name.equals("gfx/tiles/rocks/galena")) {
-                            countsilver = countsilver + 1;
-                            countgalena = countgalena + 1;
-                        }
-                        if (name.equals("gfx/tiles/rocks/argentite")) {
-                            countsilver = countsilver + 1;
-                            countargentite = countargentite + 1;
-                        }
-                        if (name.equals("gfx/tiles/rocks/hornsilver")) {
-                            countsilver = countsilver + 1;
-                            counthornsilver = counthornsilver + 1;
-                        }
-                        if (name.equals("gfx/tiles/rocks/petzite")) {
-                            countgold = countgold + 1;
-                            countpetzite = countpetzite + 1;
-                        }
-                        if (name.equals("gfx/tiles/rocks/sylvanite")) {
-                            countgold = countgold + 1;
-                            countsylvanite = countsylvanite + 1;
-                        }
-                        if (name.equals("gfx/tiles/rocks/nagyagite")) {
-                            countgold = countgold + 1;
-                            countnagyagite = countnagyagite + 1;
-                        }
-                        if(name.equals("gfx/tiles/rocks/cinnabar")){
-                            countcinnabar = countcinnabar +1;
-                        }
+                            String name = res.name;
+                            if (name.equals("gfx/tiles/rocks/cassiterite")) {
+                                counttin = counttin + 1;
+                                countcassiterite = countcassiterite + 1;
+                            }
+                            if (name.equals("gfx/tiles/rocks/chalcopyrite")) {
+                                countiron = countiron + 1;
+                                countcopper = countcopper + 1;
+                                countchalcopyrite = countchalcopyrite + 1;
+                            }
+                            if (name.equals("gfx/tiles/rocks/malachite")) {
+                                countcopper = countcopper + 1;
+                                countmalachite = countmalachite + 1;
+                            }
+                            if (name.equals("gfx/tiles/rocks/ilmenite")) {
+                                countiron = countiron + 1;
+                                countilmenite = countilmenite + 1;
+                            }
+                            if (name.equals("gfx/tiles/rocks/limonite")) {
+                                countiron = countiron + 1;
+                                countlimonite = countlimonite + 1;
+                            }
+                            if (name.equals("gfx/tiles/rocks/hematite")) {
+                                countiron = countiron + 1;
+                                counthematite = counthematite + 1;
+                            }
+                            if (name.equals("gfx/tiles/rocks/magnetite")) {
+                                countiron = countiron + 1;
+                                countmagnetite = countmagnetite + 1;
+                            }
+                            if (name.equals("gfx/tiles/rocks/galena")) {
+                                countsilver = countsilver + 1;
+                                countgalena = countgalena + 1;
+                            }
+                            if (name.equals("gfx/tiles/rocks/argentite")) {
+                                countsilver = countsilver + 1;
+                                countargentite = countargentite + 1;
+                            }
+                            if (name.equals("gfx/tiles/rocks/hornsilver")) {
+                                countsilver = countsilver + 1;
+                                counthornsilver = counthornsilver + 1;
+                            }
+                            if (name.equals("gfx/tiles/rocks/petzite")) {
+                                countgold = countgold + 1;
+                                countpetzite = countpetzite + 1;
+                            }
+                            if (name.equals("gfx/tiles/rocks/sylvanite")) {
+                                countgold = countgold + 1;
+                                countsylvanite = countsylvanite + 1;
+                            }
+                            if (name.equals("gfx/tiles/rocks/nagyagite")) {
+                                countgold = countgold + 1;
+                                countnagyagite = countnagyagite + 1;
+                            }
+                            if (name.equals("gfx/tiles/rocks/cinnabar")) {
+                                countcinnabar = countcinnabar + 1;
+                            }
 
+                        }
                     }
-                }
-                labelcountiron.settext(countiron + "");
-                labelcountcopper.settext(countcopper + "");
-                labelcounttin.settext(counttin + "");
-                labelcountgold.settext(countgold + "");
-                labelcountsilver.settext(countsilver + "");
-                labelcountmagnetite.settext(countmagnetite + "");
-                labelcounthematite.settext(counthematite + "");
-                labelcountslimes.settext(countslimes + "");
-                labelcountslimestotal.settext(slimecount.size() + "");
-                labelcountcinnabar.settext(countcinnabar +"");
-                if(countgold > 0) {
-                    double now = Utils.rtime();
-                    if(now-lasterror > 45) {
-                        lasterror = now;
-                        BotUtils.sysMsg("Gold Visible on screen!!",Color.white);
-                        if(!audiomute)
-                            Audio.play(goldsfx);
+                    labelcountiron.settext(countiron + "");
+                    labelcountcopper.settext(countcopper + "");
+                    labelcounttin.settext(counttin + "");
+                    labelcountgold.settext(countgold + "");
+                    labelcountsilver.settext(countsilver + "");
+                    labelcountmagnetite.settext(countmagnetite + "");
+                    labelcounthematite.settext(counthematite + "");
+                    labelcountslimes.settext(countslimes + "");
+                    labelcountslimestotal.settext(slimecount.size() + "");
+                    labelcountcinnabar.settext(countcinnabar + "");
+                    if (countgold > 0) {
+                        double now = Utils.rtime();
+                        if (now - lasterror > 45) {
+                            lasterror = now;
+                            BotUtils.sysMsg("Gold Visible on screen!!", Color.green);
+                            if (!audiomute)
+                                Audio.play(goldsfx);
+                        }
                     }
-                }
-                if(countcinnabar > 0){
-                    double now = Utils.rtime();
-                    if (now-lasterror > 45){
-                        BotUtils.sysMsg("Cinnabar visible on screen!!",Color.white);
-                        if(!audiomute)
-                            Audio.play(cinnabarsfx);
-                        lasterror = now;
+                    if (countcinnabar > 0) {
+                        double now = Utils.rtime();
+                        if (now - lasterror > 45) {
+                            BotUtils.sysMsg("Cinnabar visible on screen!!", Color.green);
+                            if (!audiomute)
+                                Audio.play(cinnabarsfx);
+                            lasterror = now;
+                        }
                     }
-                }
-                if(countsilver > 0) {
-                    double now = Utils.rtime();
-                    if (now-lasterror>15) {
-                        gui.error("Silver Visible on Screen");
-                        if(!audiomute)
-                            Audio.play(silversfx);
-                        lasterror = now;
+                    if (countsilver > 0) {
+                        double now = Utils.rtime();
+                        if (now - lasterror > 15) {
+                            BotUtils.sysMsg("Silver visible on screen!!", Color.green);
+                            if (!audiomute)
+                                Audio.play(silversfx);
+                            lasterror = now;
+                        }
                     }
-                }
-                if(countslimes>0) {
-                    double now = Utils.rtime();
-                    if(now-lasterror > 15) {
-                        BotUtils.sysLogAppend("Slime number spawned : " + list.size(),"white");
-                        lasterror = now;
+                    if (countslimes > 0) {
+                        double now = Utils.rtime();
+                        if (now - lasterror > 15) {
+                            BotUtils.sysLogAppend("Slime number spawned : " + list.size(), "white");
+                            lasterror = now;
+                        }
                     }
-                }
-                countiron = 0;
-                counttin = 0;
-                countcopper = 0;
-                countgold = 0;
-                countsilver = 0;
-                counthematite = 0;
-                countmagnetite = 0;
-                countcinnabar = 0;
-                countslimes=0;
-                list = null;
-                stopbtn.click();
+                    countiron = 0;
+                    counttin = 0;
+                    countcopper = 0;
+                    countgold = 0;
+                    countsilver = 0;
+                    counthematite = 0;
+                    countmagnetite = 0;
+                    countcinnabar = 0;
+                    countslimes = 0;
+                    stopbtn.click();
+                }catch(Loading lolloadingerrors){}
             }
         }
     }

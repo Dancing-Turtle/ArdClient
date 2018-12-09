@@ -219,6 +219,7 @@ public class Widget {
             }
         }
     }
+
     public static Factory gettype(String name) {
         long start = System.currentTimeMillis();
         Factory f;
@@ -774,7 +775,6 @@ public class Widget {
             put(8, KeyEvent.VK_BACK_SPACE).put(9, KeyEvent.VK_TAB).put(13, KeyEvent.VK_ENTER).put(27, KeyEvent.VK_ESCAPE).
             put(128, KeyEvent.VK_UP).put(129, KeyEvent.VK_RIGHT).put(130, KeyEvent.VK_DOWN).put(131, KeyEvent.VK_LEFT).
             put(132, KeyEvent.VK_INSERT).put(133, KeyEvent.VK_HOME).put(134, KeyEvent.VK_PAGE_UP).put(135, KeyEvent.VK_DELETE).put(136, KeyEvent.VK_END).put(137, KeyEvent.VK_PAGE_DOWN).map();
-
     public static boolean matchgkey(KeyEvent ev, int gkey) {
         if((gkey & 0xf000) != 0) {
             return(((UI.modflags(ev) & ((gkey & 0xf000) >> 12)) == ((gkey & 0x0f00) >> 8)) &&

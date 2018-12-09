@@ -83,7 +83,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public OptWnd opts;
     public Collection<DraggedItem> hand = new LinkedList<DraggedItem>();
     private Collection<DraggedItem> handSave = new LinkedList<DraggedItem>();
-    private int MinerDrinkTimer;
+    private int MinerDrinkTimer, StarvationAlertDelay;
     public WItem vhand;
     public ChatUI chat;
     public Speedget speedget;
@@ -247,9 +247,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             opts.setMapSettings();
         }
 
-
-
-
         fbelt = new FBelt(chrid, Utils.getprefb("fbelt_vertical", true));
         fbelt.loadLocal();
         add(fbelt, Utils.getprefc("fbelt_c", new Coord(20, 200)));
@@ -377,7 +374,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         if(zerg.show(!zerg.visible)) {
             zerg.raise();
             fitwdg(zerg);
-            setfocus(zerg);
+          //  setfocus(zerg);
         }
     }
 
@@ -592,7 +589,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         @Override
         public boolean show(boolean show) {
            if (show)
-                gameui().buddies.clearSearch();
+               gameui().buddies.clearSearch();
             return super.show(show);
         }
     }
@@ -929,10 +926,9 @@ public class GameUI extends ConsoleHost implements Console.Directory {
                     destroy();
                 }
             };
+            add(questpanel);
             if (Config.noquests)
                 questpanel.hide();
-
-            add(questpanel);
         } else if (place == "misc") {
             Coord c;
             if(args[1] instanceof Coord) {
@@ -948,8 +944,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             add(child, c);
         } else if(place == "abt") {
             add(child, Coord.z);
-        }
-            else {
+        } else {
             throw (new UI.UIException("Illegal gameui child", place, args));
         }
     }
@@ -1044,6 +1039,12 @@ public class GameUI extends ConsoleHost implements Console.Directory {
                     Drink();
                 }
             }
+        }
+        int energy = getmeter("nrj", 0).a;
+        StarvationAlertDelay++;
+        if(energy < 20 && StarvationAlertDelay > 10000 && Config.StarveAlert) {
+            StarvationAlertDelay = 0;
+            BotUtils.sysMsg("You are Starving!",Color.white);
         }
         double idle = Utils.rtime() - ui.lastevent;
         if (!afk && (idle > 300)) {
@@ -1159,12 +1160,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     }
 
     public void wdgmsg(Widget sender, String msg, Object... args) {
-  /*  System.out.println("############");
-    	if(!sender.toString().contains("Camera"))
-        System.out.println(sender);
-    	System.out.println(msg);
-    	for(Object o :args)
-    		System.out.println(o);*/
+       // System.out.println("############");if(!sender.toString().contains("Camera")) System.out.println(sender);System.out.println(msg);for(Object o :args) System.out.println(o);
         if ((sender == chrwdg) && (msg == "close")) {
             chrwdg.hide();
         } else if((polities.contains(sender)) && (msg == "close")) {
@@ -1516,6 +1512,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 
 
     public boolean mousedown(Coord c, int button) {
+      //  System.out.println("Mousedown Detected gui");
         return (super.mousedown(c, button));
     }
 

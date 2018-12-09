@@ -264,6 +264,8 @@ public class SeedCropFarmer extends Window implements Runnable {
 								gameui().map.wdgmsg("itemact", Coord.z, containers.get(0).rc.floor(posres), 1, 0, (int) containers.get(0).id, containers.get(0).rc.floor(posres), 0, -1);
 								int i = 0;
 								while(BotUtils.getInventoryItemsByName(BotUtils.playerInventory(),seedName).size() == list.size()) {
+									if(stopThread)
+										break;
 									if(containers.size() == 1 && i > 250){
 										BotUtils.sysMsg("Only container in list appears to be full, stopping.",Color.white);
 										stopThread = true;
@@ -289,6 +291,8 @@ public class SeedCropFarmer extends Window implements Runnable {
 								}
 							}
 							BotUtils.sleep(250);
+							if(stopThread)
+								return;
 							if (BotUtils.getItemAtHand() != null) {//still have seeds on cursor, dropping them in an empty inventory slot
 								gameui().map.wdgmsg("itemact",Coord.z, containers.get(0).rc.floor(posres), 0, 0, (int) containers.get(0).id, containers.get(0).rc.floor(posres), 0, -1);
 							}

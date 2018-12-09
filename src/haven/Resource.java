@@ -186,8 +186,6 @@ public class Resource implements Serializable {
 		return(ret);
 		}
 
-
-
 		public static Map<Integer, Integer> decode(Object[] args) {
 		if(args.length == 0)
 			return(Collections.emptyMap());
@@ -206,8 +204,6 @@ public class Resource implements Serializable {
 		}
 	}
 	}
-
-
 
 	private Resource(Pool pool, String name, int ver) {
 		this.pool = pool;

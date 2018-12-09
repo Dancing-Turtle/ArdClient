@@ -815,7 +815,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
         KinInfo ki = getattr(KinInfo.class);
         if (ki != null) {
             rl.add(ki.fx, null);
-            if(!playerhighlight.containsKey(this)) {
+            if(!playerhighlight.containsKey(this) && Config.partycircles) {
             	Resource res = getres();
             	if (res != null && res.name.contains("body") && !isplayer()) {
                   //  BotUtils.sysLogAppend("Player : "+ki.name+" spotted","white");

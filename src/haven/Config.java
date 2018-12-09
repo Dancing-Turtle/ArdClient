@@ -193,8 +193,14 @@ public class Config {
     public static boolean discordchat =  Utils.getprefb("discordchat", false);
     public static String discordbotkey =  Utils.getpref("discordbotkey", "Null");
     public static boolean highlightpots = Utils.getprefb("highlightpots", false);
+    public static boolean DropEntrails = Utils.getprefb("DropEntrails", false);
+    public static boolean DropIntestines = Utils.getprefb("DropIntestines", false);
+    public static boolean StarveAlert = Utils.getprefb("StarveAlert", true);
+    public static boolean DropMeat = Utils.getprefb("DropMeat", false);
+    public static boolean DropBones = Utils.getprefb("DropBones", false);
     public static boolean bonsai = Utils.getprefb("bonsai", false);
     public static int fontsizechat = Utils.getprefi("fontsizechat", 14);
+    public static int statgainsize = Utils.getprefi("statgainsize", 1);
     public static boolean fontaa = Utils.getprefb("fontaa", false);
     public static boolean usefont = Utils.getprefb("usefont", false);
     public static String font = Utils.getpref("font", "SansSerif");
@@ -400,6 +406,7 @@ public class Config {
         put("Skin", new CheckListboxItem("Skin", Resource.BUNDLE_FLOWER));
         put("Flay", new CheckListboxItem("Flay", Resource.BUNDLE_FLOWER));
         put("Collect bones", new CheckListboxItem("Collect bones", Resource.BUNDLE_FLOWER));
+        put("Crumble", new CheckListboxItem("Crumble", Resource.BUNDLE_FLOWER));
         put("Butcher", new CheckListboxItem("Butcher", Resource.BUNDLE_FLOWER));
         put("Giddyup!", new CheckListboxItem("Giddyup!", Resource.BUNDLE_FLOWER));
         put("Break", new CheckListboxItem("Break", Resource.BUNDLE_FLOWER));

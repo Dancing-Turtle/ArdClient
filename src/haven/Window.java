@@ -286,9 +286,10 @@ public class Window extends Widget implements DTarget {
 
             }
 
-
-
-
+            if(cap.text.equals("Receive items")){
+              //  resize(250,350);
+              //  gameui().fitwdg(this);
+            }
 
             if (cap.text.equals("Study Desk")) {
                 if (checkcurios != null)
