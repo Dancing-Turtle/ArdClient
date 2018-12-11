@@ -1040,12 +1040,13 @@ public class GameUI extends ConsoleHost implements Console.Directory {
                 }
             }
         }
+        try{
         int energy = getmeter("nrj", 0).a;
         StarvationAlertDelay++;
         if(energy < 20 && StarvationAlertDelay > 10000 && Config.StarveAlert) {
             StarvationAlertDelay = 0;
             BotUtils.sysMsg("You are Starving!",Color.white);
-        }
+        }}catch(NullPointerException nullcatchkek){}
         double idle = Utils.rtime() - ui.lastevent;
         if (!afk && (idle > 300)) {
             afk = true;
