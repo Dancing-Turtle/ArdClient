@@ -1374,6 +1374,12 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         speedget.set(3);
     }
 
+    public void toggleres(){
+        Config.resinfo = !Config.resinfo;
+        Utils.setprefb("resinfo", Config.resinfo);
+        msg("Resource info on shift/shift+ctrl is now turned " + (Config.resinfo ? "on" : "off"), Color.WHITE);
+    }
+
   /*  public boolean globtype(char key, KeyEvent ev) {
         if (key == ':') {
             entercmd();

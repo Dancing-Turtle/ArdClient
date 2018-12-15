@@ -251,7 +251,6 @@ public class PepperBot extends Window implements AreaSelectCallback, GobSelectCa
 	GItem item = BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), Arrays.asList("gfx/invobjs/seed-flax")).get(0).item;
 	BotUtils.takeItem(item);
 	while(BotUtils.getInventoryItemsByName(BotUtils.playerInventory(),"gfx/invobjs/seed-flax").size() > 0){
-		System.out.println("Looping");
 		if(BotUtils.getItemAtHand() == null){
 			System.out.println("Hand null, breaking");
 			break;

@@ -2353,6 +2353,81 @@ public class OptWnd extends Window {
             }
         });
         appender.setVerticalMargin(0);
+        appender.add(new CheckBox("Alarm on road eyeballs") {
+            {
+                a = Config.alarmeyeball;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("alarmeyeball", val);
+                Config.alarmeyeball = val;
+                a = val;
+            }
+        });
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (int)(Config.alarmeyeballvol * 1000);
+            }
+
+            public void changed() {
+                double vol = val / 1000.0;
+                Config.alarmeyeballvol = vol;
+                Utils.setprefd("alarmeyeballvol", vol);
+            }
+        });
+        appender.setVerticalMargin(0);
+        appender.add(new CheckBox("Alarm on ant/bat/beaver dungeons.") {
+            {
+                a = Config.alarmdungeon;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("alarmdungeon", val);
+                Config.alarmdungeon = val;
+                a = val;
+            }
+        });
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (int)(Config.alarmdungeonvol * 1000);
+            }
+
+            public void changed() {
+                double vol = val / 1000.0;
+                Config.alarmdungeonvol = vol;
+                Utils.setprefd("alarmdungeonvol", vol);
+            }
+        });
+        appender.setVerticalMargin(0);
+        appender.add(new CheckBox("Alarm on nidbanes") {
+            {
+                a = Config.alarmnidbane;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("alarmnidbane", val);
+                Config.alarmnidbane = val;
+                a = val;
+            }
+        });
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (int)(Config.alarmnidbanevol * 1000);
+            }
+
+            public void changed() {
+                double vol = val / 1000.0;
+                Config.alarmnidbanevol = vol;
+                Utils.setprefd("alarmnidbanevol", vol);
+            }
+        });
+        appender.setVerticalMargin(0);
         appender.add(new CheckBox("Alarm on red players") {
             {
                 a = Config.alarmred;
@@ -2819,6 +2894,18 @@ public class OptWnd extends Window {
             iconslist.items.add(itm);
         map.add(iconslist, new Coord(475, 15));
 
+        map.add(new CheckBox("Show road icons") {
+            {
+                a = Config.showroadicon;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showroadicon", val);
+                Config.showroadicon = val;
+                a = val;
+            }
+        },325,340);
+
         map.add(new CheckBox("Hide ALL (yes ALL) Icons") {
             {
                 a = Config.hideallicons;
@@ -2829,7 +2916,7 @@ public class OptWnd extends Window {
                 Config.hideallicons = val;
                 a = val;
             }
-        },475,350);
+        },475,340);
 
 
         map.pack();

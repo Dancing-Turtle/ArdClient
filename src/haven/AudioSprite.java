@@ -128,7 +128,6 @@ public class AudioSprite {
         public RepeatSprite(Owner owner, Resource res, final Resource.Audio beg, final List<Resource.Audio> clips, Resource.Audio end) {
             super(owner, res);
             this.end = end;
-            System.out.println("repeat audio : "+res);
             if(res.basename().contains("beeswarm")){
                 CS rep = new Audio.Repeater() {
                     private boolean f = true;

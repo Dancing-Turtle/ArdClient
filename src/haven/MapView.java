@@ -657,9 +657,6 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     };
 
     void addgob(RenderList rl, final Gob gob) {
-        if (Config.hidegobs && gob.type != null && gob.type.has(Gob.Type.PLANT))
-            return;
-
         GLState xf;
         try {
             xf = Following.xf(gob);

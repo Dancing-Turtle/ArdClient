@@ -26,6 +26,7 @@
 
 package haven;
 
+import haven.purus.BotUtils;
 import haven.resutil.Ridges;
 
 import java.awt.*;
@@ -49,6 +50,7 @@ public class LocalMiniMap extends Widget {
     private Coord doff = Coord.z;
     private Coord delta = Coord.z;
 	private static final Resource alarmplayersfx = Resource.local().loadwait("sfx/alarmplayer");
+    private static final Resource alarmredplayersfx = Resource.local().loadwait("sfx/redenemy");
     private static final Resource foragablesfx = Resource.local().loadwait("sfx/awwyeah");
     private static final Resource bearsfx = Resource.local().loadwait("sfx/bear");
     private static final Resource lynxfx = Resource.local().loadwait("sfx/lynx");
@@ -60,6 +62,11 @@ public class LocalMiniMap extends Widget {
     private static final Resource doomedsfx = Resource.local().loadwait("sfx/doomed");
     private static final Resource wballsfx = Resource.local().loadwait("sfx/wball");
     private static final Resource swagsfx = Resource.local().loadwait("sfx/swag");
+    private static final Resource eyeballsfx = Resource.local().loadwait("sfx/eye");
+    private static final Resource nidbanesfx = Resource.local().loadwait("sfx/ghost");
+    private static final Resource beaversfx = Resource.local().loadwait("sfx/beavers");
+    private static final Resource batssfx = Resource.local().loadwait("sfx/batcave");
+    private static final Resource antssfx = Resource.local().loadwait("sfx/antcave");
 
 	private final HashSet<Long> sgobs = new HashSet<Long>();
     private final Map<Coord, Tex> maptiles = new LinkedHashMap<Coord, Tex>(100, 0.75f, false) {
@@ -89,6 +96,8 @@ public class LocalMiniMap extends Widget {
     private final static Tex bushicn = Text.renderstroked("\u22C6", Color.CYAN, Color.BLACK, Text.num12boldFnd).tex();
     private final static Tex treeicn = Text.renderstroked("\u25B2", Color.CYAN, Color.BLACK, Text.num12boldFnd).tex();
     private final static Tex bldricn = Text.renderstroked("\u25AA", Color.CYAN, Color.BLACK, Text.num12boldFnd).tex();
+    private final static Tex roadicn = Resource.loadtex("gfx/icons/milestone");
+    private final static Tex dooricn = Resource.loadtex("gfx/icons/door");
     private Map<Color, Tex> xmap = new HashMap<Color, Tex>(6);
     public static Coord plcrel = null;
     public long lastnewgid;
@@ -232,6 +241,16 @@ public class LocalMiniMap extends Widget {
                         if (itm != null && itm.selected)
                             g.image(treeicn, p2c(gob.rc).add(delta).sub(treeicn.sz().div(2)));
                     }
+                    else if(gob.type == Gob.Type.ROAD && Config.showroadicon){
+                        g.image(roadicn, p2c(gob.rc).sub(roadicn.sz().div(2)).add(delta));
+                    }
+                    else if(gob.type == Gob.Type.DUNGEONDOOR) {
+                        int stage = 0;
+                        if(gob.getattr(ResDrawable.class) != null)
+                            stage = gob.getattr(ResDrawable.class).sdt.peekrbuf(0);
+                        if(stage == 10 || stage == 14)
+                        g.image(dooricn, p2c(gob.rc).sub(dooricn.sz().div(2)).add(delta));
+                    }
                 } catch (Loading l) {}
             }
 
@@ -274,10 +293,12 @@ public class LocalMiniMap extends Widget {
                         if (sgobs.contains(gob.id))
                             continue;
 
+
+
                         boolean enemy = false;
                         if (Config.alarmunknown && kininfo == null) {
                             sgobs.add(gob.id);
-                            Audio.play(alarmplayersfx, Config.alarmunknownvol);
+                            Audio.play(alarmredplayersfx, Config.alarmunknownvol);
                             enemy = true;
                         } else if (Config.alarmred && kininfo != null && kininfo.group == 2) {
                             sgobs.add(gob.id);
@@ -331,6 +352,26 @@ public class LocalMiniMap extends Widget {
                         sgobs.add(gob.id);
                         if(gob.getres().basename().contains("ball"))
                             Audio.play(wballsfx, Config.alarmwballvol);
+                    }else if(Config.alarmeyeball && gob.type == Gob.Type.EYEBALL && gob.id != BotUtils.player().id){
+                        sgobs.add(gob.id);
+                        Audio.play(eyeballsfx, Config.alarmeyeballvol);
+                    }else if(gob.type == Gob.Type.DUNGKEY) {
+                        sgobs.add(gob.id);
+                        BotUtils.sysMsg("Dungeon Key Dropped!",Color.white);
+                    }else if(gob.type == Gob.Type.NIDBANE && Config.alarmnidbane) {
+                        sgobs.add(gob.id);
+                        Audio.play(nidbanesfx, Config.alarmnidbanevol);
+                    }else if(gob.type == Gob.Type.DUNGEON && Config.alarmdungeon){
+                        if(gob.getres().basename().contains("batcave")){
+                            sgobs.add(gob.id);
+                            Audio.play(batssfx , Config.alarmdungeonvol);
+                        }else if (gob.getres().basename().contains("antdungeon")){
+                            sgobs.add(gob.id);
+                            Audio.play(antssfx, Config.alarmdungeonvol);
+                        }else if (gob.getres().basename().equals("beaverdam")) {
+                            sgobs.add(gob.id);
+                            Audio.play(beaversfx, Config.alarmdungeonvol);
+                        }
                     }
                 } catch (Exception e) { // fail silently
                 }

@@ -70,20 +70,9 @@ public class PepperGrinderRun extends Window implements Runnable {
 			tables = Tables();
 			BotUtils.sysMsg("Pepper Grinder Bot started! Tables selected : "+tables.size(), Color.white);
 			GameUI gui = gameui();
-			if (gui.getwnd("Crafting") != null)
-				gui.getwnd("Crafting").close();
-			gui.wdgmsg("act", "craft", "blackpepper");
-			PBotAPI.waitForWindow("Crafting");
-			Window crafting = gui.getwnd("Crafting");
-			for (Widget a = crafting.lchild; a != null; a = a.prev) {
-				for (Widget aa = a.lchild; aa != null; aa = aa.prev) {
-					if (aa instanceof Button) {
-						if (((Button) aa).text.text == "Craft All") {
-							craftall = aa;
-						}
-					}
-				}
-			}
+
+			gui.wdgmsg("act", "craft", "grindpepper");
+			BotUtils.waitForWindow("Crafting");
 
 			if (stopThread) // Checks if aborted
 				return;
@@ -284,7 +273,7 @@ public class PepperGrinderRun extends Window implements Runnable {
 							lblProg.settext("Status - Grinding");
 						}
 						if (PBotAPI.getStamina() > 50) {
-							((Button) craftall).click();
+							ui.makewnd.wdgmsg("make",1);
 							BotUtils.sleep(2000);
 							retrycount++;
 							if (retrycount > 1) {

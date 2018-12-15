@@ -621,13 +621,13 @@ public class OCache implements Iterable<Gob> {
                                     int myred = Fightsess.myred;
                                     KinInfo kininfo = g.getattr(KinInfo.class);
                                     if (g.isplayer())
-                                        BotUtils.sysMsg("I got hit for " + dmg + " Damage. I had " + myblue + " blue opening and " + myred + " red opening.", Color.white);
+                                        BotUtils.sysLogAppend("I got hit for " + dmg + " Damage. I had " + myblue + " blue opening and " + myred + " red opening.", "white");
                                     else if (kininfo != null)
-                                        BotUtils.sysMsg("Hit " + kininfo.name + " For " + dmg + " Damage. Had " + blue + " blue opening and " + red + " red opening.", Color.green);
+                                        BotUtils.sysLogAppend("Hit " + kininfo.name + " For " + dmg + " Damage. Had " + blue + " blue opening and " + red + " red opening.", "green");
                                     else if (g.getres().basename().contains("Body"))
-                                        BotUtils.sysMsg("Hit Unknown player For " + dmg + " Damage. Had " + blue + " blue opening and " + red + " red opening.", Color.green);
+                                        BotUtils.sysLogAppend("Hit Unknown player For " + dmg + " Damage. Had " + blue + " blue opening and " + red + " red opening.", "green");
                                     else
-                                        BotUtils.sysMsg("Hit " + g.getres().basename() + " For " + dmg + " Damage. Had " + blue + " blue opening and " + red + " red opening.", Color.green);
+                                        BotUtils.sysLogAppend("Hit " + g.getres().basename() + " For " + dmg + " Damage. Had " + blue + " blue opening and " + red + " red opening.", "green");
                                 }
                                 gobdmgs.put(g.id, new DamageSprite(dmg, clr == 36751, g));
                                 }

@@ -63,9 +63,12 @@ public class Config {
     public static boolean chattimestamp = Utils.getprefb("chattimestamp", true);
     public static boolean alarmunknown = Utils.getprefb("alarmunknown", false);
     public static double alarmunknownvol = Utils.getprefd("alarmunknownvol", 0.32);
+    public static boolean alarmnidbane = Utils.getprefb("alarmnidbane", false);
+    public static double alarmnidbanevol = Utils.getprefd("alarmnidbanevol", 1.0);
     public static boolean alarmred = Utils.getprefb("alarmred", false);
     public static double alarmredvol = Utils.getprefd("alarmredvol", 0.32);
     public static boolean showquality = Utils.getprefb("showquality", true);
+    public static boolean showroadicon = Utils.getprefb("showroadicon", true);
     public static boolean qualitywhole = Utils.getprefb("qualitywhole", true);
     public static int badcamsensitivity = Utils.getprefi("badcamsensitivity", 5);
     public static List<LoginData> logins = new ArrayList<LoginData>();
@@ -132,7 +135,7 @@ public class Config {
     public static boolean enableswimming = Utils.getprefb("enableswimming", false);
     public static boolean autoconnectdiscord = Utils.getprefb("autoconnectdiscord", false);
     public static boolean enablecrime = Utils.getprefb("enablecrime", false);
-    public static boolean resinfo = Utils.getprefb("resinfo", false);
+    public static boolean resinfo = Utils.getprefb("resinfo", true);
     public static boolean showanimalrad = Utils.getprefb("showanimalrad", true);
     public static boolean hwcursor = Utils.getprefb("hwcursor", false);
     public static boolean showboundingboxes = Utils.getprefb("showboundingboxes", false);
@@ -167,6 +170,10 @@ public class Config {
     public static boolean alarmwball =  Utils.getprefb("alarmwball", true);
     public static double alarmbramvol = Utils.getprefd("alarmbramvol", 1.0D);
     public static double alarmwballvol = Utils.getprefd("alarmwballvol", 1.0D);
+    public static boolean alarmeyeball =  Utils.getprefb("alarmeyeball", false);
+    public static boolean alarmdungeon =  Utils.getprefb("alarmwball", true);
+    public static double alarmdungeonvol = Utils.getprefd("alarmdungeonvol", 1.0D);
+    public static double alarmeyeballvol = Utils.getprefd("alarmeyeballvol", 1.0D);
     public static double sfxwhipvol = Utils.getprefd("sfxwhipvol", 0.9);
     public static boolean showarchvector =  Utils.getprefb("showarchvector", false);
     //public static boolean showcddelta =  Utils.getprefb("showcddelta", false);

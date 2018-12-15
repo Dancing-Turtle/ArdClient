@@ -148,7 +148,6 @@ public class TroughFiller extends Window implements GobSelectCallback {
 							BotUtils.takeItem(item);
 							BotUtils.sleep(100);
 						}
-						System.out.println("Looping");
 						if(BotUtils.getItemAtHand() == null){
 							System.out.println("Hand null, breaking");
 							break;

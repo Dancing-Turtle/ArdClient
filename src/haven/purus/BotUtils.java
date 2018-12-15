@@ -1,7 +1,9 @@
 package haven.purus;
 
 import haven.*;
+import haven.Button;
 import haven.FlowerMenu.Petal;
+import haven.Window;
 import haven.automation.BeltDrink;
 
 import java.awt.*;
@@ -27,6 +29,24 @@ public class BotUtils {
 	public static void doClick(Gob gob, int button, int mod) {
 		gui.map.wdgmsg("click", Coord.z, gob.rc.floor(posres), button, 0, mod, (int) gob.id, gob.rc.floor(posres), 0,
 				-1);
+	}
+
+	public static boolean istable(Window win){
+		boolean AmIaFeastTable = false;
+		boolean has9slots = false;
+		boolean hasbutton = false;
+		for(Widget w = win.lchild;w != null;w = w.prev){
+			if(w instanceof Inventory){
+				int slots = ((Inventory) w).isz.x * ((Inventory) w).isz.y;
+				if (slots == 9)
+					has9slots = true;
+			}
+			if(w instanceof Button)
+				hasbutton = true;
+		}
+		if (has9slots && hasbutton)
+			AmIaFeastTable = true;
+		return AmIaFeastTable;
 	}
 
 	public static int getAmount(GItem item) {
@@ -71,6 +91,35 @@ public class BotUtils {
 			}
 		}
 		return nearest;
+	}
+
+	public static Gob findNearestBarrel(int radius, List<Gob> blacklist){
+		Coord2d plc = player().rc;
+		double min = radius;
+		Gob nearest = null;
+		synchronized (gui.ui.sess.glob.oc){
+			for(Gob gob : gui.ui.sess.glob.oc) {
+				double dist = gob.rc.dist(plc);
+				if(dist < min) {
+					if (gob.getres() != null && gob.getres().name.startsWith("gfx/terobjs/barrel")) {
+						System.out.println("Barrel found");
+						if(blacklist.size() > 0) {
+							if (!blacklist.contains(gob)) {
+								System.out.println("BlackList Didn't Contain Gob, adding");
+								min = dist;
+								nearest = gob;
+							}else
+								System.out.println("BlackList Did Contain Gob, not adding");
+						}else{
+							System.out.println("BlackList size 0, adding");
+							min = dist;
+							nearest = gob;
+						}
+					}
+				}
+			}
+		}
+		return  nearest;
 	}
 
 	// Find object by ID, returns null if not found

@@ -352,7 +352,8 @@ public class FlaxBot extends Window {
                         }
                         if (BotUtils.invFreeSlots() < 3) {
                             lblProg2.settext("Barreling");
-                            Gob barrel = BotUtils.findObjectByNames(2000, "gfx/terobjs/barrel");
+                            BotUtils.sysLogAppend("Barreling","white");
+                            Gob barrel = BotUtils.findNearestBarrel(5000,blacklist);
                             barrel.delattr(GobHighlight.class);
                             barrel.setattr(new GobHighlight(barrel));
                             // BotUtils.sysLogAppend("inv free slots <3", "white");
@@ -375,8 +376,12 @@ public class FlaxBot extends Window {
                                         barrel.rc.floor(posres), 0, -1);
                                 int i = 0;
                                 while (BotUtils.getItemAtHand() != null) {
-                                    if (i == 60000)
-                                        break;
+                                    if (i > 250) {
+                                       BotUtils.sysLogAppend("Blacklisting barrel, appears to be full","white");
+                                       blacklist.add(barrel);
+                                       barrel = BotUtils.findNearestBarrel(2000, blacklist);
+                                       break;
+                                    }
                                     BotUtils.sleep(10);
                                     i++;
                                 }
@@ -398,8 +403,17 @@ public class FlaxBot extends Window {
                                         barrel.rc.floor(posres), 0, -1);
                                 int i = 0;
                                 while (BotUtils.getItemAtHand() != null) {
-                                    if (i == 60000)
+                                    if (i > 250) {
+                                        BotUtils.sysLogAppend("Blacklisting barrel, appears to be full","white");
+                                        blacklist.add(barrel);
+                                        Coord slot = BotUtils.getFreeInvSlot(BotUtils.playerInventory());
+                                        BotUtils.dropItemToInventory(slot,BotUtils.playerInventory());
+                                        BotUtils.sleep(250);
+                                        barrel = BotUtils.findNearestBarrel(2000,blacklist);
+                                        BotUtils.pfRightClick(barrel, 0);
+                                        BotUtils.waitForWindow("Barrel");
                                         break;
+                                    }
                                     BotUtils.sleep(10);
                                     i++;
                                 }
@@ -407,6 +421,7 @@ public class FlaxBot extends Window {
                         }
 
                     } catch (NullPointerException x) {
+                        BotUtils.sysLogAppend("Null pointer exception caught, crash prevented.","white");
                     }
                     g = null;
                     // BotUtils.sysLogAppend("finished loop " + cropsHarvested, "white");

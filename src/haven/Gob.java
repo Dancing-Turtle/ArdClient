@@ -78,10 +78,9 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
     public Type type = null;
 
     public enum Type {
-        OTHER(0), DFRAME(1), TREE(2), BUSH(3), BOULDER(4), PLAYER(5), SIEGE_MACHINE(6), MAMMOTH(7), BAT(8), OLDTRUNK(9), GARDENPOT(10), MUSSEL(11), LOC_RESOURCE(12), CLAY(14),
-        FU_YE_CURIO(13), EAGLE(15), TANTUB(20),CUPBOARD(19),COOP(21),HUTCH(22),MOTH(23),
-        PLANT(16), MULTISTAGE_PLANT(17), CHEESERACK(18), SLIME(40), LIVESTOCK(42),
-        MOB(32), BEAR(34), LYNX(35), SEAL(37), TROLL(38), WALRUS(39),
+        OTHER(0), DFRAME(1), TREE(2), BUSH(3), BOULDER(4), PLAYER(5), SIEGE_MACHINE(6), MAMMOTH(7), BAT(8), OLDTRUNK(9), GARDENPOT(10), MUSSEL(11), LOC_RESOURCE(12), FU_YE_CURIO(13),
+        CLAY(14), EAGLE(15), PLANT(16), MULTISTAGE_PLANT(17), CHEESERACK(18), CUPBOARD(19), TANTUB(20), COOP(21), HUTCH(22), MOTH(23), DUNGEON(24), EYEBALL(25), DUNGKEY(26), ROAD(27), NIDBANE(28), DUNGEONDOOR(29),
+        SLIME(40), LIVESTOCK(42), MOB(32), BEAR(34), LYNX(35), SEAL(37), TROLL(38), WALRUS(39),
         WOODEN_SUPPORT(64), STONE_SUPPORT(65), METAL_SUPPORT(66), TROUGH(67), BEEHIVE(68), WAGON(600), WALL(602), DREAMCATCHER(603), HOUSE(604);
 
         public final int value;
@@ -461,12 +460,18 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             type = Type.OLDTRUNK;
         else if (name.startsWith("gfx/terobjs/ttub"))
             type = Type.TANTUB;
+        else if(name.startsWith("gfx/kritter/nidbane/nidbane"))
+            type = Type.NIDBANE;
         else if (name.startsWith("gfx/terobjs/chicken"))
             type = Type.COOP;
         else if(name.startsWith("gfx/terobjs/rabbit"))
             type = Type.HUTCH;
         else if(name.startsWith("gfx/kritter/cavemoth"))
             type = Type.MOTH;
+        else if(name.startsWith("gfx/terobjs/dng/batcave") || name.startsWith("gfx/terobjs/dng/antdungeon") || name.startsWith("gfx/terobjs/beaverdam"))
+            type = Type.DUNGEON;
+        else if(name.startsWith("gfx/terobjs/dng/antdoor"))
+            type = Type.DUNGEONDOOR;
         else if (name.endsWith("terobjs/plants/carrot") || name.endsWith("terobjs/plants/hemp"))
             type = Type.MULTISTAGE_PLANT;
         else if (name.startsWith("gfx/terobjs/plants") && !name.endsWith("trellis"))
@@ -527,6 +532,8 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
         	type = Type.HOUSE;
         else if(name.endsWith("dreca"))
         	type = Type.DREAMCATCHER;
+        else if(name.startsWith("gfx/terobjs/road/milestone"))
+            type = Type.ROAD;
         else if (name.startsWith("gfx/terobjs/arch/pali") && !name.equals("gfx/terobjs/arch/palisadegate") &&
    			 !name.equals("gfx/terobjs/arch/palisadebiggate") || name.startsWith("gfx/terobjs/arch/brick")
    			 && !name.equals("gfx/terobjs/arch/brickwallgate") &&!name.equals("gfx/terobjs/arch/brickbiggate")
@@ -537,6 +544,10 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             type = Type.FU_YE_CURIO;
         else if (Config.locres.contains(name))
             type = Type.LOC_RESOURCE;
+        else if(name.startsWith("gfx/terobjs/road/roadball"))
+            type = Type.EYEBALL;
+        else if(name.startsWith("gfx/terobjs/items/antkeynew"))
+            type = Type.DUNGKEY;
         else
             type = Type.OTHER;
     }
@@ -671,53 +682,59 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
 
         	// Replace hide stuff with Purus Pasta hide
             try {
-                if(Config.hidemoths && type == Type.MOTH){
-                    //Do nothing since moths don't have a bounding box.
-                     }
+                if(Config.hidemoths && this.type == Type.MOTH) {
+                //do nothing since it's a moth
+                }
                 else if (Config.hidegobs) {
                     if (Config.hideTrees && type == Type.TREE) {
                         GobHitbox.BBox bbox = GobHitbox.getBBox(this, true);
                         if (bbox != null && Config.showoverlay) {
                             rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, true)), null);
                         }
-                    } else if (Config.hideCrops && (type == Type.PLANT || type == Type.MULTISTAGE_PLANT)) {
+                    }
+                    else if (Config.hideCrops && (type == Type.PLANT || type == Type.MULTISTAGE_PLANT)) {
                         // Crops don't have bounding boxes
-                        if (Config.showoverlay) {
-                            rl.add(new Overlay(new GobHitbox(this, new Coord(-5, -5), new Coord(5, 5), true)), null);
-                        }
-                    } else if (Config.hideWalls && type == Type.WALL) {
+                       // if (Config.showoverlay) {
+                          //  rl.add(new Overlay(new GobHitbox(this, new Coord(-5, -5), new Coord(5, 5), true)), null);
+                       // }
+                    }
+                    else if (Config.hideWalls && type == Type.WALL) {
                         GobHitbox.BBox bbox = GobHitbox.getBBox(this, true);
                         if (bbox != null && Config.showoverlay) {
                             rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, true)), null);
                         }
-                    } else if (Config.hideanimals && getres().name.startsWith("gfx/kritter/")) {
+                    }
+                    else if (Config.hideanimals && getres().name.startsWith("gfx/kritter/")) {
                         GobHitbox.BBox bbox = GobHitbox.getBBox(this, true);
                         if (bbox != null && Config.showoverlay) {
                             rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, true)), null);
                         }
-                    } else if (Config.hideBushes && type == Type.BUSH) {
+                    }
+                   else if (Config.hideBushes && type == Type.BUSH) {
                         GobHitbox.BBox bbox = GobHitbox.getBBox(this, true);
                         if (bbox != null && Config.showoverlay) {
                             rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, true)), null);
                         }
-                    } else if (Config.hideDFrames && type == Type.DFRAME) {
+                    }
+                   else if (Config.hideDFrames && type == Type.DFRAME) {
                         GobHitbox.BBox bbox = GobHitbox.getBBox(this, true);
                         if (bbox != null && Config.showoverlay) {
                             rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, true)), null);
                         }
-                    } else if (Config.hideWagons && type == Type.WAGON) {
+                    }
+                    else if (Config.hideWagons && type == Type.WAGON) {
                         GobHitbox.BBox bbox = GobHitbox.getBBox(this, true);
                         if (bbox != null && Config.showoverlay) {
                             rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, true)), null);
                         }
-                    } else if (Config.hideHouses && type == Type.HOUSE) {
+                    }
+                   else if (Config.hideHouses && type == Type.HOUSE) {
                         GobHitbox.BBox bbox = GobHitbox.getBBox(this, true);
                         if (bbox != null && Config.showoverlay) {
                             rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, true)), null);
                         }
-                    } else
+                    }else
                         d.setup(rl);
-
                 } else
                     d.setup(rl);
             }catch(NullPointerException q){}
@@ -737,7 +754,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             }
 
             if (Config.showplantgrowstage) {
-                if (Type.PLANT.has(type) && type != Type.WALL && type != Type.WAGON && type != Type.TANTUB && type != Type.CUPBOARD && type != Type.COOP && type != Type.HUTCH) {
+                if (Type.PLANT.has(type) && type != Type.CUPBOARD && type != Type.HUTCH && type != Type.COOP) {
                     int stage = getattr(ResDrawable.class).sdt.peekrbuf(0);
                     if (cropstgmaxval == 0) {
                         for (FastMesh.MeshRes layer : getres().layers(FastMesh.MeshRes.class)) {

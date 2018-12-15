@@ -44,6 +44,7 @@ import java.awt.Font;
 import haven.glsl.Array;
 import haven.purus.BotUtils;
 import haven.purus.pbot.PBotAPI;
+import haven.purus.pbot.PBotUtils;
 import haven.resutil.Curiosity;
 
 public class Window extends Widget implements DTarget {
@@ -207,6 +208,7 @@ public class Window extends Widget implements DTarget {
        // for (CheckListboxItem itm : Config.curiolist.values())
             //Curios.add(itm.name);
 
+
         for (CheckListboxItem itm : Config.curiolist.values())
         if (itm != null && itm.selected)
             Curios.add(itm.name);
@@ -234,13 +236,13 @@ public class Window extends Widget implements DTarget {
         //List<WItem> stones = new ArrayList<>();
 
         try {
-            if (cap.text.equals("Table")) {
+            if(BotUtils.istable(this)){
+        //    if (cap.text.equals("Table")) {
                 add(new Button(60, "Eat All") {
                     public void click() {
                         Resource curs = ui.root.getcurs(c);
                         if (curs.name.equals("gfx/hud/curs/eat")) {
                             Map idk = getStats();
-                            System.out.println("Clicked, "+idk.size());
                           //  for (Widget table = parent.lchild; table != null; table = table.prev) {
                                // if (table instanceof Inventory) {
                                   //  List<WItem> foods = getfoods((Inventory) table);

@@ -17,6 +17,7 @@ public enum Action {
     TOGGLEDEBUG(GameUI::toggleDebug,"Toggles advanced client data."),
     WALK_SPEED(GameUI::walkSpeed,"Walking Speed"),
     RUN_SPEED(GameUI::runSpeed,"Run Speed"),
+    TOGGLE_RES(GameUI::toggleres,"Toggle Res Overlay"),
     TOGGLE_MUTE(GameUI::toggleMute,"Toggles all game sound"),
     SPRINT_SPEED(GameUI::sprintSpeed,"Sprinting Speed"),
     DRINK(GameUI::Drink,"Drinks from inventory or open belts."),
