@@ -18,6 +18,7 @@ public class DetailsWdg extends Widget {
     private final Coord sepEnd = new Coord(800 - 40 - 11, HEIGHT);
     public Animal animal;
     private GameUI gui;
+    public Label del;
     public Gob animal2;
     private boolean hover = false;
     public DetailsWdg(Animal animal) {
@@ -46,7 +47,7 @@ public class DetailsWdg extends Widget {
             add(lbl, new Coord(col.x + offx, 5));
         }
 
-        Label del = new Label("\u2718", Text.delfnd, Color.RED) {
+        del = new Label("\u2718", Text.delfnd, Color.RED) {
             @Override
             public boolean mousedown(Coord c, int button) {
                 delete();
@@ -77,10 +78,16 @@ public class DetailsWdg extends Widget {
         Gob gob = gameui().map.glob.oc.getgob(animal.gobid);
         if (gob != null) {
             if (button == 3) {
-                if (MapView.markedGobs.contains(gob.id))
+                if (MapView.markedGobs.contains(gob.id)) {
                     MapView.markedGobs.remove(gob.id);
-                else
+                    del.settext("\u2718");
+                    del.setcolor(Color.RED);
+                }
+                else {
                     MapView.markedGobs.add(gob.id);
+                    del.settext("\u2620");
+                    del.setcolor(Color.BLUE);
+                }
             }
             //gameui().map.wdgmsg("click", gob.sc, gob.rc.floor(posres), 3, 0, 0, (int) gob.id, gob.rc.floor(posres), 0, -1);
             if (button == 1) {

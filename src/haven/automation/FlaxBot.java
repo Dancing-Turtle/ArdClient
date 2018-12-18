@@ -93,6 +93,7 @@ public class FlaxBot extends Window {
                     while (BotUtils.player().rc.x != g.rc.x || BotUtils.player().rc.y != g.rc.y) {
                         if (stopThread)
                             return;
+                        if(!BotUtils.isMoving())
                         retryharvest++;
                         lblProg2.settext("Moving to Crop");
                         if (retryharvest >= 500) {

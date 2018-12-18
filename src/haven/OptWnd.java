@@ -2402,6 +2402,17 @@ public class OptWnd extends Window {
                 Utils.setprefd("alarmdungeonvol", vol);
             }
         });
+        appender.add(new CheckBox("Ping on ant dungeon key drops.") {
+            {
+                a = Config.dungeonkeyalert;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("dungeonkeyalert", val);
+                Config.dungeonkeyalert = val;
+                a = val;
+            }
+        });
         appender.setVerticalMargin(0);
         appender.add(new CheckBox("Alarm on nidbanes") {
             {
@@ -2894,17 +2905,29 @@ public class OptWnd extends Window {
             iconslist.items.add(itm);
         map.add(iconslist, new Coord(475, 15));
 
-        map.add(new CheckBox("Show road icons") {
+        map.add(new CheckBox("Show road Endpoints") {
             {
-                a = Config.showroadicon;
+                a = Config.showroadendpoint;
             }
 
             public void set(boolean val) {
-                Utils.setprefb("showroadicon", val);
-                Config.showroadicon = val;
+                Utils.setprefb("showroadendpoint", val);
+                Config.showroadendpoint = val;
                 a = val;
             }
-        },325,340);
+        },165,340);
+
+        map.add(new CheckBox("Show road Midpoints") {
+            {
+                a = Config.showroadmidpoint;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showroadmidpoint", val);
+                Config.showroadmidpoint = val;
+                a = val;
+            }
+        },320,340);
 
         map.add(new CheckBox("Hide ALL (yes ALL) Icons") {
             {

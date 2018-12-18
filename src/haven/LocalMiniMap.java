@@ -241,7 +241,10 @@ public class LocalMiniMap extends Widget {
                         if (itm != null && itm.selected)
                             g.image(treeicn, p2c(gob.rc).add(delta).sub(treeicn.sz().div(2)));
                     }
-                    else if(gob.type == Gob.Type.ROAD && Config.showroadicon){
+                    else if(gob.type == Gob.Type.ROAD && Config.showroadmidpoint){
+                        g.image(roadicn, p2c(gob.rc).sub(roadicn.sz().div(2)).add(delta));
+                    }
+                    else if(gob.type == Gob.Type.ROADENDPOINT && Config.showroadendpoint){
                         g.image(roadicn, p2c(gob.rc).sub(roadicn.sz().div(2)).add(delta));
                     }
                     else if(gob.type == Gob.Type.DUNGEONDOOR) {
@@ -355,7 +358,7 @@ public class LocalMiniMap extends Widget {
                     }else if(Config.alarmeyeball && gob.type == Gob.Type.EYEBALL && gob.id != BotUtils.player().id){
                         sgobs.add(gob.id);
                         Audio.play(eyeballsfx, Config.alarmeyeballvol);
-                    }else if(gob.type == Gob.Type.DUNGKEY) {
+                    }else if(gob.type == Gob.Type.DUNGKEY && Config.dungeonkeyalert) {
                         sgobs.add(gob.id);
                         BotUtils.sysMsg("Dungeon Key Dropped!",Color.white);
                     }else if(gob.type == Gob.Type.NIDBANE && Config.alarmnidbane) {

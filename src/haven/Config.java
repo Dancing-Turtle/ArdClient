@@ -68,7 +68,8 @@ public class Config {
     public static boolean alarmred = Utils.getprefb("alarmred", false);
     public static double alarmredvol = Utils.getprefd("alarmredvol", 0.32);
     public static boolean showquality = Utils.getprefb("showquality", true);
-    public static boolean showroadicon = Utils.getprefb("showroadicon", true);
+    public static boolean showroadendpoint = Utils.getprefb("showroadendpoint", true);
+    public static boolean showroadmidpoint = Utils.getprefb("showroadmidpoint", false);
     public static boolean qualitywhole = Utils.getprefb("qualitywhole", true);
     public static int badcamsensitivity = Utils.getprefi("badcamsensitivity", 5);
     public static List<LoginData> logins = new ArrayList<LoginData>();
@@ -168,6 +169,7 @@ public class Config {
     public static boolean noquests =  Utils.getprefb("noquests", false);
     public static boolean alarmbram =  Utils.getprefb("alarmbram", false);
     public static boolean alarmwball =  Utils.getprefb("alarmwball", true);
+    public static boolean dungeonkeyalert =  Utils.getprefb("dungeonkeyalert", true);
     public static double alarmbramvol = Utils.getprefd("alarmbramvol", 1.0D);
     public static double alarmwballvol = Utils.getprefd("alarmwballvol", 1.0D);
     public static boolean alarmeyeball =  Utils.getprefb("alarmeyeball", false);

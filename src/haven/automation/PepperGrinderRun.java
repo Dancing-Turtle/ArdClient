@@ -71,7 +71,7 @@ public class PepperGrinderRun extends Window implements Runnable {
 			BotUtils.sysMsg("Pepper Grinder Bot started! Tables selected : "+tables.size(), Color.white);
 			GameUI gui = gameui();
 
-			gui.wdgmsg("act", "craft", "grindpepper");
+			gui.wdgmsg("act", "craft", "blackpepper");
 			BotUtils.waitForWindow("Crafting");
 
 			if (stopThread) // Checks if aborted

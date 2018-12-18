@@ -80,6 +80,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
     public enum Type {
         OTHER(0), DFRAME(1), TREE(2), BUSH(3), BOULDER(4), PLAYER(5), SIEGE_MACHINE(6), MAMMOTH(7), BAT(8), OLDTRUNK(9), GARDENPOT(10), MUSSEL(11), LOC_RESOURCE(12), FU_YE_CURIO(13),
         CLAY(14), EAGLE(15), PLANT(16), MULTISTAGE_PLANT(17), CHEESERACK(18), CUPBOARD(19), TANTUB(20), COOP(21), HUTCH(22), MOTH(23), DUNGEON(24), EYEBALL(25), DUNGKEY(26), ROAD(27), NIDBANE(28), DUNGEONDOOR(29),
+        ROADENDPOINT(30),
         SLIME(40), LIVESTOCK(42), MOB(32), BEAR(34), LYNX(35), SEAL(37), TROLL(38), WALRUS(39),
         WOODEN_SUPPORT(64), STONE_SUPPORT(65), METAL_SUPPORT(66), TROUGH(67), BEEHIVE(68), WAGON(600), WALL(602), DREAMCATCHER(603), HOUSE(604);
 
@@ -532,8 +533,12 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
         	type = Type.HOUSE;
         else if(name.endsWith("dreca"))
         	type = Type.DREAMCATCHER;
-        else if(name.startsWith("gfx/terobjs/road/milestone"))
+        else if(name.startsWith("gfx/terobjs/road/milestone")) {
+            if(name.endsWith("m"))
             type = Type.ROAD;
+            else if (name.endsWith("e"))
+                type = Type.ROADENDPOINT;
+        }
         else if (name.startsWith("gfx/terobjs/arch/pali") && !name.equals("gfx/terobjs/arch/palisadegate") &&
    			 !name.equals("gfx/terobjs/arch/palisadebiggate") || name.startsWith("gfx/terobjs/arch/brick")
    			 && !name.equals("gfx/terobjs/arch/brickwallgate") &&!name.equals("gfx/terobjs/arch/brickbiggate")

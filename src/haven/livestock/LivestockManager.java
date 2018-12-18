@@ -9,10 +9,13 @@ import haven.Label;
 import haven.Window;
 import haven.Utils;
 import haven.purus.BotUtils;
+import javafx.scene.layout.Pane;
+
+import javax.xml.soap.Detail;
 import java.awt.Color;
 
 public class LivestockManager extends Window {
-    private final Panel cattle, horses, sheep, pigs, goats, ResetHighlights, Inspect, Slaughter, DropEntrails, DropIntestines, DropMeat, DropBones;
+    private final Panel cattle, horses, sheep, pigs, goats, ResetHighlights, HighlightMales, HighlightFemales, Inspect, Slaughter, DropEntrails, DropIntestines, DropMeat, DropBones;
     private Panel current;
     public static final int COLUMN_TITLE_X = 60;
     public static final int ENTRY_X = 20;
@@ -22,6 +25,16 @@ public class LivestockManager extends Window {
     private GameUI gui;
     public static int quality, breedquality, hide, meat, milk;
     public static boolean combined, combinedhide, combinedmeat, combinedmilk = false;
+    private static final Tex texBull = Resource.loadtex("gfx/livestockava/bull");
+    private static final Tex texBilly = Resource.loadtex("gfx/livestockava/billy");
+    private static final Tex texRam = Resource.loadtex("gfx/livestockava/ram");
+    private static final Tex texHog = Resource.loadtex("gfx/livestockava/hog");
+    private static final Tex texStallion = Resource.loadtex("gfx/livestockava/stallion");
+    private static final Tex texCow = Resource.loadtex("gfx/livestockava/cow");
+    private static final Tex texNanny = Resource.loadtex("gfx/livestockava/nanny");
+    private static final Tex texMare = Resource.loadtex("gfx/livestockava/mare");
+    private static final Tex texSow = Resource.loadtex("gfx/livestockava/sow");
+    private static final Tex texEwe = Resource.loadtex("gfx/livestockava/ewe");
 
 
 
@@ -35,6 +48,8 @@ public class LivestockManager extends Window {
         pigs = add(new Panel(), pc);
         goats = add(new Panel(), pc);
         ResetHighlights = add(new Panel(), pc);
+        HighlightMales = add(new Panel(), pc);
+        HighlightFemales = add(new Panel(), pc);
         Inspect = add(new Panel(), pc);
         Slaughter = add(new Panel(), pc);
         DropEntrails = add(new Panel(), pc);
@@ -50,6 +65,8 @@ public class LivestockManager extends Window {
         add(new PButton(80, "Pigs", pigs), new Coord(290, 10));
         add(new PButton(80, "Goats", goats), new Coord(380, 10));
         add(new PButton(80, "Reset Highlights", ResetHighlights), new Coord(470, 10));
+        add(new PButton(80, "Highlight Males", HighlightMales), new Coord(780, 10));
+        add(new PButton(80, "Highlight Females", HighlightFemales), new Coord(900, 10));
         add(new PButton(80, "Inspect", Inspect), new Coord(600, 10));
         add(new PButton(80, "Slaughter", Slaughter), new Coord(690, 10));
         add(new PButton(80, "Drop Entrails", DropEntrails), new Coord(20, 40));
@@ -370,6 +387,45 @@ public class LivestockManager extends Window {
                     BotUtils.sysMsg("Auto dropping Bones.",Color.white);
                 }
             }
+            else if(tgt==HighlightFemales){
+              //  Panel p = getAnimalPanel(wdg.type);
+                for (Widget child = this.parent.lchild; child != null; child = child.prev) {
+                    if (child instanceof Panel) {
+                        System.out.println("Panel found");
+                        if(child.visible) {
+                            System.out.println("panel visible");
+                            Scrollport.Scrollcont p = ((Panel) child).scrollPort.cont;
+                            for (Widget child2 = p.lchild; child2 != null; child2 = child2.prev) {
+                                if (child2 instanceof DetailsWdg) {
+                                    if (((DetailsWdg) child2).animal.getAvatar().equals(texSow) || ((DetailsWdg) child2).animal.getAvatar().equals(texCow) || ((DetailsWdg) child2).animal.getAvatar().equals(texEwe)
+                                            || ((DetailsWdg) child2).animal.getAvatar().equals(texMare) || ((DetailsWdg) child2).animal.getAvatar().equals(texNanny)) {
+                                        child2.mousedown(Coord.z, 3);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                }
+                else if(tgt==HighlightMales){
+                for (Widget child = this.parent.lchild; child != null; child = child.prev) {
+                    if (child instanceof Panel) {
+                        System.out.println("Panel found");
+                        if(child.visible) {
+                            System.out.println("panel visible");
+                            Scrollport.Scrollcont p = ((Panel) child).scrollPort.cont;
+                            for (Widget child2 = p.lchild; child2 != null; child2 = child2.prev) {
+                                if (child2 instanceof DetailsWdg) {
+                                    if (((DetailsWdg) child2).animal.getAvatar().equals(texBilly) || ((DetailsWdg) child2).animal.getAvatar().equals(texBull) || ((DetailsWdg) child2).animal.getAvatar().equals(texHog)
+                                            || ((DetailsWdg) child2).animal.getAvatar().equals(texRam) || ((DetailsWdg) child2).animal.getAvatar().equals(texStallion)) {
+                                        child2.mousedown(Coord.z, 3);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             else chpanel(tgt);
             }
 
@@ -489,7 +545,7 @@ public class LivestockManager extends Window {
         }
         pendingAnimal.put(name, val);
         pendingAnimal.attributeResolved();
-      //  System.out.println("attributes status : "+pendingAnimal.hasAllAttributes()+" size : "+pendingAnimal.size()+" resolved is "+name);
+        System.out.println("attributes status : "+pendingAnimal.hasAllAttributes()+" size : "+pendingAnimal.size()+" resolved is "+name);
 
 
 
