@@ -836,6 +836,17 @@ public class OptWnd extends Window {
                 BPRadSprite.smatSupports = new States.ColState(new Color(Config.smatSupportsred, Config.smatSupportsgreen, Config.smatSupportsblue, 100));
             }
         });
+        appender.add(new CheckBox("Show aggro radius on bats, disable if you dont care if they aggro you.") {
+            {
+                a = Config.batcircle;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("batcircle", val);
+                Config.batcircle = val;
+                a = val;
+            }
+        });
         appender.add(new CheckBox("Highlight empty/finished drying frames and full/empty tanning tubs. Requires restart.") {
             {
                 a = Config.showdframestatus;
@@ -1194,6 +1205,17 @@ public class OptWnd extends Window {
             public void set(boolean val) {
                 Utils.setprefb("leechdrop", val);
                 Config.leechdrop = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Auto switch to speed 3 on horse") {
+            {
+                a = Config.horseautorun;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("horseautorun", val);
+                Config.horseautorun = val;
                 a = val;
             }
         });

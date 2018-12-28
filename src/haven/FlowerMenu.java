@@ -122,7 +122,7 @@ public class FlowerMenu extends Widget {
                             p.name.equals(nextAutoSel) && System.currentTimeMillis() - nextAutoSelTimeout < 2000) {
                         nextAutoSel = null;
                         choose(p);
-                        if (p.name.contains("Giddy")) {
+                        if (p.name.contains("Giddy") && Config.horseautorun) {
                             horsemounter = new Thread(new FlowerMenu.horsemounter());
                             horsemounter.start();
                         }

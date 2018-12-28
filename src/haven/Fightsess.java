@@ -47,8 +47,8 @@ public class Fightsess extends Widget {
     public static final Tex useframe = Resource.loadtex("gfx/hud/combat/lastframe");
     public static final Coord useframeo = (useframe.sz().sub(32, 32)).div(2);
     public static final int actpitch = 50;
-    public static int blue, red, myblue, myred, oldblue, oldred, blueopenedlast, redopenedlast, lastactint, unarmedcombat;
-    public static Double delta, expected, lastactopened, curvelower, curvehigher, openingratio;
+    public int blue = 0, red = 0, myblue = 0, myred = 0, oldblue = 0, oldred = 0, unarmedcombat;
+    public static Double delta, expected, lastactopened;
     public final Action[] actions;
     public int use = -1, useb = -1;
     public Coord pcc,pcc2;

@@ -190,7 +190,6 @@ public class PepperGrinderRun extends Window implements Runnable {
 							retrycount++;
 							if (retrycount > 1) {
 								lblProg.settext("Unstucking");
-								BotUtils.sysLogAppend("Moving char", "white");
 								Gob player = gui.map.player();
 								Coord location = player.rc.floor(posres);
 								int x = location.x + + getrandom();
@@ -278,7 +277,6 @@ public class PepperGrinderRun extends Window implements Runnable {
 							retrycount++;
 							if (retrycount > 1) {
 								lblProg.settext("Unstucking");
-								BotUtils.sysLogAppend("Moving char", "white");
 								Gob player = gui.map.player();
 								Coord location = player.rc.floor(posres);
 								int x = location.x + + getrandom();
@@ -311,7 +309,6 @@ public class PepperGrinderRun extends Window implements Runnable {
 
 
 				}
-				BotUtils.sysLogAppend("end of loop", "white");
 				if(stopThread)
 					return;
 			}

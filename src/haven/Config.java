@@ -74,6 +74,7 @@ public class Config {
     public static int badcamsensitivity = Utils.getprefi("badcamsensitivity", 5);
     public static List<LoginData> logins = new ArrayList<LoginData>();
     public static boolean shooanimals = Utils.getprefb("shooanimals",false);
+    public static boolean horseautorun = Utils.getprefb("horseautorun",true);
     public static boolean mapshowgrid = Utils.getprefb("mapshowgrid", false);
     public static boolean mapshowviewdist = Utils.getprefb("mapshowviewdist", false);
     public static boolean disabletiletrans = Utils.getprefb("disabletiletrans", false);
@@ -87,6 +88,7 @@ public class Config {
     public static boolean chatalarm = Utils.getprefb("chatalarm", true);
     public static double chatalarmvol = Utils.getprefd("chatalarmvol", 0.8);
     public static boolean studyalarm = Utils.getprefb("studyalarm", false);
+    public static boolean batcircle = Utils.getprefb("batcircle", true);
     public static boolean errorsounds = Utils.getprefb("errorsounds", true);
     public static boolean cleavesound = Utils.getprefb("cleavesound", true);
     public static boolean chatsounds = Utils.getprefb("chatsounds", true);

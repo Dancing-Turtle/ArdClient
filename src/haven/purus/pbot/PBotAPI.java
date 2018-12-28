@@ -553,7 +553,7 @@ public class PBotAPI {
 	public static boolean canDrinkFrom(WItem item) {
 		Pattern liquidPattern = Pattern.compile(String.format("[0-9.]+ l of (%s)",
 			//	String.join("|", new String[] { "Water", "Piping Hot Tea", "Tea" }), Pattern.CASE_INSENSITIVE));
-		String.join("|", new String[] { "Water", "Piping Hot Tea", "Tea" , "Milk" , "Cowsmilk", "Sheepsmilk", "Goatsmilk"}), Pattern.CASE_INSENSITIVE));
+		String.join("|", new String[] { "Water", "Piping Hot Tea", "Tea" , "Milk" , "Cowsmilk", "Sheepsmilk", "Goatsmilk", "Spring Water"}), Pattern.CASE_INSENSITIVE));
 		ItemInfo.Contents contents = getContents(item);
 		if (contents != null && contents.sub != null) {
 			for (ItemInfo info : contents.sub) {

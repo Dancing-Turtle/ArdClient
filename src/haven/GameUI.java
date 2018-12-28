@@ -1506,7 +1506,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         } else if ((key == 27) && (map != null) && !map.hasfocus) {
             setfocus(map);
             return true;
-        } else if (chat.hasfocus && chat.visible) {
+        } else if (chatfocused()) {
             return true;
         }  else if (ev.isControlDown() && ev.getKeyCode() == KeyEvent.VK_G) {
             if (map != null)
@@ -1517,6 +1517,16 @@ public class GameUI extends ConsoleHost implements Console.Directory {
          return KeyBinder.handle(ui, ev) || (super.globtype(key, ev));
     }
 
+    public boolean chatfocused(){
+        boolean isfocused = false;
+        for(Widget w = chat.lchild;w!=null;w=w.prev) {
+                if (w instanceof TextEntry)
+                    if (w.hasfocus)
+                        isfocused = true;
+            }
+
+        return isfocused;
+    }
 
     public boolean mousedown(Coord c, int button) {
       //  System.out.println("Mousedown Detected gui");

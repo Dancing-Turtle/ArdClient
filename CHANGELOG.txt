@@ -1,3 +1,139 @@
+1.00.67
+Think I finally fixed keybinds sometimes not working when you start up the game because of the chat window.
+Added a toggle under general settings for autorunning on horse.
+Worked on the road eyeball alert a bit, its still buggy and weird. Recommend you only toggle that alarm on if you don't mind having it go off if you're the one taking a road until I figure out how to determine that.
+Added aggro radius to wild goats and wolves.
+Added toggle option for bat aggro radius, so you can turn it off if you have a bat cape on for example.
+Improvements to mouse cursor proximity aggro, should proximity aggro just about every creature now.
+Inverted the colors of the "X" and "Skull" on livestock manager. Marked mobs have a red skull now instead of a blue one.
+Threw together a pumpkin farmer and added it to farmer bot. Feedback welcome, likely has some bugs that will need worked out.
+~
+
+1.00.66
+Fixed the delete button not showing up for horses in livestock manager.
+~
+
+1.00.65
+Added buttons to highlight all male and female animals in the active livestock manager window. (Useful to highlight all for butchering after selecting the one you wan to keep, for example)
+Made highlight using livestockmanager change the "X" to a skull and crossbones to indicate it's highlighted. 
+Broke out the road map icons into seperate toggles for endpoints and midpoints so you can show one or the other or both.
+~
+
+1.00.64
+Ant dungeon key alert can now be toggled.
+Fixed a bug that wouldn't let pepper grinder bot start. 
+~
+
+1.00.63
+Added map icon for roads, toggleable in map settings.
+Added alarm for beaver dens, bat caves, ant dungeons.
+Added map icon for UNOPENED ant dungeon doors.
+Added sound ping/message for ant dungeon keys dropping.
+Added nidbane alarm.
+Added toggle option for road eyeball alarm. Off by default, this alarm might sometimes go off even if youre the one traveling through the road. Likely latency related.
+Added keybind option to toggle res overlay while holding shift. Default is Amber's Shift I
+Fixed hide options not toggling correctly, should once again hide and display an placeholder overlay for all things toggled as hide. 
+Changed white enemy alert sound to be different than red enemy alert sound, kept original alert sound for red since it scares the shit out of you (as it maybe should, if they're marked red.)
+"Eat All" Button should now appear regardless of what language is selected, thanks to Ritoshi for letting me know.
+~
+
+1.00.62
+Fixed bug causing crashes when switching chars.
+~
+
+1.00.61
+Fixed not being able to remove horses from livestock manager.
+~
+
+1.00.60
+Fixed loading crash with ore filler maybe, haven code is aids. 
+Fixed opening the kin window immediately searching for whatever your hotkey was.
+Fixed mineralert spamming with error sounds even if the audio alert is muted.
+Added a dropdown under general settings to change the amount of attributes gained per scroll wheel tick. 
+Tons of changes to livestock manager. Made the window taller to fit more animals at a time without scrolling,
+made window slightly wider, added autodrop functionality for entrails intestines meat and bones,
+and added output qualities for meat/milk/hide which are quality * the respective percentage.
+Added option under general settings to repeat the Starvation warning periodically. 
+~
+
+1.00.59
+Something in the last patch broke the cheese tray remover script, fixed and just improved in general.
+Fixed the cleave sound toggle not working.
+Fixed hotkeys for roads not working. Shift 1-4 for travel.
+Various upstream code merges from Loftar.
+Added ability to change mine support colors independently of animal radius color. Requires restart if changed, under display settings.
+Fixed study desk spacing for scholars.
+~
+
+1.00.58
+Rolled back Discord disconnect check, it broke all the other bot integrated disconnect checks and frankly that just annoyed me.
+Fixed changelog crash - woops.
+~
+
+1.00.57
+Fixed Leek farmer having the wrong finished stage, should work now.
+Fixed big brick wall gates being hidden when walls were hidden.
+Added Pipeweed to farmer.
+Added Turnips to farmer.
+Added volume slider for the new beehive sound.
+Added "Join Discord" button to options window. Joins you to ArdZone.
+Added a standalone hide option for cave moths. Hides the entire cavemoth from drawing, all of them.
+Added follow cam to the camera switch keybind. Rotates between Bad/Ortho/Follow now. Also tells you which camera you're on.
+Fixed potential crashes that can be caused from being disconnected with an active Discord connection, now checks for an active game session every 5 seconds and terminates the Discord link if not found.
+Maybe fixed keybinds not working if you log in and chat window is not open.
+Added a wrecking ball specific sound and a seperate on/off toggle and volume slider for it.
+Added option button to display the Client Changelog on command, incase you close it without reading it "accidentally."
+~
+
+1.00.56
+Increased size of the charter list, don't know why I didn't do this sooner.
+Fixed being able to use a cistern with pepperbot.
+Trough filler should now allow selection of compost bins as well.
+Maybe fixed how north/south pepper layouts sort the crops to prevent crashes and speed up harvesting.
+Fixed crash on cheese tray filler if you ran without curds.
+Added a toggle to map settings to hide ALL minimap icons, for the purists who want a clean minimap.
+Fixed a crash if you put a combat instruction in a study desk.
+Expanded shield checker bot to work on more than just a village claim. Should now report both village and personal shield levels, as well as work only for personal shields. Let me know if it's buggy since this is difficult to test.
+Fixed a bug where shield checker would keep reporting full shield values even if disconnected from the game. Should now send a message to Discord saying it disconnected and turn off the bot.
+Tried to add leeks to farmer bot, not positive I have the right stage number since I don't grow leeks. Let me know if it works/doesn't.
+Added a discord disconnection alert to steel bot.
+Fixed a null pointer crash using eat all.
+"Eat all" will now output the total stats gained by all the food eaten, has a built in 1 second "lag" to give the server time to update your stats - that's intended. 
+Fixed autodrinking while mining. Should be more reliable now and has a delay in triggering to prevent spam.
+~
+
+1.00.55
+After a community uprising over the removal of the pink cheese rack missing color, I've added 3 RGB sliders to "Display settings" where you can set your own color, as well as turning this state on/off independently. 
+~
+
+1.00.54
+Steelbot has attended some communication courses, and will now warn you in Discord if he is running low on fuel (<5 stockpiles left) and automatically shut down if he runs out of fuel. You can also use other characters to add fuel to the selected area and he will find and use it during his next shift.
+A lot of optimization done to coracle bot, should no longer crash and seems to run faster now.
+Farmer should no longer crash if you try to fix it by manually harvesting a tile, should skip it.
+Fixed being unable to save new combat schools.
+Removed cheese rack tray "missing" pink color. Racks are now green if they have space, and red if they don't. Feel free to give feedback, this was a request.
+Fixed armor values not updating when you unequipped gear.
+More attempted optimizations of trough filler/stockpile filler. Keep reporting issues so I can track down bugs with it. 
+Changed how Farmer puts seeds in barrels, should be 3-4x faster now. Let me know if it causes any issues.
+Roughly quadrupled the speed of cheese tray filler.
+~
+
+1.00.53
+Fixed minimap icons not being hideable sometimes, maybe. Let me know if you find one that won't toggle on/off. Had to change some proximity aggro triggers to fix this, let me know what mobs don't proximity aggro anymore.
+Added Cave Moths to minimap hide list.
+Added a MothKiller script to kill all cocoons found in inventory. Needs testing, I don't do silk.
+Fixed combat log actions such as damage and opening alerts showing all the time and not just when the option was checked.
+Added a sound effect to using/receiving cleave. Toggleable in audio settings.
+Added option to general setting to log out after afk for 5 minutes. Off by default.
+More improvements to stockpile/trough bot so pumpkins should work now.
+Character sheet and study window are now optional on login, under general settings.
+Improved shield checker bot, will now run every 5 minutes and report out hourly unless it detects a change in the shield value. Can be remotely killed via discord by typing "!stop" in the same channel that it reports to.
+Added an option to enable swimming on login.
+Fixed damage overlays not showing, my bad.
+Added a keybind option to mute/unmute all game sound.Ctrl M is default.
+Reverted the fight window back to Amber's, too many issues were being caused with Ender's for not enough benefit.
+~
+
 1.00.52
 Added all types of milk to Beltdrink. Will not stop drinking on it's own, if you're drinking something other than water you'll need to stop it by moving or something.
 Added the ability to select multiple containers to Farmer so that in theory, it should switch to a backup barrel/trough if the first one is full. Seed crops only. Alt click to select, removed the select button.
@@ -21,8 +157,8 @@ Added "Break" to autoselect options.
 Improvements to stockpile bot, pathfinds to stockpiles and uses the built in shift + right click to pick stuff up faster. Let me know how it goes.
 Fixed drinking with farmer bot.
 Removed flat cupboard res, optional install now.
-
 ~
+
 1.00.50
 Fixed drinking from belt not working if you use the alternative belt window. Works now.
 Moved where the keybinds are triggered from so that it won't interfere with any textboxes now, removed all logic that blocked keybinds such as when options window was open.

@@ -19,7 +19,7 @@ public class LivestockManager extends Window {
     private Panel current;
     public static final int COLUMN_TITLE_X = 60;
     public static final int ENTRY_X = 20;
-    private static final int WINDOW_WIDTH = 1075;
+    private static final int WINDOW_WIDTH = 1100;
     public CheckBox DropEntrailsBox, DropIntestinesBox, DropMeatBox, DropBonesBox, InspectBox, SlaughterBox;
     public Animal pendingAnimal;
     private GameUI gui;

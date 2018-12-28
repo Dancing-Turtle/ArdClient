@@ -81,12 +81,12 @@ public class DetailsWdg extends Widget {
                 if (MapView.markedGobs.contains(gob.id)) {
                     MapView.markedGobs.remove(gob.id);
                     del.settext("\u2718");
-                    del.setcolor(Color.RED);
+                    del.setcolor(Color.BLUE);
                 }
                 else {
                     MapView.markedGobs.add(gob.id);
                     del.settext("\u2620");
-                    del.setcolor(Color.BLUE);
+                    del.setcolor(Color.RED);
                 }
             }
             //gameui().map.wdgmsg("click", gob.sc, gob.rc.floor(posres), 3, 0, 0, (int) gob.id, gob.rc.floor(posres), 0, -1);

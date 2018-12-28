@@ -499,9 +499,9 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             type = Type.MAMMOTH;
         else if (name.endsWith("/troll"))
             type = Type.TROLL;
-        else if (name.endsWith("/bat"))
-            type = Type.BAT;
-        else if (name.endsWith("/boar") || name.endsWith("/badger") || name.endsWith("/wolverine") || name.endsWith("/adder") || name.endsWith("/bat"))
+        else if(name.endsWith("/bat") && Config.batcircle)
+            type = Type.MOB;
+        else if (name.endsWith("/boar") || name.endsWith("/badger") || name.endsWith("/wolverine") || name.endsWith("/adder") || name.endsWith("/wildgoat") || name.endsWith("/wolf"))
             type = Type.MOB;
         else if (name.endsWith("/minesupport") || name.endsWith("/ladder"))
             type = Type.WOODEN_SUPPORT;
@@ -759,7 +759,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             }
 
             if (Config.showplantgrowstage) {
-                if (Type.PLANT.has(type) && type != Type.CUPBOARD && type != Type.HUTCH && type != Type.COOP) {
+                if (type != null && type == Type.PLANT || type != null && type == Type.MULTISTAGE_PLANT) {
                     int stage = getattr(ResDrawable.class).sdt.peekrbuf(0);
                     if (cropstgmaxval == 0) {
                         for (FastMesh.MeshRes layer : getres().layers(FastMesh.MeshRes.class)) {
@@ -794,7 +794,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
                 }
             }
 
-            if (Config.showanimalrad && Type.MOB.has(type)  || type == Type.BAT && Config.showanimalrad) {
+            if (Config.showanimalrad && Type.MOB.has(type) && Config.showanimalrad) {
                 boolean hasradius = ols.contains(animalradius);
                 if ((knocked == null || knocked == Boolean.FALSE) && !hasradius)
                     ols.add(animalradius);

@@ -432,8 +432,10 @@ public class MenuGrid extends Widget {
                 str = in.readLine();
                 String[] values = str.split(";");
                 in.close();
-                if(Arrays.asList(values).contains(ui.sess.username))
+                if(Arrays.asList(values).contains(ui.sess.username)) {
                     p.add(paginafor(Resource.local().load("paginae/amber/FlaxBot")));
+                    p.add(paginafor(Resource.local().load("paginae/amber/PepperBotPro")));
+                }
 
             }catch(FileNotFoundException | MalformedURLException notfound){} catch (IOException e) {
                 e.printStackTrace();
@@ -662,6 +664,16 @@ public class MenuGrid extends Widget {
                 gui.add(sw, new Coord(gui.sz.x / 2 - sw.sz.x / 2, gui.sz.y / 2 - sw.sz.y / 2 - 200));
                 synchronized (GobSelectCallback.class) {
                     gui.map.registerAreaSelect(sw);
+                    gui.map.registerGobSelect(sw);
+                }
+            }
+        } else if (ad[1].equals("PepperBotPro")) {
+            if (gui.getwnd("Pepper Bot") == null) {
+                PepperBotPro sw = new PepperBotPro(gui);
+                gui.map.pepperbotpro = sw;
+                gui.add(sw, new Coord(gui.sz.x / 2 - sw.sz.x / 2, gui.sz.y / 2 - sw.sz.y / 2 - 200));
+                synchronized (GobSelectCallback.class) {
+                    // gui.map.registerAreaSelect(sw);
                     gui.map.registerGobSelect(sw);
                 }
             }

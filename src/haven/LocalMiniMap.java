@@ -355,9 +355,15 @@ public class LocalMiniMap extends Widget {
                         sgobs.add(gob.id);
                         if(gob.getres().basename().contains("ball"))
                             Audio.play(wballsfx, Config.alarmwballvol);
-                    }else if(Config.alarmeyeball && gob.type == Gob.Type.EYEBALL && gob.id != BotUtils.player().id){
-                        sgobs.add(gob.id);
-                        Audio.play(eyeballsfx, Config.alarmeyeballvol);
+                    }else if(Config.alarmeyeball && gob.type == Gob.Type.EYEBALL && BotUtils.player() != null){
+                        if(!sgobs.contains(gob.id)) {
+                            synchronized (ui.gui.map) {
+                                if (ui.gui.map.player() != null && gob.id != ui.gui.map.player().id) {
+                                    sgobs.add(gob.id);
+                                    Audio.play(eyeballsfx, Config.alarmeyeballvol);
+                                }
+                            }
+                        }
                     }else if(gob.type == Gob.Type.DUNGKEY && Config.dungeonkeyalert) {
                         sgobs.add(gob.id);
                         BotUtils.sysMsg("Dungeon Key Dropped!",Color.white);

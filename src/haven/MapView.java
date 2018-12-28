@@ -88,6 +88,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     public static Gob shooanimal;
     public CoalToSmelters coaltosmelters;
     public PepperBot pepperbot;
+    public PepperBotPro pepperbotpro;
     public FlaxBot flaxbot;
     public DestroyArea destroyarea;
     public MinerAlert mineralert;
@@ -657,6 +658,8 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     };
 
     void addgob(RenderList rl, final Gob gob) {
+        if (Config.hidegobs && Config.hideCrops && gob.type != null && gob.type.has(Gob.Type.PLANT))
+            return;
         GLState xf;
         try {
             xf = Following.xf(gob);
@@ -1838,9 +1841,8 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                                 || gob.type == Gob.Type.SLIME || gob.type == Gob.Type.BEAR || gob.type == Gob.Type.LYNX || gob.type == Gob.Type.SEAL
                                 || gob.type == Gob.Type.TROLL || gob.type == Gob.Type.WALRUS && !gob.isplayer()) {*/
                        if(!gob.isplayer())
-                       if(gob.type == Gob.Type.PLAYER || gob.type == Gob.Type.MAMMOTH || gob.type == Gob.Type.BAT || gob.type == Gob.Type.EAGLE || gob.type == Gob.Type.SLIME
-                               || gob.type == Gob.Type.BEAR || gob.type == Gob.Type.LYNX || gob.type == Gob.Type.SEAL || gob.type == Gob.Type.TROLL || gob.type == Gob.Type.WALRUS
-                               || gob.type == Gob.Type.MOB){
+                       if(gob.type == Gob.Type.PLAYER || (gob.getres() != null && gob.getres().name.startsWith("gfx/kritter/"))){
+                           System.out.println("Prox aggro 1 triggered.");
                             double dist = gob.rc.dist(mc);
                             if ((target == null || dist < target.rc.dist(mc)) && dist <= 5 * tilesz.x)
                                 target = gob;
@@ -1876,9 +1878,8 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                                  || gob.type == Gob.Type.SLIME || gob.type == Gob.Type.BEAR || gob.type == Gob.Type.LYNX || gob.type == Gob.Type.SEAL
                                 || gob.type == Gob.Type.TROLL || gob.type == Gob.Type.WALRUS && !gob.isplayer()) {*/
                       if(!gob.isplayer())
-                        if(gob.type == Gob.Type.MAMMOTH || gob.type == Gob.Type.BAT || gob.type == Gob.Type.EAGLE || gob.type == Gob.Type.SLIME
-                                || gob.type == Gob.Type.BEAR || gob.type == Gob.Type.LYNX || gob.type == Gob.Type.SEAL || gob.type == Gob.Type.TROLL || gob.type == Gob.Type.WALRUS
-                                || gob.type == Gob.Type.MOB){
+                        if(gob.getres()!= null && gob.getres().name.startsWith("gfx/kritter/")){
+                            System.out.println("Prox aggro 2 triggered.");
                             double dist = gob.rc.dist(mc);
                             if ((target == null || dist < target.rc.dist(mc)) && dist <= 5 * tilesz.x)
                                 target = gob;
@@ -2088,7 +2089,6 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
             if (placing.lastmc != null)
                 wdgmsg("place", placing.rc.floor(posres), (int)Math.round(placing.a * 32768 / Math.PI), button, ui.modflags());
         } else if ((grab != null) && grab.mmousedown(c, button)) {
-            System.out.println("grab was not null, sent grab.mousedown");
         } else {
             delay(new Click(c, button));
         }
@@ -2322,7 +2322,6 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         MapView mv;
         final GrabXL xl = new GrabXL(this) {
             public boolean mmousedown(Coord cc, int button) {
-                System.out.println("mousedown detected in selector");
                 if (button != 1)
                     return (false);
                 return (super.mmousedown(cc, button));

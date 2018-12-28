@@ -18,8 +18,9 @@ import java.util.List;
 
 import static haven.OCache.posres;
 public class FlaxBot extends Window {
-    public Label lblProg, lblProg2;
+    public Label lblProg, lblProg2, lblhighestq;
     public int cropsHarvested;
+    private double highestquality;
     private Thread runner;
     GameUI gui;
     public Button stopBtn;
@@ -31,7 +32,7 @@ public class FlaxBot extends Window {
     public String seedname = "gfx/invobjs/seed-flax";
 
     public FlaxBot(GameUI gui) {
-        super(new Coord(140, 75), "Flax Farmer");
+        super(new Coord(140, 95), "Flax Farmer");
         this.gui = gui;
         plants.add("gfx/terobjs/plants/flax");
         cropsHarvested = 0;
@@ -43,6 +44,10 @@ public class FlaxBot extends Window {
         add(lblstxt2, new Coord(15, 55));
         lblProg2 = new Label("Initialising...");
         add(lblProg2, new Coord(15, 65));
+        Label lblhighest = new Label("Top Q:");
+        add(lblhighest, new Coord(15, 75));
+        lblhighestq = new Label("Initialising...");
+        add(lblhighestq, new Coord(15, 85));
 
 
         stopBtn = new Button(120, "Stop") {
@@ -59,6 +64,7 @@ public class FlaxBot extends Window {
     private class runner implements Runnable {
         @Override
         public void run() {
+            highestquality = 0;
             BotUtils.sysMsg("Flax Bot Started!", Color.white);
             lblProg.settext(cropsHarvested + " Units Harvested");
             lblProg2.settext(cropsHarvested + "Starting");
@@ -130,6 +136,12 @@ public class FlaxBot extends Window {
                             return;
                         retryharvest++;
                         BotUtils.sleep(10);
+                        if(BotUtils.getItemAtHand() != null){
+                            Coord slot = BotUtils.getFreeInvSlot(BotUtils.playerInventory());
+                            BotUtils.dropItemToInventory(slot,BotUtils.playerInventory());
+                            while(BotUtils.getItemAtHand() != null)
+                                BotUtils.sleep(50);
+                        }
                         if (retryharvest >= 500) {
                             lblProg2.settext("Retry Harvest");
                             if (retrycount >= 3) {
@@ -228,9 +240,13 @@ public class FlaxBot extends Window {
                         sort(items);
                         for (WItem seeds : items) {
                             GItem item = seeds.item;
+                            if(item.quality().q > highestquality){
+                                highestquality = item.quality().q;
+                                lblhighestq.settext("Quality "+item.quality().q);
+                            }
                             if (BotUtils.getAmount(item) >= 5) {
                                 lblProg2.settext("Picking Up Seeds");
-                                BotUtils.sysLogAppend("Replanting quality : " + item.quality().q, "white");
+                                BotUtils.sysLogAppend("" + item.quality().q, "white");
                                 BotUtils.takeItem(item);
                                 break;
                             }
@@ -282,6 +298,10 @@ public class FlaxBot extends Window {
                                 sort(items);
                                 for (WItem seeds : items) {
                                     GItem item = seeds.item;
+                                    if(item.quality().q > highestquality){
+                                        highestquality = item.quality().q;
+                                        lblhighestq.settext("Quality "+item.quality().q);
+                                    }
                                     if (BotUtils.getAmount(item) >= 5) {
                                         lblProg2.settext("Picking Up Seeds");
                                         BotUtils.sysLogAppend("Replanting flax of quality : " + item.quality().q, "white");
@@ -308,8 +328,7 @@ public class FlaxBot extends Window {
                                 if (BotUtils.getAmount(BotUtils.getItemAtHand()) == 50)
                                     break;
                                 if (seedslol.item.quality().q == BotUtils.getItemAtHand().quality().q) {
-                                    System.out.println("Combining");
-                                    BotUtils.sysLogAppend("Combining quality : " + BotUtils.getItemAtHand().quality().q + " with quality : " + seedslol.item.quality().q + " seeds.", "white");
+                                    System.out.println("Combining quality : " + BotUtils.getItemAtHand().quality().q + " with quality : " + seedslol.item.quality().q + " seeds.");
                                     int handAmount = BotUtils.getAmount(BotUtils.getItemAtHand());
                                     try {
                                         seedslol.item.wdgmsg("itemact", 0);
@@ -353,19 +372,16 @@ public class FlaxBot extends Window {
                         }
                         if (BotUtils.invFreeSlots() < 3) {
                             lblProg2.settext("Barreling");
-                            BotUtils.sysLogAppend("Barreling","white");
                             Gob barrel = BotUtils.findNearestBarrel(5000,blacklist);
                             barrel.delattr(GobHighlight.class);
                             barrel.setattr(new GobHighlight(barrel));
-                            // BotUtils.sysLogAppend("inv free slots <3", "white");
                             flax = gui.maininv.getItemPartial("Flax");
                             flax2 = flax.item;
                             items = gui.maininv.getIdenticalItems((flax2));
                             sort(items);
-                            // BotUtils.sysLogAppend("after sort", "white");
                             for (int i = 0; i < 5; i++) {
                                 QBuff qual = items.get(i).item.quality();
-                                BotUtils.sysLogAppend("Item " + i + " quality  = " + qual.q, "white");
+                                System.out.println("Item " + i + " quality  = " + qual.q);
                             }
 
                             if (BotUtils.getItemAtHand() != null)
@@ -381,6 +397,16 @@ public class FlaxBot extends Window {
                                        BotUtils.sysLogAppend("Blacklisting barrel, appears to be full","white");
                                        blacklist.add(barrel);
                                        barrel = BotUtils.findNearestBarrel(2000, blacklist);
+                                       BotUtils.sleep(500);
+                                        if (BotUtils.getItemAtHand() != null) {
+                                            lblProg2.settext("Dropping Seeds to Inv");
+                                            Coord slot = BotUtils.getFreeInvSlot(BotUtils.playerInventory());
+                                            if (slot != null) {
+                                                BotUtils.dropItemToInventory(slot, BotUtils.playerInventory());
+                                                while (BotUtils.getItemAtHand() != null)
+                                                    BotUtils.sleep(50);
+                                            }
+                                        }
                                        break;
                                     }
                                     BotUtils.sleep(10);
@@ -391,7 +417,7 @@ public class FlaxBot extends Window {
                             items.subList(0, 14).clear();
                             for (int i = 0; i < 5; i++) {
                                 QBuff qual = items.get(i).item.quality();
-                                BotUtils.sysLogAppend("Item2 " + i + " quality  = " + qual.q, "white");
+                                System.out.println("Item2 " + i + " quality  = " + qual.q);
                             }
                             for (WItem seed : items) {
                                 if (stopThread)
@@ -412,7 +438,15 @@ public class FlaxBot extends Window {
                                         BotUtils.sleep(250);
                                         barrel = BotUtils.findNearestBarrel(2000,blacklist);
                                         BotUtils.pfRightClick(barrel, 0);
-                                        BotUtils.waitForWindow("Barrel");
+                                        int retryclick = 0;
+                                        while(gui.getwnd("Barrel") == null){
+                                            if(retryclick > 200){
+                                                retryclick = 0;
+                                                BotUtils.pfRightClick(barrel,0);
+                                            }
+                                            retryclick++;
+                                            BotUtils.sleep(10);
+                                        }
                                         break;
                                     }
                                     BotUtils.sleep(10);
@@ -425,7 +459,6 @@ public class FlaxBot extends Window {
                         BotUtils.sysLogAppend("Null pointer exception caught, crash prevented.","white");
                     }
                     g = null;
-                    // BotUtils.sysLogAppend("finished loop " + cropsHarvested, "white");
                     cropsHarvested++;
                     lblProg.settext(cropsHarvested + " Units Harvested");
                 }catch(Loading | Sprite.ResourceException | NullPointerException e){}

@@ -25,6 +25,7 @@ public class SeedCropFarmer extends Window implements Runnable {
 	private String cropName;
 	private String seedName;
 	private boolean replant;
+	private boolean ispumpkin;
 	private boolean replantcontainer; // True = Only Container, False = Only replant
 	private boolean containeronly;
 	private ArrayList<Gob> containers = new ArrayList<>();
@@ -69,6 +70,10 @@ public class SeedCropFarmer extends Window implements Runnable {
 		int cropsHarvested = 0;
 		lblProg.settext(cropsHarvested + "/" + totalCrops);
 		lblProg2.settext("Starting");
+		if(seedName.contains("pumpkin"))
+			ispumpkin = true;
+		else
+			ispumpkin = false;
 		for (Gob g : crops) {
 			if (stopThread)
 				return;
@@ -115,10 +120,115 @@ public class SeedCropFarmer extends Window implements Runnable {
 				BotUtils.sleep(10);
 			}
 
+
+
 			if (stopThread)
 				return;
 			// Replant
-			if (replant) {
+			if(ispumpkin) {
+				try {
+					lblProg2.settext("Grabbing seeds");
+					GItem item = null;
+					List<WItem> itemlist = BotUtils.getInventoryItemsByName(BotUtils.playerInventory(), "gfx/invobjs/seed-pumpkin");
+					if(cropsHarvested == 0 ) //half second delay for the first pumpkin harvest to register to start the seed rotation.
+						BotUtils.sleep(500);
+					if (itemlist.size() > 0) {//If seeds are present in inventory, try to use them.
+						for (WItem witem : itemlist) {
+							if (BotUtils.getAmount(witem.item) > 5) {
+								while (BotUtils.getItemAtHand() == null) {
+									lblProg2.settext("Grabbing seeds");
+									BotUtils.takeItem(witem.item);
+									int retrypickup = 0;
+									while (BotUtils.getItemAtHand() == null) {
+										retrypickup++;
+										if (retrypickup > 200) {
+											BotUtils.takeItem(witem.item);
+											retrypickup = 0;
+										}
+										BotUtils.sleep(10);
+									}
+								}
+							}
+						}
+					}
+					else {   //Failed to pickup seeds, either from not having any or other reasons. Pick up a pumpkin and acquire seeds.
+						lblProg2.settext("Pickup Pumpkin");
+						Gob pumpkin = null;
+						while(BotUtils.findObjectByNames(10,"gfx/terobjs/items/pumpkin") == null)
+							BotUtils.sleep(10);
+						pumpkin = BotUtils.findObjectByNames(10, "gfx/terobjs/items/pumpkin");
+						BotUtils.pfRightClick(pumpkin, 0);
+						int retrypumpkinpickup = 0;
+						while (BotUtils.getInventoryItemsByName(BotUtils.playerInventory(), "gfx/invobjs/pumpkin").size() == 0) {
+							retrypumpkinpickup++;
+							if (retrypumpkinpickup > 50) {
+								lblProg2.settext("Retry Pickup");
+								retrypumpkinpickup = 0;
+								BotUtils.pfRightClick(pumpkin, 0);
+							}
+							BotUtils.sleep(50);
+						}
+						List<WItem> pumpkinlist = BotUtils.getInventoryItemsByName(BotUtils.playerInventory(),"gfx/invobjs/pumpkin");
+						WItem invpumpkin = pumpkinlist.get(0);
+						invpumpkin.item.wdgmsg("iact", Coord.z, -1);
+						FlowerMenu.setNextSelection("Slice");
+						int retryslice = 0;
+						lblProg2.settext("Slicing");
+						while (gui.maininv.getItemsPartial("seeds").size() == 0) {
+							retryslice++;
+							if (retryslice > 50) {
+								lblProg2.settext("Retry Slicing");
+								retryslice = 0;
+								invpumpkin.item.wdgmsg("iact", Coord.z, -1);
+								FlowerMenu.setNextSelection("Slice");
+							}
+							BotUtils.sleep(50);
+						}
+						List<WItem> fleshlist = gui.maininv.getItemsPartial("Flesh");
+						for(WItem flesh : fleshlist){
+							flesh.item.wdgmsg("drop",Coord.z);
+						}
+						itemlist.clear();
+						itemlist = BotUtils.getInventoryItemsByName(BotUtils.playerInventory(), "gfx/invobjs/seed-pumpkin");
+						if (itemlist.size() == 0) {//If seeds are present in inventory, try to use them.
+							BotUtils.sysMsg("Somehow don't have seeds after picking up and slicing a pumpkin, stopping", Color.white);
+							stop();
+							stopThread = true;
+						}
+					}
+					lblProg2.settext("Grabbing Seeds");
+					Inventory inv = BotUtils.playerInventory();
+					for (Widget w = inv.child; w != null; w = w.next) {
+						if (w instanceof GItem && ((GItem) w).resource().name.equals(seedName) && (!seedName.contains("seed") || BotUtils.getAmount((GItem) w) >= 5)) {
+							while ((GItem) w == null) {
+								BotUtils.sleep(10);
+							}
+							item = (GItem) w;
+							break;
+						}
+					}
+					if (item != null)
+						BotUtils.takeItem(item);
+					while (BotUtils.getItemAtHand() == null)
+						BotUtils.sleep(10);
+					// Plant the seed from hand
+					int amount = 0;
+					if (seedName.contains("seed"))
+						BotUtils.getAmount(BotUtils.getItemAtHand());
+					lblProg2.settext("Planting");
+					BotUtils.mapInteractClick(0);
+					while (BotUtils.findNearestStageCrop(5, 0, cropName) == null || (BotUtils.getItemAtHand() != null && (seedName.contains("seed") && amount == BotUtils.getAmount(BotUtils.getItemAtHand())))) {
+						BotUtils.sleep(10);
+					}
+					lblProg2.settext("Dropping seeds to inv");
+					Coord slot = BotUtils.getFreeInvSlot(BotUtils.playerInventory());
+					if (slot != null) {
+						BotUtils.dropItemToInventory(slot, BotUtils.playerInventory());
+						while (BotUtils.getItemAtHand() != null)
+							BotUtils.sleep(50);
+					}
+				}catch(NullPointerException | Loading | Sprite.ResourceException q){}
+			} else if (replant & !ispumpkin) {
 				try {
 					GItem item = null;
 					while (BotUtils.getItemAtHand() == null) {
@@ -159,7 +269,7 @@ public class SeedCropFarmer extends Window implements Runnable {
 						}
 					}
 				}catch(NullPointerException | Loading | Sprite.ResourceException q){}
-			} else if (replantcontainer) {
+			} else if (replantcontainer & !ispumpkin) {
 				try {
 					while (BotUtils.getItemAtHand() == null) { // loops until successfully picked up seeds
 						lblProg2.settext("Grabbing seeds");
@@ -343,7 +453,7 @@ public class SeedCropFarmer extends Window implements Runnable {
 			}
 		else {
 				try {
-					if (containeronly) { // Put items into container if inventory is full
+					if (containeronly & !ispumpkin) { // Put items into container if inventory is full
 						GItem item;
 						if (BotUtils.invFreeSlots() == 0) {
 							lblProg2.settext("Barreling");

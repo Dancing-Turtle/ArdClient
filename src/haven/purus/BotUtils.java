@@ -9,6 +9,7 @@ import haven.automation.BeltDrink;
 import java.awt.*;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -91,6 +92,18 @@ public class BotUtils {
 			}
 		}
 		return nearest;
+	}
+
+	public static Boolean TakingRoad(){
+		boolean yepimonaroad = false;
+		System.out.println("Taking Road Triggered");
+		Gob nearestchar = findNearestGob2(50,"gfx/borka/body");
+		if (nearestchar != null && nearestchar != player())
+			yepimonaroad = true;
+		else
+			yepimonaroad = false;
+		System.out.println(yepimonaroad);
+		return yepimonaroad;
 	}
 
 	public static Gob findNearestBarrel(int radius, List<Gob> blacklist){
@@ -251,8 +264,10 @@ public class BotUtils {
 
 	// Returns item in hand
 	public static GItem getItemAtHand() {
-		for (GameUI.DraggedItem item : gui.hand)
-			return item.item;
+		try {
+			for (GameUI.DraggedItem item : gui.hand)
+				return item.item;
+		}catch(ConcurrentModificationException q){}
 		return null;
 	}
 
@@ -339,6 +354,33 @@ public class BotUtils {
 									matches = true;
 									break;
 								}
+							}
+						}
+						if (matches) {
+							min = dist;
+							nearest = gob;
+						}
+					}
+				}
+			}
+		}catch(NullPointerException q){}
+		return nearest;
+	}
+
+	public static Gob findNearestGob2(int radius, String... names) {
+		Coord2d plc = player().rc;
+		double min = radius;
+		Gob nearest = null;
+		try {
+			synchronized (gui.ui.sess.glob.oc) {
+				for (Gob gob : gui.ui.sess.glob.oc) {
+					double dist = gob.rc.dist(plc);
+					if (dist < min) {
+						boolean matches = false;
+						for (String name : names) {
+							if (gob.getres().basename().contains(name)) {
+									matches = true;
+									break;
 							}
 						}
 						if (matches) {
