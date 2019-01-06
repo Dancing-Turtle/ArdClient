@@ -847,6 +847,17 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
+        appender.add(new CheckBox("Show aggro radius on cave slimes, disable if you dont care if they aggro you.") {
+            {
+                a = Config.slimecircle;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("slimecircle", val);
+                Config.slimecircle = val;
+                a = val;
+            }
+        });
         appender.add(new CheckBox("Highlight empty/finished drying frames and full/empty tanning tubs. Requires restart.") {
             {
                 a = Config.showdframestatus;

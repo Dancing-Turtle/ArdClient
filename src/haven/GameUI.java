@@ -86,6 +86,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     private int MinerDrinkTimer, StarvationAlertDelay;
     public WItem vhand;
     public ChatUI chat;
+    private int saferadius = 1;
     public Speedget speedget;
     public ChatUI.Channel syslog;
     public double prog = -1;
@@ -271,6 +272,15 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             chat.resize(0, chat.savedh);
             chat.show();
         }
+
+        if(Config.showTroughrad && Config.showBeehiverad)
+            saferadius = 4;
+        else if(Config.showTroughrad && Config.showBeehiverad)
+            saferadius = 3;
+        else if(Config.showTroughrad && !Config.showBeehiverad)
+            saferadius = 2;
+        else if(!Config.showTroughrad && !Config.showBeehiverad)
+            saferadius = 1;
     }
 
     @Override
@@ -1043,7 +1053,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         try{
         int energy = getmeter("nrj", 0).a;
         StarvationAlertDelay++;
-        if(energy < 20 && StarvationAlertDelay > 10000 && Config.StarveAlert) {
+        if(energy < 21 && StarvationAlertDelay > 10000 && Config.StarveAlert) {
             StarvationAlertDelay = 0;
             BotUtils.sysMsg("You are Starving!",Color.white);
         }}catch(NullPointerException nullcatchkek){}
@@ -1161,7 +1171,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     }
 
     public void wdgmsg(Widget sender, String msg, Object... args) {
-      //  System.out.println("############");if(!sender.toString().contains("Camera")) System.out.println(sender);System.out.println(msg);for(Object o :args) System.out.println(o);
+        System.out.println("############");if(!sender.toString().contains("Camera")) System.out.println(sender);System.out.println(msg);for(Object o :args) System.out.println(o);
         if ((sender == chrwdg) && (msg == "close")) {
             chrwdg.hide();
         } else if((polities.contains(sender)) && (msg == "close")) {
@@ -1299,8 +1309,49 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     }
 
     public void toggleSafeRadius(){
-        Config.showfarmrad = !Config.showfarmrad;
-        Utils.setprefb("showfarmrad", Config.showfarmrad);
+
+      /*  if(Config.showTroughrad && Config.showBeehiverad)
+            saferadius = 4;
+        else if(Config.showTroughrad && Config.showBeehiverad)
+            saferadius = 3;
+        else if(Config.showTroughrad && !Config.showBeehiverad)
+            saferadius = 2;
+        else if(!Config.showTroughrad && !Config.showBeehiverad)
+            saferadius = 1;*/
+
+      if(saferadius == 1){
+          saferadius = 2;
+          Config.showTroughrad = false;
+          Config.showBeehiverad = true;
+          Utils.setprefb("showTroughrad", Config.showTroughrad);
+          Utils.setprefb("showBeehiverad", Config.showBeehiverad);
+          BotUtils.sysMsg("Troughs off, Beehives on.",Color.white);
+      }
+      else if(saferadius == 2){
+          saferadius = 3;
+          Config.showTroughrad = true;
+          Config.showBeehiverad = true;
+          Utils.setprefb("showTroughrad", Config.showTroughrad);
+          Utils.setprefb("showBeehiverad", Config.showBeehiverad);
+          BotUtils.sysMsg("Troughs on, Beehives on.",Color.white);
+      }
+      else if(saferadius == 3){
+          saferadius = 4;
+          Config.showTroughrad = true;
+          Config.showBeehiverad = false;
+          Utils.setprefb("showTroughrad", Config.showTroughrad);
+          Utils.setprefb("showBeehiverad", Config.showBeehiverad);
+          BotUtils.sysMsg("Troughs on, Beehives off.",Color.white);
+      }
+      else if(saferadius == 4){
+          saferadius = 1;
+          Config.showTroughrad = false;
+          Config.showBeehiverad = false;
+          Utils.setprefb("showTroughrad", Config.showTroughrad);
+          Utils.setprefb("showBeehiverad", Config.showBeehiverad);
+          BotUtils.sysMsg("Troughs off, Beehives off.",Color.white);
+      }
+
     }
 
     public void toggleStatusWidget(){

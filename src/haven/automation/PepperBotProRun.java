@@ -32,6 +32,7 @@ public class PepperBotProRun extends Window implements Runnable {
 	private final int rowgap = 4200;
 	private final int travel = 20000;
 	private int section, direction;
+	private Coord retain;
 	private Boolean boilmode = false;
 	private Coord finalloc;
 
@@ -86,6 +87,7 @@ public class PepperBotProRun extends Window implements Runnable {
 
 while(true) {
 	if (harvest) {
+		retain = barrel.rc.floor(posres);
 		// Initialise crop list
 		if(section == 1){
 			crops = crops1;
@@ -352,6 +354,17 @@ try {
 							cwnd = null;
 						}
 					}
+
+					gui = HavenPanel.lui.root.findchild(GameUI.class);
+					stam = gui.getmeter("stam", 0);
+					if (stam.a <= 60) {
+						if (stopThread)
+							break;
+						lblProg2.settext("Drinking");
+						new Thread(new BeltDrink(gui), "BeltDrink").start();
+						BotUtils.sleep(5000);
+					}
+
 					if (BotUtils.invFreeSlots() > 4)
 						break;
 					pepperlist.clear();
@@ -573,7 +586,6 @@ try {
 		}
 		//	BotUtils.sysLogAppend("filling cauldron, barrel is : "+barrel.ols.size(),"white");
 		BotUtils.sleep(600);
-		Coord retain = barrel.rc.floor(posres);
 		if (barrel.ols.size() == 0 && water != null) {
 			lblProg2.settext("Refill Barrel");
 			//	System.out.println("Refill Barrel");

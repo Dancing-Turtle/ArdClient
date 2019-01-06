@@ -501,6 +501,8 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             type = Type.TROLL;
         else if(name.endsWith("/bat") && Config.batcircle)
             type = Type.MOB;
+        else if(name.endsWith("/ooze") && Config.slimecircle)
+            type = Type.MOB;
         else if (name.endsWith("/boar") || name.endsWith("/badger") || name.endsWith("/wolverine") || name.endsWith("/adder") || name.endsWith("/wildgoat") || name.endsWith("/wolf"))
             type = Type.MOB;
         else if (name.endsWith("/minesupport") || name.endsWith("/ladder"))
@@ -687,53 +689,59 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
 
         	// Replace hide stuff with Purus Pasta hide
             try {
-                if(Config.hidemoths && this.type == Type.MOTH) {
+                if(Config.hidemoths && type!= null && type == Type.MOTH) {
                 //do nothing since it's a moth
                 }
                 else if (Config.hidegobs) {
-                    if (Config.hideTrees && type == Type.TREE) {
+                    if (Config.hideTrees && type!= null && type == Type.TREE) {
                         GobHitbox.BBox bbox = GobHitbox.getBBox(this, true);
                         if (bbox != null && Config.showoverlay) {
                             rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, true)), null);
                         }
                     }
-                    else if (Config.hideCrops && (type == Type.PLANT || type == Type.MULTISTAGE_PLANT)) {
+                   // else if (Config.hideCrops && (type == Type.PLANT || type == Type.MULTISTAGE_PLANT)) {
                         // Crops don't have bounding boxes
                        // if (Config.showoverlay) {
                           //  rl.add(new Overlay(new GobHitbox(this, new Coord(-5, -5), new Coord(5, 5), true)), null);
                        // }
-                    }
-                    else if (Config.hideWalls && type == Type.WALL) {
+                   // }
+                    else if (Config.hideWalls && type!= null && type == Type.WALL) {
                         GobHitbox.BBox bbox = GobHitbox.getBBox(this, true);
                         if (bbox != null && Config.showoverlay) {
                             rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, true)), null);
                         }
                     }
-                    else if (Config.hideanimals && getres().name.startsWith("gfx/kritter/")) {
+                    else if (Config.hideanimals && type != null && this.getres().name.contains("kritter")) {
                         GobHitbox.BBox bbox = GobHitbox.getBBox(this, true);
                         if (bbox != null && Config.showoverlay) {
                             rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, true)), null);
                         }
                     }
-                   else if (Config.hideBushes && type == Type.BUSH) {
+                    else if (Config.hideDCatchers && type!= null && type == Type.DREAMCATCHER) {
                         GobHitbox.BBox bbox = GobHitbox.getBBox(this, true);
                         if (bbox != null && Config.showoverlay) {
                             rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, true)), null);
                         }
                     }
-                   else if (Config.hideDFrames && type == Type.DFRAME) {
+                   else if (Config.hideBushes && type!= null && type == Type.BUSH) {
                         GobHitbox.BBox bbox = GobHitbox.getBBox(this, true);
                         if (bbox != null && Config.showoverlay) {
                             rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, true)), null);
                         }
                     }
-                    else if (Config.hideWagons && type == Type.WAGON) {
+                   else if (Config.hideDFrames && type!= null && type == Type.DFRAME) {
                         GobHitbox.BBox bbox = GobHitbox.getBBox(this, true);
                         if (bbox != null && Config.showoverlay) {
                             rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, true)), null);
                         }
                     }
-                   else if (Config.hideHouses && type == Type.HOUSE) {
+                    else if (Config.hideWagons && type!= null && type == Type.WAGON) {
+                        GobHitbox.BBox bbox = GobHitbox.getBBox(this, true);
+                        if (bbox != null && Config.showoverlay) {
+                            rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, true)), null);
+                        }
+                    }
+                   else if (Config.hideHouses && type!= null && type == Type.HOUSE) {
                         GobHitbox.BBox bbox = GobHitbox.getBBox(this, true);
                         if (bbox != null && Config.showoverlay) {
                             rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, true)), null);

@@ -35,7 +35,7 @@ public enum Action {
     TOGGLE_GOB_INFO(GameUI::toggleTreeStage, "Display Tree/Crop Stages", "Display crop/tree growth and object health overlay."),
     TOGGLE_GOB_HITBOX(GameUI::toggleGobs, "Display hitboxes"),
     TOGGLE_DANGER_RADIUS(GameUI::toggleDangerRadius, "Display danger radius", "Displays effective radius of animals/mine supports."),
-    TOGGLE_SAFE_RADIUS(GameUI::toggleSafeRadius,"Displays Beehive/Trough Radius","Displays effective radius of beehives and troughs."),
+    TOGGLE_SAFE_RADIUS(GameUI::toggleSafeRadius,"Toggles Trough/Beehive Radii","Toggles between modes of displaying Trough/Beehive radii."),
     LOCAL_SCREENSHOT(GameUI::localScreenshot,"Take and save a local screenshot."),
  //   TOGGLE_TILE_GRID(gui -> gui.map.togglegrid(), "Show tile grid"),
     TOGGLE_TILE_CENTERING(GameUI::toggleGridCentering, "Toggle tile centering"),

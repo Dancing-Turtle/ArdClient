@@ -89,6 +89,7 @@ public class Config {
     public static double chatalarmvol = Utils.getprefd("chatalarmvol", 0.8);
     public static boolean studyalarm = Utils.getprefb("studyalarm", false);
     public static boolean batcircle = Utils.getprefb("batcircle", true);
+    public static boolean slimecircle = Utils.getprefb("slimecircle", true);
     public static boolean errorsounds = Utils.getprefb("errorsounds", true);
     public static boolean cleavesound = Utils.getprefb("cleavesound", true);
     public static boolean chatsounds = Utils.getprefb("chatsounds", true);
@@ -106,7 +107,8 @@ public class Config {
     public static boolean showplantgrowstage = Utils.getprefb("showplantgrowstage", false);
     public static boolean notifykinonline = Utils.getprefb("notifykinonline", true);
     public static boolean showminerad = Utils.getprefb("showminerad", false);
-    public static boolean showfarmrad = Utils.getprefb("showfarmrad", false);
+    public static boolean showTroughrad = Utils.getprefb("showTroughrad", false);
+    public static boolean showBeehiverad = Utils.getprefb("showBeehiverad", false);
     public static boolean showweather = Utils.getprefb("showweather", true);
     public static boolean simplecrops = Utils.getprefb("simplecrops", false);
     public static boolean logincharsheet = Utils.getprefb("logincharsheet", false);

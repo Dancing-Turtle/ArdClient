@@ -447,10 +447,10 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 
 	@Override
 	public void gobselect(Gob gob) {
-		if (gob.getres().basename().contains("barrel") || gob.getres().basename().contains("trough")) {
+		if (gob.getres().basename().contains("barrel") || gob.getres().basename().contains("trough") || gob.getres().basename().contains("cistern")) {
 			if(!containers.contains(gob)) {
 				containers.add(gob);
-				BotUtils.sysMsg("Barrel/Trough added! Total : "+containers.size(), Color.WHITE);
+				BotUtils.sysMsg("Barrel/Trough/Cistern added! Total : "+containers.size(), Color.WHITE);
 			}
 		} else if (gob.getres().basename().contains("chest")) {
 			chest = gob;

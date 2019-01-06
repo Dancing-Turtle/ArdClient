@@ -17,6 +17,7 @@ public class TroughFiller extends Window implements GobSelectCallback {
 	private List<String> invobjs = Arrays.asList("gfx/invobjs/carrot", "gfx/invobjs/beet", "gfx/invobjs/beetleaves", "gfx/invobjs/pumpkin");
 	private String[] terobjs = { "gfx/terobjs/items/carrot", "gfx/terobjs/items/beet", "gfx/terobjs/items/beetleaves","gfx/terobjs/items/pumpkin" };
 
+
 	private boolean stop = false;
 
 	private Button stopBtn;
@@ -37,9 +38,7 @@ public class TroughFiller extends Window implements GobSelectCallback {
 		Label infolbl = inf.add(new Label("Alt + Click to select trough/compost bin"), new Coord(5, 0));
 		stopBtn = new Button(120, "Stop") {
 			@Override
-			public void click() {
-				stop();
-			}
+			public void click() { stop(); }
 		};
 		add(stopBtn, new Coord(75, 65));
 	}
@@ -48,8 +47,13 @@ public class TroughFiller extends Window implements GobSelectCallback {
 		public void run() {
 
 				main:
-				while (true) {
+				while (!stop) {
 					try {
+
+						if (stop) {
+							System.out.println("stop detected ,breaking");
+							return;
+						}
 					System.out.println("Main loop start");
 					int timeout = 0;
 					while(BotUtils.findObjectByNames(5000,terobjs) == null) {
@@ -103,7 +107,7 @@ public class TroughFiller extends Window implements GobSelectCallback {
 
 					if (stop) {
 						System.out.println("stop detected ,breaking");
-						break main;
+						return;
 					}
 
 					BotUtils.sleep(500);
@@ -113,11 +117,11 @@ public class TroughFiller extends Window implements GobSelectCallback {
 
 					BotUtils.pfRightClick(trough, 0);
 					int retry = 0;
-					while(gameui().getwnd("Trough")==null){
+					while(gameui().getwnd("Trough") == null && gameui().getwnd("Compost Bin") == null){
 						retry++;
 						if(retry > 500){
 							retry = 0;
-							BotUtils.sysLogAppend("Retrying trough interaction","white");
+							BotUtils.sysLogAppend("Retrying trough/Compost Bin interaction","white");
 							BotUtils.dropItem(0);
 							BotUtils.pfRightClick(trough,0);
 						}
@@ -143,6 +147,11 @@ public class TroughFiller extends Window implements GobSelectCallback {
 					}*/
 
 					while(BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), invobjs).size() > 0 && !stop){
+
+						if (stop) {
+							System.out.println("stop detected ,breaking");
+							return;
+						}
 						if(BotUtils.getItemAtHand() == null){
 							GItem item = BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), invobjs).get(0).item;
 							BotUtils.takeItem(item);

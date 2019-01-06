@@ -1,3 +1,11 @@
+1.00.68
+Toggle trough/beehive radii keybind now rotates between 4 modes of radii display so you can play the game the way you want to!
+Fixed an oversight on trough filler regarding it's compost bin functionality. 
+Fixed dreamcatcher hide setting.
+Fixed black screen flashes with hide turned on.
+Added toggle option, on by default, to show slime aggro circles.
+~
+
 1.00.67
 Think I finally fixed keybinds sometimes not working when you start up the game because of the chat window.
 Added a toggle under general settings for autorunning on horse.

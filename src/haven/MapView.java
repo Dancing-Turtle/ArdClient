@@ -658,7 +658,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     };
 
     void addgob(RenderList rl, final Gob gob) {
-        if (Config.hidegobs && Config.hideCrops && gob.type != null && gob.type.has(Gob.Type.PLANT))
+        if (Config.hidegobs && Config.hideCrops && gob.type != null && (gob.type == Gob.Type.PLANT || gob.type == Gob.Type.MULTISTAGE_PLANT))
             return;
         GLState xf;
         try {
@@ -695,10 +695,10 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
 
         if (gob.type == Gob.Type.TROUGH) {
             rovl = rovltrough;
-            show = Config.showfarmrad;
+            show = Config.showTroughrad;
         } else if (gob.type == Gob.Type.BEEHIVE) {
             rovl = rovlbeehive;
-            show = Config.showfarmrad;
+            show = Config.showBeehiverad;
         }
 
         if (show && !gob.ols.contains(rovl))
