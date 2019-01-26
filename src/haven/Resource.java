@@ -286,6 +286,8 @@ public class Resource implements Serializable {
 
 	public static class JarSource implements ResSource, Serializable {
 		public InputStream get(String name) throws FileNotFoundException {
+			if (name.contains("cupboard") && !Config.flatcupboards)
+				return null;
 			InputStream s = Resource.class.getResourceAsStream("/res/" + name + ".res");
 			if (s == null)
 				throw (new FileNotFoundException("Could not find resource locally: " + name));

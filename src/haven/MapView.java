@@ -2053,7 +2053,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     }
 
     public boolean mousedown(Coord c, int button) {
-      //  System.out.println("Mousedown detected mapview grab is : "+grab);
+      //  System.out.println("Mousedown detected mapview Coord : "+c+" button : "+button+" placing is : "+placing);
     	if(button == 1 && farmSelect) {
             synchronized (this) {
                 if (selection == null) {

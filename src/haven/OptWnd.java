@@ -644,6 +644,17 @@ public class OptWnd extends Window {
     private void initDisplayFirstColumn() {
         final WidgetVerticalAppender appender = new WidgetVerticalAppender(withScrollport(display, new Coord(620, 350)));
         appender.setVerticalMargin(VERTICAL_MARGIN);
+        appender.add(new CheckBox("Flatten Cupboards - Requires Restart") {
+            {
+                a = Config.flatcupboards;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("flatcupboards", val);
+                Config.flatcupboards = val;
+                a = val;
+            }
+        });
         appender.add(new CheckBox("Display kin names") {
             {
                 a = Config.showkinnames;

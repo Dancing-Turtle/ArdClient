@@ -1,3 +1,8 @@
+1.00.69
+Fixed an error where the damage overlay wasn't showing in combat.
+Added a toggle to turn flat cupboards on/off, requires relog. Under display settings.
+~
+
 1.00.68
 Toggle trough/beehive radii keybind now rotates between 4 modes of radii display so you can play the game the way you want to!
 Fixed an oversight on trough filler regarding it's compost bin functionality. 

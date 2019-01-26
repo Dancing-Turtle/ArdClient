@@ -62,6 +62,7 @@ public class Config {
     public static boolean chatsave = Utils.getprefb("chatsave", false);
     public static boolean chattimestamp = Utils.getprefb("chattimestamp", true);
     public static boolean alarmunknown = Utils.getprefb("alarmunknown", false);
+    public static boolean flatcupboards = Utils.getprefb("flatcupboards", true);
     public static double alarmunknownvol = Utils.getprefd("alarmunknownvol", 0.32);
     public static boolean alarmnidbane = Utils.getprefb("alarmnidbane", false);
     public static double alarmnidbanevol = Utils.getprefd("alarmnidbanevol", 1.0);
