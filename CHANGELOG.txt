@@ -1,3 +1,11 @@
+1.00.73
+Added strawberries to alarm list.
+Added fireflys to hide list.
+Hovering the mouse over terrain on the minimap now shows the terrain type.
+Hovering the mouse over a minimap icon now shows the name of that icon, includes kinned players.
+Updated the UPDATER - please redownload - hopefully fixes some performance issues.
+~
+
 1.00.72
 Fixed adder alarm removing the danger radius.
 ~

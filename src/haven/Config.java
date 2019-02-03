@@ -248,7 +248,7 @@ public class Config {
     public static boolean hideBushes = Utils.getprefb("hideBushes", true);
     public static boolean hideDFrames = Utils.getprefb("hideDFrames", false);
     public static boolean hideDCatchers = Utils.getprefb("hideDCatchers", false);
-    public static boolean showoverlay = Utils.getprefb("showoverlay", false);
+    public static boolean showoverlay = Utils.getprefb("showoverlay", true);
     public static boolean disableAllAnimations = Utils.getprefb("disableAllAnimations", false);
     public static int hidered = Utils.getprefi("hidered", 0);
     public static int hidegreen = Utils.getprefi("hidegreen", 0);
@@ -382,7 +382,8 @@ public class Config {
         put("bram", new CheckListboxItem("Battering Ram"));
         put("magpie", new CheckListboxItem("Magpie"));
         put("mistletoe", new CheckListboxItem("Mistletoe"));
-        put("rowboat", new CheckListboxItem("Rowboat Boat"));
+        put("firefly", new CheckListboxItem("Firefly"));
+        put("rowboat", new CheckListboxItem("Rowboat"));
         put("dugout", new CheckListboxItem("Dugout"));
         put("arrow", new CheckListboxItem("Arrow"));
         put("boarspear", new CheckListboxItem("Boar Spear"));
@@ -527,6 +528,7 @@ public class Config {
         put("gfx/terobjs/herbs/dandelion", new CheckListboxItem("Dandelion"));
         put("gfx/terobjs/herbs/chantrelle", new CheckListboxItem("Chantrelle"));
         put("gfx/terobjs/herbs/blueberry", new CheckListboxItem("Blueberry"));
+        put("gfx/terobjs/herbs/strawberry", new CheckListboxItem("Strawberry"));
         put("gfx/kritter/rat/rat", new CheckListboxItem("Rat"));
         put("gfx/kritter/chicken/chicken", new CheckListboxItem("Chicken"));
         put("gfx/kritter/chick/chick", new CheckListboxItem("Chick"));

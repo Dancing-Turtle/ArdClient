@@ -65,6 +65,7 @@ public class GobIcon extends GAttrib {
         return (this.tex);
     }
 
+
     public Tex texgrey() {
         if (!greyscale) {
             synchronized (cachegrey) {

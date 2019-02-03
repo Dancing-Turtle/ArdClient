@@ -42,6 +42,8 @@ public class LocalMiniMap extends Widget {
     private static final Tex resize = Resource.loadtex("gfx/hud/wndmap/lg/resize");
     private static final Tex gridblue = Resource.loadtex("gfx/hud/mmap/gridblue");
     private static final Tex gridred = Resource.loadtex("gfx/hud/mmap/gridred");
+    private String biome;
+    private Tex biometex;
     public final MapView mv;
     public MapFile save;
     private Coord cc = null;
@@ -396,7 +398,8 @@ public class LocalMiniMap extends Widget {
             for (Gob gob : oc) {
                 try {
                     GobIcon icon = gob.getattr(GobIcon.class);
-                    if (icon != null) {
+
+                  if (icon != null) {
                         Coord gc = p2c(gob.rc);
                         Coord sz = icon.tex().sz();
                         if (c.isect(gc.sub(sz.div(2)), sz)) {
@@ -410,7 +413,10 @@ public class LocalMiniMap extends Widget {
                         Coord sz = new Coord(18, 18);
                         if (c.isect(gc.sub(sz.div(2)), sz)) {
                             Resource res = gob.getres();
-                            if (res != null && Config.additonalicons.containsKey(res.name)) {
+                            KinInfo ki = gob.getattr(KinInfo.class);
+                            if(ki != null)
+                                return gob;
+                            else if (res != null && Config.additonalicons.containsKey(res.name)) {
                                 CheckListboxItem itm = Config.icons.get(res.basename());
                                 if (itm == null || !itm.selected)
                                     return gob;
@@ -424,12 +430,50 @@ public class LocalMiniMap extends Widget {
         return (null);
     }
 
+
+    @Override
+    public Object tooltip(Coord c, Widget prev) {
+            Gob gob = findicongob(c);
+            if (gob != null) {
+                Resource res = gob.getres();
+                try {
+                    GobIcon icon = gob.getattr(GobIcon.class);
+                    KinInfo ki = gob.getattr(KinInfo.class);
+                     if(ki != null)
+                        return ki.name;
+                    else if (icon != null)
+                        return pretty(gob.getres().name);
+                     else { // custom icons
+                        if (res != null && Config.additonalicons.containsKey(res.name)) {
+                            CheckListboxItem itm = Config.icons.get(res.basename());
+                            return pretty(itm.name);
+                        }
+                    }
+                } catch (Loading l) {
+                }
+            }
+        return super.tooltip(c, prev);
+    }
+    private static String pretty(String name) {
+        int k = name.lastIndexOf("/");
+        name = name.substring(k + 1);
+        name = name.substring(0, 1).toUpperCase() + name.substring(1);
+        return name;
+    }
+
     public void tick(double dt) {
         Gob pl = ui.sess.glob.oc.getgob(mv.plgob);
         if(pl == null)
             this.cc = mv.cc.floor(tilesz);
         else
             this.cc = pl.rc.floor(tilesz);
+
+        Coord mc = rootxlate(ui.mc);
+        if(mc.isect(Coord.z, sz)) {
+            setBiome(c2p(mc).div(tilesz).floor());
+        } else {
+            setBiome(cc);
+        }
 
         if (Config.playerposfile != null && MapGridSave.gul != null) {
             try {
@@ -440,9 +484,37 @@ public class LocalMiniMap extends Widget {
         }
     }
 
+    private void setBiome(Coord c) {
+        try {
+            if(c.div(cmaps).manhattan2(cc.div(cmaps)) > 1) {return;}
+            int t = mv.ui.sess.glob.map.gettile(c);
+            Resource r = ui.sess.glob.map.tilesetr(t);
+            String newbiome;
+            if(r != null) {
+                newbiome = (r.name);
+            } else {
+                newbiome = "Void";
+            }
+            if(!newbiome.equals(biome)) {
+                biome = newbiome;
+                biometex = Text.renderstroked(prettybiome(biome)).tex();
+            }
+        } catch (Loading ignored) {}
+    }
+
+    private static String prettybiome(String biome) {
+        int k = biome.lastIndexOf("/");
+        biome = biome.substring(k + 1);
+        biome = biome.substring(0, 1).toUpperCase() + biome.substring(1);
+        return biome;
+    }
+
     public void draw(GOut g) {
         if (cc == null)
             return;
+        if(biometex != null) {
+            g.image(biometex, Coord.z);
+        }
 
         map:
         {

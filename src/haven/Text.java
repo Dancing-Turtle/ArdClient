@@ -315,6 +315,10 @@ public class Text {
         public Line render(String text) {
             return (render(text, defcol));
         }
+
+    }
+    public static Line renderstroked(String text) {
+        return renderstroked(text, Color.WHITE, Color.BLACK);
     }
 
     public static abstract class Imager extends Furnace {
