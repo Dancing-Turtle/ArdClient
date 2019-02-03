@@ -80,7 +80,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
     public enum Type {
         OTHER(0), DFRAME(1), TREE(2), BUSH(3), BOULDER(4), PLAYER(5), SIEGE_MACHINE(6), MAMMOTH(7), BAT(8), OLDTRUNK(9), GARDENPOT(10), MUSSEL(11), LOC_RESOURCE(12), FU_YE_CURIO(13),
         CLAY(14), EAGLE(15), PLANT(16), MULTISTAGE_PLANT(17), CHEESERACK(18), CUPBOARD(19), TANTUB(20), COOP(21), HUTCH(22), MOTH(23), DUNGEON(24), EYEBALL(25), DUNGKEY(26), ROAD(27), NIDBANE(28), DUNGEONDOOR(29),
-        ROADENDPOINT(30),
+        ROADENDPOINT(30), SNAKE(31),
         SLIME(40), LIVESTOCK(42), MOB(32), BEAR(34), LYNX(35), SEAL(37), TROLL(38), WALRUS(39),
         WOODEN_SUPPORT(64), STONE_SUPPORT(65), METAL_SUPPORT(66), TROUGH(67), BEEHIVE(68), WAGON(600), WALL(602), DREAMCATCHER(603), HOUSE(604);
 
@@ -487,6 +487,8 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             type = Type.SIEGE_MACHINE;
         else if (name.endsWith("/bear"))
             type = Type.BEAR;
+        else if (name.endsWith("/adder"))
+            type = Type.SNAKE;
         else if (name.endsWith("/ooze"))
             type = Type.SLIME;
         else if (name.endsWith("/lynx"))
@@ -503,7 +505,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             type = Type.MOB;
         else if(name.endsWith("/ooze") && Config.slimecircle)
             type = Type.MOB;
-        else if (name.endsWith("/boar") || name.endsWith("/badger") || name.endsWith("/wolverine") || name.endsWith("/adder") || name.endsWith("/wildgoat") || name.endsWith("/wolf"))
+        else if (name.endsWith("/boar") || name.endsWith("/badger") || name.endsWith("/wolverine") || name.endsWith("/wildgoat") || name.endsWith("/wolf"))
             type = Type.MOB;
         else if (name.endsWith("/minesupport") || name.endsWith("/ladder"))
             type = Type.WOODEN_SUPPORT;

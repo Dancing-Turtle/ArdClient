@@ -2508,6 +2508,31 @@ public class OptWnd extends Window {
             }
         });
         appender.setVerticalMargin(0);
+        appender.add(new CheckBox("Alarm on Adders") {
+            {
+                a = Config.alarmadder;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("alarmadder", val);
+                Config.alarmadder = val;
+                a = val;
+            }
+        });
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (int) (Config.alarmaddervol * 1000);
+            }
+
+            public void changed() {
+                double vol = val / 1000.0;
+                Config.alarmaddervol = vol;
+                Utils.setprefd("alarmaddervol", vol);
+            }
+        });
+        appender.setVerticalMargin(0);
         appender.add(new CheckBox("Alarm on new private/party chat") {
             {
                 a = Config.chatalarm;

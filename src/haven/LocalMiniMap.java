@@ -54,6 +54,7 @@ public class LocalMiniMap extends Widget {
     private static final Resource foragablesfx = Resource.local().loadwait("sfx/awwyeah");
     private static final Resource bearsfx = Resource.local().loadwait("sfx/bear");
     private static final Resource lynxfx = Resource.local().loadwait("sfx/lynx");
+    private static final Resource addersfx = Resource.local().loadwait("sfx/adders");
     private static final Resource walrusfx = Resource.local().loadwait("sfx/walrus");
     private static final Resource sealsfx = Resource.local().loadwait("sfx/seal");
     private static final Resource trollsfx = Resource.local().loadwait("sfx/troll");
@@ -64,9 +65,9 @@ public class LocalMiniMap extends Widget {
     private static final Resource swagsfx = Resource.local().loadwait("sfx/swag");
     private static final Resource eyeballsfx = Resource.local().loadwait("sfx/eye");
     private static final Resource nidbanesfx = Resource.local().loadwait("sfx/ghost");
-    private static final Resource beaversfx = Resource.local().loadwait("sfx/beavers");
-    private static final Resource batssfx = Resource.local().loadwait("sfx/batcave");
-    private static final Resource antssfx = Resource.local().loadwait("sfx/antcave");
+    private static final Resource dungeonssfx = Resource.local().loadwait("sfx/dungeons");
+    private static final Resource beaverssfx = Resource.local().loadwait("sfx/beavers");
+    private static final Resource siegesfx = Resource.local().loadwait("sfx/siege");
 
 	private final HashSet<Long> sgobs = new HashSet<Long>();
     private final Map<Coord, Tex> maptiles = new LinkedHashMap<Coord, Tex>(100, 0.75f, false) {
@@ -301,7 +302,8 @@ public class LocalMiniMap extends Widget {
                         boolean enemy = false;
                         if (Config.alarmunknown && kininfo == null) {
                             sgobs.add(gob.id);
-                            Audio.play(alarmredplayersfx, Config.alarmunknownvol);
+                           // Audio.play(alarmredplayersfx, Config.alarmunknownvol);
+                            Audio.play(eyeballsfx, Config.alarmunknownvol);
                             enemy = true;
                         } else if (Config.alarmred && kininfo != null && kininfo.group == 2) {
                             sgobs.add(gob.id);
@@ -329,6 +331,9 @@ public class LocalMiniMap extends Widget {
                     } else if (gob.type == Gob.Type.BEAR && gob.knocked == Boolean.FALSE) {
                         this.sgobs.add(gob.id);
                         Audio.play(bearsfx, Config.alarmbearsvol);
+                    }else if (gob.type == Gob.Type.SNAKE && gob.knocked == Boolean.FALSE && Config.alarmadder){
+                            this.sgobs.add(gob.id);
+                            Audio.play(addersfx, Config.alarmaddervol);
                     } else if (gob.type == Gob.Type.LYNX && gob.knocked == Boolean.FALSE) {
                         this.sgobs.add(gob.id);
                         Audio.play(lynxfx, Config.alarmbearsvol);
@@ -350,11 +355,11 @@ public class LocalMiniMap extends Widget {
                     } else if (Config.alarmbram && gob.type == Gob.Type.SIEGE_MACHINE) {
                         sgobs.add(gob.id);
                         if(!gob.getres().basename().contains("ball"))
-                        Audio.play(doomedsfx, Config.alarmbramvol);
+                        Audio.play(siegesfx, Config.alarmbramvol);
                     }else if (Config.alarmwball && gob.type == Gob.Type.SIEGE_MACHINE){
                         sgobs.add(gob.id);
                         if(gob.getres().basename().contains("ball"))
-                            Audio.play(wballsfx, Config.alarmwballvol);
+                            Audio.play(siegesfx, Config.alarmwballvol);
                     }else if(Config.alarmeyeball && gob.type == Gob.Type.EYEBALL && BotUtils.player() != null){
                         if(!sgobs.contains(gob.id)) {
                             synchronized (ui.gui.map) {
@@ -370,16 +375,13 @@ public class LocalMiniMap extends Widget {
                     }else if(gob.type == Gob.Type.NIDBANE && Config.alarmnidbane) {
                         sgobs.add(gob.id);
                         Audio.play(nidbanesfx, Config.alarmnidbanevol);
-                    }else if(gob.type == Gob.Type.DUNGEON && Config.alarmdungeon){
-                        if(gob.getres().basename().contains("batcave")){
+                    }else if(gob.type == Gob.Type.DUNGEON && Config.alarmdungeon) {
+                        if(gob.getres().basename().equals("beaverdam")){
                             sgobs.add(gob.id);
-                            Audio.play(batssfx , Config.alarmdungeonvol);
-                        }else if (gob.getres().basename().contains("antdungeon")){
+                            Audio.play(beaverssfx, Config.alarmdungeonvol);
+                        }else if(!gob.getres().basename().contains("beaver")) {
                             sgobs.add(gob.id);
-                            Audio.play(antssfx, Config.alarmdungeonvol);
-                        }else if (gob.getres().basename().equals("beaverdam")) {
-                            sgobs.add(gob.id);
-                            Audio.play(beaversfx, Config.alarmdungeonvol);
+                            Audio.play(dungeonssfx, Config.alarmdungeonvol);
                         }
                     }
                 } catch (Exception e) { // fail silently

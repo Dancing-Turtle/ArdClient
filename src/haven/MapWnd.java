@@ -250,6 +250,8 @@ public class MapWnd extends Window {
             new Pair<>("--- Custom ---", "flg"),
             new Pair<>("Abyssal Chasm", "abyssalchasm"),
             new Pair<>("Ancient Windthrow", "windthrow"),
+            new Pair<>("Fairy Stone", "fairystone"),
+            new Pair<>("Lily Pad Lotus", "lilypadlotus"),
             new Pair<>("Clay Pit", "claypit"),
             new Pair<>("Crystal Rock", "crystalpatch"),
             new Pair<>("Geyser", "geyser"),

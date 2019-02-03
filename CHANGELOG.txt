@@ -1,3 +1,16 @@
+1.00.71
+Added 6 new trees, new stone.
+Added minimap icon for dugout boat.
+Added fairy stone and lilypad lotus to local resource alarms.
+Changed/Fixed the dungeon alarms.
+Added most foreageables to the alarm list to make it easier to hunt for particular items.
+Added alarm for Adders (thanks JColes), toggleable in the same place other alarms are. 
+Changed alarm for unknown players back to the old one.
+Changed alarm for rams catapults and wrecking balls. (Also Jcoles)
+Changed walrus sound alarm (Fucking Coles.)
+Added magpies and mistletoe to the minimap icon hide list.
+~
+
 1.00.70
 Fixed tree crash.
 ~
