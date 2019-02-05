@@ -7,6 +7,7 @@ import java.net.URL;
 
 public class MinimapWnd extends Widget {
     private static final Tex bg = Window.bg;
+    public static Tex biometex;
     private static final Tex hm = Resource.loadtex("gfx/hud/wndmap/lg/hm");
     private static final Tex vm = Resource.loadtex("gfx/hud/wndmap/lg/vm");
     private static final Tex cl = Resource.loadtex("gfx/hud/wndmap/lg/cl");
@@ -163,7 +164,7 @@ public class MinimapWnd extends Widget {
             }
         };
 
-        add(mmap, 1, 27);
+        add(mmap, 1, 47);
         add(pclaim, 5, 3);
         add(vclaim, 29, 3);
         add(realm, 53, 3);
@@ -216,6 +217,8 @@ public class MinimapWnd extends Widget {
             for (bgc.x = tlm.x; bgc.x < tlm.x + asz.x; bgc.x += bg.sz().x)
                 g.image(bg, bgc, tlm, asz);
         }
+        if(biometex != null)
+            g.image(biometex, new Coord(5,30));
         drawframe(g);
         super.draw(g);
     }

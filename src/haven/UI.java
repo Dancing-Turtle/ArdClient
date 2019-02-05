@@ -487,7 +487,7 @@ public class UI {
    // }
 
     public void mousedown(MouseEvent ev, Coord c, int button) {
-       // System.out.println("Mousedown Detected UI");
+      //  System.out.println("Mousedown Detected UI");
         setmods(ev);
         lcc = mc = c;
         for (Grab g : c(mousegrab)) {

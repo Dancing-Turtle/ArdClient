@@ -31,16 +31,15 @@ import static haven.Action.TOGGLE_KIN_LIST;
 import static haven.Action.TOGGLE_OPTIONS;
 import static haven.Inventory.invsq;
 
+import haven.automation.*;
 import haven.automation.Discord;
-import haven.automation.ErrorSysMsgCallback;
-import haven.automation.PickForageable;
 import haven.livestock.LivestockManager;
 import haven.purus.BotUtils;
 import haven.purus.ItemClickCallback;
 import haven.purus.pbot.PBotAPI;
 import haven.purus.pbot.PBotScriptlist;
 import haven.resutil.FoodInfo;
-import haven.automation.BeltDrink;
+
 import static haven.KeyBinder.*;
 
 import java.awt.*;
@@ -73,6 +72,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public CharWnd chrwdg;
     public MapWnd mapfile;
     private Widget qqview;
+    public boolean discordconnected = false;
     public BuddyWnd buddies;
     public Window craftbot;
     public Equipory equipory;
@@ -629,16 +629,18 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public void DiscordToggle(){
         if(Discord.jdalogin != null) {
             BotUtils.sysMsg("Discord Disconnected",Color.white);
+            discordconnected = false;
             Discord.jdalogin.shutdownNow();
+            Discord.jdalogin = null;
             for(int i=0;i<15;i++) {
                 for (Widget w = chat.lchild; w != null; w = w.prev) {
-                    if (w instanceof ChatUI.DiscordChat) {
+                    if (w instanceof ChatUI.DiscordChat)
                         w.destroy();
-                    }
                 }
             }
         }
     }
+
 
 
 
@@ -1171,7 +1173,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     }
 
     public void wdgmsg(Widget sender, String msg, Object... args) {
-       // System.out.println("############");if(!sender.toString().contains("Camera")) System.out.println(sender);System.out.println(msg);for(Object o :args) System.out.println(o);
+      //  System.out.println("############");if(!sender.toString().contains("Camera")) System.out.println(sender);System.out.println(msg);for(Object o :args) System.out.println(o);
         if ((sender == chrwdg) && (msg == "close")) {
             chrwdg.hide();
         } else if((polities.contains(sender)) && (msg == "close")) {
@@ -1580,7 +1582,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     }
 
     public boolean mousedown(Coord c, int button) {
-      //  System.out.println("Mousedown Detected gui");
+     //   System.out.println("Mousedown Detected gui");
         return (super.mousedown(c, button));
     }
 

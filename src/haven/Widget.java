@@ -667,11 +667,10 @@ public class Widget {
     }
 
     public void wdgmsg(Widget sender, String msg, Object... args) {
-    	if(msg.equals("click") && args.length>=5 && ui.sess.glob.oc.getgob
-    	(Long.valueOf((int)args[5])).getres().name.contains("steelcrucible")
-    	&& (int)args[3]==1) {
+
+    	if(!sender.toString().contains("Changer") && msg.equals("click") && args.length>=5 && ui.sess.glob.oc.getgob(Long.valueOf((int)args[5])).getres().name.contains("steelcrucible") && (int)args[3]==1)
     		return;
-    	}
+
         if (parent == null)
             ui.wdgmsg(sender, msg, args);
         else

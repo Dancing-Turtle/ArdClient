@@ -62,6 +62,7 @@ public class MenuGrid extends Widget {
     private Map<Character, PagButton> hotmap = new HashMap<>();
     private boolean togglestuff = true;
     public boolean discordconnected;
+    public boolean arddiscordconnected;
     public Pagina lastCraft = null;
     public int pagseq = 0;
     @RName("scm")
@@ -419,7 +420,6 @@ public class MenuGrid extends Widget {
             p.add(paginafor(Resource.local().load("paginae/amber/SplitLogs")));
             p.add(paginafor(Resource.local().load("paginae/amber/OpenRacks")));
             p.add(paginafor(Resource.local().load("paginae/amber/CountGobs")));
-            p.add(paginafor(Resource.local().load("paginae/amber/Discord")));
             p.add(paginafor(Resource.local().load("paginae/amber/ShieldChecker")));
             p.add(paginafor(Resource.local().load("paginae/amber/PepperBot")));
             p.add(paginafor(Resource.local().load("paginae/amber/MothKiller")));
@@ -733,13 +733,6 @@ public class MenuGrid extends Widget {
             new Thread(new BeltDrink(gui), "BeltDrink").start();
         } else if (ad[1].equals("CountGobs")) {
             new Thread(new CountGobs(gui), "CountGobs").start();
-        } else if (ad[1].equals("Discord")) {
-            if (discordconnected) {
-                discordconnected = false;
-               gui.DiscordToggle();
-            }
-            else
-            new Thread(new Discord(gui)).start();
         } else if (ad[1].equals("TakeTrays")) {
             new Thread(new TakeTrays(gui), "TakeTrays").start();
         } else if (ad[1].equals("PepperFood")) {
@@ -887,12 +880,18 @@ public class MenuGrid extends Widget {
                 wdgmsg("act", new Object[]{"tracking"});
                 gui.trackautotgld = true;
             }
-            if(Config.autoconnectdiscord && !discordconnected) {
-                if (Resource.getLocString(Resource.BUNDLE_LABEL, Config.discordbotkey) != null) {
-                   new Thread(new Discord(gui)).start();
-                   discordconnected = true;
-                }
+            if(Config.autoconnectarddiscord && !discordconnected) {
+                new Thread(new Discord(gui,"ard")).start();
+                gui.discordconnected = true;
             }
+            if(Config.autoconnectdiscord && !gui.discordconnected) {
+                if (Resource.getLocString(Resource.BUNDLE_LABEL, Config.discordbotkey) != null) {
+                    new Thread(new Discord(gui, "normal")).start();
+                    gui.discordconnected = true;
+                }
+            }else if (gui.discordconnected)
+                BotUtils.sysMsg("Discord is already connected, you can only connect to one server at a time.",Color.white);
+
             if (Config.enablecrime && !GameUI.crimeon) {
                 gui.crimeautotgld = true;
                 wdgmsg("act", new Object[]{"crime"});

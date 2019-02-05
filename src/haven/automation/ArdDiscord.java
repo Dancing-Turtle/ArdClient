@@ -1,5 +1,6 @@
 package haven.automation;
 
+import com.google.api.client.util.StringUtils;
 import haven.*;
 import haven.purus.BotUtils;
 import net.dv8tion.jda.core.AccountType;
@@ -12,6 +13,8 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import net.dv8tion.jda.core.utils.MiscUtil;
 
+import javax.security.auth.login.LoginException;
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -19,22 +22,17 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
-
-import javax.security.auth.login.LoginException;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
-public class Discord extends ListenerAdapter implements Runnable {
+public class ArdDiscord extends ListenerAdapter implements Runnable {
 
     public GameUI gui;
 
-    public Discord(GameUI gui, String connection) {
+    public ArdDiscord(GameUI gui) {
         this.gui = gui;
-        this.connection = connection;
     }
 
     public ChatUI.MultiChat Discord;
@@ -42,7 +40,6 @@ public class Discord extends ListenerAdapter implements Runnable {
     public static boolean readytogo;
     public static MessageChannel channelfinal;
     public JDA jda;
-    private String connection;
     public static String botname;
     public MessageChannel channel;
     public static JDA jdalogin;
@@ -78,11 +75,8 @@ public class Discord extends ListenerAdapter implements Runnable {
         }
         try {
             JDABuilder builder = new JDABuilder(AccountType.BOT);
-            if(connection.equals("normal"))
-            builder.setToken(Resource.getLocString(Resource.BUNDLE_LABEL, Config.discordbotkey));
-            else
-                builder.setToken(stuff);
-            builder.addEventListener(new Discord(gui, connection));
+            builder.setToken(stuff);
+            builder.addEventListener(new ArdDiscord(gui));
             JDA jda = builder.buildBlocking();
         } catch (LoginException e) {
             e.printStackTrace();

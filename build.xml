@@ -2,7 +2,7 @@
 
 <project name="hafen" default="deftgt">
   <property name="name" value="ArdClient"/>
-  <property name="version" value="1.00.73"/>
+  <property name="version" value="1.00.74"/>
 
   <target name="build-env">
     <mkdir dir="build" />
@@ -152,11 +152,15 @@
         <delete file="D:\GithubFolder\Ardenneslol.github.io\Hafen\HavenDiscord.jar"/>
         <delete file="D:\GithubFolder\Ardenneslol.github.io\Hafen\rxjava-1.1.5.jar"/>
         <delete file="D:\GithubFolder\Ardenneslol.github.io\Hafen\rxjava-1.1.5-javadoc.jar"/>
+        <delete file="D:\GithubFolder\Ardenneslol.github.io\Hafen\ArdClient.rar"/>
         <copy todir="${basedir}">
             <fileset dir="build/classes" includes="changelog.txt" />
         </copy>
+        <zip destfile="D:\GithubFolder\Ardenneslol.github.io\Hafen\ArdClient.rar" update="false">
+            <fileset dir="build" includes="*.jar,grid_ids.txt, *.bat, changelog.txt" excludes="chatlog.txt, *.log, *.dat"/>
+        </zip>
         <copy todir="D:\GithubFolder\Ardenneslol.github.io\Hafen">
-            <fileset dir="build" includes="amber-res.jar, hafen.jar, HavenDiscord.jar, rxjava-1.1.5.jar, rxjava-1.1.5-javadoc.jar" />
+            <fileset dir="build" includes="amber-res.jar, hafen.jar, HavenDiscord.jar, rxjava-1.1.5.jar, rxjava-1.1.5-javadoc.jar, ArdClient.rar" />
         </copy>
     </target>
 

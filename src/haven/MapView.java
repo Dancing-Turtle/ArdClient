@@ -1906,7 +1906,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                 if (Config.pf && clickb == 1 && curs != null && !curs.name.equals("gfx/hud/curs/study")) {
                     pfLeftClick(mc.floor(), null);
                 } else {
-                   // System.out.println("sending click with else arguments");
+                  // System.out.println("sending click with else arguments");
                     wdgmsg("click", args);
                 }
             } else {
@@ -1960,6 +1960,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                 if (Config.pf && curs != null && !curs.name.equals("gfx/hud/curs/study") && gob != null) {
                     pfRightClick(gob, (int)args[8], clickb, 0, null);
                 } else {
+                  //  System.out.println("sending click with else2 arguments");
                     wdgmsg("click", args);
                     if (Config.autopickmussels && gob.type == Gob.Type.MUSSEL)
                         startMusselsPicker(gob);
@@ -2053,7 +2054,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     }
 
     public boolean mousedown(Coord c, int button) {
-      //  System.out.println("Mousedown detected mapview Coord : "+c+" button : "+button+" placing is : "+placing);
+      //  System.out.println("Mousedown detected mapview grab is : "+grab);
     	if(button == 1 && farmSelect) {
             synchronized (this) {
                 if (selection == null) {
@@ -2322,6 +2323,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         MapView mv;
         final GrabXL xl = new GrabXL(this) {
             public boolean mmousedown(Coord cc, int button) {
+                System.out.println("mousedown detected in selector");
                 if (button != 1)
                     return (false);
                 return (super.mmousedown(cc, button));

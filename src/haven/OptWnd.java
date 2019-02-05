@@ -28,6 +28,7 @@ package haven;
 
 
 import haven.automation.Discord;
+import haven.purus.BotUtils;
 import haven.resutil.BPRadSprite;
 
 import java.awt.Color;
@@ -404,6 +405,46 @@ public class OptWnd extends Window {
         main.add(new PButton(200, "Keybind Options", 'p', keybindsettings), new Coord(210, 120));
         main.add(new PButton(200,"Chat Settings",'c', chatsettings), new Coord(420,120));
         if (gopts) {
+            main.add(new Button(200, "Disconnect Discord") {
+                public void click() {
+                    if(Discord.jdalogin != null) {
+                        BotUtils.sysMsg("Discord Disconnected",Color.white);
+                        gameui().discordconnected = false;
+                        Discord.jdalogin.shutdownNow();
+                        Discord.jdalogin = null;
+                        for(int i=0;i<15;i++) {
+                            for (Widget w = gameui().chat.lchild; w != null; w = w.prev) {
+                                if (w instanceof ChatUI.DiscordChat)
+                                    w.destroy();
+                            }
+                        }
+                    }else
+                        BotUtils.sysMsg("Not currently connected.",Color.white);
+                }
+            }, new Coord(210, 150));
+            main.add(new Button(200, "Join Village Discord") {
+                public void click() {
+                    if(!gameui().discordconnected) {
+                        if (Resource.getLocString(Resource.BUNDLE_LABEL, Config.discordbotkey) != null) {
+                            new Thread(new Discord(gameui(), "normal")).start();
+                            gameui().discordconnected = true;
+                        }
+                        else
+                            BotUtils.sysMsg("No Key Detected, if there is one in chat settings you might need to relog.",Color.white);
+                    }else if(gameui().discordconnected)
+                        BotUtils.sysMsg("Already connected.",Color.white);
+                }
+            }, new Coord(210, 180));
+            main.add(new Button(200, "Join Ingame Discord") {
+                public void click() {
+                    if(gameui().discordconnected)
+                        BotUtils.sysMsg("Already Connected.",Color.white);
+                    else {
+                        new Thread(new Discord(gameui(), "ard")).start();
+                        gameui().discordconnected = true;
+                    }
+                }
+            }, new Coord(210, 210));
             main.add(new Button(200, "Join ArdClient Discord") {
                 public void click() {
                     try {
@@ -2153,7 +2194,17 @@ public class OptWnd extends Window {
                     }
                 }
         );
+        appender.add(new CheckBox("Connection to ArdZone Discord on login."){
+            {
+                a = Config.autoconnectarddiscord;
+            }
 
+            public void set(boolean val) {
+                Utils.setprefb("autoconnectarddiscord", val);
+                Config.autoconnectarddiscord = val;
+                a = val;
+            }
+        });
        /* appender.addRow(new Label("Enter Discord Channel ID"),
                 new TextEntry(150, Config.discordchannel) {
                     @Override

@@ -142,6 +142,7 @@ public class Config {
     public static boolean enabletracking = Utils.getprefb("enabletracking", false);
     public static boolean enableswimming = Utils.getprefb("enableswimming", false);
     public static boolean autoconnectdiscord = Utils.getprefb("autoconnectdiscord", false);
+    public static boolean autoconnectarddiscord = Utils.getprefb("autoconnectarddiscord", false);
     public static boolean enablecrime = Utils.getprefb("enablecrime", false);
     public static boolean resinfo = Utils.getprefb("resinfo", true);
     public static boolean showanimalrad = Utils.getprefb("showanimalrad", true);
