@@ -1977,7 +1977,7 @@ public class CharWnd extends Window {
 
         public boolean mousedown(Coord c, int button) {
             Quest q = itemat(c);
-            if (button == 3) {
+            if (button == 3 && Config.abandonrightclick) {
                 abandonquest = true;
                 CharWnd.this.wdgmsg("qsel", (Object) null);
                 CharWnd.this.wdgmsg("qsel", q.id);

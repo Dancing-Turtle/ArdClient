@@ -1160,6 +1160,17 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
+        appender.add(new CheckBox("Abandon quests on right click") {
+            {
+                a = Config.abandonrightclick;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("abandonrightclick", val);
+                Config.abandonrightclick = val;
+                a = val;
+            }
+        });
         appender.add(new CheckBox("Auto hearth") {
             {
                 a = Config.autohearth;

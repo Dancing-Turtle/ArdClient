@@ -31,7 +31,7 @@ public class CoalToSmelters extends Window implements GobSelectCallback {
     private ArrayList<Gob> stockpiles = new ArrayList<>();
     private ArrayList<Gob> hqstockpiles = new ArrayList<>();
     private ArrayList<Gob> orestockpiles = new ArrayList<>();
-    private int count = 1;
+    private int count = 4;
     private int stockpilecount, hqstockpilecount, orestockpilecount = 0;
     private final Label lblc, LabelFuel, LabelStockpiles, hqLabelStockpiles, oreLabelStockpiles;
     public boolean terminaterun, terminatelight, terminateore = false;
@@ -103,20 +103,12 @@ public class CoalToSmelters extends Window implements GobSelectCallback {
             public void click() {
                 gui.error("Adjusting Fuel Count");
                 terminaterun = false;
-                if (count == 0) {
-                    count = 1;
-                } else if (count == 1) {
-                    count = 4;
-                } else if (count == 4) {
-                    count = 8;
-                } else if (count == 8) {
+                if (count == 4) {
                     count = 9;
-                } else if (count == 9) {
-                    count = 11;
-                } else if (count == 11) {
+                }else if (count == 9) {
                     count = 12;
-                } else if (count == 12) {
-                    count = 1;
+                }else if (count == 12) {
+                    count = 4;
                 }
                 LabelFuel.settext(count + "");
             }

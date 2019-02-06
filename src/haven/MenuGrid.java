@@ -393,8 +393,6 @@ public class MenuGrid extends Widget {
         super.attach(ui);
         synchronized (paginae) {
             Collection<Pagina> p = paginae;
-            p.add(paginafor(Resource.local().load("paginae/amber/coal8")));
-            p.add(paginafor(Resource.local().load("paginae/amber/coal11")));
             p.add(paginafor(Resource.local().load("paginae/amber/coal9")));
             p.add(paginafor(Resource.local().load("paginae/amber/coal12")));
             p.add(paginafor(Resource.local().load("paginae/amber/branchoven")));

@@ -1,9 +1,13 @@
+1.00.75
+Turned right click to abandon quests into a toggle under general settings, and is off by default.
+~
+
 1.00.74
 Added minimap tooltips for bushes/trees/boulders that you have toggled to show icons for.
 Put a crash prevention catch in the Discord class, first time I've seen that crash.
 Terrain mouseover will no longer be covered up by the map itself.
 Fixed bug preventing the use of sketchpads. 
-Moved Discord connection button to options window.
+Moved Discord connection/disconnect button to options window.
 Added button to options window to connect to ArdZone ingame-chat channel. 
 ~
 

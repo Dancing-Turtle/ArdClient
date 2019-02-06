@@ -210,6 +210,7 @@ public class Config {
     public static boolean discordchat =  Utils.getprefb("discordchat", false);
     public static String discordbotkey =  Utils.getpref("discordbotkey", "Null");
     public static boolean highlightpots = Utils.getprefb("highlightpots", false);
+    public static boolean abandonrightclick = Utils.getprefb("abandonrightclick", false);
     public static boolean DropEntrails = Utils.getprefb("DropEntrails", false);
     public static boolean DropIntestines = Utils.getprefb("DropIntestines", false);
     public static boolean StarveAlert = Utils.getprefb("StarveAlert", true);
