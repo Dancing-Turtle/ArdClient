@@ -1,3 +1,10 @@
+1.00.76
+Fixed drying racks with fish on them showing done when they're now.
+Fixed minimap tooltips showing for gobs that were hidden.
+Added volume slider for Cauldrons.
+Added volume slider for Whistling.
+~
+
 1.00.75
 Turned right click to abandon quests into a toggle under general settings, and is off by default.
 ~

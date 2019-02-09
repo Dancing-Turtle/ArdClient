@@ -90,6 +90,10 @@ public class AudioSprite {
             	stream = new Audio.VolAdjust(stream, Config.sfxclapvol);
             else if(Config.sfxchatvol != 1.0 && "sfx/hud/chat".equals(res.name))
                 stream = new Audio.VolAdjust(stream, Config.sfxchatvol);
+            else if(Config.sfxcauldronvol != 1.0 && "sfx/terobjs/cauldron".equals(res.name))
+                stream = new Audio.VolAdjust(stream, Config.sfxcauldronvol);
+            else if(Config.sfxwhistlevol != 1.0 && "sfx/borka/whistle".equals(res.name))
+                stream = new Audio.VolAdjust(stream, Config.sfxwhistlevol);
 
             this.clip = new ActAudio.PosClip(new Audio.Monitor(stream) {
                 protected void eof() {

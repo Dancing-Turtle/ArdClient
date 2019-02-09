@@ -105,6 +105,8 @@ public class Config {
     public static double sfxclapvol = Utils.getprefd("sfxclapvol", 1.0);
     public static double sfxbeehivevol = Utils.getprefd("sfxbeehivevol", 1.0);
     public static double sfxchatvol = Utils.getprefd("sfxchatvol", 1.0);
+    public static double sfxcauldronvol = Utils.getprefd("sfxcauldronvol", 1.0);
+    public static double sfxwhistlevol = Utils.getprefd("sfxwhistlevol", 1.0);
     public static boolean showcraftcap = Utils.getprefb("showcraftcap", true);
     public static boolean showgobhp = Utils.getprefb("showgobhp", false);
     public static boolean showplantgrowstage = Utils.getprefb("showplantgrowstage", false);
@@ -264,7 +266,7 @@ public class Config {
     public static int cRackred = Utils.getprefi("cRackred",255);
     public static int cRackgreen = Utils.getprefi("cRackgreen",0);
     public static int cRackblue = Utils.getprefi("cRackblue",255);
-    public static String confid = "amber";
+    public static String confid = "ArdClient";
     public static final boolean isUpdate;
 
     public final static String chatfile = "chatlog.txt";

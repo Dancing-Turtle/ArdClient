@@ -1842,7 +1842,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                                 || gob.type == Gob.Type.TROLL || gob.type == Gob.Type.WALRUS && !gob.isplayer()) {*/
                        if(!gob.isplayer())
                        if(gob.type == Gob.Type.PLAYER || (gob.getres() != null && gob.getres().name.startsWith("gfx/kritter/"))){
-                           System.out.println("Prox aggro 1 triggered.");
+                        //   System.out.println("Prox aggro 1 triggered.");
                             double dist = gob.rc.dist(mc);
                             if ((target == null || dist < target.rc.dist(mc)) && dist <= 5 * tilesz.x)
                                 target = gob;
@@ -1879,7 +1879,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                                 || gob.type == Gob.Type.TROLL || gob.type == Gob.Type.WALRUS && !gob.isplayer()) {*/
                       if(!gob.isplayer())
                         if(gob.getres()!= null && gob.getres().name.startsWith("gfx/kritter/")){
-                            System.out.println("Prox aggro 2 triggered.");
+                         //   System.out.println("Prox aggro 2 triggered.");
                             double dist = gob.rc.dist(mc);
                             if ((target == null || dist < target.rc.dist(mc)) && dist <= 5 * tilesz.x)
                                 target = gob;

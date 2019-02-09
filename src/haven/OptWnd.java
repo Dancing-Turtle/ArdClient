@@ -622,6 +622,36 @@ public class OptWnd extends Window {
             }
         });
         appender.setVerticalMargin(0);
+        appender.add(new Label("Cauldron sound volume"));
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (int) (Config.sfxcauldronvol * 1000);
+            }
+
+            public void changed() {
+                double vol = val / 1000.0;
+                Config.sfxcauldronvol = vol;
+                Utils.setprefd("sfxcauldronvol", vol);
+            }
+        });
+        appender.setVerticalMargin(0);
+        appender.add(new Label("Whistling sound volume"));
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (int) (Config.sfxwhistlevol * 1000);
+            }
+
+            public void changed() {
+                double vol = val / 1000.0;
+                Config.sfxwhistlevol = vol;
+                Utils.setprefd("sfxwhistlevol", vol);
+            }
+        });
+        appender.setVerticalMargin(0);
         appender.add(new Label("Beehive sound volume"));
         appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
         appender.add(new HSlider(200, 0, 1000, 0) {
