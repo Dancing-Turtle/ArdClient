@@ -1063,8 +1063,10 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         if (!afk && (idle > 300)) {
             afk = true;
             wdgmsg("afk");
-            if(Config.afklogout)
+            if(Config.afklogouttime != 0) {
+                if(idle > Config.afklogouttime * 60)
                 logoutChar();
+            }
         } else if (afk && (idle <= 300)) {
             afk = false;
         }

@@ -622,7 +622,7 @@ public class OptWnd extends Window {
             }
         });
         appender.setVerticalMargin(0);
-        appender.add(new Label("Cauldron sound volume"));
+        appender.add(new Label("Cauldron sound volume - Changes are not immediate, will trigger on next cauldon sound start."));
         appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
         appender.add(new HSlider(200, 0, 1000, 0) {
             protected void attach(UI ui) {
@@ -1223,17 +1223,7 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
-        appender.add(new CheckBox("Logout on afk 5 minutes.") {
-            {
-                a = Config.afklogout;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("afklogout", val);
-                Config.afklogout = val;
-                a = val;
-            }
-        });
+        appender.addRow(new Label("Auto Logout after x Minutes - 0 means never"), makeafkTimeDropdown());
         appender.add(new CheckBox("Repeat Starvation Alert Warning/Sound") {
             {
                 a = Config.StarveAlert;
@@ -3005,6 +2995,37 @@ public class OptWnd extends Window {
                 super.change(item);
                 Config.statgainsize = item;
                 Utils.setprefi("statgainsize", item);
+            }
+        };
+    }
+
+    private static final List<Integer> afkTime = Arrays.asList(0,5,10,15,20,25,30,45,60);
+    private Dropbox<Integer> makeafkTimeDropdown() {
+        List<String> values = afkTime.stream().map(x -> x.toString()).collect(Collectors.toList());
+        return new Dropbox<Integer>(afkTime.size(), values) {
+            {
+                super.change(Config.afklogouttime);
+            }
+            @Override
+            protected Integer listitem(int i) {
+                return afkTime.get(i);
+            }
+
+            @Override
+            protected int listitems() {
+                return afkTime.size();
+            }
+
+            @Override
+            protected void drawitem(GOut g, Integer item, int i) {
+                g.text(item.toString(), Coord.z);
+            }
+
+            @Override
+            public void change(Integer item) {
+                super.change(item);
+                Config.afklogouttime = item;
+                Utils.setprefi("afklogouttime", item);
             }
         };
     }

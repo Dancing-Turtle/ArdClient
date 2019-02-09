@@ -1,5 +1,12 @@
+1.00.77
+Fixed new cauldron slider, turns out it was an ambient sound.
+Added waterstriders to hide list.
+Added yarrow to alarm list.
+Changed afk logout option to a selection box with various options. 0 disables auto afk logout. 
+~
+
 1.00.76
-Fixed drying racks with fish on them showing done when they're now.
+Fixed drying racks with fish on them showing done when they're not.
 Fixed minimap tooltips showing for gobs that were hidden.
 Added volume slider for Cauldrons.
 Added volume slider for Whistling.

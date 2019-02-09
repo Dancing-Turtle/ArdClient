@@ -119,6 +119,7 @@ public class Config {
     public static boolean logincharsheet = Utils.getprefb("logincharsheet", false);
     public static boolean loginstudywnd = Utils.getprefb("loginstudywnd", false);
     public static boolean afklogout = Utils.getprefb("afklogout", false);
+    public static int afklogouttime = Utils.getprefi("afklogouttime", 0);
     public static boolean simpleforage = Utils.getprefb("simpleforage", false);
     //public static boolean hidecrops = Utils.getprefb("hidecrops", false);
     public static boolean showfps = Utils.getprefb("showfps", false);
@@ -423,6 +424,7 @@ public class Config {
         put("forestsnail", new CheckListboxItem("Forest Snail"));
         put("forestlizard", new CheckListboxItem("Forest Lizard"));
         put("greenkelp", new CheckListboxItem("Green Kelp"));
+        put("waterstrider", new CheckListboxItem("Water Strider"));
     }};
 
     public final static HashMap<String, CheckListboxItem> flowermenus = new HashMap<String, CheckListboxItem>(26) {{
@@ -565,7 +567,7 @@ public class Config {
         put("gfx/kritter/forestsnail/forestsnail", new CheckListboxItem("Forest Snail"));
         put("gfx/kritter/forestlizard/forestlizard", new CheckListboxItem("Forest Lizard"));
         put("gfx/terobjs/herbs/greenkelp", new CheckListboxItem("Green Kelp"));
-
+        put("gfx/terobjs/herbs/yarrow", new CheckListboxItem("Yarrow"));
     }};
 
     public final static Set<String> locres = new HashSet<String>(Arrays.asList(
