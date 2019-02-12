@@ -605,7 +605,13 @@ public class Config {
             "sandstone",
             "schist",
             "blackcoal",
-            "mica"
+            "mica",
+            "apatite",
+            "sodalite",
+            "gabbro",
+            "kyanite",
+            "zincspar",
+            "flurospar"
     ));
 
     public final static Set<String> mineablesOre = new HashSet<String>(Arrays.asList(

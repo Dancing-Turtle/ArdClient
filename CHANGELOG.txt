@@ -1,3 +1,9 @@
+1.00.79
+Fixed performance issues caused by new player circle option.
+Added sodalite, gabbro, kyanite, zincspar, flurospar, and apatite to the mineable stones to drop list. If there are any stones missing, let me know their name and I'll add them.
+Remapped tiny "2" on french keyboards to ` to allow default drink keybind to work.
+~
+
 1.00.78
 Added toggle to "General Settings" to open belt on login.
 Added toggle to "Display Settings" to double the animal aggro radius.
@@ -5,6 +11,7 @@ Added toggle to "Display Settings" to add a white circle underneath yourself. Wi
 Added buttons to "Map settings" to clear all checked items from the 4 lists. One button per list, does not toggle, only clears all selected items.
 Added LP/Hour/Mental weight to curiosity tooltips. 
 Added Persimmon tree to tree list.
+Added "Rope closest animal" script back in. Removed shield checker and cauldron bot. 
 ~
 
 1.00.77

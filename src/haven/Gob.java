@@ -851,10 +851,13 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
         Speaking sp = getattr(Speaking.class);
         if (sp != null)
             rl.add(sp.fx, null);
-        if(Config.playercircle && isplayer()){
+        if(!playerhighlight.containsKey(this) &&  Config.playercircle){
+            Resource res = getres();
+            if(res != null && isplayer()){
             Overlay overlay = new Gob.Overlay(new PartyMemberOutline(this, Color.white));
             ols.add(overlay);
             playerhighlight.put(this, overlay);
+            }
         }
         KinInfo ki = getattr(KinInfo.class);
         if (ki != null) {

@@ -3,6 +3,7 @@ package haven;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import haven.purus.BotUtils;
 import rx.functions.Func0;
 
 import java.awt.*;
@@ -115,7 +116,12 @@ public class KeyBinder {
 	Config.saveFile(CONFIG_JSON, gson.toJson(binds));
     }
     
-    public static boolean handle(UI ui, KeyEvent e) {
+    public static boolean handle(UI ui, KeyEvent e)
+	{
+		if(Config.iswindows && Utils.getScancode(e) == 41) { //should fix the french keyboard ` not working as a keybind.
+			KeyEvent f = new KeyEvent(e.getComponent(),e.getID(),e.getWhen(),0,KeyEvent.VK_BACK_QUOTE);
+			return get(f).execute(ui);
+		}
     	return get(e).execute(ui);
     }
     

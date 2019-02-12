@@ -313,8 +313,10 @@ public class LocalMiniMap extends Widget {
                             enemy = true;
                         }
 
-                        if (Config.autologout && enemy)
+                        if (Config.autologout && enemy) {
+                            BotUtils.sysMsg("Ememy spotted! Logging out!",Color.white);
                             gameui().act("lo");
+                        }
                         else if (Config.autohearth && enemy)
                             gameui().act("travel", "hearth");
 
@@ -352,37 +354,28 @@ public class LocalMiniMap extends Widget {
                         this.sgobs.add(gob.id);
                         Audio.play(mammothsfx, Config.alarmbearsvol);
                     } else if (gob.type == Gob.Type.EAGLE && gob.knocked == Boolean.FALSE) {
-                        sgobs.add(gob.id);
+                        this.sgobs.add(gob.id);
                         Audio.play(eaglesfx);
                     } else if (Config.alarmbram && gob.type == Gob.Type.SIEGE_MACHINE) {
-                        sgobs.add(gob.id);
+                        this.sgobs.add(gob.id);
                         if(!gob.getres().basename().contains("ball"))
                         Audio.play(siegesfx, Config.alarmbramvol);
                     }else if (Config.alarmwball && gob.type == Gob.Type.SIEGE_MACHINE){
-                        sgobs.add(gob.id);
+                        this.sgobs.add(gob.id);
                         if(gob.getres().basename().contains("ball"))
                             Audio.play(siegesfx, Config.alarmwballvol);
-                    }else if(Config.alarmeyeball && gob.type == Gob.Type.EYEBALL && BotUtils.player() != null){
-                        if(!sgobs.contains(gob.id)) {
-                            synchronized (ui.gui.map) {
-                                if (ui.gui.map.player() != null && gob.id != ui.gui.map.player().id) {
-                                    sgobs.add(gob.id);
-                                    Audio.play(eyeballsfx, Config.alarmeyeballvol);
-                                }
-                            }
-                        }
                     }else if(gob.type == Gob.Type.DUNGKEY && Config.dungeonkeyalert) {
-                        sgobs.add(gob.id);
+                        this.sgobs.add(gob.id);
                         BotUtils.sysMsg("Dungeon Key Dropped!",Color.white);
                     }else if(gob.type == Gob.Type.NIDBANE && Config.alarmnidbane) {
-                        sgobs.add(gob.id);
+                        this.sgobs.add(gob.id);
                         Audio.play(nidbanesfx, Config.alarmnidbanevol);
                     }else if(gob.type == Gob.Type.DUNGEON && Config.alarmdungeon) {
                         if(gob.getres().basename().equals("beaverdam")){
-                            sgobs.add(gob.id);
+                            this.sgobs.add(gob.id);
                             Audio.play(beaverssfx, Config.alarmdungeonvol);
                         }else if(!gob.getres().basename().contains("beaver")) {
-                            sgobs.add(gob.id);
+                            this.sgobs.add(gob.id);
                             Audio.play(dungeonssfx, Config.alarmdungeonvol);
                         }
                     }

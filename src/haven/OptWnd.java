@@ -2536,18 +2536,6 @@ public class OptWnd extends Window {
                 Utils.setprefd("alarmunknownvol", vol);
             }
         });
-        appender.setVerticalMargin(0);
-        appender.add(new CheckBox("Alarm on road eyeballs") {
-            {
-                a = Config.alarmeyeball;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("alarmeyeball", val);
-                Config.alarmeyeball = val;
-                a = val;
-            }
-        });
         appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
         appender.add(new HSlider(200, 0, 1000, 0) {
             protected void attach(UI ui) {
