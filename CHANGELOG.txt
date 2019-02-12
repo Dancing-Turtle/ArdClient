@@ -1,3 +1,12 @@
+1.00.78
+Added toggle to "General Settings" to open belt on login.
+Added toggle to "Display Settings" to double the animal aggro radius.
+Added toggle to "Display Settings" to add a white circle underneath yourself. Will possibly make the color variable at some point, but for now it's just white.
+Added buttons to "Map settings" to clear all checked items from the 4 lists. One button per list, does not toggle, only clears all selected items.
+Added LP/Hour/Mental weight to curiosity tooltips. 
+Added Persimmon tree to tree list.
+~
+
 1.00.77
 Fixed new cauldron slider, turns out it was an ambient sound.
 Added waterstriders to hide list.

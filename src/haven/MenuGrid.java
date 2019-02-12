@@ -403,7 +403,7 @@ public class MenuGrid extends Widget {
             p.add(paginafor(Resource.local().load("paginae/amber/Coracleslol")));
             p.add(paginafor(Resource.local().load("paginae/amber/MinerAlert")));
             p.add(paginafor(Resource.local().load("paginae/amber/clover")));
-            //p.add(paginafor(Resource.local().load("paginae/amber/rope")));
+            p.add(paginafor(Resource.local().load("paginae/amber/rope")));
             p.add(paginafor(Resource.local().load("paginae/amber/fish")));
             p.add(paginafor(Resource.local().load("paginae/amber/timers")));
             p.add(paginafor(Resource.local().load("paginae/amber/livestock")));
@@ -418,7 +418,7 @@ public class MenuGrid extends Widget {
             p.add(paginafor(Resource.local().load("paginae/amber/SplitLogs")));
             p.add(paginafor(Resource.local().load("paginae/amber/OpenRacks")));
             p.add(paginafor(Resource.local().load("paginae/amber/CountGobs")));
-            p.add(paginafor(Resource.local().load("paginae/amber/ShieldChecker")));
+         //   p.add(paginafor(Resource.local().load("paginae/amber/ShieldChecker")));
             p.add(paginafor(Resource.local().load("paginae/amber/PepperBot")));
             p.add(paginafor(Resource.local().load("paginae/amber/MothKiller")));
             try {
@@ -439,7 +439,7 @@ public class MenuGrid extends Widget {
                 e.printStackTrace();
             }
             p.add(paginafor(Resource.local().load("paginae/amber/TakeTrays")));
-            p.add(paginafor(Resource.local().load("paginae/amber/CraftAllBot")));
+           // p.add(paginafor(Resource.local().load("paginae/amber/CraftAllBot")));
             p.add(paginafor(Resource.local().load("paginae/amber/PepperFood")));
             p.add(paginafor(Resource.local().load("paginae/amber/PlaceTrays")));
            // p.add(paginafor(Resource.local().load("paginae/amber/dismount")));
@@ -897,6 +897,11 @@ public class MenuGrid extends Widget {
             if(Config.enableswimming && !GameUI.swimon){
                 gui.swimautotgld = true;
                 wdgmsg("act", new Object[]{"swim"});
+            }
+            if(Config.loginbelt){
+                WItem l = gui.getequipory().quickslots[5];
+                if(l != null)
+                l.item.wdgmsg("iact", Coord.z, -1);
             }
             for (Widget w = gameui().chat.lchild; w != null; w = w.prev) {
                 if (w instanceof ChatUI.MultiChat) {

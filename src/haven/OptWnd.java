@@ -55,7 +55,7 @@ public class OptWnd extends Window {
     public static final int HORIZONTAL_MARGIN = 5;
     private static final Text.Foundry fonttest = new Text.Foundry(Text.sans, 10).aa(true);
     public static final int VERTICAL_AUDIO_MARGIN = 5;
-    public final Panel main, video, audio, display, map, general, combat, control, uis, quality, flowermenus, soundalarms, hidesettings, studydesksettings, keybindsettings, chatsettings;
+    public final Panel main, video, audio, display, map, general, combat, control, uis, quality, flowermenus, soundalarms, hidesettings, studydesksettings, keybindsettings, chatsettings, clearboulders, clearbushes, cleartrees, clearhides;
     public Panel current;
 
     public void chpanel(Panel p) {
@@ -75,6 +75,27 @@ public class OptWnd extends Window {
         }
 
         public void click() {
+            if(tgt == clearboulders){
+                final String charname = gameui().chrid;
+                for (CheckListboxItem itm : Config.boulders.values())
+                    itm.selected = false;
+                Utils.setprefchklst("boulderssel_" + charname, Config.boulders);
+            }else if(tgt == clearbushes){
+                final String charname = gameui().chrid;
+                for (CheckListboxItem itm : Config.bushes.values())
+                    itm.selected = false;
+                Utils.setprefchklst("bushessel_" + charname, Config.bushes);
+            }else if(tgt == cleartrees){
+                final String charname = gameui().chrid;
+                for (CheckListboxItem itm : Config.trees.values())
+                    itm.selected = false;
+                Utils.setprefchklst("treessel_" + charname, Config.trees);
+            }else if(tgt == clearhides){
+                final String charname = gameui().chrid;
+                for (CheckListboxItem itm : Config.icons.values())
+                    itm.selected = false;
+                Utils.setprefchklst("iconssel_" + charname, Config.icons);
+            }else
             chpanel(tgt);
         }
 
@@ -368,6 +389,10 @@ public class OptWnd extends Window {
         studydesksettings = add(new Panel());
         keybindsettings = add(new Panel());
         chatsettings = add(new Panel());
+        clearboulders = add(new Panel());
+        clearbushes = add(new Panel());
+        cleartrees = add(new Panel());
+        clearhides = add(new Panel());
 
         initMain(gopts);
         initAudio();
@@ -822,6 +847,17 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
+        appender.add(new CheckBox("Double animal radius size.") {
+            {
+                a = Config.doubleradius;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("doubleradius", val);
+                Config.doubleradius = val;
+                a = val;
+            }
+        });
         appender.add(new Label("Radius RGB Red Animals"));
         appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
         appender.add(new HSlider(150, 0, 255, 0) {
@@ -1076,6 +1112,17 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
+        appender.add(new CheckBox("Draw circle on ground around yourself.") {
+            {
+                a = Config.playercircle;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("playercircle", val);
+                Config.playercircle = val;
+                a = val;
+            }
+        });
         appender.add(new CheckBox("Show last used curios in study window") {
             {
                 a = Config.studyhist;
@@ -1128,7 +1175,7 @@ public class OptWnd extends Window {
         map.add(new Label("Show trees:"), new Coord(320, 0));
         map.add(new Label("Hide icons:"), new Coord(475, 0));
 
-        map.add(new PButton(200, "Back", 27, main), new Coord(210, 360));
+        map.add(new PButton(200, "Back", 27, main), new Coord(210, 380));
         map.pack();
     }
 
@@ -1255,6 +1302,17 @@ public class OptWnd extends Window {
             public void set(boolean val) {
                 Utils.setprefb("logincharsheet", val);
                 Config.logincharsheet = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Open Belt on login") {
+            {
+                a = Config.loginbelt;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("loginbelt", val);
+                Config.loginbelt = val;
                 a = val;
             }
         });
@@ -3122,6 +3180,10 @@ public class OptWnd extends Window {
                 a = val;
             }
         },475,340);
+        map.add(new PButton(100,"Clear Boulders", 27,clearboulders), new Coord(15,355));
+        map.add(new PButton(100,"Clear Bushes", 27,clearbushes), new Coord(170,355));
+        map.add(new PButton(100,"Clear Trees", 27,cleartrees), new Coord(325,355));
+        map.add(new PButton(100,"Clear Hides", 27,clearhides), new Coord(480,355));
 
 
         map.pack();

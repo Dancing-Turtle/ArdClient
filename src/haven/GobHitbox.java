@@ -75,7 +75,7 @@ public class GobHitbox extends Sprite {
     private static final BBox bboxWallseg = new BBox(new Coord(-5, -6), new Coord(6, 5));
     private static final BBox bboxHwall = new BBox(new Coord(-1, 0), new Coord(0, 11));
 
-    public static BBox getBBox(Gob gob, boolean fix) {
+    public static BBox getBBox(Gob gob) {
         Resource res = null;
         try {
             res = gob.getres();
@@ -117,18 +117,15 @@ public class GobHitbox extends Sprite {
                 return null;
         }
 
-        // either i completely misinterpreted how bounding boxes are defined
-        // or some negs simply have wrong Y dimensions. in either case this fixes it
-        if (fix) {
-            if (name.endsWith("/smelter"))
-                return bboxSmelter;
-            else if (name.endsWith("brickwallseg") || name.endsWith("brickwallcp") ||
-                    name.endsWith("palisadeseg") || name.endsWith("palisadecp") ||
-                    name.endsWith("poleseg") || name.endsWith("polecp"))
-                return bboxWallseg;
-            else if (name.endsWith("/hwall"))
-                return bboxHwall;
-        }
+
+        if (name.endsWith("/smelter"))
+            return bboxSmelter;
+        else if (name.endsWith("brickwallseg") || name.endsWith("brickwallcp") ||
+                name.endsWith("palisadeseg") || name.endsWith("palisadecp") ||
+                name.endsWith("poleseg") || name.endsWith("polecp"))
+            return bboxWallseg;
+        else if (name.endsWith("/hwall"))
+            return bboxHwall;
 
         Resource.Neg neg = res.layer(Resource.Neg.class);
         if (neg == null) {

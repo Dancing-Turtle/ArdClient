@@ -92,7 +92,7 @@ public class Pathfinder implements Runnable {
                 // need to exclude destination gob so it won't get into TO candidates list
                 if (this.gob != null && this.gob.id == gob.id)
                     continue;
-                GobHitbox.BBox box = GobHitbox.getBBox(gob, true);
+                GobHitbox.BBox box = GobHitbox.getBBox(gob);
                 if (box != null && isInsideBoundBox(gob.rc.floor(), gob.a, box, player.rc.floor())) {
                     System.out.println("Excluding gob of type : "+gob.type+" res : "+gob.getres().basename());
                     m.excludeGob(gob);

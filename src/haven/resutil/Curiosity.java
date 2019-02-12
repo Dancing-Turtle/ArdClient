@@ -68,6 +68,8 @@ public class Curiosity extends ItemInfo.Tip {
             buf.append(String.format(Resource.getLocString(Resource.BUNDLE_LABEL, "Experience cost: $col[255,255,192]{%d}\n"), enc));
         if (time > 0)
             buf.append(timefmt());
+        if(exp > 0 && mw > 0)
+            buf.append(String.format(Resource.getLocString(Resource.BUNDLE_LABEL, "\nLP/HR/Weight: $col[255,255,192]{%s}\n"), (Math.round(exp / (time / 60))/mw)));
         return (RichText.render(buf.toString(), 0).img);
     }
 

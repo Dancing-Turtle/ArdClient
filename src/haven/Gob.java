@@ -50,7 +50,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
 	        /* XXX: Remove me once local code is changed to use addol(). */
             if(glob.oc.getgob(id) != null) {
                 // FIXME: extend ols with a method for adding sprites without triggering changed.
-                if (item.id != Sprite.GROWTH_STAGE_ID && item != animalradius)
+                if (item.id != Sprite.GROWTH_STAGE_ID && item != animalradius && item != doubleanimalradius)
                     glob.oc.changed(Gob.this);
             }
             return(super.add(item));
@@ -73,6 +73,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
     private static final Material.Colors dframeBark = new Material.Colors(new Color(165, 42, 42, 200));
     private static final Material.Colors potDOne = new Material.Colors(new Color(0, 0, 0, 255));
     private static Gob.Overlay animalradius = new Gob.Overlay(new BPRadSprite(100.0F, -10.0F, BPRadSprite.smatDanger));
+    private static Gob.Overlay doubleanimalradius = new Gob.Overlay(new BPRadSprite(200.0F, -20.0F, BPRadSprite.smatDanger));
     private static final Map<Gob, Gob.Overlay> playerhighlight = new HashMap<Gob, Gob.Overlay>();
     public Boolean knocked = null;  // knocked will be null if pose update request hasn't been received yet
     public Type type = null;
@@ -696,7 +697,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
                 }
                 else if (Config.hidegobs) {
                     if (Config.hideTrees && type!= null && type == Type.TREE) {
-                        GobHitbox.BBox bbox = GobHitbox.getBBox(this, true);
+                        GobHitbox.BBox bbox = GobHitbox.getBBox(this);
                         if (bbox != null && Config.showoverlay) {
                             rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, true)), null);
                         }
@@ -708,43 +709,43 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
                        // }
                    // }
                     else if (Config.hideWalls && type!= null && type == Type.WALL) {
-                        GobHitbox.BBox bbox = GobHitbox.getBBox(this, true);
+                        GobHitbox.BBox bbox = GobHitbox.getBBox(this);
                         if (bbox != null && Config.showoverlay) {
                             rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, true)), null);
                         }
                     }
                     else if (Config.hideanimals && type != null && this.getres().name.contains("kritter")) {
-                        GobHitbox.BBox bbox = GobHitbox.getBBox(this, true);
+                        GobHitbox.BBox bbox = GobHitbox.getBBox(this);
                         if (bbox != null && Config.showoverlay) {
                             rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, true)), null);
                         }
                     }
                     else if (Config.hideDCatchers && type!= null && type == Type.DREAMCATCHER) {
-                        GobHitbox.BBox bbox = GobHitbox.getBBox(this, true);
+                        GobHitbox.BBox bbox = GobHitbox.getBBox(this);
                         if (bbox != null && Config.showoverlay) {
                             rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, true)), null);
                         }
                     }
                    else if (Config.hideBushes && type!= null && type == Type.BUSH) {
-                        GobHitbox.BBox bbox = GobHitbox.getBBox(this, true);
+                        GobHitbox.BBox bbox = GobHitbox.getBBox(this);
                         if (bbox != null && Config.showoverlay) {
                             rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, true)), null);
                         }
                     }
                    else if (Config.hideDFrames && type!= null && type == Type.DFRAME) {
-                        GobHitbox.BBox bbox = GobHitbox.getBBox(this, true);
+                        GobHitbox.BBox bbox = GobHitbox.getBBox(this);
                         if (bbox != null && Config.showoverlay) {
                             rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, true)), null);
                         }
                     }
                     else if (Config.hideWagons && type!= null && type == Type.WAGON) {
-                        GobHitbox.BBox bbox = GobHitbox.getBBox(this, true);
+                        GobHitbox.BBox bbox = GobHitbox.getBBox(this);
                         if (bbox != null && Config.showoverlay) {
                             rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, true)), null);
                         }
                     }
                    else if (Config.hideHouses && type!= null && type == Type.HOUSE) {
-                        GobHitbox.BBox bbox = GobHitbox.getBBox(this, true);
+                        GobHitbox.BBox bbox = GobHitbox.getBBox(this);
                         if (bbox != null && Config.showoverlay) {
                             rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, true)), null);
                         }
@@ -763,7 +764,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             }*/
 
             if (Config.showboundingboxes) {
-                GobHitbox.BBox bbox = GobHitbox.getBBox(this, true);
+                GobHitbox.BBox bbox = GobHitbox.getBBox(this);
                 if (bbox != null)
                     rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, false)), null);
             }
@@ -804,12 +805,18 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
                 }
             }
 
-            if (Config.showanimalrad && Type.MOB.has(type) && Config.showanimalrad) {
+            if (Config.showanimalrad && Type.MOB.has(type) && Config.showanimalrad && !Config.doubleradius) {
                 boolean hasradius = ols.contains(animalradius);
                 if ((knocked == null || knocked == Boolean.FALSE) && !hasradius)
                     ols.add(animalradius);
                 else if (knocked == Boolean.TRUE && hasradius)
                     ols.remove(animalradius);
+            }else if (Config.showanimalrad && Type.MOB.has(type) && Config.showanimalrad && Config.doubleradius){
+                boolean hasradius = ols.contains(doubleanimalradius);
+                if ((knocked == null || knocked == Boolean.FALSE) && !hasradius)
+                    ols.add(doubleanimalradius);
+                else if (knocked == Boolean.TRUE && hasradius)
+                    ols.remove(doubleanimalradius);
             }
 
             if (Config.showarchvector && type == Type.PLAYER && d instanceof Composite) {
@@ -844,6 +851,11 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
         Speaking sp = getattr(Speaking.class);
         if (sp != null)
             rl.add(sp.fx, null);
+        if(Config.playercircle && isplayer()){
+            Overlay overlay = new Gob.Overlay(new PartyMemberOutline(this, Color.white));
+            ols.add(overlay);
+            playerhighlight.put(this, overlay);
+        }
         KinInfo ki = getattr(KinInfo.class);
         if (ki != null) {
             rl.add(ki.fx, null);

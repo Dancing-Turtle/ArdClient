@@ -118,6 +118,7 @@ public class Config {
     public static boolean simplecrops = Utils.getprefb("simplecrops", false);
     public static boolean logincharsheet = Utils.getprefb("logincharsheet", false);
     public static boolean loginstudywnd = Utils.getprefb("loginstudywnd", false);
+    public static boolean loginbelt = Utils.getprefb("loginbelt", true);
     public static boolean afklogout = Utils.getprefb("afklogout", false);
     public static int afklogouttime = Utils.getprefi("afklogouttime", 0);
     public static boolean simpleforage = Utils.getprefb("simpleforage", false);
@@ -177,6 +178,8 @@ public class Config {
     public static boolean showcupboardstatus = Utils.getprefb("showcupboardstatus", true);
     public static boolean enableorthofullzoom = Utils.getprefb("enableorthofullzoom", false);
     public static boolean partycircles =  Utils.getprefb("partycircles", false);
+    public static boolean playercircle =  Utils.getprefb("playercircle", false);
+    public static boolean doubleradius =  Utils.getprefb("doubleradius", false);
     public static boolean noquests =  Utils.getprefb("noquests", false);
     public static boolean alarmbram =  Utils.getprefb("alarmbram", false);
     public static boolean alarmwball =  Utils.getprefb("alarmwball", true);
@@ -318,7 +321,7 @@ public class Config {
         put("gorse", new CheckListboxItem("Gorse"));
     }};
 
-    public final static HashMap<String, CheckListboxItem> trees = new HashMap<String, CheckListboxItem>(51) {{
+    public final static HashMap<String, CheckListboxItem> trees = new HashMap<String, CheckListboxItem>(52) {{
         put("chastetree", new CheckListboxItem("Chaste Tree"));
         put("silverfir", new CheckListboxItem("Silver Fir"));
         put("treeheath", new CheckListboxItem("Heath Tree"));
@@ -371,6 +374,7 @@ public class Config {
         put("planetree", new CheckListboxItem("Plane Tree"));
         put("quincetree", new CheckListboxItem("Quince"));
         put("almondtree", new CheckListboxItem("Almond"));
+        put("persimmontree", new CheckListboxItem("Persimmon"));
     }};
 
     public final static HashMap<String, CheckListboxItem> icons = new HashMap<String, CheckListboxItem>(47) {{
