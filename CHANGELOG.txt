@@ -1,3 +1,9 @@
+1.00.80
+Readded default Ctrl+R keybind to cycle run speeds. Keybind can be changed as well.
+Added aggro circle to cave anglers and mammoths. (I'm not going to spend hours trying to find either one of these, so let me know if they don't in fact work.)
+Small change to opening the search window, might help situations where it is not ready to receive typing when opened. 
+~
+
 1.00.79
 Fixed performance issues caused by new player circle option.
 Added sodalite, gabbro, kyanite, zincspar, flurospar, and apatite to the mineable stones to drop list. If there are any stones missing, let me know their name and I'll add them.

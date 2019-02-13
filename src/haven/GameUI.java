@@ -1290,7 +1290,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     if (menuSearch.show(!menuSearch.visible)) {
        menuSearch.raise();
        fitwdg(menuSearch);
-        setfocus(menuSearch);
+        setfocus(menuSearch.search);
     }
     }
 
@@ -1427,6 +1427,17 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 
     public void sprintSpeed(){
         speedget.set(3);
+    }
+
+    public void cycleSpeed(){
+        if (speedget.max >= 0) {
+            int n;
+                if (speedget.cur > speedget.max)
+                    n = 0;
+                else
+                    n = (speedget.cur + 1) % (speedget.max + 1);
+            speedget.set(n);
+        }
     }
 
     public void toggleres(){
