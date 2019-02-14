@@ -1,3 +1,7 @@
+1.00.81
+Added carried buckets to the drink macro.
+~
+
 1.00.80
 Readded default Ctrl+R keybind to cycle run speeds. Keybind can be changed as well.
 Added aggro circle to cave anglers and mammoths. (I'm not going to spend hours trying to find either one of these, so let me know if they don't in fact work.)
