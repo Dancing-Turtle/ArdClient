@@ -1,3 +1,7 @@
+1.00.82
+Test your changes before you push update kids, derp. Fixing logic chain in new bucket functionality. 
+~
+
 1.00.81
 Added carried buckets to the drink macro.
 ~
