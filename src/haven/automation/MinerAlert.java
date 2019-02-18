@@ -34,9 +34,8 @@ public class MinerAlert extends Window {
     private static final Text.Foundry infof = new Text.Foundry(Text.sans, 10).aa(true);
     private double lasterror = 0;
     public List<Gob> slimecount = new ArrayList<>();
-    private static final Resource goldsfx = Resource.local().loadwait("sfx/gold");
-    private static final Resource silversfx = Resource.local().loadwait("sfx/silver");
-    private static final Resource cinnabarsfx = Resource.local().loadwait("sfx/cinnabar");
+    private static final Resource goldsfx = Resource.local().loadwait("sfx/Zelda");
+    private static final Resource silversfx = Resource.local().loadwait("sfx/gold");
     public Boolean audiomute;
 
     public MinerAlert(GameUI gui) {
@@ -266,8 +265,6 @@ public class MinerAlert extends Window {
                         double now = Utils.rtime();
                         if (now - lasterror > 45) {
                             BotUtils.sysMsg("Cinnabar visible on screen!!", Color.green);
-                            if (!audiomute)
-                                Audio.play(cinnabarsfx);
                             lasterror = now;
                         }
                     }

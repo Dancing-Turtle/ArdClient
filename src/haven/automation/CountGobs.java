@@ -37,13 +37,14 @@ public class CountGobs implements Runnable, GobSelectCallback {
 
     public void gobselect(Gob gob) {
         selection = gob;
-        int stage = gob.getattr(ResDrawable.class).sdt.peekrbuf(0);
        // if(gob.knocked)
            // isknocked = true;
+       BotUtils.sysMsg(" z "+gob.sczu.z,Color.white);
 
-        BotUtils.sysMsg("Selection is "+selection.getres().name+" res stage : "+stage,Color.white);
-        for(Gob.Overlay oly:selection.ols)
-            System.out.println("Overlays : "+oly.sdt.toString()+" idk : "+oly.spr.res.basename());
+        if(gob.getStage() != -1)
+        BotUtils.sysMsg("Selection is "+selection.getres().name,Color.white);
+        else
+            BotUtils.sysMsg("Selection is "+selection.getres().name+ " stage is "+gob.getStage(),Color.white);
         gui.map.unregisterGobSelect();
 
     }

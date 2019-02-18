@@ -1,3 +1,22 @@
+1.00.83
+Added soapstone and orthoclase to stones to drop while mining. 
+Added apatite boulder type.
+Added tar kilns and smelters to the available hide objects.
+Added frogspawn to the minimap hide list.
+Rewrote alarm system, new options are in "Sound alarms" every alarm should be selectable. Selecting an alarm will play the alarm, in accordance to the volume slider underneath the respective alarm. Keep that in mind, some alarms are louder than others. 
+Rewrote the "draw circle underneath player" logic to fix a performance issue it cuased.
+Added toggle in display settings to put a green circle around pavement stranglevines, to highlight them for destruction.
+Added video option to disable tar kiln smoke animation, should increase performance if turned on. 
+Added checkbox to timer window to automatically resort timers every 30 seconds based on time remaining.
+Added "setSpeed" and "maxSpeed" functions to PBotAPI, should allow you to set player speed and retrieve the current max player speed for a given terrain (I think)
+Fixed tooltips being off location when the map was manually offset. 
+Added candleberry to the minimap alarm list.
+Converted quest widget into a movable window that can be placed anywhere.
+Added percentage text to the middle of "Buff" icons to show their percentage without needing to hover over them.
+Changed the cave-in warning dust animation to persist for 30 minutes now, up from whatever tiny number it used to be by default. Should make it a little easier to keep track of cave-in tiles.
+Fixed bats showing a danger radius when dead, could potentially break other danger radiuses, let me know if it does. 
+~
+
 1.00.82
 Test your changes before you push update kids, derp. Fixing logic chain in new bucket functionality. 
 ~

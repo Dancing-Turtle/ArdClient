@@ -130,7 +130,7 @@ public class BeltDrink implements Runnable {
             if (drinkable == null)
                 drinkable = inv.getItemPartialDrink("Waterflask");
             if (drinkable == null)
-                drinkable = inv.getItemPartialDrink("Kuska");
+                drinkable = inv.getItemPartialDrink("Kuksa");
             if (drinkable == null) {
                 return null;
             }
@@ -143,7 +143,7 @@ public class BeltDrink implements Runnable {
         if (drinkable == null)
             drinkable = inv.getItemPartialDrink("Waterflask");
         if (drinkable == null)
-            drinkable = inv.getItemPartialDrink("Kuska");
+            drinkable = inv.getItemPartialDrink("Kuksa");
         if (drinkable == null) {
             return null;
         }

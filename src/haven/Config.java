@@ -61,15 +61,7 @@ public class Config {
     public static boolean studylock = Utils.getprefb("studylock", false);
     public static boolean chatsave = Utils.getprefb("chatsave", false);
     public static boolean chattimestamp = Utils.getprefb("chattimestamp", true);
-    public static boolean alarmunknown = Utils.getprefb("alarmunknown", false);
     public static boolean flatcupboards = Utils.getprefb("flatcupboards", true);
-    public static double alarmunknownvol = Utils.getprefd("alarmunknownvol", 0.32);
-    public static boolean alarmnidbane = Utils.getprefb("alarmnidbane", false);
-    public static double alarmnidbanevol = Utils.getprefd("alarmnidbanevol", 1.0);
-    public static boolean alarmred = Utils.getprefb("alarmred", false);
-    public static double alarmredvol = Utils.getprefd("alarmredvol", 0.32);
-    public static boolean alarmadder = Utils.getprefb("alarmadder", true);
-    public static double alarmaddervol = Utils.getprefd("alarmaddervol", 0.32);
     public static boolean showquality = Utils.getprefb("showquality", true);
     public static boolean showroadendpoint = Utils.getprefb("showroadendpoint", true);
     public static boolean showroadmidpoint = Utils.getprefb("showroadmidpoint", false);
@@ -83,14 +75,11 @@ public class Config {
     public static boolean disabletiletrans = Utils.getprefb("disabletiletrans", false);
     public static boolean itemmeterbar = Utils.getprefb("itemmeterbar", false);
     public static boolean showprogressperc = Utils.getprefb("showprogressperc", true);
-    public static boolean timersalarm = Utils.getprefb("timersalarm", false);
-    public static double timersalarmvol = Utils.getprefd("timersalarmvol", 0.8);
+
     public static boolean quickslots = Utils.getprefb("quickslots", true);
     public static boolean quickbelt = Utils.getprefb("quickbelt", false);
     public static boolean statuswdgvisible = Utils.getprefb("statuswdgvisible", false);
-    public static boolean chatalarm = Utils.getprefb("chatalarm", true);
-    public static double chatalarmvol = Utils.getprefd("chatalarmvol", 0.8);
-    public static boolean studyalarm = Utils.getprefb("studyalarm", false);
+
     public static boolean batcircle = Utils.getprefb("batcircle", true);
     public static boolean slimecircle = Utils.getprefb("slimecircle", true);
     public static boolean errorsounds = Utils.getprefb("errorsounds", true);
@@ -98,7 +87,7 @@ public class Config {
     public static boolean chatsounds = Utils.getprefb("chatsounds", true);
     public static boolean discordsounds = Utils.getprefb("discordsounds", true);
     public static boolean realmchatalerts = Utils.getprefb("realmchatalerts", false);
-    public static double studyalarmvol = Utils.getprefd("studyalarmvol", 0.8);
+
     public static double sfxchipvol = Utils.getprefd("sfxchipvol", 0.9);
     public static double sfxquernvol = Utils.getprefd("sfxquernvol", 0.9);
     public static double sfxfirevol = Utils.getprefd("sfxfirevol", 1.0);
@@ -152,12 +141,6 @@ public class Config {
     public static boolean showanimalrad = Utils.getprefb("showanimalrad", true);
     public static boolean hwcursor = Utils.getprefb("hwcursor", false);
     public static boolean showboundingboxes = Utils.getprefb("showboundingboxes", false);
-    public static double alarmonforagablesvol = Utils.getprefd("alarmonforagablesvol", 0.8D);
-    public static double alarmbearsvol = Utils.getprefd("alarmbearsvol", 0.7D);
-    public static boolean alarmlocres = Utils.getprefb("alarmlocres", false);
-    public static double alarmlocresvol = Utils.getprefd("alarmlocresvol", 0.8D);
-    public static boolean alarmtroll = Utils.getprefb("alarmtroll", false);
-    public static double alarmtrollvol = Utils.getprefd("alarmtrollvol", 0.8D);
     public static boolean showcooldown = Utils.getprefb("showcooldown", false);
     public static boolean nodropping = Utils.getprefb("nodropping", false);
     public static boolean nodropping_all = Utils.getprefb("nodropping_all", false);
@@ -178,18 +161,12 @@ public class Config {
     public static boolean showcupboardstatus = Utils.getprefb("showcupboardstatus", true);
     public static boolean enableorthofullzoom = Utils.getprefb("enableorthofullzoom", false);
     public static boolean partycircles =  Utils.getprefb("partycircles", false);
+    public static boolean disabletarkiln =  Utils.getprefb("disabletarkiln", false);
     public static boolean playercircle =  Utils.getprefb("playercircle", false);
+    public static boolean stranglevinecircle =  Utils.getprefb("stranglevinecircle", false);
     public static boolean doubleradius =  Utils.getprefb("doubleradius", false);
     public static boolean noquests =  Utils.getprefb("noquests", false);
-    public static boolean alarmbram =  Utils.getprefb("alarmbram", false);
-    public static boolean alarmwball =  Utils.getprefb("alarmwball", true);
     public static boolean dungeonkeyalert =  Utils.getprefb("dungeonkeyalert", true);
-    public static double alarmbramvol = Utils.getprefd("alarmbramvol", 1.0D);
-    public static double alarmwballvol = Utils.getprefd("alarmwballvol", 1.0D);
-    public static boolean alarmeyeball =  Utils.getprefb("alarmeyeball", false);
-    public static boolean alarmdungeon =  Utils.getprefb("alarmwball", true);
-    public static double alarmdungeonvol = Utils.getprefd("alarmdungeonvol", 1.0D);
-    public static double alarmeyeballvol = Utils.getprefd("alarmeyeballvol", 1.0D);
     public static double sfxwhipvol = Utils.getprefd("sfxwhipvol", 0.9);
     public static boolean showarchvector =  Utils.getprefb("showarchvector", false);
     //public static boolean showcddelta =  Utils.getprefb("showcddelta", false);
@@ -247,6 +224,8 @@ public class Config {
     public static boolean hungermeter = Utils.getprefb("hungermeter", true);
     public static boolean leechdrop = Utils.getprefb("leechdrop", false);
     public static boolean hideTrees = Utils.getprefb("hideTrees", true);
+    public static boolean hideTarKilns = Utils.getprefb("hideTarKilns", true);
+    public static boolean hideSmelters = Utils.getprefb("hideSmelters", true);
     public static boolean hidemoths = Utils.getprefb("hidemoths", false);
     public static boolean hideCrops = Utils.getprefb("hideCrops", true);
     public static boolean hideWalls = Utils.getprefb("hideWalls", true);
@@ -272,6 +251,60 @@ public class Config {
     public static int cRackblue = Utils.getprefi("cRackblue",255);
     public static String confid = "ArdClient";
     public static final boolean isUpdate;
+    public static boolean chatalarm = Utils.getprefb("chatalarm", true);
+    public static double chatalarmvol = Utils.getprefd("chatalarmvol", 0.8);
+    public static boolean timersalarm = Utils.getprefb("timersalarm", false);
+    public static boolean timersort = Utils.getprefb("timersort", true);
+    public static double timersalarmvol = Utils.getprefd("timersalarmvol", 0.8);
+    public static String alarmunknownplayer = Utils.getpref("alarmunknownplayer", "sfx/OhShitItsAGuy");
+    public static double alarmunknownvol = Utils.getprefd("alarmunknownvol", 0.32);
+    public static String alarmredplayer = Utils.getpref("alarmredplayer", "sfx/Siren");
+    public static double alarmredvol = Utils.getprefd("alarmredvol", 0.32);
+    public static String alarmforagable = Utils.getpref("alarmforagable", "sfx/awwyeah");
+    public static double alarmonforagablesvol = Utils.getprefd("alarmonforagablesvol", 0.8D);
+    public static String alarmbear = Utils.getpref("alarmbear", "sfx/BearRoar");
+    public static double alarmbearsvol = Utils.getprefd("alarmbearsvol", 0.7D);
+    public static String alarmlynx = Utils.getpref("alarmlynx", "sfx/lynx");
+    public static double alarmlynxvol = Utils.getprefd("alarmlynxvol", 0.32);
+    public static String alarmadder = Utils.getpref("alarmadder", "sfx/DangerNoodle");
+    public static double alarmaddervol = Utils.getprefd("alarmaddervol", 0.32);
+    public static String alarmwalrus = Utils.getpref("alarmwalrus", "sfx/Walrus");
+    public static double alarmwalrusvol = Utils.getprefd("alarmwalrusvol", 0.32);
+    public static String alarmseal = Utils.getpref("alarmseal", "sfx/seal");
+    public static double alarmsealvol = Utils.getprefd("alarmsealvol", 0.32);
+    public static String alarmtroll = Utils.getpref("alarmtroll", "sfx/troll");
+    public static double alarmtrollvol = Utils.getprefd("alarmtrollvol", 0.8D);
+    public static String alarmmammoth = Utils.getpref("alarmmammoth", "sfx/mammoth");
+    public static double alarmmammothvol = Utils.getprefd("alarmmammothvol", 0.32);
+    public static String alarmeagle = Utils.getpref("alarmeagle", "sfx/EagleScreech");
+    public static double alarmeaglevol = Utils.getprefd("alarmeaglevol", 0.32);
+    public static String alarmdoomed = Utils.getpref("alarmdoomed", "sfx/Doomed");
+    public static double alarmdoomedvol = Utils.getprefd("alarmdoomedvol", 0.32);
+    public static String alarmwball = Utils.getpref("alarmwball", "sfx/WreckingBall");
+    public static double alarmwballvol = Utils.getprefd("alarmwballvol", 1.0D);
+    public static String alarmswag = Utils.getpref("alarmswag", "sfx/Swag");
+    public static double alarmlocresvol = Utils.getprefd("alarmlocresvol", 0.8D);
+    public static String alarmeyeball = Utils.getpref("alarmeyeball", "sfx/OhShitItsAGuy");
+    public static double alarmeyeballvol = Utils.getprefd("alarmeyeballvol", 1.0D);
+    public static String alarmnidbane = Utils.getpref("alarmnidbane", "sfx/GhostBusters");
+    public static double alarmnidbanevol = Utils.getprefd("alarmnidbanevol", 1.0);
+    public static String alarmdungeon = Utils.getpref("alarmdungeon", "sfx/Zelda");
+    public static double alarmdungeonvol = Utils.getprefd("alarmdungeonvol", 1.0D);
+    public static String alarmbeaverdungeon = Utils.getpref("alarmbeaverdungeon", "sfx/BeaverDungeon");
+    public static double alarmbeaverdungeonvol = Utils.getprefd("alarmbeaverdungeonvol", 0.32);
+    public static String alarmsiege = Utils.getpref("alarmsiege", "sfx/siege");
+    public static double alarmbramvol = Utils.getprefd("alarmbramvol", 1.0D);
+    public static String alarmstudy = Utils.getpref("alarmstudy","sfx/Study");
+    public static double studyalarmvol = Utils.getprefd("studyalarmvol", 0.8);
+    public static String cleavesfx = Utils.getpref("cleavesound","sfx/oof");
+    public static double cleavesoundvol = Utils.getprefd("cleavesoundvol", 0.8);
+
+
+
+
+
+
+
 
     public final static String chatfile = "chatlog.txt";
     public static PrintWriter chatlog = null;
@@ -293,6 +326,7 @@ public class Config {
         put("flint", new CheckListboxItem("Flint"));
         put("hornblende", new CheckListboxItem("Hornblende"));
         put("olivine", new CheckListboxItem("Olivine"));
+        put("apatite", new CheckListboxItem("Apatite"));
     }};
 
     public final static HashMap<String, CheckListboxItem> bushes = new HashMap<String, CheckListboxItem>(23) {{
@@ -377,7 +411,7 @@ public class Config {
         put("persimmontree", new CheckListboxItem("Persimmon"));
     }};
 
-    public final static HashMap<String, CheckListboxItem> icons = new HashMap<String, CheckListboxItem>(47) {{
+    public final static HashMap<String, CheckListboxItem> icons = new HashMap<String, CheckListboxItem>(48) {{
         put("dandelion", new CheckListboxItem("Dandelion"));
         put("chantrelle", new CheckListboxItem("Chantrelle"));
         put("blueberry", new CheckListboxItem("Blueberry"));
@@ -429,6 +463,7 @@ public class Config {
         put("forestlizard", new CheckListboxItem("Forest Lizard"));
         put("greenkelp", new CheckListboxItem("Green Kelp"));
         put("waterstrider", new CheckListboxItem("Water Strider"));
+        put("frogspawn", new CheckListboxItem("Frog Spawn"));
     }};
 
     public final static HashMap<String, CheckListboxItem> flowermenus = new HashMap<String, CheckListboxItem>(26) {{
@@ -572,6 +607,7 @@ public class Config {
         put("gfx/kritter/forestlizard/forestlizard", new CheckListboxItem("Forest Lizard"));
         put("gfx/terobjs/herbs/greenkelp", new CheckListboxItem("Green Kelp"));
         put("gfx/terobjs/herbs/yarrow", new CheckListboxItem("Yarrow"));
+        put("gfx/terobjs/herbs/candleberry", new CheckListboxItem("Candleberry"));
     }};
 
     public final static Set<String> locres = new HashSet<String>(Arrays.asList(
@@ -611,8 +647,11 @@ public class Config {
             "gabbro",
             "kyanite",
             "zincspar",
-            "flurospar",
-            "microlite"
+            "fluorospar",
+            "microlite",
+            "olivine",
+            "soapstone",
+            "orthoclase"
     ));
 
     public final static Set<String> mineablesOre = new HashSet<String>(Arrays.asList(
@@ -641,11 +680,45 @@ public class Config {
             "strangecrystal"
     ));
 
-    public final static HashMap<String, CheckListboxItem> disableanim = new HashMap<String, CheckListboxItem>(4) {{
+    public final static HashMap<String, CheckListboxItem> disableanim = new HashMap<String, CheckListboxItem>(6) {{
         put("gfx/terobjs/beehive", new CheckListboxItem("Beehives"));
         put("gfx/terobjs/pow", new CheckListboxItem("Fires"));
         put("gfx/terobjs/stockpile-trash", new CheckListboxItem("Full trash stockpiles"));
         put("/idle", new CheckListboxItem("Idle animals"));
+    }};
+
+    public final static HashMap<String, String> alarms = new HashMap<String,String>(31){{
+        put("None","None");
+        put("Pony Alarm","sfx/alarmpony");
+        put("Awwwwww Yeah","sfx/awwyeah");
+        put("Bear Roar","sfx/BearRoar");
+        put("Jcoles Beaver Dungeon","sfx/BeaverDungeon");
+        put("JColes Danger Noodle","sfx/DangerNoodle");
+        put("DaveyJones","sfx/DaveyJones");
+        put("Ding","sfx/Ding");
+        put("Doomed","sfx/Doomed");
+        put("EagleScreech","sfx/EagleScreech");
+        put("GhostBusters","sfx/GhostBusters");
+        put("Gold","sfx/gold");
+        put("Oof!","sfx/oof");
+        put("lynx","sfx/lynx");
+        put("mammoth","sfx/mammoth");
+        put("Oh Shit!","sfx/OhShit");
+        put("JColes OhFuckItsAGuy","sfx/OhShitItsAGuy");
+        put("Enemy Siren","sfx/redenemy");
+        put("Arf Arf","sfx/seal");
+        put("Siege Warning","sfx/siege");
+        put("Silver","sfx/silver");
+        put("Unknown Player Siren","sfx/Siren");
+        put("Female Scream","sfx/Scream");
+        put("Study Ding","sfx/Study");
+        put("Swag!","sfx/Swag");
+        put("Thank youuuuuuu","sfx/thankyourick");
+        put("Timer alarm","sfx/timer");
+        put("Troll in the dungeon!","sfx/troll");
+        put("JColes Wallllllrus","sfx/Walrus");
+        put("Wrecking Ball!","sfx/WreckingBall");
+        put("Zelda Secret","sfx/Zelda");
     }};
 
     public final static HashMap<String, String[]> cures = new HashMap<String, String[]>(20) {{

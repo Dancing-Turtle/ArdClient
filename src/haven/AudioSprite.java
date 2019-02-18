@@ -93,6 +93,8 @@ public class AudioSprite {
             else if(Config.sfxwhistlevol != 1.0 && "sfx/borka/whistle".equals(res.name))
                 stream = new Audio.VolAdjust(stream, Config.sfxwhistlevol);
 
+
+
             this.clip = new ActAudio.PosClip(new Audio.Monitor(stream) {
                 protected void eof() {
                     super.eof();
@@ -130,21 +132,6 @@ public class AudioSprite {
         public RepeatSprite(Owner owner, Resource res, final Resource.Audio beg, final List<Resource.Audio> clips, Resource.Audio end) {
             super(owner, res);
             this.end = end;
-            if(res.basename().contains("beeswarm")){
-                CS rep = new Audio.Repeater() {
-                    private boolean f = true;
-
-                    public CS cons() {
-                        if (f && (beg != null)) {
-                            f = false;
-                            return (beg.stream());
-                        }
-                        return (new Audio.VolAdjust(clips.get((int)(Math.random() * clips.size())).stream(), Config.sfxbeehivevol));
-                    }
-                };
-                this.clip = new ActAudio.PosClip(rep);
-            }
-                else {
                 CS rep = new Audio.Repeater() {
                     private boolean f = true;
 
@@ -156,9 +143,12 @@ public class AudioSprite {
                     return(clips.get((int)(Math.random() * clips.size())).stream());
                     }
                 };
-                this.clip = new ActAudio.PosClip(rep);
+            if (Config.sfxbeehivevol != 1.0 && "sfx/kritter/beeswarm".equals(res.name))
+                rep = new Audio.VolAdjust(rep, Config.sfxbeehivevol);
+
+            this.clip = new ActAudio.PosClip(rep);
             }
-        }
+
 
         public boolean setup(RenderList r) {
             if (clip != null)

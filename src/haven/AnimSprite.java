@@ -40,6 +40,7 @@ public class AnimSprite extends Sprite {
             CheckListboxItem itm = Config.disableanim.get(res.name);
             if (itm != null && itm.selected)
                 return null;
+
             return (new AnimSprite(owner, res, sdt));
         }
     };

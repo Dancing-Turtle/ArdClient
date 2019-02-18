@@ -119,7 +119,7 @@ public class Window extends Widget implements DTarget {
         }
     }
 
-    public Window(Coord sz, String cap, boolean lg, Coord tlo, Coord rbo) {
+   public Window(Coord sz, String cap, boolean lg, Coord tlo, Coord rbo) {
         this.tlo = tlo;
         this.rbo = rbo;
         this.mrgn = lg ? dlmrgn : dsmrgn;
@@ -130,12 +130,12 @@ public class Window extends Widget implements DTarget {
         setfocustab(true);
     }
 
-    public Window(Coord sz, String cap, boolean lg) {
-        this(sz, cap, lg, Coord.z, Coord.z);
-    }
 
+
+    public Window(Coord sz, String cap, boolean lg) { this(sz, cap, lg, Coord.z, Coord.z); }
     public Window(Coord sz, String cap) {
         this(sz, cap, false);
+
     }
 
     protected void added() {
@@ -205,53 +205,24 @@ public class Window extends Widget implements DTarget {
         Collection Curios = new ArrayList();
 
         Utils.loadprefchklist("curiosel", Config.curiolist);
-       // for (CheckListboxItem itm : Config.curiolist.values())
-            //Curios.add(itm.name);
+
 
 
         for (CheckListboxItem itm : Config.curiolist.values())
         if (itm != null && itm.selected)
             Curios.add(itm.name);
-//            add("Golden Cat");
-//            add("Great Wax Seal");
-//            add("Golden Tooth");
-//            add("Silver Rose");
-//            add("Seer's Bowl");
-//            add("Tiny Abacus");
-//            add("Chiming Bluebell");
-//            add("Seer's Spindle");
-//            add("Snow Globe");
-//            add("Easter Egg");
-//            add("Beast Unborn");
-//            add("Fossil Collection");
-//            add("Seer's Stones");
-//            add("Stained Glass Heart");
-//            add("Shiny Marbles");
-
-//Collection Curios2 = Config.curiolist;
 
         Collection GetCurios = new ArrayList();
         Collection FinalCurios = new ArrayList();
-        //List<WItem> foods = new ArrayList<>();
-        //List<WItem> stones = new ArrayList<>();
+
 
         try {
             if(BotUtils.istable(this)){
-        //    if (cap.text.equals("Table")) {
                 add(new Button(60, "Eat All") {
                     public void click() {
                         Resource curs = ui.root.getcurs(c);
                         if (curs.name.equals("gfx/hud/curs/eat")) {
                             Map idk = getStats();
-                          //  for (Widget table = parent.lchild; table != null; table = table.prev) {
-                               // if (table instanceof Inventory) {
-                                  //  List<WItem> foods = getfoods((Inventory) table);
-                                  //  for (WItem item : foods) {
-                                  //      GItem food = item.item;
-                                  //      food.wdgmsg("iact",Coord.z,-1);
-                                 //   }
-                              //  }
-                         //   }
                             GameUI gui = gameui();
                             synchronized (gui.ui.root.lchild) {
                                 try {
@@ -286,11 +257,6 @@ public class Window extends Widget implements DTarget {
                     }
                 }, new Coord(140, 325));
 
-            }
-
-            if(cap.text.equals("Receive items")){
-              //  resize(250,350);
-              //  gameui().fitwdg(this);
             }
 
             if (cap.text.equals("Study Desk")) {

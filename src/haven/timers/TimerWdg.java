@@ -110,7 +110,7 @@ public class TimerWdg extends Widget {
         Glob.timersThread.remove(this);
         reqdestroy();
         int y = this.c.y;
-        List<TimerWdg> timers = Glob.timersThread.getall();
+       List<TimerWdg> timers = Glob.timersThread.getall();
         for (TimerWdg timer : timers) {
             if (timer.c.y > y)
                 timer.c.y -= height;

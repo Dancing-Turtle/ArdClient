@@ -40,6 +40,7 @@ public class Composite extends Drawable {
     public final Indir<Resource> base;
     public Composited comp;
     public Collection<ResData> nposes = null, tposes = null;
+    public Collection<ResData> oldposes = null, oldtposes;
     public boolean nposesold, retainequ = false;
     private float tptime;
     private WrapMode tpmode;
@@ -167,6 +168,7 @@ public class Composite extends Drawable {
         if (tposes != null)
             tposes = null;
         nposes = poses;
+        oldposes = poses;
         nposesold = !interp;
     }
 

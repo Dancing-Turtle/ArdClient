@@ -73,6 +73,15 @@ public class PBotAPI {
 		gui.map.wdgmsg("click", Coord.z, gob.rc.floor(posres), button, 0, mod, (int) gob.id, gob.rc.floor(posres), 0,
 				-1);
 	}
+
+	//Will set player speed to whatever int you send it.
+	public static void setSpeed(int speed){
+		gui.speedget.set(speed);
+	}
+	//should return current max move speed? maybe?
+	public static int maxSpeed(){
+		return gui.speedget.max;
+	}
 	
 	/**
 	 * Get an amount of something such as seeds in a stack

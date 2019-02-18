@@ -405,9 +405,9 @@ public class WItem extends Widget implements DTarget {
 				}
 				try {
 					WebBrowser.self.show(new URL(String.format("http://ringofbrodgar.com/wiki/%s", name)));
-				} catch (WebBrowser.BrowserException e) {
-					getparent(GameUI.class).error("Could not launch web browser.");
 				} catch (MalformedURLException e) {
+				} catch (Exception e) {
+					getparent(GameUI.class).error("Could not launch web browser.");
 				}
 			} else if (ui.modshift && !ui.modmeta) {
 				// server side transfer all identical: pass third argument -1 (or 1 for single item)

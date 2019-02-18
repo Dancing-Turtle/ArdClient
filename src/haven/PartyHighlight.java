@@ -29,6 +29,8 @@ public class PartyHighlight {
                     continue;
                 if (Config.partycircles)
                     highlight(gob, MEMBER_OL_COLOR);
+                else if(Config.playercircle)
+                    highlight(gob, PLAYER_OL_COLOR);
                 else
                     unhighlight(gob);
                 old.remove(gob);

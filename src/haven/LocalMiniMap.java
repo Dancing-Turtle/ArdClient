@@ -51,25 +51,7 @@ public class LocalMiniMap extends Widget {
     private UI.Grab dragging;
     private Coord doff = Coord.z;
     private Coord delta = Coord.z;
-	private static final Resource alarmplayersfx = Resource.local().loadwait("sfx/alarmplayer");
-    private static final Resource alarmredplayersfx = Resource.local().loadwait("sfx/redenemy");
-    private static final Resource foragablesfx = Resource.local().loadwait("sfx/awwyeah");
-    private static final Resource bearsfx = Resource.local().loadwait("sfx/bear");
-    private static final Resource lynxfx = Resource.local().loadwait("sfx/lynx");
-    private static final Resource addersfx = Resource.local().loadwait("sfx/adders");
-    private static final Resource walrusfx = Resource.local().loadwait("sfx/walrus");
-    private static final Resource sealsfx = Resource.local().loadwait("sfx/seal");
-    private static final Resource trollsfx = Resource.local().loadwait("sfx/troll");
-    private static final Resource mammothsfx = Resource.local().loadwait("sfx/mammoth");
-    private static final Resource eaglesfx = Resource.local().loadwait("sfx/eagle");
-    private static final Resource doomedsfx = Resource.local().loadwait("sfx/doomed");
-    private static final Resource wballsfx = Resource.local().loadwait("sfx/wball");
-    private static final Resource swagsfx = Resource.local().loadwait("sfx/swag");
-    private static final Resource eyeballsfx = Resource.local().loadwait("sfx/eye");
-    private static final Resource nidbanesfx = Resource.local().loadwait("sfx/ghost");
-    private static final Resource dungeonssfx = Resource.local().loadwait("sfx/dungeons");
-    private static final Resource beaverssfx = Resource.local().loadwait("sfx/beavers");
-    private static final Resource siegesfx = Resource.local().loadwait("sfx/siege");
+
 
 	private final HashSet<Long> sgobs = new HashSet<Long>();
     private final Map<Coord, Tex> maptiles = new LinkedHashMap<Coord, Tex>(100, 0.75f, false) {
@@ -302,14 +284,14 @@ public class LocalMiniMap extends Widget {
 
 
                         boolean enemy = false;
-                        if (Config.alarmunknown && kininfo == null) {
+                        if (!Config.alarmunknownplayer.equals("None") && kininfo == null) {
                             sgobs.add(gob.id);
                            // Audio.play(alarmredplayersfx, Config.alarmunknownvol);
-                            Audio.play(eyeballsfx, Config.alarmunknownvol);
+                            Audio.play(Resource.local().loadwait(Config.alarmunknownplayer), Config.alarmunknownvol);
                             enemy = true;
-                        } else if (Config.alarmred && kininfo != null && kininfo.group == 2) {
+                        } else if (!Config.alarmredplayer.equals("None") && kininfo != null && kininfo.group == 2) {
                             sgobs.add(gob.id);
-                            Audio.play(alarmplayersfx, Config.alarmredvol);
+                            Audio.play(Resource.local().loadwait(Config.alarmredplayer), Config.alarmredvol);
                             enemy = true;
                         }
 
@@ -328,55 +310,55 @@ public class LocalMiniMap extends Widget {
 
                     if (gob.type == Gob.Type.FU_YE_CURIO) {
                         this.sgobs.add(gob.id);
-                        Audio.play(foragablesfx, Config.alarmonforagablesvol);
-                    } else if (Config.alarmlocres && gob.type == Gob.Type.LOC_RESOURCE) {
+                        Audio.play(Resource.local().loadwait(Config.alarmforagable), Config.alarmonforagablesvol);
+                    } else if (!Config.alarmswag.equals("None") && gob.type == Gob.Type.LOC_RESOURCE) {
                         this.sgobs.add(gob.id);
-                        Audio.play(swagsfx, Config.alarmlocresvol);
+                        Audio.play(Resource.local().loadwait(Config.alarmswag), Config.alarmlocresvol);
                     } else if (gob.type == Gob.Type.BEAR && gob.knocked == Boolean.FALSE) {
                         this.sgobs.add(gob.id);
-                        Audio.play(bearsfx, Config.alarmbearsvol);
-                    }else if (gob.type == Gob.Type.SNAKE && gob.knocked == Boolean.FALSE && Config.alarmadder){
+                        Audio.play(Resource.local().loadwait(Config.alarmbear), Config.alarmbearsvol);
+                    }else if (gob.type == Gob.Type.SNAKE && gob.knocked == Boolean.FALSE && !Config.alarmadder.equals("None")){
                             this.sgobs.add(gob.id);
-                            Audio.play(addersfx, Config.alarmaddervol);
+                            Audio.play(Resource.local().loadwait(Config.alarmadder), Config.alarmaddervol);
                     } else if (gob.type == Gob.Type.LYNX && gob.knocked == Boolean.FALSE) {
                         this.sgobs.add(gob.id);
-                        Audio.play(lynxfx, Config.alarmbearsvol);
+                        Audio.play(Resource.local().loadwait(Config.alarmlynx), Config.alarmbearsvol);
                     } else if (gob.type == Gob.Type.WALRUS && gob.knocked == Boolean.FALSE) {
                         this.sgobs.add(gob.id);
-                        Audio.play(walrusfx, Config.alarmbearsvol);
+                        Audio.play(Resource.local().loadwait(Config.alarmwalrus), Config.alarmbearsvol);
                     } else if (gob.type == Gob.Type.SEAL && gob.knocked == Boolean.FALSE) {
                         this.sgobs.add(gob.id);
-                        Audio.play(sealsfx, Config.alarmbearsvol);
-                    } else if (gob.type == Gob.Type.TROLL && gob.knocked == Boolean.FALSE && Config.alarmtroll) {
+                        Audio.play(Resource.local().loadwait(Config.alarmseal), Config.alarmbearsvol);
+                    } else if (gob.type == Gob.Type.TROLL && gob.knocked == Boolean.FALSE && !Config.alarmtroll.equals("None")) {
                         this.sgobs.add(gob.id);
-                        Audio.play(trollsfx, Config.alarmtrollvol);
+                        Audio.play(Resource.local().loadwait(Config.alarmtroll), Config.alarmtrollvol);
                     } else if (gob.type == Gob.Type.MAMMOTH && gob.knocked == Boolean.FALSE) {
                         this.sgobs.add(gob.id);
-                        Audio.play(mammothsfx, Config.alarmbearsvol);
+                        Audio.play(Resource.local().loadwait(Config.alarmmammoth), Config.alarmbearsvol);
                     } else if (gob.type == Gob.Type.EAGLE && gob.knocked == Boolean.FALSE) {
                         this.sgobs.add(gob.id);
-                        Audio.play(eaglesfx);
-                    } else if (Config.alarmbram && gob.type == Gob.Type.SIEGE_MACHINE) {
+                        Audio.play(Resource.local().loadwait(Config.alarmeagle));
+                    } else if (!Config.alarmsiege.equals("None") && gob.type == Gob.Type.SIEGE_MACHINE) {
                         this.sgobs.add(gob.id);
                         if(!gob.getres().basename().contains("ball"))
-                        Audio.play(siegesfx, Config.alarmbramvol);
-                    }else if (Config.alarmwball && gob.type == Gob.Type.SIEGE_MACHINE){
+                        Audio.play(Resource.local().loadwait(Config.alarmsiege), Config.alarmbramvol);
+                    }else if (!Config.alarmwball.equals("None") && gob.type == Gob.Type.SIEGE_MACHINE){
                         this.sgobs.add(gob.id);
                         if(gob.getres().basename().contains("ball"))
-                            Audio.play(siegesfx, Config.alarmwballvol);
+                            Audio.play(Resource.local().loadwait(Config.alarmwball), Config.alarmwballvol);
                     }else if(gob.type == Gob.Type.DUNGKEY && Config.dungeonkeyalert) {
                         this.sgobs.add(gob.id);
                         BotUtils.sysMsg("Dungeon Key Dropped!",Color.white);
-                    }else if(gob.type == Gob.Type.NIDBANE && Config.alarmnidbane) {
+                    }else if(gob.type == Gob.Type.NIDBANE && !Config.alarmnidbane.equals("None")) {
                         this.sgobs.add(gob.id);
-                        Audio.play(nidbanesfx, Config.alarmnidbanevol);
-                    }else if(gob.type == Gob.Type.DUNGEON && Config.alarmdungeon) {
+                        Audio.play(Resource.local().loadwait(Config.alarmnidbane), Config.alarmnidbanevol);
+                    }else if(gob.type == Gob.Type.DUNGEON && !Config.alarmdungeon.equals("None")) {
                         if(gob.getres().basename().equals("beaverdam")){
                             this.sgobs.add(gob.id);
-                            Audio.play(beaverssfx, Config.alarmdungeonvol);
+                            Audio.play(Resource.local().loadwait(Config.alarmbeaverdungeon), Config.alarmdungeonvol);
                         }else if(!gob.getres().basename().contains("beaver")) {
                             this.sgobs.add(gob.id);
-                            Audio.play(dungeonssfx, Config.alarmdungeonvol);
+                            Audio.play(Resource.local().loadwait(Config.alarmdungeon), Config.alarmdungeonvol);
                         }
                     }
                 } catch (Exception e) { // fail silently
@@ -394,7 +376,7 @@ public class LocalMiniMap extends Widget {
                         if (icon != null) {
                             CheckListboxItem itm = Config.icons.get(gob.getres().basename());
                             if (itm == null || !itm.selected) {
-                                Coord gc = p2c(gob.rc);
+                                Coord gc = p2c(gob.rc).add(delta);
                                 Coord sz = icon.tex().sz();
                                 if (c.isect(gc.sub(sz.div(2)), sz)) {
                                     Resource res = icon.res.get();
@@ -404,13 +386,15 @@ public class LocalMiniMap extends Widget {
                                 }
                             }
                         } else { // custom icons
-                            Coord gc = p2c(gob.rc);
+                            Coord gc = p2c(gob.rc).add(delta);
                             Coord sz = new Coord(18, 18);
                             if (c.isect(gc.sub(sz.div(2)), sz)) {
                                 Resource res = gob.getres();
                                 KinInfo ki = gob.getattr(KinInfo.class);
-                                if (ki != null)
-                                    return gob;
+                                if (ki != null) {
+                                    if (gob.type == Gob.Type.PLAYER)
+                                        return gob;
+                                }
                                 else if (gob.type == Gob.Type.TREE) {
                                     CheckListboxItem itm = Config.trees.get(res.basename());
                                     if (itm != null && itm.selected)
@@ -425,8 +409,9 @@ public class LocalMiniMap extends Widget {
                                         return gob;
                                 } else if (res != null && Config.additonalicons.containsKey(res.name)) {
                                     CheckListboxItem itm = Config.icons.get(res.basename());
-                                    if (itm == null || !itm.selected)
+                                    if (itm == null || !itm.selected) {
                                         return gob;
+                                    }
                                 }
                             }
                         }
@@ -497,8 +482,8 @@ public class LocalMiniMap extends Widget {
 
     private void setBiome(Coord c) {
         try {
-            if(c.div(cmaps).manhattan2(cc.div(cmaps)) > 1) {return;}
-            int t = mv.ui.sess.glob.map.gettile(c);
+            if(c.sub(delta).div(cmaps).manhattan2(cc.div(cmaps)) > 1) {return;}
+            int t = mv.ui.sess.glob.map.gettile(c.sub(delta));
             Resource r = ui.sess.glob.map.tilesetr(t);
             String newbiome;
             if(r != null) {
@@ -508,7 +493,6 @@ public class LocalMiniMap extends Widget {
             }
             if(!newbiome.equals(biome)) {
                 biome = newbiome;
-               // biometex = Text.renderstroked(prettybiome(biome)).tex();
                 MinimapWnd.biometex = Text.renderstroked(prettybiome(biome)).tex();
             }
         } catch (Loading ignored) {}

@@ -101,7 +101,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public haven.timers.TimersWnd timerswnd;
     public QuickSlotsWdg quickslots;
     public StatusWdg statuswindow;
-    public AlignPanel questpanel;
+    public Window questpanel;
     public static boolean swimon = false;
     public static boolean crimeon = false;
     public static boolean trackon = false;
@@ -924,9 +924,16 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             if (qqview != null)
                 qqview.reqdestroy();
             final Widget cref = qqview = child;
-            questpanel = new AlignPanel() {
+            questpanel = new Window(Coord.z,"Quest Log",true) {
+             //   questpanel = new Window(Coord.z,"Quest Log",true) {
                 {
                     add(cref);
+                }
+
+                public void cresize(Widget ch) {
+                    pack();
+                    if(parent != null)
+                        presize();
                 }
 
                 protected Coord getc() {
@@ -937,8 +944,15 @@ public class GameUI extends ConsoleHost implements Console.Directory {
                     qqview = null;
                     destroy();
                 }
+                @Override
+                public void wdgmsg(Widget sender, String msg, Object... args) {
+                    if (sender == cbtn)
+                        this.hide();
+                    else
+                        super.wdgmsg(sender, msg, args);
+                }
             };
-            add(questpanel);
+            add(questpanel, c);
             if (Config.noquests)
                 questpanel.hide();
         } else if (place == "misc") {

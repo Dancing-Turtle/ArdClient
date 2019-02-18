@@ -74,7 +74,7 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import javax.security.auth.login.LoginException;
 
 public class ChatUI extends Widget {
-    private static final Resource alarmsfx = Resource.local().loadwait("sfx/chatalarm");
+    private static final Resource alarmsfx = Resource.local().loadwait("sfx/Ding");
     public static final RichText.Foundry fnd = new RichText.Foundry(new ChatParser(TextAttribute.FONT, Text.dfont.deriveFont((float)Config.fontsizechat)));
     public static final Text.Foundry qfnd = new Text.Foundry(Text.dfont, 12, new java.awt.Color(192, 255, 192));
     public static final int selw = 130;
@@ -1546,8 +1546,8 @@ try {
             } else {
                 resize(sz.x, savedh = Math.max(111, sz.y + doff.y - c.y));
                 GameUI gui = gameui();
-                if (gui.questpanel != null)
-                    gui.questpanel.c = new Coord(10, gui.sz.y - gui.chat.sz.y - gui.beltwdg.sz.y - gui.questpanel.sz.y - 10);
+              //  if (gui.questpanel != null)
+                  //  gui.questpanel.c = new Coord(10, gui.sz.y - gui.chat.sz.y - gui.beltwdg.sz.y - gui.questpanel.sz.y - 10);
             }
         } else {
             super.mousemove(c);

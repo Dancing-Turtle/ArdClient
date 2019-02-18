@@ -138,7 +138,7 @@ public class Buff extends Widget implements ItemInfo.ResOwner {
             Double cmeter;
             if (this.cmeter >= 0) {
                 double m = this.cmeter;
-                if(cmrem >= 0) {
+                if (cmrem >= 0) {
                     double ot = cmrem;
                     double pt = Utils.rtime() - gettime;
                     m *= (ot - pt) / ot;
@@ -155,6 +155,15 @@ public class Buff extends Widget implements ItemInfo.ResOwner {
                 g.chcolor(255, 255, 255, a);
             }
         } catch (Loading e) {
+        }
+        if (this.ameter >= 0) {
+            final int width = FastText.textw(this.ameter + "");
+            final Coord c = new Coord(sz.x / 2 - width / 2, sz.y / 2 - 5);
+            final Coord tsz = new Coord(width, 10);
+            g.chcolor(new Color(64, 64, 64, 215));
+            g.frect(c, c.add(tsz.x, 0), c.add(tsz), c.add(0, tsz.y));
+            g.chcolor();
+            FastText.aprintf(g, sz.div(2), 0.5, 0.5, "%d", this.ameter);
         }
     }
 

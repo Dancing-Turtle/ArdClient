@@ -3,7 +3,6 @@ package haven;
 import java.awt.Color;
 
 public class InventoryStudy extends Inventory {
-    private static final Resource studyalarmsfx = Resource.local().loadwait("sfx/study");
     private Tex[] histtex = null;
     private static final Color histclr = new Color(238, 238, 238, 160);
 
@@ -145,8 +144,8 @@ public class InventoryStudy extends Inventory {
                 if (tt != null)
                     gameui().syslog.append(tt.t + " LP: " + ci.exp, Color.LIGHT_GRAY);
 
-                if (Config.studyalarm)
-                    Audio.play(studyalarmsfx, Config.studyalarmvol);
+                if (!Config.alarmstudy.equals("None"))
+                    Audio.play(Resource.local().loadwait(Config.alarmstudy), Config.studyalarmvol);
 
                 if (Config.autostudy) {
                     Window invwnd = gameui().getwnd("Inventory");

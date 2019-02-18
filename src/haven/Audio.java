@@ -600,7 +600,6 @@ public class Audio {
 
     public static void play(Resource res, double vol)
     {
-        System.out.println("Audio clip : "+res.name+" vol : "+vol);
         play(new Audio.VolAdjust(fromres(res), vol));
     }
 

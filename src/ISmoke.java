@@ -4,22 +4,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import haven.BGL;
-import haven.Coord3f;
-import haven.GLState;
-import haven.GOut;
-import haven.Gob;
+import haven.*;
 import haven.Gob.Overlay.CDel;
-import haven.Location;
-import haven.Material;
 import haven.Material.Res;
-import haven.Message;
-import haven.RenderList;
-import haven.Resource;
 import haven.Skeleton.BoneOffset;
-import haven.Sprite;
-import haven.States;
-import haven.Utils;
 import haven.glsl.Cons;
 import haven.glsl.Expression;
 import haven.glsl.FragmentContext;
@@ -76,7 +64,9 @@ public class ISmoke extends Sprite implements CDel {
 
         Resource ownres = owner.getres();
         if (ownres.name.endsWith("tarkiln")) {
-            if (boffid.equals("s0")) {
+            if(Config.disabletarkiln)
+                spawn = false;
+            else if (boffid.equals("s0")) {
                 loc = GLState.compose(Location.xlate(new Coord3f(0, 0, 12)));
                 srad = 90.0F / 10.F;
                 den = 60.0F;
