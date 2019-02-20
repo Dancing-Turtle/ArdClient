@@ -530,7 +530,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             type = Type.DFRAME;
         else if (name.endsWith("/gardenpot"))
             type = Type.GARDENPOT;
-        else if (name.endsWith("/mussels"))
+        else if (name.endsWith("/mussels") || name.endsWith("/oyster"))
             type = Type.MUSSEL;
         else if(name.endsWith("/clay-gray"))
             type = Type.CLAY;

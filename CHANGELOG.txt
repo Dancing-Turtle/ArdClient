@@ -1,3 +1,9 @@
+1.00.84
+Added Oysters to the mussel autopicker. 
+Added Oysters/Jellyfish to hide and alarm lists.
+Added gray clay to the hide list.
+~
+
 1.00.83
 Added soapstone and orthoclase to stones to drop while mining. 
 Added apatite boulder type.

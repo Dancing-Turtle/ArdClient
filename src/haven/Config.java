@@ -411,7 +411,7 @@ public class Config {
         put("persimmontree", new CheckListboxItem("Persimmon"));
     }};
 
-    public final static HashMap<String, CheckListboxItem> icons = new HashMap<String, CheckListboxItem>(48) {{
+    public final static HashMap<String, CheckListboxItem> icons = new HashMap<String, CheckListboxItem>(55) {{
         put("dandelion", new CheckListboxItem("Dandelion"));
         put("chantrelle", new CheckListboxItem("Chantrelle"));
         put("blueberry", new CheckListboxItem("Blueberry"));
@@ -464,9 +464,12 @@ public class Config {
         put("greenkelp", new CheckListboxItem("Green Kelp"));
         put("waterstrider", new CheckListboxItem("Water Strider"));
         put("frogspawn", new CheckListboxItem("Frog Spawn"));
+        put("oyster",new CheckListboxItem("Oysters"));
+        put("jellyfish", new CheckListboxItem("Jellyfish"));
+        put("clay-gray",new CheckListboxItem("Gray Clay"));
     }};
 
-    public final static HashMap<String, CheckListboxItem> flowermenus = new HashMap<String, CheckListboxItem>(26) {{
+    public final static HashMap<String, CheckListboxItem> flowermenus = new HashMap<String, CheckListboxItem>(30) {{
         put("Pick", new CheckListboxItem("Pick", Resource.BUNDLE_FLOWER));
         put("Drink", new CheckListboxItem("Drink", Resource.BUNDLE_FLOWER));
         put("Harvest", new CheckListboxItem("Harvest", Resource.BUNDLE_FLOWER));
@@ -540,7 +543,7 @@ public class Config {
         put("Easter Egg", new CheckListboxItem("Easter Egg"));
     }};
 
-    public final static Map<String, Tex> additonalicons = new HashMap<String, Tex>(16) {{
+    public final static Map<String, Tex> additonalicons = new HashMap<String, Tex>(17) {{
         put("gfx/terobjs/vehicle/bram", Resource.loadtex("gfx/icons/bram"));
         put("gfx/kritter/toad/toad", Resource.loadtex("gfx/icons/toad"));
         put("gfx/terobjs/vehicle/rowboat", Resource.loadtex("gfx/icons/rowboat"));
@@ -560,7 +563,7 @@ public class Config {
         put("gfx/kritter/nidbane/nidbane", Resource.loadtex("gfx/icons/spooky"));
     }};
 
-    public final static HashMap<String, CheckListboxItem> alarmitems = new HashMap<String, CheckListboxItem>(45) {{
+    public final static HashMap<String, CheckListboxItem> alarmitems = new HashMap<String, CheckListboxItem>(49) {{
         put("gfx/terobjs/herbs/flotsam", new CheckListboxItem("Peculiar Flotsam"));
         put("gfx/terobjs/herbs/chimingbluebell", new CheckListboxItem("Chiming Bluebell"));
         put("gfx/terobjs/herbs/edelweiss", new CheckListboxItem("Edelweiß"));
@@ -608,6 +611,8 @@ public class Config {
         put("gfx/terobjs/herbs/greenkelp", new CheckListboxItem("Green Kelp"));
         put("gfx/terobjs/herbs/yarrow", new CheckListboxItem("Yarrow"));
         put("gfx/terobjs/herbs/candleberry", new CheckListboxItem("Candleberry"));
+        put("gfx/terobjs/herbs/oyster", new CheckListboxItem("Oysters"));
+        put("gfx/kritter/jellyfish/jellyfish", new CheckListboxItem("Jellyfish"));
     }};
 
     public final static Set<String> locres = new HashSet<String>(Arrays.asList(
