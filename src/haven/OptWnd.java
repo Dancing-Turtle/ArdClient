@@ -873,6 +873,18 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
+        appender.add(new CheckBox("Colorful Cave Dust") {
+            {
+                a = Config.colorfulcaveins;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("colorfulcaveins", val);
+                Config.colorfulcaveins = val;
+                a = val;
+            }
+        });
+        appender.addRow(new Label("Cave-in Warning Dust Duration in Minutes"),makeCaveInDropdown());
         appender.add(new CheckBox("Double animal radius size.") {
             {
                 a = Config.doubleradius;
@@ -2888,6 +2900,37 @@ public class OptWnd extends Window {
         soundalarms.pack();
     }
 
+    private static final List<Integer> caveindust = Arrays.asList(1, 2, 5, 10, 15, 30, 45, 60, 120);
+    private Dropbox<Integer> makeCaveInDropdown() {
+        List<String> values = caveindust.stream().map(x -> x.toString()).collect(Collectors.toList());
+        return new Dropbox<Integer>(9, values) {
+            {
+                super.change(null);
+            }
+            @Override
+            protected Integer listitem(int i) {
+                return caveindust.get(i);
+            }
+
+            @Override
+            protected int listitems() {
+                return caveindust.size();
+            }
+
+            @Override
+            protected void drawitem(GOut g, Integer item, int i) {
+                g.text(item.toString(), Coord.z);
+            }
+
+            @Override
+            public void change(Integer item) {
+                super.change(item);
+                Config.caveinduration = item;
+                Utils.setprefi("caveinduration", item);
+            }
+        };
+    }
+
 
     private Dropbox<Locale> langDropdown() {
         List<Locale> languages = enumerateLanguages();
@@ -3078,6 +3121,8 @@ public class OptWnd extends Window {
             }
         };
     }
+
+
 
     private static final List<Integer> afkTime = Arrays.asList(0,5,10,15,20,25,30,45,60);
     private Dropbox<Integer> makeafkTimeDropdown() {

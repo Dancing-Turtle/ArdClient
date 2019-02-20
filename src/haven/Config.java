@@ -202,6 +202,8 @@ public class Config {
     public static boolean bonsai = Utils.getprefb("bonsai", false);
     public static int fontsizechat = Utils.getprefi("fontsizechat", 14);
     public static int statgainsize = Utils.getprefi("statgainsize", 1);
+    public static int caveinduration = Utils.getprefi("caveinduration", 1);
+    public static boolean colorfulcaveins = Utils.getprefb("colorfulcaveins", false);
     public static boolean fontaa = Utils.getprefb("fontaa", false);
     public static boolean usefont = Utils.getprefb("usefont", false);
     public static String font = Utils.getpref("font", "SansSerif");

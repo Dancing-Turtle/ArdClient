@@ -1,3 +1,7 @@
+1.00.85
+New display settings for cave-in warning dust, colorful dust and the duration are now variable.
+~
+
 1.00.84
 Added Oysters to the mussel autopicker. 
 Added Oysters/Jellyfish to hide and alarm lists.

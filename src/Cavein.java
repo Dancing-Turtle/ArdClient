@@ -1,23 +1,12 @@
-import haven.Material;
+import haven.*;
+
 import java.awt.Color;
-import haven.Light;
-import haven.RenderList;
 import java.util.Iterator;
-import haven.Utils;
-import haven.BGL;
 import java.nio.Buffer;
-import haven.GOut;
 import java.util.LinkedList;
-import haven.Message;
-import haven.Resource;
-import haven.Coord;
-import haven.Coord3f;
 import java.nio.FloatBuffer;
 import java.util.Random;
 import java.util.List;
-import haven.GLState;
-import haven.Gob;
-import haven.Sprite;
 
 //
 // Decompiled by Procyon v0.5.30
@@ -48,8 +37,8 @@ public class Cavein extends Sprite implements Gob.Overlay.CDel
         this.str = message.uint8();
         this.sz = new Coord(message.uint8(), message.uint8());
         this.off = new Coord3f(-this.sz.x / 2.0f, -this.sz.y / 2.0f, (float)message.uint8());
-        this.life = 60 * 30;//make dust last 30 minutes
-               // message.uint8();
+        this.life = 60 * Config.caveinduration;//make dust last however many minutes selected in display settings
+               // message.uint8(); default value
     }
 
     public void draw(final GOut gOut) {
@@ -126,12 +115,15 @@ public class Cavein extends Sprite implements Gob.Overlay.CDel
     }
 
     static {
-      //  mat = (GLState)new Material.Colors(new Color(255, 255, 255), new Color(255, 255, 255), new Color(128, 128, 128), new Color(0, 0, 0), 1.0f);
-        Random rnd = new Random();
-        mat = new haven.Material.Colors(new Color(rnd.nextInt(256),rnd.nextInt(256),rnd.nextInt(256)),
-                new Color(rnd.nextInt(256),rnd.nextInt(256),rnd.nextInt(256)),
-                new Color(rnd.nextInt(256),rnd.nextInt(256),rnd.nextInt(256)),
-                new Color(0,0,0), 1.0F);
+      if(!Config.colorfulcaveins)
+       mat = (GLState)new Material.Colors(new Color(255, 255, 255), new Color(255, 255, 255), new Color(128, 128, 128), new Color(0, 0, 0), 1.0f);
+      else {
+          Random rnd = new Random();
+          mat = new haven.Material.Colors(new Color(rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256)),
+                  new Color(rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256)),
+                  new Color(rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256)),
+                  new Color(0, 0, 0), 1.0F);
+      }
     }
 
     class Boll
