@@ -1,5 +1,7 @@
 package haven;
 
+import haven.purus.BotUtils;
+
 import java.awt.Color;
 import java.util.Collection;
 import java.util.HashMap;
@@ -7,8 +9,8 @@ import java.util.HashSet;
 import java.util.Map;
 
 public class PartyHighlight {
-    public static final Color PLAYER_OL_COLOR = new Color(255, 255, 255, 128);
-    public static final Color MEMBER_OL_COLOR = new Color(0, 255, 0, 128);
+    public static final Color PLAYER_OL_COLOR = new Color(255, 255, 255, 255);
+    public static final Color MEMBER_OL_COLOR = new Color(0, 255, 0, 255);
 
     private final Party party;
     private final long playerId;
@@ -22,14 +24,14 @@ public class PartyHighlight {
 
     public void update() {
         Collection<Gob> old = new HashSet<Gob>(overlays.keySet());
-        if (party.memb.size() > 1) {
+        if (party.memb.size() > 0) {
             for (Party.Member m : party.memb.values()) {
                 Gob gob = m.getgob();
                 if (gob == null)
                     continue;
-                if (Config.partycircles)
+                if (Config.partycircles && m.gobid != playerId)
                     highlight(gob, MEMBER_OL_COLOR);
-                else if(Config.playercircle)
+                else if (Config.playercircle && m.gobid == playerId)
                     highlight(gob, PLAYER_OL_COLOR);
                 else
                     unhighlight(gob);

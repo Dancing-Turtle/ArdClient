@@ -63,10 +63,11 @@ public class ISmoke extends Sprite implements CDel {
         this.srad = (float) sdt.uint8() / 10.0F;
 
         Resource ownres = owner.getres();
+        CheckListboxItem itm = Config.disableanim.get(ownres.name);
+        if (itm != null && itm.selected)
+            spawn = false;
         if (ownres.name.endsWith("tarkiln")) {
-            if(Config.disabletarkiln)
-                spawn = false;
-            else if (boffid.equals("s0")) {
+            if (boffid.equals("s0")) {
                 loc = GLState.compose(Location.xlate(new Coord3f(0, 0, 12)));
                 srad = 90.0F / 10.F;
                 den = 60.0F;

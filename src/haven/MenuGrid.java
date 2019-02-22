@@ -419,9 +419,9 @@ public class MenuGrid extends Widget {
             p.add(paginafor(Resource.local().load("paginae/amber/OpenRacks")));
             p.add(paginafor(Resource.local().load("paginae/amber/CountGobs")));
          //   p.add(paginafor(Resource.local().load("paginae/amber/ShieldChecker")));
-            p.add(paginafor(Resource.local().load("paginae/amber/PepperBot")));
+         //   p.add(paginafor(Resource.local().load("paginae/amber/PepperBot")));
             p.add(paginafor(Resource.local().load("paginae/amber/MothKiller")));
-            try {
+/*            try {
                 URL url = new URL("https://ardenneslol.github.io/Hafen/WhiteList.txt");
                 HttpURLConnection conn=(HttpURLConnection) url.openConnection();
                 conn.setConnectTimeout(60000); // timing out in a minute
@@ -430,14 +430,14 @@ public class MenuGrid extends Widget {
                 str = in.readLine();
                 String[] values = str.split(";");
                 in.close();
-                if(Arrays.asList(values).contains(ui.sess.username)) {
+                if(Arrays.asList(values).contains(ui.sess.username)) {*/
                     p.add(paginafor(Resource.local().load("paginae/amber/FlaxBot")));
                     p.add(paginafor(Resource.local().load("paginae/amber/PepperBotPro")));
-                }
+               // }
 
-            }catch(FileNotFoundException | MalformedURLException notfound){} catch (IOException e) {
-                e.printStackTrace();
-            }
+           // }catch(FileNotFoundException | MalformedURLException notfound){} catch (IOException e) {
+               // e.printStackTrace();
+          //  }
             p.add(paginafor(Resource.local().load("paginae/amber/TakeTrays")));
            // p.add(paginafor(Resource.local().load("paginae/amber/CraftAllBot")));
             p.add(paginafor(Resource.local().load("paginae/amber/PepperFood")));

@@ -86,6 +86,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     private int MinerDrinkTimer, StarvationAlertDelay;
     public WItem vhand;
     public ChatUI chat;
+    public Window ChatWnd;
     private int saferadius = 1;
     public Speedget speedget;
     public ChatUI.Channel syslog;
@@ -848,7 +849,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         } else if (place == "equ") {
             equwnd = new Hidewnd(Coord.z, "Equipment");
             equipory = equwnd.add((Equipory) child, Coord.z);
-          //  equwnd.add(child, Coord.z);
             equwnd.pack();
             equwnd.hide();
             add(equwnd, new Coord(400, 10));
@@ -869,7 +869,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             if(Config.fepmeter)
             	addcmeter(new FepMeter(chrwdg.feps));
         } else if (place == "craft") {
-            //final Widget mkwdg = child;
                 if(makewnd == null) {
                     makewnd = add(new CraftWindow(), new Coord(400, 200));
                 }
@@ -877,27 +876,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
                 makewnd.pack();
                 makewnd.raise();
                 makewnd.show();
-
-            /*final Widget mkwdg = child;
-            makewnd = new Window(Coord.z, "Crafting", true) {
-                public void wdgmsg(Widget sender, String msg, Object... args) {
-                    if ((sender == this) && msg.equals("close")) {
-                        mkwdg.wdgmsg("close");
-                        return;
-                    }
-                    super.wdgmsg(sender, msg, args);
-                }
-
-                public void cdestroy(Widget w) {
-                    if (w == mkwdg) {
-                        ui.destroy(this);
-                        makewnd = null;
-                    }
-                }
-            };
-            makewnd.add(mkwdg, Coord.z);
-            makewnd.pack();
-            add(makewnd, new Coord(400, 200));*/
         } else if (place == "buddy") {
             zerg.ntab(buddies = (BuddyWnd) child, zerg.kin);
         } else if (place == "pol") {
@@ -1260,6 +1238,15 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             g.image(menubg, Coord.z);
             super.draw(g);
         }
+    }
+
+    public void SwitchTargets() {
+        Fightview.Relation cur = fv.current;
+        if (cur != null) {
+            fv.lsrel.remove(cur);
+            fv.lsrel.addLast(cur);
+        }
+        fv.wdgmsg("bump", (int) fv.lsrel.get(0).gobid);
     }
 
     public void toggleGobs(){

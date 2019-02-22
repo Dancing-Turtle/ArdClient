@@ -235,16 +235,6 @@ public class OptWnd extends Window {
                         a = val;
                     }
                 });
-                appender.add(new CheckBox("Disable tarkiln smoke") {
-                    {
-                        a = Config.disabletarkiln;
-                    }
-                    public void set(boolean val) {
-                        Config.disabletarkiln = val;
-                        Utils.setprefb("disabletarkiln", val);
-                        a = val;
-                    }
-                });
                 appender.add(new CheckBox("Disable terrain smoothing (requires logout)") {
                     {
                         a = Config.disableterrainsmooth;
@@ -1139,7 +1129,7 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
-        appender.add(new CheckBox("Draw circles around kinned players") {
+        appender.add(new CheckBox("Draw circles around party members.") {
             {
                 a = Config.partycircles;
             }
@@ -1147,6 +1137,17 @@ public class OptWnd extends Window {
             public void set(boolean val) {
                 Utils.setprefb("partycircles", val);
                 Config.partycircles = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Draw circles around kinned players") {
+            {
+                a = Config.kincircles;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("kincircles", val);
+                Config.kincircles = val;
                 a = val;
             }
         });

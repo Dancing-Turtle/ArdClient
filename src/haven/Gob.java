@@ -880,8 +880,17 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
         if (sp != null)
             rl.add(sp.fx, null);
         KinInfo ki = getattr(KinInfo.class);
-        if (ki != null)
+        if (ki != null) {
             rl.add(ki.fx, null);
+            if(!playerhighlight.containsKey(this)) {
+                Resource res = getres();
+                if (res != null && res.name.contains("body") && !isplayer()) {
+                    Overlay overlay = new Gob.Overlay(new PartyMemberOutline(this, BuddyWnd.gc[ki.group]));
+                    ols.add(overlay);
+                    playerhighlight.put(this, overlay);
+                }
+            }
+        }
         return (false);
     }
 

@@ -609,8 +609,11 @@ if(delta.intValue() > 10000)
         }
     }
 
+
+
     public boolean globtype(char key, KeyEvent ev) {
-        if (ev.getKeyCode() == KeyEvent.VK_TAB) {
+        //depreciated by SwitchTargets keybind
+      /*  if (ev.getKeyCode() == KeyEvent.VK_TAB) {
             Fightview.Relation cur = fv.current;
             if (cur != null) {
                 fv.lsrel.remove(cur);
@@ -618,7 +621,7 @@ if(delta.intValue() > 10000)
             }
             fv.wdgmsg("bump", (int) fv.lsrel.get(0).gobid);
             return (true);
-        }
+        }*/
 
         int n = -1;
         if (Config.combatkeys == 0) {

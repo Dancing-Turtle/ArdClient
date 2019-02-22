@@ -1,3 +1,13 @@
+1.00.86
+Fixed minimap clicks having offset applied twice.
+Added seperate toggle to draw circles around all Kin, separate from drawing circles around Party. Also under display options.
+Publicized flax bot and the improved pepper bot, go nuts. Fuck Jorb. Flax bot is best used on wide open fields with lots of empty barrels, by a farmer with crawl speed left on 24/7. Will continously harvest flax, replant highest quality, and barrel leftover seeds generating near-infinite animal fodder while also raising flax quality continuously.
+Added toggle to disable village idol smoke.
+Added toggle to disable steel crucible smoke (I don't know if this works, I don't have steel crucibles.)
+Made target switching a keybind.
+Fixed dead bats not being picked up by hitting Q (Pick Forageables Keybind) - The fix was adding them to the minimap hide list, which I also did.
+~
+
 1.00.85
 New display settings for cave-in warning dust, colorful dust and the duration are now variable.
 ~

@@ -161,7 +161,7 @@ public class Config {
     public static boolean showcupboardstatus = Utils.getprefb("showcupboardstatus", true);
     public static boolean enableorthofullzoom = Utils.getprefb("enableorthofullzoom", false);
     public static boolean partycircles =  Utils.getprefb("partycircles", false);
-    public static boolean disabletarkiln =  Utils.getprefb("disabletarkiln", false);
+    public static boolean kincircles =  Utils.getprefb("kincircles", false);
     public static boolean playercircle =  Utils.getprefb("playercircle", false);
     public static boolean stranglevinecircle =  Utils.getprefb("stranglevinecircle", false);
     public static boolean doubleradius =  Utils.getprefb("doubleradius", false);
@@ -413,7 +413,7 @@ public class Config {
         put("persimmontree", new CheckListboxItem("Persimmon"));
     }};
 
-    public final static HashMap<String, CheckListboxItem> icons = new HashMap<String, CheckListboxItem>(55) {{
+    public final static HashMap<String, CheckListboxItem> icons = new HashMap<String, CheckListboxItem>(56) {{
         put("dandelion", new CheckListboxItem("Dandelion"));
         put("chantrelle", new CheckListboxItem("Chantrelle"));
         put("blueberry", new CheckListboxItem("Blueberry"));
@@ -469,6 +469,7 @@ public class Config {
         put("oyster",new CheckListboxItem("Oysters"));
         put("jellyfish", new CheckListboxItem("Jellyfish"));
         put("clay-gray",new CheckListboxItem("Gray Clay"));
+        put("bat", new CheckListboxItem("Bats"));
     }};
 
     public final static HashMap<String, CheckListboxItem> flowermenus = new HashMap<String, CheckListboxItem>(30) {{
@@ -692,6 +693,9 @@ public class Config {
         put("gfx/terobjs/pow", new CheckListboxItem("Fires"));
         put("gfx/terobjs/stockpile-trash", new CheckListboxItem("Full trash stockpiles"));
         put("/idle", new CheckListboxItem("Idle animals"));
+        put("gfx/terobjs/steelcrucible", new CheckListboxItem("Steel Crucible"));
+        put("gfx/terobjs/villageidol", new CheckListboxItem("Village Idol"));
+        put("gfx/terobjs/tarkiln",new CheckListboxItem("Tar Kilns"));
     }};
 
     public final static HashMap<String, String> alarms = new HashMap<String,String>(31){{

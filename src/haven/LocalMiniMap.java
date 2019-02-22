@@ -652,7 +652,7 @@ public class LocalMiniMap extends Widget {
         if (button != 2) {
             if (cc == null)
                 return false;
-            Coord csd = c.sub(delta);
+            Coord csd = c;
             Coord2d mc = c2p(csd);
             if (button == 1)
                 MapView.pllastcc = mc;
