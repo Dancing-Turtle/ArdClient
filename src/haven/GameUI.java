@@ -1245,8 +1245,8 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         if (cur != null) {
             fv.lsrel.remove(cur);
             fv.lsrel.addLast(cur);
-        }
         fv.wdgmsg("bump", (int) fv.lsrel.get(0).gobid);
+        }
     }
 
     public void toggleGobs(){

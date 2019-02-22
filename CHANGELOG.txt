@@ -1,3 +1,7 @@
+1.00.87
+Fixed dipshit crash caused by hitting switch targets while not actually in combat, derp.
+~
+
 1.00.86
 Fixed minimap clicks having offset applied twice.
 Added seperate toggle to draw circles around all Kin, separate from drawing circles around Party. Also under display options.
