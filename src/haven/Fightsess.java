@@ -53,6 +53,7 @@ public class Fightsess extends Widget {
     public int use = -1, useb = -1;
     public Coord pcc,pcc2;
     public int pho;
+    private double lastuse, now = 0;
     private Fightview fv;
     private final Tex[] keystex = new Tex[10];
     private final Tex[] keysftex = new Tex[10];
@@ -79,6 +80,8 @@ public class Fightsess extends Widget {
     public static class $_ implements Factory {
         public Widget create(UI ui, Object[] args) {
             int nact = (Integer)args[0];
+            if(!Config.attackedsfx.equals("None"))
+                Audio.play(Resource.local().loadwait(Config.attackedsfx), Config.attackedvol);
             return(new Fightsess(nact));
         }
     }
@@ -408,7 +411,7 @@ if(delta.intValue() > 10000)
                     }
 
                     if (Config.combshowkeys) {
-                    	
+
                     	Tex key;
                     	if(Config.combatkeys == 0)
                     	{
@@ -610,19 +613,10 @@ if(delta.intValue() > 10000)
     }
 
 
+    private int last_button = -1;
+    private long last_sent = System.currentTimeMillis();
 
     public boolean globtype(char key, KeyEvent ev) {
-        //depreciated by SwitchTargets keybind
-      /*  if (ev.getKeyCode() == KeyEvent.VK_TAB) {
-            Fightview.Relation cur = fv.current;
-            if (cur != null) {
-                fv.lsrel.remove(cur);
-                fv.lsrel.addLast(cur);
-            }
-            fv.wdgmsg("bump", (int) fv.lsrel.get(0).gobid);
-            return (true);
-        }*/
-
         int n = -1;
         if (Config.combatkeys == 0) {
             if ((key == 0) && (ev.getModifiersEx() & (InputEvent.CTRL_DOWN_MASK | KeyEvent.META_DOWN_MASK | KeyEvent.ALT_DOWN_MASK)) == 0) {
@@ -656,7 +650,7 @@ if(delta.intValue() > 10000)
         }
         else { // F1-F10
 	        if (key == 0) {
-	
+
 	            switch(ev.getKeyCode()) {
 	                case KeyEvent.VK_F1: n = 0; break;
 	                case KeyEvent.VK_F2: n = 1; break;
@@ -673,24 +667,13 @@ if(delta.intValue() > 10000)
         }
 
         int fn = n;
-        if ((n >= 0) && (n < actions.length)) {
-            MapView map = getparent(GameUI.class).map;
-            Coord mvc = map.rootxlate(ui.mc);
-            if (mvc.isect(Coord.z, map.sz)) {
-                map.delay(map.new Maptest(mvc) {
-                    protected void hit(Coord pc, Coord2d mc) {
-                        wdgmsg("use", fn, 1, ui.modflags(), mc.floor(OCache.posres));
-                    }
-
-                    protected void nohit(Coord pc) {
-                        wdgmsg("use", fn, 1, ui.modflags());
-                    }
-                });
-            }
+	    if ((n >= 0) && (n < actions.length) && (last_button != n || (System.currentTimeMillis() - last_sent) >= 150)) {
+            wdgmsg("use", fn, 1, ui.modflags());
+            System.out.println("Use: " + fn);
+            last_button = fn;
+            last_sent = System.currentTimeMillis();
             return (true);
         }
-
-
         return(super.globtype(key, ev));
     }
 }

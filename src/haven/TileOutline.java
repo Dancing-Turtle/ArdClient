@@ -64,7 +64,7 @@ public class TileOutline implements Rendered {
     }
 
     private Coord3f mapToScreen(Coord c) {
-        return new Coord3f((float) ((c.x - ul.x) * tilesz.x), (float) (-(c.y - ul.y) * tilesz.y), Config.disableelev ? 0 : map.getz(c));
+        return new Coord3f((float) ((c.x - ul.x) * tilesz.x), (float) (-(c.y - ul.y) * tilesz.y), Config.disableelev ? 0 : map.getz_safe(c));
     }
 
     private void addLineStrip(Coord3f... vertices) {

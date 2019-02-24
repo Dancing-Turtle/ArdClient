@@ -63,6 +63,9 @@ public class ISmoke extends Sprite implements CDel {
         this.srad = (float) sdt.uint8() / 10.0F;
 
         Resource ownres = owner.getres();
+       // if(ownres.basename().equals("clue") && clr == 35058)  //this is the clr for trespassing, need to get the rest.
+         //   spawn = false;
+       // System.out.println("ownres : "+ownres.name + "clr : "+clr);
         CheckListboxItem itm = Config.disableanim.get(ownres.name);
         if (itm != null && itm.selected)
             spawn = false;

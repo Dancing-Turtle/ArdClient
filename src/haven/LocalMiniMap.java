@@ -652,11 +652,11 @@ public class LocalMiniMap extends Widget {
         if (button != 2) {
             if (cc == null)
                 return false;
-            Coord csd = c;
+            Coord csd = c.sub(delta);
             Coord2d mc = c2p(csd);
             if (button == 1)
                 MapView.pllastcc = mc;
-            Gob gob = findicongob(csd);
+            Gob gob = findicongob(csd.add(delta));
             if (gob == null) {
                 mv.wdgmsg("click", rootpos().add(csd), mc.floor(posres), button, ui.modflags());
             } else {

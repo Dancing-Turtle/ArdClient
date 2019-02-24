@@ -43,6 +43,7 @@ public class Equipory extends Widget implements DTarget {
     private static final int acx = 34 + bg.sz().x / 2;
     private static final Text.Foundry acf = new Text.Foundry(Text.sans, Text.cfg.def).aa(true);
     private Tex armorclass = null;
+    private Tex percexp = null;
     private List <GItem> checkForDrop = new LinkedList<GItem>();
     public static final Coord ecoords[] = {
             new Coord(0, 0),
@@ -155,7 +156,7 @@ public class Equipory extends Widget implements DTarget {
     	    if (!checkForDrop.isEmpty()) {
     		GItem g = checkForDrop.get(0);
     		if (g.resource().name.equals("gfx/invobjs/leech")) {
-    			 g.drop = true; 
+    			 g.drop = true;
     			//ui.gui.map.wdgmsg("drop", Coord.z);
     		}
     		checkForDrop.remove(0);
@@ -187,6 +188,10 @@ public class Equipory extends Widget implements DTarget {
                 armorclass.dispose();
                 armorclass = null;
             }
+        if (percexp != null) {
+            percexp.dispose();
+            percexp = null;
+        }
         } else {
             super.addchild(child, args);
         }
@@ -215,6 +220,10 @@ public class Equipory extends Widget implements DTarget {
         if (armorclass != null) {
             armorclass.dispose();
             armorclass = null;
+        }
+        if (percexp != null) {
+            percexp.dispose();
+            percexp = null;
         }
 	    bonuses.update(slots);
         }
@@ -277,7 +286,6 @@ public class Equipory extends Widget implements DTarget {
     public void draw(GOut g) {
         drawslots(g);
         super.draw(g);
-
         if (armorclass == null) {
             int h = 0, s = 0;
             try {
@@ -299,6 +307,26 @@ public class Equipory extends Widget implements DTarget {
         }
         if (armorclass != null)
             g.image(armorclass, new Coord(acx - armorclass.sz().x / 2, bg.sz().y - armorclass.sz().y));
+        if (percexp == null) {
+            int h = 0, s = 0, x;
+            CharWnd chrwdg = null;
+            try {
+             //   chrwdg = ((GameUI) parent).chrwdg;
+                chrwdg = gameui().chrwdg;
+                for (CharWnd.Attr attr : chrwdg.base) {
+                   if (attr.attr.nm.contains("prc"))
+                            h = attr.attr.comp;
+                }
+                for (CharWnd.SAttr attr : chrwdg.skill)
+                    if(attr.attr.nm.contains("exp"))
+                        s = attr.attr.comp;
+                x = h * s;
+                percexp = Text.render(Resource.getLocString(Resource.BUNDLE_LABEL, "Perc*Exp: ") + x, Color.BLACK, acf).tex();
+            } catch (Exception e) { // fail silently
+            }
+        }
+        if (percexp != null)
+            g.image(percexp, new Coord(acx - percexp.sz().x / 2, bg.sz().y - percexp.sz().y - 10));
     }
 
     public boolean iteminteract(Coord cc, Coord ul) {

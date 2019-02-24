@@ -51,7 +51,9 @@ public class Config {
     public static boolean nopreload = false;
     public static int mainport = 1870;
     public static int authport = 1871;
+    public static boolean lowerterraindistance = Utils.getprefb("lowerterraindistance", false);
     public static boolean hidesky = Utils.getprefb("hidesky", false);
+    public static boolean noloadscreen = Utils.getprefb("noloadscreen", true);
     public static URL screenurl = geturl("http://game.havenandhearth.com/mt/ss");
     public static boolean hideflocomplete = Utils.getprefb("hideflocomplete", false);
     public static boolean hideflovisual = Utils.getprefb("hideflovisual", false);
@@ -253,6 +255,17 @@ public class Config {
     public static int cRackblue = Utils.getprefi("cRackblue",255);
     public static String confid = "ArdClient";
     public static final boolean isUpdate;
+
+    public static int AmbientRed = Utils.getprefi("AmbientRed",200);
+    public static int AmbientGreen = Utils.getprefi("AmbientGreen",200);
+    public static int AmbientBlue = Utils.getprefi("AmbientBlue",200);
+    public static int DiffuseRed = Utils.getprefi("DiffuseRed",200);
+    public static int DiffuseGreen = Utils.getprefi("DiffuseGreen",200);
+    public static int DiffuseBlue = Utils.getprefi("DiffuseBlue",200);
+    public static int SpecRed = Utils.getprefi("SpecRed",255);
+    public static int SpecGreen = Utils.getprefi("SpecGreen",255);
+    public static int SpecBlue = Utils.getprefi("SpecBlue",255);
+
     public static boolean chatalarm = Utils.getprefb("chatalarm", true);
     public static double chatalarmvol = Utils.getprefd("chatalarmvol", 0.8);
     public static boolean timersalarm = Utils.getprefb("timersalarm", false);
@@ -281,7 +294,6 @@ public class Config {
     public static String alarmeagle = Utils.getpref("alarmeagle", "sfx/EagleScreech");
     public static double alarmeaglevol = Utils.getprefd("alarmeaglevol", 0.32);
     public static String alarmdoomed = Utils.getpref("alarmdoomed", "sfx/Doomed");
-    public static double alarmdoomedvol = Utils.getprefd("alarmdoomedvol", 0.32);
     public static String alarmwball = Utils.getpref("alarmwball", "sfx/WreckingBall");
     public static double alarmwballvol = Utils.getprefd("alarmwballvol", 1.0D);
     public static String alarmswag = Utils.getpref("alarmswag", "sfx/Swag");
@@ -293,14 +305,16 @@ public class Config {
     public static String alarmdungeon = Utils.getpref("alarmdungeon", "sfx/Zelda");
     public static double alarmdungeonvol = Utils.getprefd("alarmdungeonvol", 1.0D);
     public static String alarmbeaverdungeon = Utils.getpref("alarmbeaverdungeon", "sfx/BeaverDungeon");
-    public static double alarmbeaverdungeonvol = Utils.getprefd("alarmbeaverdungeonvol", 0.32);
     public static String alarmsiege = Utils.getpref("alarmsiege", "sfx/siege");
     public static double alarmbramvol = Utils.getprefd("alarmbramvol", 1.0D);
     public static String alarmstudy = Utils.getpref("alarmstudy","sfx/Study");
     public static double studyalarmvol = Utils.getprefd("studyalarmvol", 0.8);
     public static String cleavesfx = Utils.getpref("cleavesound","sfx/oof");
     public static double cleavesoundvol = Utils.getprefd("cleavesoundvol", 0.8);
+    public static String attackedsfx = Utils.getpref("attackedsfx","None");
+    public static double attackedvol = Utils.getprefd("attackedvol", 0.8);
 
+    public static HashMap<String,Boolean> curioslist = null;
 
 
 
@@ -357,7 +371,7 @@ public class Config {
         put("gorse", new CheckListboxItem("Gorse"));
     }};
 
-    public final static HashMap<String, CheckListboxItem> trees = new HashMap<String, CheckListboxItem>(52) {{
+    public final static HashMap<String, CheckListboxItem> trees = new HashMap<String, CheckListboxItem>(53) {{
         put("chastetree", new CheckListboxItem("Chaste Tree"));
         put("silverfir", new CheckListboxItem("Silver Fir"));
         put("treeheath", new CheckListboxItem("Heath Tree"));
@@ -411,6 +425,7 @@ public class Config {
         put("quincetree", new CheckListboxItem("Quince"));
         put("almondtree", new CheckListboxItem("Almond"));
         put("persimmontree", new CheckListboxItem("Persimmon"));
+        put("mayflower", new CheckListboxItem("Mayflower"));
     }};
 
     public final static HashMap<String, CheckListboxItem> icons = new HashMap<String, CheckListboxItem>(56) {{
@@ -472,7 +487,7 @@ public class Config {
         put("bat", new CheckListboxItem("Bats"));
     }};
 
-    public final static HashMap<String, CheckListboxItem> flowermenus = new HashMap<String, CheckListboxItem>(30) {{
+    public final static HashMap<String, CheckListboxItem> flowermenus = new HashMap<String, CheckListboxItem>(33) {{
         put("Pick", new CheckListboxItem("Pick", Resource.BUNDLE_FLOWER));
         put("Drink", new CheckListboxItem("Drink", Resource.BUNDLE_FLOWER));
         put("Harvest", new CheckListboxItem("Harvest", Resource.BUNDLE_FLOWER));
@@ -503,7 +518,12 @@ public class Config {
         put("Open", new CheckListboxItem("Open", Resource.BUNDLE_FLOWER));
         put("Inspect", new CheckListboxItem("Inspect", Resource.BUNDLE_FLOWER));
         put("Slaughter", new CheckListboxItem("Slaughter", Resource.BUNDLE_FLOWER));
+        put("Crack open", new CheckListboxItem("Crack Open",Resource.BUNDLE_FLOWER));
+        put("Collect coal", new CheckListboxItem("Collect Coal",Resource.BUNDLE_FLOWER));
+        put("Pick leaf", new CheckListboxItem("Pick Leaf",Resource.BUNDLE_FLOWER));
     }};
+
+
 
     public final static HashMap<String, CheckListboxItem> curiolist = new HashMap<String, CheckListboxItem>(37) {{
         put("Bar of Soap", new CheckListboxItem("Bar of Soap"));
@@ -566,7 +586,7 @@ public class Config {
         put("gfx/kritter/nidbane/nidbane", Resource.loadtex("gfx/icons/spooky"));
     }};
 
-    public final static HashMap<String, CheckListboxItem> alarmitems = new HashMap<String, CheckListboxItem>(49) {{
+    public final static HashMap<String, CheckListboxItem> alarmitems = new HashMap<String, CheckListboxItem>(51) {{
         put("gfx/terobjs/herbs/flotsam", new CheckListboxItem("Peculiar Flotsam"));
         put("gfx/terobjs/herbs/chimingbluebell", new CheckListboxItem("Chiming Bluebell"));
         put("gfx/terobjs/herbs/edelweiss", new CheckListboxItem("Edelweiß"));
@@ -616,6 +636,8 @@ public class Config {
         put("gfx/terobjs/herbs/candleberry", new CheckListboxItem("Candleberry"));
         put("gfx/terobjs/herbs/oyster", new CheckListboxItem("Oysters"));
         put("gfx/kritter/jellyfish/jellyfish", new CheckListboxItem("Jellyfish"));
+        put("gfx/terobjs/herbs/seashell",new CheckListboxItem("Rainbowshell"));
+        put("gfx/terobjs/herbs/giantpuffball", new CheckListboxItem("Giant Puff Ball"));
     }};
 
     public final static Set<String> locres = new HashSet<String>(Arrays.asList(
@@ -696,9 +718,21 @@ public class Config {
         put("gfx/terobjs/steelcrucible", new CheckListboxItem("Steel Crucible"));
         put("gfx/terobjs/villageidol", new CheckListboxItem("Village Idol"));
         put("gfx/terobjs/tarkiln",new CheckListboxItem("Tar Kilns"));
+        put("gfx/terobjs/oven",new CheckListboxItem("Ovens"));
+        put("gfx/terobjs/smelter",new CheckListboxItem("Smelters"));
     }};
 
-    public final static HashMap<String, String> alarms = new HashMap<String,String>(31){{
+    public final static HashMap<String, CheckListboxItem> disableshiftclick = new HashMap<String, CheckListboxItem>(7){{
+       put("steelcrucible", new CheckListboxItem("Steel Crucibles"));
+        put("ttub", new CheckListboxItem("Tanning Tub"));
+        put("smelter", new CheckListboxItem("Smelters"));
+        put("oven", new CheckListboxItem("Ovens"));
+        put("kiln", new CheckListboxItem("Kilns"));
+        put("htable", new CheckListboxItem("Herb Tables"));
+        put("cupboard", new CheckListboxItem("Cupboards"));
+    }};
+
+    public final static HashMap<String, String> alarms = new HashMap<String,String>(33){{
         put("None","None");
         put("Pony Alarm","sfx/alarmpony");
         put("Awwwwww Yeah","sfx/awwyeah");
@@ -730,6 +764,8 @@ public class Config {
         put("JColes Wallllllrus","sfx/Walrus");
         put("Wrecking Ball!","sfx/WreckingBall");
         put("Zelda Secret","sfx/Zelda");
+        put("Trumpets","sfx/trumpets");
+        put("No Dick!","sfx/nodick");
     }};
 
     public final static HashMap<String, String[]> cures = new HashMap<String, String[]>(20) {{
@@ -827,7 +863,8 @@ public class Config {
     static {
         Utils.loadprefchklist("disableanim", Config.disableanim);
         Utils.loadprefchklist("alarmitems", Config.alarmitems);
-
+        Utils.loadprefchklist("disableshiftclick", Config.disableshiftclick);
+        Utils.loadCurioList();
         String p;
         if ((p = getprop("haven.authck", null)) != null)
             authck = Utils.hex2byte(p);

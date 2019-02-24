@@ -115,7 +115,6 @@ public class MapWnd extends Window {
     private class ZoomBar extends Widget {
         private final static int btnsz = 21;
         private Tex zoomtex = null;
-
         public ZoomBar() {
             super(new Coord(btnsz * 2 + 20, btnsz));
             add(new IButton("gfx/hud/worldmap/minus", "", "", "") {

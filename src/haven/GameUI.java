@@ -204,7 +204,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         }, new Coord(10, 10));
         buffs = ulpanel.add(new Bufflist(), new Coord(95, 65));
         umpanel.add(new Cal(), new Coord(0, 10));
-        add(new Widget(new Coord(300, 40)) {
+        add(new Widget(new Coord(400, 40)) {
             @Override
             public void draw(GOut g) {
                 if (Config.showservertime) {
@@ -282,6 +282,8 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             saferadius = 2;
         else if(!Config.showTroughrad && !Config.showBeehiverad)
             saferadius = 1;
+
+        fixAlarms();
     }
 
     @Override
@@ -1441,130 +1443,56 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         }
     }
 
+    public void fixAlarms(){ //this is to fix me being a retard and relabeling previously boolean values as strings
+        if(Config.alarmunknownplayer.toLowerCase().equals("true") || Config.alarmunknownplayer.toLowerCase().equals("false"))
+            Utils.setpref("alarmunknownplayer","sfx/OhShitItsAGuy");
+        if(Config.alarmredplayer.toLowerCase().equals("true") || Config.alarmredplayer.toLowerCase().equals("false"))
+            Utils.setpref("alarmredplayer","sfx/Siren");
+        if(Config.alarmforagable.toLowerCase().equals("true") || Config.alarmforagable.toLowerCase().equals("false"))
+            Utils.setpref("alarmforagable","sfx/awwyeah");
+        if(Config.alarmbear.toLowerCase().equals("true") || Config.alarmbear.toLowerCase().equals("false"))
+            Utils.setpref("alarmbear","sfx/BearRoar");
+        if(Config.alarmlynx.toLowerCase().equals("true") || Config.alarmlynx.toLowerCase().equals("false"))
+            Utils.setpref("alarmlynx","sfx/lynx");
+        if(Config.alarmadder.toLowerCase().equals("true") || Config.alarmadder.toLowerCase().equals("false"))
+            Utils.setpref("alarmadder","sfx/DangerNoodle");
+        if(Config.alarmwalrus.toLowerCase().equals("true") || Config.alarmwalrus.toLowerCase().equals("false"))
+            Utils.setpref("alarmwalrus","sfx/Walrus");
+        if(Config.alarmseal.toLowerCase().equals("true") || Config.alarmseal.toLowerCase().equals("false"))
+            Utils.setpref("alarmseal","sfx/seal");
+        if(Config.alarmtroll.toLowerCase().equals("true") || Config.alarmtroll.toLowerCase().equals("false"))
+            Utils.setpref("alarmtroll","sfx/troll");
+        if(Config.alarmmammoth.toLowerCase().equals("true") || Config.alarmmammoth.toLowerCase().equals("false"))
+            Utils.setpref("alarmmammoth","sfx/mammoth");
+        if(Config.alarmeagle.toLowerCase().equals("true") || Config.alarmeagle.toLowerCase().equals("false"))
+            Utils.setpref("alarmeagle","sfx/EagleScreech");
+        if(Config.alarmdoomed.toLowerCase().equals("true") || Config.alarmdoomed.toLowerCase().equals("false"))
+            Utils.setpref("alarmdoomed","sfx/Doomed");
+        if(Config.alarmwball.toLowerCase().equals("true") || Config.alarmwball.toLowerCase().equals("false"))
+            Utils.setpref("alarmwball","sfx/WreckingBall");
+        if(Config.alarmswag.toLowerCase().equals("true") || Config.alarmswag.toLowerCase().equals("false"))
+            Utils.setpref("alarmswag","sfx/Swag");
+        if(Config.alarmeyeball.toLowerCase().equals("true") || Config.alarmeyeball.toLowerCase().equals("false"))
+            Utils.setpref("alarmeyeball","sfx/OhShitItsAGuy");
+        if(Config.alarmnidbane.toLowerCase().equals("true") || Config.alarmnidbane.toLowerCase().equals("false"))
+            Utils.setpref("alarmnidbane","sfx/GhostBusters");
+        if(Config.alarmdungeon.toLowerCase().equals("true") || Config.alarmdungeon.toLowerCase().equals("false"))
+            Utils.setpref("alarmdungeon","sfx/Zelda");
+        if(Config.alarmbeaverdungeon.toLowerCase().equals("true") || Config.alarmbeaverdungeon.toLowerCase().equals("false"))
+            Utils.setpref("alarmbeaverdungeon","sfx/BeaverDungeon");
+        if(Config.alarmsiege.toLowerCase().equals("true") || Config.alarmsiege.toLowerCase().equals("false"))
+            Utils.setpref("alarmsiege","sfx/siege");
+        if(Config.alarmstudy.toLowerCase().equals("true") || Config.alarmstudy.toLowerCase().equals("false"))
+            Utils.setpref("alarmstudy","sfx/Study");
+        if(Config.cleavesfx.toLowerCase().equals("true") || Config.cleavesfx.toLowerCase().equals("false"))
+            Utils.setpref("cleavesfx","sfx/oof");
+    }
+
     public void toggleres(){
         Config.resinfo = !Config.resinfo;
         Utils.setprefb("resinfo", Config.resinfo);
         msg("Resource info on shift/shift+ctrl is now turned " + (Config.resinfo ? "on" : "off"), Color.WHITE);
     }
-
-  /*  public boolean globtype(char key, KeyEvent ev) {
-        if (key == ':') {
-            entercmd();
-            return (true);
-        } else if((Config.screenurl != null) && (Character.toUpperCase(key) == 'S') && ((ev.getModifiersEx() & (KeyEvent.META_DOWN_MASK | KeyEvent.ALT_DOWN_MASK)) != 0)) {
-            Screenshooter.take(this, Config.screenurl);
-            return(true);
-        } else if (key == 3) {
-            if (chat.visible && !chat.hasfocus) {
-                setfocus(chat);
-            } else {
-                if (chat.targeth == 0) {
-                    chat.sresize(chat.savedh);
-                    setfocus(chat);
-                } else {
-                    chat.sresize(0);
-                }
-            }
-            Utils.setprefb("chatvis", chat.targeth != 0);
-        } else if ((key == 27) && (map != null) && !map.hasfocus) {
-            setfocus(map);
-            return (true);
-        } else if (ev.isControlDown() && ev.getKeyCode() == KeyEvent.VK_G) {
-            if (map != null)
-                map.togglegrid();
-            return true;
-        } else if (ev.isControlDown() && ev.getKeyCode() == KeyEvent.VK_M) {
-            if (Config.statuswdgvisible) {
-                if (statuswindow != null)
-                    statuswindow.reqdestroy();
-                Config.statuswdgvisible = false;
-                Utils.setprefb("statuswdgvisible", false);
-            } else {
-                statuswindow = new StatusWdg();
-                add(statuswindow, new Coord(HavenPanel.w / 2 + 80, 10));
-                Config.statuswdgvisible = true;
-                Utils.setprefb("statuswdgvisible", true);
-            }
-            return true;
-        } else if (ev.isAltDown() && ev.getKeyCode() == Config.zkey) {
-            quickslots.drop(QuickSlotsWdg.lc, Coord.z);
-            quickslots.simulateclick(QuickSlotsWdg.lc);
-            return true;
-        } else if (ev.isAltDown() && ev.getKeyCode() == KeyEvent.VK_X) {
-            quickslots.drop(QuickSlotsWdg.rc, Coord.z);
-            quickslots.simulateclick(QuickSlotsWdg.rc);
-            return true;
-        } else if (ev.isControlDown() && ev.getKeyCode() == KeyEvent.VK_S) {
-            HavenPanel.needtotakescreenshot = true;
-            return true;
-        } else if (ev.isControlDown() && ev.getKeyCode() == KeyEvent.VK_H) {
-            Config.hidegobs = !Config.hidegobs;
-            Utils.setprefb("hidegobs", Config.hidegobs);
-            if (map != null)
-                map.refreshGobsHidable();
-            return true;
-        } else if (ev.isShiftDown() && ev.getKeyCode() == KeyEvent.VK_TAB) {
-            if (map != null)
-                map.aggroclosest();
-            return true;
-        } else if (ev.isShiftDown() && ev.getKeyCode() == KeyEvent.VK_I) {
-            Config.resinfo = !Config.resinfo;
-            Utils.setprefb("resinfo", Config.resinfo);
-            msg("Resource info on shift/shift+ctrl is now turned " + (Config.resinfo ? "on" : "off"), Color.WHITE);
-            return true;
-        } else if (ev.isShiftDown() && ev.getKeyCode() == KeyEvent.VK_B) {
-            Config.showboundingboxes = !Config.showboundingboxes;
-            Utils.setprefb("showboundingboxes", Config.showboundingboxes);
-            if (map != null)
-                map.refreshGobsAll();
-            return true;
-        } else if (ev.isControlDown() && ev.getKeyCode() == Config.zkey) {
-            Config.pf = !Config.pf;
-            msg("Pathfinding is now turned " + (Config.pf ? "on" : "off"), Color.WHITE);
-            return true;
-        } else if (ev.isControlDown() && ev.getKeyCode() == KeyEvent.VK_N) {
-            Config.daylight = !Config.daylight;
-            Utils.setprefb("daylight", Config.daylight);
-        } else if (ev.isControlDown() && ev.getKeyCode() == KeyEvent.VK_P) {
-            Config.showplantgrowstage = !Config.showplantgrowstage;
-            Utils.setprefb("showplantgrowstage", Config.showplantgrowstage);
-            if (!Config.showplantgrowstage && map != null)
-                map.removeCustomSprites(Sprite.GROWTH_STAGE_ID);
-            if (map != null)
-                map.refreshGobsGrowthStages();
-        } else if (ev.isControlDown() && ev.getKeyCode() == KeyEvent.VK_X) {
-            Config.tilecenter = !Config.tilecenter;
-            Utils.setprefb("tilecenter", Config.tilecenter);
-            msg("Tile centering is now turned " + (Config.tilecenter ? "on." : "off."), Color.WHITE);
-        } else if (ev.isControlDown() && ev.getKeyCode() == KeyEvent.VK_D) {
-            Config.showminerad = !Config.showminerad;
-            Utils.setprefb("showminerad", Config.showminerad);
-            return true;
-        } else if (ev.isShiftDown() && ev.getKeyCode() == KeyEvent.VK_D) {
-            Config.showfarmrad = !Config.showfarmrad;
-            Utils.setprefb("showfarmrad", Config.showfarmrad);
-            return true;
-        } else if (!Config.disabledrinkhotkey && (ev.getKeyCode() == KeyEvent.VK_BACK_QUOTE || (Config.iswindows && Utils.getScancode(ev) == 41))) {
-            Thread i = new Thread(new BeltDrink(this), "BeltDrink");
-            i.start();
-           // maininv.drink(100);
-            return true;
-        } else if (ev.isControlDown() && ev.getKeyCode() == KeyEvent.VK_A) {
-            if (mapfile != null && mapfile.show(!mapfile.visible)) {
-                mapfile.raise();
-                fitwdg(mapfile);
-            }
-            return true;
-        } else if (!ev.isShiftDown() && ev.getKeyCode() == KeyEvent.VK_Q) {
-            Thread t = new Thread(new PickForageable(this), "PickForageable");
-            t.start();
-            return true;
-        } else if (ev.isControlDown() && ev.getKeyCode() == KeyEvent.VK_U) {
-            TexGL.disableall = !TexGL.disableall;
-            return true;
-        }
-        return (super.globtype(key, ev));
-    }*/
 
     public boolean globtype(char key, KeyEvent ev) {
         if (key == ':') {

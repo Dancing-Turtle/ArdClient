@@ -1,3 +1,37 @@
+1.00.88
+Adding toggle (on by default) to video settings to disable black loading screens, thx boshaw. 
+Added "Crack open" and "Collect coal" to auto select list.
+Added Ovens and Smelters to the disable animations list, will disable the smoke from them.
+Turned deep ocean a much darker and more obvious color to help people avoid it.
+Added mousewheel zoom to the Ctrl+A expanded map.
+Added rainbow shells to the alarm list.
+Fixed potential crash caused by recent alarm change, all alarms with incorrect values should be set to default upon login.
+Added sliders to set custom "daylight" filter, the CTRL+N functionality. This will allow you to customize your permanent daylight color. In display settings.
+Added alarm for combat initiation, off by default. To enable find the alarm in combat settings and select an alarm. 
+Fixed the ghostbusters sound effect file.
+Adding new list to "Control settings" of items to disable the shift+right click functionality on. This is to prevent accidentally emptying steel crucibles or smelters and such.
+Switched the curio list under study desk settings over to a list that you create yourself. If you generate a full list, feel free to share the .json file on discord for others.
+Added giant puffballs to alarm list.
+Added Perc*Exp to your equipment window above armor.
+Fixed server status button on login screen.
+Fixed ingame player counter.
+Fixed purus server status monitoring thread not closing when ingame.
+Added a couple more alarms.
+Added mayflower trees to tree list.
+Fixed magic cast from the f1-f12 bar not generating the confirmation window if so selected.
+Fixed map offset (again) when using minimap to move. 
+Adding video setting to lower terrain draw distance. Looks horrible, but will help fps for people who struggle with that.
+Adding "Output light settings" button to display options to better facilitate sharing light settings, and to help me gather data for some community generated presets.
+Added moon phases to the server time display under the Calendar. 
+Added turnips to trough filler.
+Added server call rate limiting for combat actions, and all other keypresses as well. Should fix getting d/cd when holding down buttons.
+Added "Pick leaf" to flowermenu options.
+Fixed mussels not setting off the alarm if so selected, also added oysters as a trigger for starting the mussel autopicker. 
+Fixed discord village chat relay duplicating messages sent from discord. 
+Fixed a null pointer crash if steel bot fails to pick up steel now, should just exit the bot. 
+Added seed stage turnips to Farmer bot by request. Seeds are "stage" 2 for turnips. 
+~
+
 1.00.87
 Fixed dipshit crash caused by hitting switch targets while not actually in combat, derp.
 ~

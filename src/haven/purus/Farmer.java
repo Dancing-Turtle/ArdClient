@@ -18,7 +18,7 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 	private ArrayList<Gob> containers = new ArrayList<>();
 
 	public Farmer() {
-		super(new Coord(180, 685), "Farming Bots");
+		super(new Coord(180, 690), "Farming Bots");
 		int y = 0;
 		BotUtils.sysMsg("Hold alt and left click containers to select them.",Color.white);
 		Button carrotBtn = new Button(140, "Carrot") {
@@ -138,7 +138,7 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 		Button turnipBtn = new Button(140, "Turnip") {
 			@Override
 			public void click() {
-			if (a != null && b != null) {
+				if (a != null && b != null) {
 					// Start beetroot onion farmer and close this window
 					SeedCropFarmer bf = new SeedCropFarmer(a, b, "gfx/terobjs/plants/turnip", "gfx/invobjs/turnip", 3, true, false, false, containers);
 
@@ -151,6 +151,26 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 			}
 		};
 		add(turnipBtn, new Coord(20, y));
+		y += 35;
+
+		Button turnipseedBtn = new Button(140, "Turnip Seeds") {
+			@Override
+			public void click() {
+				if(replantcontainer && containers.size() == 0 || containeronly && containers.size() == 0) {
+					BotUtils.sysMsg("Please select a container by holding alt and clicking it before starting if using barrel or replantbarrel.", Color.white);
+				}
+				else if (a != null && b != null) {
+					SeedCropFarmer bf = new SeedCropFarmer(a, b, "gfx/terobjs/plants/turnip", "gfx/invobjs/seed-turnip", 1, replant, containeronly, replantcontainer, containers);
+
+					gameui().add(bf, new Coord(gameui().sz.x / 2 - bf.sz.x / 2, gameui().sz.y / 2 - bf.sz.y / 2 - 200));
+					new Thread(bf).start();
+					this.parent.destroy();
+				} else {
+					BotUtils.sysMsg("Area not selected!", Color.WHITE);
+				}
+			}
+		};
+		add(turnipseedBtn, new Coord(20, y));
 		y += 35;
 
 		Button pumpkinBtn = new Button(140, "Pumpkin") {

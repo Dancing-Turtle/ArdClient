@@ -28,15 +28,7 @@ package haven;
 
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 public class MCache {
     public static final Coord2d tilesz = new Coord2d(11, 11);
@@ -60,9 +52,7 @@ public class MCache {
 
     public static class LoadingMap extends Loading {
         public final Coord gc;
-
-        public LoadingMap(Coord gc)
-        {
+	public LoadingMap(Coord gc) {
             super("Waiting for map data...");
             this.gc = gc;
         }
@@ -95,7 +85,7 @@ public class MCache {
         }
 
         public void update(Coord c1, Coord c2) {
-            if (!c1.equals(this.c1) || !c2.equals(this.c2)) {
+	    if(!c1.equals(this.c1) || !c2.equals(this.c2)) {
                 olseq++;
                 this.c1 = c1;
                 this.c2 = c2;
@@ -126,6 +116,11 @@ public class MCache {
         private class Cut {
             MapMesh mesh;
             Defer.Future<MapMesh> dmesh;
+
+	    //Grid layout view
+	    FastMesh grid;
+	    Defer.Future<FastMesh> dgrid;
+
             Rendered[] ols;
         }
 
@@ -139,7 +134,7 @@ public class MCache {
                 Random r = new Random(Grid.this.id);
                 r.setSeed(r.nextLong() ^ Double.doubleToLongBits(rc.x));
                 r.setSeed(r.nextLong() ^ Double.doubleToLongBits(rc.y));
-                return (r);
+		return(r);
             }
         }
 
@@ -147,39 +142,39 @@ public class MCache {
             this.gc = gc;
             this.ul = gc.mul(cmaps);
             cuts = new Cut[cutn.x * cutn.y];
-            for (int i = 0; i < cuts.length; i++)
+	    for(int i = 0; i < cuts.length; i++)
                 cuts[i] = new Cut();
         }
 
         public int gettile(Coord tc) {
-            return (tiles[tc.x + (tc.y * cmaps.x)]);
+	    return(tiles[tc.x + (tc.y * cmaps.x)]);
         }
 
         public int getz(Coord tc) {
-            return (z[tc.x + (tc.y * cmaps.x)]);
+	    return(z[tc.x + (tc.y * cmaps.x)]);
         }
 
         public int getol(Coord tc) {
-            return (ol[tc.x + (tc.y * cmaps.x)]);
+	    return(ol[tc.x + (tc.y * cmaps.x)]);
         }
 
         private void makeflavor() {
             @SuppressWarnings("unchecked")
-            Collection<Gob>[] fo = (Collection<Gob>[]) new Collection[cutn.x * cutn.y];
-            for (int i = 0; i < fo.length; i++)
+	    Collection<Gob>[] fo = (Collection<Gob>[])new Collection[cutn.x * cutn.y];
+	    for(int i = 0; i < fo.length; i++)
                 fo[i] = new LinkedList<Gob>();
             Coord c = new Coord(0, 0);
             Coord tc = gc.mul(cmaps);
             int i = 0;
             Random rnd = new Random(id);
-            for (c.y = 0; c.y < cmaps.x; c.y++) {
-                for (c.x = 0; c.x < cmaps.y; c.x++, i++) {
+	    for(c.y = 0; c.y < cmaps.x; c.y++) {
+		for(c.x = 0; c.x < cmaps.y; c.x++, i++) {
                     Tileset set = tileset(tiles[i]);
                     int fp = rnd.nextInt();
                     int rp = rnd.nextInt();
                     double a = rnd.nextDouble();
-                    if (set.flavobjs.size() > 0) {
-                        if ((fp % set.flavprob) == 0) {
+		    if(set.flavobjs.size() > 0) {
+			if((fp % set.flavprob) == 0) {
                             Indir<Resource> r = set.flavobjs.pick(rp % set.flavobjs.tw);
                             if (Config.hideflovisual) {
                                 Resource res = r.get();
@@ -198,38 +193,55 @@ public class MCache {
         }
 
         public Collection<Gob> getfo(Coord cc) {
-            if (fo == null)
+	    if(fo == null)
                 makeflavor();
-            return (fo[cc.x + (cc.y * cutn.x)]);
+	    return(fo[cc.x + (cc.y * cutn.x)]);
         }
 
         private Cut geticut(Coord cc) {
-            return (cuts[cc.x + (cc.y * cutn.x)]);
+	    return(cuts[cc.x + (cc.y * cutn.x)]);
         }
 
         public MapMesh getcut(Coord cc) {
             Cut cut = geticut(cc);
-            if (cut.dmesh != null) {
-                if (cut.dmesh.done() || (cut.mesh == null)) {
+	    if(cut.dmesh != null) {
+		if(cut.dmesh.done() || (cut.mesh == null)) {
                     MapMesh old = cut.mesh;
                     cut.mesh = cut.dmesh.get();
                     cut.dmesh = null;
                     cut.ols = null;
-                    if (old != null)
+		    if(old != null)
                         old.dispose();
                 }
             }
-            return (cut.mesh);
+	    return(cut.mesh);
         }
+
+	/**
+	 * returns the Grid layout cut given the coordinate
+	 */
+	public FastMesh getgcut(Coord cc) {
+	    Cut cut = geticut(cc);
+	    if(cut.dgrid != null) {
+		if(cut.dgrid.done() || cut.grid == null) {
+		    FastMesh old = cut.grid;
+		    cut.grid = cut.dgrid.get();
+		    cut.dgrid = null;
+		    if(old != null)
+			old.dispose();
+		}
+	    }
+	    return cut.grid;
+	}
 
         public Rendered getolcut(int ol, Coord cc) {
             int nseq = MCache.this.olseq;
-            if (this.olseq != nseq) {
-                for (int i = 0; i < cutn.x * cutn.y; i++) {
-                    if (cuts[i].ols != null) {
-                        for (Rendered r : cuts[i].ols) {
-                            if (r instanceof Disposable)
-                                ((Disposable) r).dispose();
+	    if(this.olseq != nseq) {
+		for(int i = 0; i < cutn.x * cutn.y; i++) {
+		    if(cuts[i].ols != null) {
+			for(Rendered r : cuts[i].ols) {
+			    if(r instanceof Disposable)
+				((Disposable)r).dispose();
                         }
                     }
                     cuts[i].ols = null;
@@ -237,9 +249,9 @@ public class MCache {
                 this.olseq = nseq;
             }
             Cut cut = geticut(cc);
-            if (cut.ols == null)
+	    if(cut.ols == null)
                 cut.ols = getcut(cc).makeols();
-            return (cut.ols[ol]);
+	    return(cut.ols[ol]);
         }
 
         private void buildcut(final Coord cc) {
@@ -250,22 +262,45 @@ public class MCache {
                     Random rnd = new Random(id);
                     rnd.setSeed(rnd.nextInt() ^ cc.x);
                     rnd.setSeed(rnd.nextInt() ^ cc.y);
-                    return (MapMesh.build(MCache.this, rnd, ul.add(cc.mul(cutsz)), cutsz));
+			return(MapMesh.build(MCache.this, rnd, ul.add(cc.mul(cutsz)), cutsz));
                 }
 
                 public String toString() {
-                    return ("Building map...");
+			return("Building map...");
                 }
             });
-            if (prev != null)
+	    if(prev != null)
                 prev.cancel();
+	    //automatically build a grid mesh with every cut
+	    buildgcut(cc);
+	}
+
+	/**
+	 * Builds the grid layout mesh
+	 */
+	private void buildgcut(final Coord cc) {
+	    final Cut cut = geticut(cc);
+	    Defer.Future<?> gprev = cut.dgrid;
+        Random rnd = new Random(id);
+	    cut.dgrid = Defer.later(new Defer.Callable<FastMesh>() {
+		public FastMesh call() {
+		  //  return(GridMesh.build(MCache.this, ul.add(cc.mul(cutsz)), cutsz));
+		    return(GridMesh.build(MCache.this,ul.add(cc.mul(cutsz)),cutsz));
+		}
+
+		public String toString() {
+		    return("Building grid overlay...");
+		}
+	    });
+	    if(gprev != null)
+		gprev.cancel();
         }
 
         public void ivneigh(Coord nc) {
             Coord cc = new Coord();
-            for (cc.y = 0; cc.y < cutn.y; cc.y++) {
-                for (cc.x = 0; cc.x < cutn.x; cc.x++) {
-                    if ((((nc.x < 0) && (cc.x == 0)) || ((nc.x > 0) && (cc.x == cutn.x - 1)) || (nc.x == 0)) &&
+	    for(cc.y = 0; cc.y < cutn.y; cc.y++) {
+		for(cc.x = 0; cc.x < cutn.x; cc.x++) {
+		    if((((nc.x < 0) && (cc.x == 0)) || ((nc.x > 0) && (cc.x == cutn.x - 1)) || (nc.x == 0)) &&
                             (((nc.y < 0) && (cc.y == 0)) || ((nc.y > 0) && (cc.y == cutn.y - 1)) || (nc.y == 0))) {
                         buildcut(new Coord(cc));
                     }
@@ -274,40 +309,40 @@ public class MCache {
         }
 
         public void tick(int dt) {
-            if (fo != null) {
-                for (Collection<Gob> fol : fo) {
-                    for (Gob fo : fol)
+	    if(fo != null) {
+		for(Collection<Gob> fol : fo) {
+		    for(Gob fo : fol)
                         fo.ctick(dt);
                 }
             }
         }
 
         private void invalidate() {
-            for (int y = 0; y < cutn.y; y++) {
-                for (int x = 0; x < cutn.x; x++)
+	    for(int y = 0; y < cutn.y; y++) {
+		for(int x = 0; x < cutn.x; x++)
                     buildcut(new Coord(x, y));
             }
             fo = null;
-            for (Coord ic : new Coord[]{
-                    new Coord(-1, -1), new Coord(0, -1), new Coord(1, -1),
-                    new Coord(-1, 0), new Coord(1, 0),
-                    new Coord(-1, 1), new Coord(0, 1), new Coord(1, 1)}) {
+	    for(Coord ic : new Coord[] {
+		    new Coord(-1, -1), new Coord( 0, -1), new Coord( 1, -1),
+		    new Coord(-1,  0),                    new Coord( 1,  0),
+		    new Coord(-1,  1), new Coord( 0,  1), new Coord( 1,  1)}) {
                 Grid ng = grids.get(gc.add(ic));
-                if (ng != null)
+		if(ng != null)
                     ng.ivneigh(ic.inv());
             }
         }
 
         public void dispose() {
-            for (Cut cut : cuts) {
-                if (cut.dmesh != null)
+	    for(Cut cut : cuts) {
+		if(cut.dmesh != null)
                     cut.dmesh.cancel();
-                if (cut.mesh != null)
+		if(cut.mesh != null)
                     cut.mesh.dispose();
-                if (cut.ols != null) {
-                    for (Rendered r : cut.ols) {
-                        if (r instanceof Disposable)
-                            ((Disposable) r).dispose();
+		if(cut.ols != null) {
+		    for(Rendered r : cut.ols) {
+			if(r instanceof Disposable)
+			    ((Disposable)r).dispose();
                     }
                 }
             }
@@ -315,49 +350,49 @@ public class MCache {
 
         public void fill(Message msg) {
             String mmname = msg.string().intern();
-            if (mmname.equals(""))
+	    if(mmname.equals(""))
                 mnm = null;
             else
                 mnm = mmname;
             int[] pfl = new int[256];
-            while (true) {
+	    while(true) {
                 int pidx = msg.uint8();
-                if (pidx == 255)
+		if(pidx == 255)
                     break;
                 pfl[pidx] = msg.uint8();
             }
             Message blob = new ZMessage(msg);
             id = blob.int64();
-            while (true) {
+	    while(true) {
                 int tileid = blob.uint8();
-                if (tileid == 255)
+		if(tileid == 255)
                     break;
                 String resnm = blob.string();
                 int resver = blob.uint16();
                 nsets[tileid] = new Resource.Spec(Resource.remote(), resnm, resver);
             }
-            for (int i = 0; i < tiles.length; i++)
+	    for(int i = 0; i < tiles.length; i++)
                 tiles[i] = blob.uint8();
-            for (int i = 0; i < z.length; i++)
+	    for(int i = 0; i < z.length; i++)
                 z[i] = blob.int16();
-            for (int i = 0; i < ol.length; i++)
+	    for(int i = 0; i < ol.length; i++)
                 ol[i] = 0;
-            while (true) {
+	    while(true) {
                 int pidx = blob.uint8();
-                if (pidx == 255)
+		if(pidx == 255)
                     break;
                 int fl = pfl[pidx];
                 int type = blob.uint8();
                 Coord c1 = new Coord(blob.uint8(), blob.uint8());
                 Coord c2 = new Coord(blob.uint8(), blob.uint8());
                 int ol;
-                if (type == 0) {
-                    if ((fl & 1) == 1)
+		if(type == 0) {
+		    if((fl & 1) == 1)
                         ol = 2;
                     else
                         ol = 1;
-                } else if (type == 1) {
-                    if ((fl & 1) == 1)
+		} else if(type == 1) {
+		    if((fl & 1) == 1)
                         ol = 8;
                     else
                         ol = 4;
@@ -367,10 +402,10 @@ public class MCache {
                     else
                         ol = 16;
                 } else {
-                    throw (new RuntimeException("Unknown plot type " + type));
+		    throw(new RuntimeException("Unknown plot type " + type));
                 }
-                for (int y = c1.y; y <= c2.y; y++) {
-                    for (int x = c1.x; x <= c2.x; x++) {
+		for(int y = c1.y; y <= c2.y; y++) {
+		    for(int x = c1.x; x <= c2.x; x++) {
                         this.ol[x + (y * cmaps.x)] |= ol;
                     }
                 }
@@ -385,60 +420,104 @@ public class MCache {
     }
 
     public void ctick(int dt) {
-        synchronized (grids) {
-            for (Grid g : grids.values()) {
+	synchronized(grids) {
+	    for(Grid g : grids.values()) {
                 g.tick(dt);
             }
         }
     }
 
+    public void invalidateAll() {
+        synchronized (grids) {
+            for(final Grid g : grids.values()) {
+                g.invalidate();
+	    }
+	}
+    }
+
     public void invalidate(Coord cc) {
-        synchronized (req) {
-            if (req.get(cc) == null)
+	synchronized(req) {
+	    if(req.get(cc) == null)
                 req.put(cc, new Request());
         }
     }
 
     public void invalblob(Message msg) {
         int type = msg.uint8();
-        if (type == 0) {
+	if(type == 0) {
             invalidate(msg.coord());
-        } else if (type == 1) {
+	} else if(type == 1) {
             Coord ul = msg.coord();
             Coord lr = msg.coord();
             trim(ul, lr);
-        } else if (type == 2) {
+	} else if(type == 2) {
             trimall();
         }
     }
 
     private Grid cached = null;
-
     public Grid getgrid(Coord gc) {
-        synchronized (grids) {
-            if ((cached == null) || !cached.gc.equals(gc)) {
+	synchronized(grids) {
+	    if((cached == null) || !cached.gc.equals(gc)) {
                 cached = grids.get(gc);
-                if (cached == null) {
+		if(cached == null) {
                     request(gc);
                     throw(new LoadingMap(gc));
                 }
             }
-            return (cached);
+	    return(cached);
+        }
+    }
+
+    public Optional<Grid> getgrido(final Coord gc) {
+        synchronized(grids) {
+            if((cached == null) || !cached.gc.equals(gc)) {
+                cached = grids.get(gc);
+                if(cached == null) {
+                    request(gc);
+                    return Optional.empty();
+                }
+            }
+            return Optional.of(cached);
         }
     }
 
     public Grid getgridt(Coord tc) {
-        return (getgrid(tc.div(cmaps)));
+	return(getgrid(tc.div(cmaps)));
+    }
+
+    public Optional<Grid> getgridto(Coord tc) {
+        return(getgrido(tc.div(cmaps)));
+    }
+
+    public int gettile_safe(Coord tc) {
+        final Optional<Grid> grid = getgridto(tc);
+        if (grid.isPresent()) {
+            final Grid g = grid.get();
+            return g.gettile(tc.sub(g.ul));
+        } else {
+            return 0;
+        }
     }
 
     public int gettile(Coord tc) {
         Grid g = getgridt(tc);
-        return (g.gettile(tc.sub(g.ul)));
+	return(g.gettile(tc.sub(g.ul)));
     }
 
     public int getz(Coord tc) {
         Grid g = getgridt(tc);
-        return (g.getz(tc.sub(g.ul)));
+	return(g.getz(tc.sub(g.ul)));
+    }
+
+    public int getz_safe(Coord tc) {
+        final Optional<Grid> grid = getgridto(tc);
+        if (grid.isPresent()) {
+            final Grid g = grid.get();
+            return g.getz(tc.sub(g.ul));
+        } else {
+            return 0;
+        }
     }
 
     public double getcz(double px, double py) {
@@ -446,8 +525,8 @@ public class MCache {
         Coord ul = new Coord(Utils.floordiv(px, tw), Utils.floordiv(py, th));
         double sx = Utils.floormod(px, tw) / tw;
         double sy = Utils.floormod(py, th) / th;
-        return(((1.0f - sy) * (((1.0f - sx) * getz(ul)) + (sx * getz(ul.add(1, 0))))) +
-                (sy * (((1.0f - sx) * getz(ul.add(0, 1))) + (sx * getz(ul.add(1, 1))))));
+        return(((1.0f - sy) * (((1.0f - sx) * getz_safe(ul)) + (sx * getz_safe(ul.add(1, 0))))) +
+                (sy * (((1.0f - sx) * getz_safe(ul.add(0, 1))) + (sx * getz_safe(ul.add(1, 1))))));
     }
 
     public double getcz(Coord2d pc) {
@@ -459,7 +538,7 @@ public class MCache {
     }
 
     public float getcz(Coord pc) {
-        return (getcz(pc.x, pc.y));
+	return(getcz(pc.x, pc.y));
     }
 
     public Coord3f getzp(Coord2d pc) {
@@ -469,36 +548,42 @@ public class MCache {
     public int getol(Coord tc) {
         Grid g = getgridt(tc);
         int ol = g.getol(tc.sub(g.ul));
-        for (Overlay lol : ols) {
-            if (tc.isect(lol.c1, lol.c2.add(lol.c1.inv()).add(new Coord(1, 1))))
+	for(Overlay lol : ols) {
+	    if(tc.isect(lol.c1, lol.c2.add(lol.c1.inv()).add(new Coord(1, 1))))
                 ol |= lol.mask;
         }
-        return (ol);
+	return(ol);
     }
 
     public MapMesh getcut(Coord cc) {
-        synchronized (grids) {
-            return (getgrid(cc.div(cutn)).getcut(cc.mod(cutn)));
+	synchronized(grids) {
+	    return(getgrid(cc.div(cutn)).getcut(cc.mod(cutn)));
         }
     }
 
+    public FastMesh getgcut(Coord cc) {
+	synchronized(grids) {
+	    return(getgrid(cc.div(cutn)).getgcut(cc.mod(cutn)));
+	}
+    }
+
     public Collection<Gob> getfo(Coord cc) {
-        synchronized (grids) {
-            return (getgrid(cc.div(cutn)).getfo(cc.mod(cutn)));
+	synchronized(grids) {
+	    return(getgrid(cc.div(cutn)).getfo(cc.mod(cutn)));
         }
     }
 
     public Rendered getolcut(int ol, Coord cc) {
-        synchronized (grids) {
-            return (getgrid(cc.div(cutn)).getolcut(ol, cc.mod(cutn)));
+	synchronized(grids) {
+	    return(getgrid(cc.div(cutn)).getolcut(ol, cc.mod(cutn)));
         }
     }
 
     public void mapdata2(Message msg) {
         Coord c = msg.coord();
-        synchronized (grids) {
-            synchronized (req) {
-                if (req.containsKey(c)) {
+	synchronized(grids) {
+	    synchronized(req) {
+		if(req.containsKey(c)) {
                     Grid g = grids.get(c);
                     if(g == null) {
                         grids.put(c, g = new Grid(c));
@@ -532,77 +617,77 @@ public class MCache {
         int off = msg.uint16();
         int len = msg.uint16();
         Defrag fragbuf;
-        synchronized (fragbufs) {
-            if ((fragbuf = fragbufs.get(pktid)) == null) {
+	synchronized(fragbufs) {
+	    if((fragbuf = fragbufs.get(pktid)) == null) {
                 fragbuf = new Defrag(len);
                 fragbufs.put(pktid, fragbuf);
             }
             fragbuf.add(msg.bytes(), off);
             fragbuf.last = now;
-            if (fragbuf.done()) {
+	    if(fragbuf.done()) {
                 mapdata2(fragbuf.msg());
                 fragbufs.remove(pktid);
             }
 
 	    /* Clean up old buffers */
-            for (Iterator<Map.Entry<Integer, Defrag>> i = fragbufs.entrySet().iterator(); i.hasNext(); ) {
+	    for(Iterator<Map.Entry<Integer, Defrag>> i = fragbufs.entrySet().iterator(); i.hasNext();) {
                 Map.Entry<Integer, Defrag> e = i.next();
                 Defrag old = e.getValue();
-                if (now - old.last > 10000)
+		if(now - old.last > 10000)
                     i.remove();
             }
         }
     }
 
     public Resource tilesetr(int i) {
-        synchronized (sets) {
-            Resource res = (sets[i] == null) ? null : (sets[i].get());
-            if (res == null) {
-                if (nsets[i] == null)
-                    return (null);
+	synchronized(sets) {
+	    Resource res = (sets[i] == null)?null:(sets[i].get());
+	    if(res == null) {
+		if(nsets[i] == null)
+		    return(null);
                 res = nsets[i].get();
                 sets[i] = new SoftReference<Resource>(res);
             }
-            return (res);
+	    return(res);
         }
     }
 
     public Tileset tileset(int i) {
-        synchronized (csets) {
-            Tileset cset = (csets[i] == null) ? null : (csets[i].get());
-            if (cset == null) {
+	synchronized(csets) {
+	    Tileset cset = (csets[i] == null)?null:(csets[i].get());
+	    if(cset == null) {
                 Resource res = tilesetr(i);
-                if (res == null)
-                    return (null);
+		if(res == null)
+		    return(null);
                 try {
                     cset = res.layer(Tileset.class);
-                } catch (Loading e) {
-                    throw (new LoadingMap(e));
+		} catch(Loading e) {
+		    throw(new LoadingMap(e));
                 }
                 csets[i] = new SoftReference<Tileset>(cset);
             }
-            return (cset);
+	    return(cset);
         }
     }
 
     public Tiler tiler(int i) {
-        synchronized (tiles) {
-            Tiler tile = (tiles[i] == null) ? null : (tiles[i].get());
-            if (tile == null) {
+	synchronized(tiles) {
+	    Tiler tile = (tiles[i] == null)?null:(tiles[i].get());
+	    if(tile == null) {
                 Tileset set = tileset(i);
-                if (set == null)
-                    return (null);
+		if(set == null)
+		    return(null);
                 tile = set.tfac().create(i, set);
                 tiles[i] = new SoftReference<Tiler>(tile);
             }
-            return (tile);
+	    return(tile);
         }
     }
 
     public void trimall() {
-        synchronized (grids) {
-            synchronized (req) {
-                for (Grid g : grids.values())
+	synchronized(grids) {
+	    synchronized(req) {
+		for(Grid g : grids.values())
                     g.dispose();
                 grids.clear();
                 req.clear();
@@ -634,36 +719,34 @@ public class MCache {
     }
 
     public void request(Coord gc) {
-        synchronized (req) {
-            if (!req.containsKey(gc))
+	synchronized(req) {
+	    if(!req.containsKey(gc))
                 req.put(new Coord(gc), new Request());
         }
     }
 
     public void reqarea(Coord ul, Coord br) {
-        ul = ul.div(cutsz);
-        br = br.div(cutsz);
+	ul = ul.div(cutsz); br = br.div(cutsz);
         Coord rc = new Coord();
-        for (rc.y = ul.y; rc.y <= br.y; rc.y++) {
-            for (rc.x = ul.x; rc.x <= br.x; rc.x++) {
+	for(rc.y = ul.y; rc.y <= br.y; rc.y++) {
+	    for(rc.x = ul.x; rc.x <= br.x; rc.x++) {
                 try {
                     getcut(new Coord(rc));
-                } catch (Loading e) {
-                }
+		} catch(Loading e) {}
             }
         }
     }
 
     public void sendreqs() {
         long now = System.currentTimeMillis();
-        synchronized (req) {
-            for (Iterator<Map.Entry<Coord, Request>> i = req.entrySet().iterator(); i.hasNext(); ) {
+	synchronized(req) {
+	    for(Iterator<Map.Entry<Coord, Request>> i = req.entrySet().iterator(); i.hasNext();) {
                 Map.Entry<Coord, Request> e = i.next();
                 Coord c = e.getKey();
                 Request r = e.getValue();
-                if (now - r.lastreq > 1000) {
+		if(now - r.lastreq > 1000) {
                     r.lastreq = now;
-                    if (++r.reqs >= 5) {
+		    if(++r.reqs >= 5) {
                         i.remove();
                     } else {
                         PMessage msg = new PMessage(Session.MSG_MAPREQ);

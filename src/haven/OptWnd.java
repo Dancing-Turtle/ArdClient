@@ -225,6 +225,16 @@ public class OptWnd extends Window {
                             },
                             dpy);
                 }
+                appender.add(new CheckBox("Lower terrain draw distance - Will increase performance, but look like shit. (requires logout)") {
+                    {
+                        a = Config.lowerterraindistance;
+                    }
+                    public void set(boolean val) {
+                        Config.lowerterraindistance = val;
+                        Utils.setprefb("lowerterraindistance", val);
+                        a = val;
+                    }
+                });
                 appender.add(new CheckBox("Disable biome tile transitions (requires logout)") {
                     {
                         a = Config.disabletiletrans;
@@ -340,6 +350,17 @@ public class OptWnd extends Window {
                     public void set(boolean val) {
                         Utils.setprefb("showfps", val);
                         Config.showfps = val;
+                        a = val;
+                    }
+                });
+                appender.add(new CheckBox("Disable black load screens.") {
+                    {
+                        a = Config.noloadscreen;
+                    }
+
+                    public void set(boolean val) {
+                        Utils.setprefb("noloadscreen", val);
+                        Config.noloadscreen = val;
                         a = val;
                     }
                 });
@@ -1217,6 +1238,282 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
+        Button OutputSettings = new Button(220, "Output Light Settings") {
+            @Override
+            public void click() {
+                BotUtils.sysLogAppend("Ambient Red "+Config.AmbientRed,"white");
+                BotUtils.sysLogAppend("Ambient Green "+Config.AmbientGreen,"white");
+                BotUtils.sysLogAppend("Ambient Blue "+Config.AmbientBlue,"white");
+
+                BotUtils.sysLogAppend("Diffuse Red "+Config.DiffuseRed,"white");
+                BotUtils.sysLogAppend("Diffuse Green "+Config.DiffuseGreen,"white");
+                BotUtils.sysLogAppend("Diffuse Blue "+Config.DiffuseBlue,"white");
+
+                BotUtils.sysLogAppend("Specular Red "+Config.SpecRed,"white");
+                BotUtils.sysLogAppend("Specular Green "+Config.SpecGreen,"white");
+                BotUtils.sysLogAppend("Specular Blue "+Config.SpecBlue,"white");
+            }
+        };
+        appender.add(OutputSettings);
+        appender.add(new Label("Ghandhi Lighting Presets"));
+        Button Preset1 = new Button(220, "Friday Evening") {
+            @Override
+            public void click() {
+                Config.AmbientRed = 51;
+                Utils.setprefi("AmbientRed", 51);
+                Config.AmbientGreen = 59;
+                Utils.setprefi("AmbientGreen", 59);
+                Config.AmbientBlue = 119;
+                Utils.setprefi("AmbientBlue", 119);
+
+                Config.DiffuseRed = 20;
+                Utils.setprefi("DiffuseRed", 20);
+                Config.DiffuseGreen = 28;
+                Utils.setprefi("DiffuseGreen", 28);
+                Config.DiffuseBlue = 127;
+                Utils.setprefi("DiffuseBlue", 127);
+
+                Config.SpecRed = 167;
+                Utils.setprefi("SpecRed", 167);
+                Config.SpecGreen = 117;
+                Utils.setprefi("SpecGreen", 117);
+                Config.SpecBlue = 103;
+                Utils.setprefi("SpecBlue", 103);
+            }
+        };
+        appender.add(Preset1);
+        Button Preset2 = new Button(220, "Thieving Night") {
+            @Override
+            public void click() {
+                Config.AmbientRed = 5;
+                Utils.setprefi("AmbientRed", 5);
+                Config.AmbientGreen = 10;
+                Utils.setprefi("AmbientGreen", 10);
+                Config.AmbientBlue = 51;
+                Utils.setprefi("AmbientBlue", 51);
+
+                Config.DiffuseRed = 0;
+                Utils.setprefi("DiffuseRed", 0);
+                Config.DiffuseGreen = 31;
+                Utils.setprefi("DiffuseGreen", 31);
+                Config.DiffuseBlue = 50;
+                Utils.setprefi("DiffuseBlue", 50);
+
+                Config.SpecRed = 138;
+                Utils.setprefi("SpecRed", 138);
+                Config.SpecGreen = 64;
+                Utils.setprefi("SpecGreen", 64);
+                Config.SpecBlue = 255;
+                Utils.setprefi("SpecBlue", 255);
+            }
+        };
+        appender.add(Preset2);
+        Button Preset3 = new Button(220, "Hunting Dusk") {
+            @Override
+            public void click() {
+                Config.AmbientRed = 165;
+                Utils.setprefi("AmbientRed", 165);
+                Config.AmbientGreen = 213;
+                Utils.setprefi("AmbientGreen", 213);
+                Config.AmbientBlue = 255;
+                Utils.setprefi("AmbientBlue", 255);
+
+                Config.DiffuseRed = 160;
+                Utils.setprefi("DiffuseRed", 160);
+                Config.DiffuseGreen = 193;
+                Utils.setprefi("DiffuseGreen", 193);
+                Config.DiffuseBlue = 255;
+                Utils.setprefi("DiffuseBlue", 255);
+
+                Config.SpecRed = 138;
+                Utils.setprefi("SpecRed", 138);
+                Config.SpecGreen = 64;
+                Utils.setprefi("SpecGreen", 64);
+                Config.SpecBlue = 255;
+                Utils.setprefi("SpecBlue", 255);
+            }
+        };
+        appender.add(Preset3);
+        Button Preset4 = new Button(220, "Sunny Morning") {
+            @Override
+            public void click() {
+                Config.AmbientRed = 211;
+                Utils.setprefi("AmbientRed", 211);
+                Config.AmbientGreen = 180;
+                Utils.setprefi("AmbientGreen", 180);
+                Config.AmbientBlue = 72;
+                Utils.setprefi("AmbientBlue", 72);
+
+                Config.DiffuseRed = 255;
+                Utils.setprefi("DiffuseRed", 255);
+                Config.DiffuseGreen = 178;
+                Utils.setprefi("DiffuseGreen", 178);
+                Config.DiffuseBlue = 169;
+                Utils.setprefi("DiffuseBlue", 169);
+
+                Config.SpecRed = 255;
+                Utils.setprefi("SpecRed", 255);
+                Config.SpecGreen = 255;
+                Utils.setprefi("SpecGreen", 255);
+                Config.SpecBlue = 255;
+                Utils.setprefi("SpecBlue", 255);
+            }
+        };
+        appender.add(Preset4);
+        appender.add(new Label("Default Lighting"));
+        Button Preset5 = new Button(220, "Amber Default") {
+            @Override
+            public void click() {
+                Config.AmbientRed = 200;
+                Utils.setprefi("AmbientRed", 200);
+                Config.AmbientGreen = 200;
+                Utils.setprefi("AmbientGreen", 200);
+                Config.AmbientBlue = 200;
+                Utils.setprefi("AmbientBlue", 200);
+
+                Config.DiffuseRed = 200;
+                Utils.setprefi("DiffuseRed", 200);
+                Config.DiffuseGreen = 200;
+                Utils.setprefi("DiffuseGreen", 200);
+                Config.DiffuseBlue = 200;
+                Utils.setprefi("DiffuseBlue", 200);
+
+                Config.SpecRed = 255;
+                Utils.setprefi("SpecRed", 255);
+                Config.SpecGreen = 255;
+                Utils.setprefi("SpecGreen", 255);
+                Config.SpecBlue = 255;
+                Utils.setprefi("SpecBlue", 255);
+            }
+        };
+        appender.add(Preset5);
+        appender.add(new Label("Night Vision Ambient Red"));
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(150, 0, 255, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (Config.AmbientRed);
+            }
+
+            public void changed() {
+                int vol = val;
+                Config.AmbientRed = vol;
+                Utils.setprefi("AmbientRed", vol);
+            }
+        });
+        appender.add(new Label("Night Vision Ambient Green"));
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(150, 0, 255, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (Config.AmbientGreen);
+            }
+
+            public void changed() {
+                int vol = val;
+                Config.AmbientGreen = vol;
+                Utils.setprefi("AmbientGreen", vol);
+            }
+        });
+        appender.add(new Label("Night Vision Ambient Blue"));
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(150, 0, 255, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (Config.AmbientBlue);
+            }
+
+            public void changed() {
+                int vol = val;
+                Config.AmbientBlue = vol;
+                Utils.setprefi("AmbientBlue", vol);
+            }
+        });
+        appender.add(new Label("Night Vision Diffuse Red"));
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(150, 0, 255, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (Config.DiffuseRed);
+            }
+
+            public void changed() {
+                int vol = val;
+                Config.DiffuseRed = vol;
+                Utils.setprefi("DiffuseRed", vol);
+            }
+        });
+        appender.add(new Label("Night Vision Diffuse Green"));
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(150, 0, 255, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (Config.DiffuseGreen);
+            }
+
+            public void changed() {
+                int vol = val;
+                Config.DiffuseGreen = vol;
+                Utils.setprefi("DiffuseGreen", vol);
+            }
+        });
+        appender.add(new Label("Night Vision Diffuse Blue"));
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(150, 0, 255, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (Config.DiffuseBlue);
+            }
+
+            public void changed() {
+                int vol = val;
+                Config.DiffuseBlue = vol;
+                Utils.setprefi("DiffuseBlue", vol);
+            }
+        });
+        appender.add(new Label("Night Vision Specular Red"));
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(150, 0, 255, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (Config.SpecRed);
+            }
+
+            public void changed() {
+                int vol = val;
+                Config.SpecRed = vol;
+                Utils.setprefi("SpecRed", vol);
+            }
+        });
+        appender.add(new Label("Night Vision Specular Green"));
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(150, 0, 255, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (Config.SpecGreen);
+            }
+
+            public void changed() {
+                int vol = val;
+                Config.SpecGreen = vol;
+                Utils.setprefi("SpecGreen", vol);
+            }
+        });
+        appender.add(new Label("Night Vision Specular Blue"));
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(150, 0, 255, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (Config.SpecBlue);
+            }
+
+            public void changed() {
+                int vol = val;
+                Config.SpecBlue = vol;
+                Utils.setprefi("SpecBlue", vol);
+            }
+        });
+
     }
 
     private void initMap() {
@@ -1253,7 +1550,7 @@ public class OptWnd extends Window {
                 }
             }
         });
-        appender.add(new CheckBox("Save map tiles to disk") {
+        appender.add(new CheckBox("Save map tiles to disk - No performance benefit, this is only for creating your own maps or uploading.") {
             {
                 a = Config.savemmap;
             }
@@ -1575,7 +1872,20 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
+        appender.addRow(new Label("Combat Start Sound"), makeDropdownCombat());
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (int)(Config.attackedvol * 1000);
+            }
 
+            public void changed() {
+                double vol = val / 1000.0;
+                Config.attackedvol = vol;
+                Utils.setprefd("attackedvol", vol);
+            }
+        });
         appender.add(new CheckBox("Highlight current opponent") {
             {
                 a = Config.hlightcuropp;
@@ -1797,6 +2107,18 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
+        appender.add(new Label("Disable Shift Right Click for :"));
+        CheckListbox disableshiftclick = new CheckListbox(320, Math.min(8, Config.disableshiftclick.values().size()), 18 + Config.fontadd) {
+            @Override
+            protected void itemclick(CheckListboxItem itm, int button) {
+                super.itemclick(itm, button);
+                Utils.setprefchklst("disableshiftclick", Config.disableshiftclick);
+            }
+        };
+        for (CheckListboxItem itm : Config.disableshiftclick.values())
+            disableshiftclick.items.add(itm);
+        appender.add(disableshiftclick);
+
 
         control.add(new PButton(200, "Back", 27, main), new Coord(210, 360));
         control.pack();
@@ -2135,10 +2457,8 @@ public class OptWnd extends Window {
         flowermenus.pack();
     }
     private void initstudydesksettings() {
-        final WidgetVerticalAppender appender = new WidgetVerticalAppender(withScrollport(studydesksettings, new Coord(620, 350)));
-
-        appender.setVerticalMargin(VERTICAL_MARGIN);
-        appender.setHorizontalMargin(HORIZONTAL_MARGIN);
+        int x = 0;
+        int y = 0, my = 0;
 
 //        appender.add(new CheckBox("Enable Study Desk Alerts") {
 //            {
@@ -2151,22 +2471,30 @@ public class OptWnd extends Window {
 //                a = val;
 //            }
 //        });
-        appender.add(new Label("Curios Selected:"));
+        studydesksettings.add(new Label("Choose curios to check your studydesk for:"),x, y);
+        y += 15;
+        final CurioList list = studydesksettings.add(new CurioList(),x,y);
 
-        CheckListbox curiolist = new CheckListbox(140, 17) {
+        y += list.sz.y + 5;
+        final TextEntry value = studydesksettings.add(new TextEntry(150, "") {
             @Override
-            protected void itemclick(CheckListboxItem itm, int button) {
-                super.itemclick(itm, button);
-                Utils.setprefchklst("curiosel", Config.curiolist);
+            public void activate(String text) {
+                list.add(text);
+                settext("");
             }
-        };
+        }, x, y);
 
-        Utils.loadprefchklist("curiosel", Config.curiolist);
-        for (CheckListboxItem itm : Config.curiolist.values())
-            curiolist.items.add(itm);
-        studydesksettings.add(curiolist, new Coord(0, 50));
+        studydesksettings.add(new Button(45, "Add") {
+            @Override
+            public void click() {
+                list.add(value.text);
+                value.settext("");
+            }
+        }, x + 155, y - 2);
 
-        studydesksettings.add(new PButton(200, "Back", 27, main), new Coord(210, 360));
+        my = Math.max(my, y);
+
+        studydesksettings.add(new PButton(200, "Back", 27, main), 0, my + 35);
         studydesksettings.pack();
     }
     private void initkeybindsettings() {
@@ -2214,8 +2542,8 @@ public class OptWnd extends Window {
         appender.setVerticalMargin(VERTICAL_MARGIN);
         appender.setHorizontalMargin(HORIZONTAL_MARGIN);
 
-        appender.addRow(new Label("Enter Village name for Chat Alert sound,  requires relog if changed:"),
-                new TextEntry(85, Config.chatalert) {
+        appender.addRow(new Label("Enter Village name for Chat Alert sound, and village chat relay."),
+                new TextEntry(150, Config.chatalert) {
                     @Override
                     public boolean type(char c, KeyEvent ev) {
                         if (!parent.visible)
@@ -2231,7 +2559,7 @@ public class OptWnd extends Window {
                 }
         );
         appender.addRow(new Label("Enter Discord Channel for Alerts to be sent to."),
-                new TextEntry(85, Config.AlertChannel) {
+                new TextEntry(150, Config.AlertChannel) {
                     @Override
                     public boolean type(char c, KeyEvent ev) {
                         if (!parent.visible)
@@ -2240,6 +2568,7 @@ public class OptWnd extends Window {
                         boolean ret = buf.key(ev);
                         if (text.length() > 0) {
                             Utils.setpref("AlertChannel", text);
+                            Config.AlertChannel = text;
                         }
 
                         return ret;
@@ -2279,8 +2608,8 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
-        appender.addRow(new Label("Enter Discord Bot Secret Key"),
-                new TextEntry(350, Config.discordbotkey) {
+        appender.addRow(new Label("Enter Discord Bot Key"),
+                new TextEntry(475, Config.discordbotkey) {
                     @Override
                     public boolean type(char c, KeyEvent ev) {
                         if (!parent.visible)
@@ -2289,6 +2618,7 @@ public class OptWnd extends Window {
                         boolean ret = buf.key(ev);
                         if (text.length() > 0) {
                             Utils.setpref("discordbotkey", text);
+                            Config.discordbotkey = text;
                         }
 
                         return ret;
@@ -2318,7 +2648,7 @@ public class OptWnd extends Window {
             }
         });
         appender.addRow(new Label("Enter Discord channel name for village chat output."),
-                new TextEntry(85, Config.discordchannel) {
+                new TextEntry(150, Config.discordchannel) {
                     @Override
                     public boolean type(char c, KeyEvent ev) {
                         if (!parent.visible)
@@ -2327,6 +2657,7 @@ public class OptWnd extends Window {
                         boolean ret = buf.key(ev);
                         if (text.length() > 0) {
                             Utils.setpref("discordchannel", text);
+                            Config.discordchannel = text;
                         }
 
                         return ret;
@@ -3904,6 +4235,34 @@ public class OptWnd extends Window {
                 Utils.setpref("cleavesfx", item);
                 if(!item.equals("None"))
                     Audio.play(Resource.local().loadwait(item),Config.cleavesoundvol);
+            }
+        };
+    }
+    private Dropbox<String> makeDropdownCombat() {
+        final List<String> alarms = Config.alarms.values().stream().map(x -> x.toString()).collect(Collectors.toList());
+        return new Dropbox<String>(Config.alarms.size(), alarms) {
+            {
+                super.change(Config.attackedsfx);
+            }
+            @Override
+            protected String listitem(int i) {
+                return alarms.get(i);
+            }
+            @Override
+            protected int listitems() {
+                return alarms.size();
+            }
+            @Override
+            protected void drawitem(GOut g, String item, int i) {
+                g.text(item, Coord.z);
+            }
+            @Override
+            public void change(String item) {
+                super.change(item);
+                Config.attackedsfx = item;
+                Utils.setpref("attackedsfx", item);
+                if(!item.equals("None"))
+                    Audio.play(Resource.local().loadwait(item),Config.attackedvol);
             }
         };
     }

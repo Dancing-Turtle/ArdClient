@@ -46,6 +46,7 @@ public class Discord extends ListenerAdapter implements Runnable {
     public static String botname;
     public MessageChannel channel;
     public static JDA jdalogin;
+    public static boolean discordmessage = false;
     public static List<TextChannel> channels, tempchannels;
     public int iw;
     ChatUI.Channel.Message sentmsg;
@@ -53,16 +54,7 @@ public class Discord extends ListenerAdapter implements Runnable {
     private String stuff;
 
 
-
-   /* public void run() {
-        System.out.println("Discord Loaded");
-        BotUtils.sysLogAppend("Discord Loaded", "white");
-        Thread t = new Thread(new Discord.Main());
-        t.start();
-    }*/
-
     public void run() {
-        // pendingmsg = null;
         channels = new ArrayList<>();
         try {
             URL url = new URL("https://ardenneslol.github.io/Hafen/things.txt");
@@ -94,16 +86,10 @@ public class Discord extends ListenerAdapter implements Runnable {
             e.printStackTrace();
             BotUtils.sysLogAppend(e.getMessage(), "white");
         }
+    }
 
-           /* ActionListener checkMSG = new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    if (pendingmsg != null && readytogo) {
-                         jdalogin.getTextChannelById(Resource.getLocString(Resource.BUNDLE_LABEL, Config.discordchannel)).sendMessage(pendingmsg).queue();
-                         pendingmsg = null;
-                    }
-                }
-            };
-            new Timer(delay,checkMSG).start();*/
+    public static void SwitchMessageFlag(){
+        discordmessage = !discordmessage;
     }
 
     @Override
@@ -120,7 +106,6 @@ public class Discord extends ListenerAdapter implements Runnable {
             if (counter.canTalk())
                 channels.add(counter);
         }
-        //channels.sort.((object1, object2) -> object1.getName().compareTo(object2.getName()));
         channels.sort(Comparator.comparing(Channel::getName));
 
         for (TextChannel counter2 : channels) {
@@ -134,7 +119,6 @@ public class Discord extends ListenerAdapter implements Runnable {
                     iw = ((ChatUI.Channel) w).iw();
                 }
             }
-            // System.out.println("msglist size for : "+counter2.getName()+" is : "+msglist.size());
             try {
                 for (int i = 10; i >= 0; i--) {
                     LoadMSG = null;
@@ -150,7 +134,6 @@ public class Discord extends ListenerAdapter implements Runnable {
 
                         if (embeds.size() >= 2 || attachs.size() >= 2)
                             LoadMSG = "**Discord Message not Loaded, multiple picture attachments.**";
-                        //  System.out.println("Channel : "+counter2.getName()+" Msg : "+LoadMSG+" Embeds Size : "+embeds.size()+" Attachments size : "+attachs.size());
                     } catch (IndexOutOfBoundsException qq) {
                         System.out.println("Index out of bounds for : " + counter2.getName() + " msg number " + i);
                     }
@@ -228,8 +211,6 @@ public class Discord extends ListenerAdapter implements Runnable {
                 msg = "**Discord Message not Loaded, multiple picture attachments.**";
         } catch (IndexOutOfBoundsException qq) {
         }
-
-        // if (!author.isBot()) {
         for (Widget w = gui.chat.lchild; w != null; w = w.prev) {
             if (w instanceof ChatUI.Channel) {
                 iw = ((ChatUI.Channel) w).iw();
@@ -247,8 +228,8 @@ public class Discord extends ListenerAdapter implements Runnable {
                     }
                 }
                 if (chat.name().equals(Resource.getLocString(Resource.BUNDLE_LABEL, channelname))) {
-                    if (!author.getName().contains("Haven")) {
-                        if (!msg.contains(Config.discordchannel)) {
+                    if (!author.isBot()) { //if message is from bot, check to make sure it's not the relay channel because it will cause an infinite loop of feedback if it is
+                        if (!msg.contains(Config.discordchannel)) { //if message is not in your village chat relay channel
                             if (member.getNickname() != null)
                                 sentmsg = new ChatUI.Channel.SimpleMessage(member.getNickname() + ": " + msg, Color.green, iw);
                             else
@@ -258,7 +239,7 @@ public class Discord extends ListenerAdapter implements Runnable {
                             chat.updurgency(1);
                             break;
                         }
-                    } else {
+                    } else { //if message is not bot, just send entire message
                         ChatUI.Channel.Message sentmsg = new ChatUI.Channel.SimpleMessage(msg, Color.green, iw);
                         chat.append(sentmsg);
                         gui.chat.notify(chat, sentmsg);
@@ -268,12 +249,12 @@ public class Discord extends ListenerAdapter implements Runnable {
                 }
             }
         }
-        if (Config.discordchat && channel.getName().equals(Config.discordchannel)) {
+        if (Config.discordchat && channel.getName().equals(Config.discordchannel)) { //if message is in your village chat relay channel
             for (Widget w = gui.chat.lchild; w != null; w = w.prev) {
                 if (w instanceof ChatUI.MultiChat) {
                     if (((ChatUI.MultiChat) w).name().equals(Config.chatalert)) {
-                        // if(!author.getName().contains("Haven")) {
                         if (!author.isBot()) {
+                            discordmessage = true;
                             ChatUI.Channel.Message sentmsg = new ChatUI.Channel.SimpleMessage(author.getName() + ": " + msg, Color.green, iw);
                             if (member.getNickname() != null)
                                 ((ChatUI.MultiChat) w).send(member.getNickname() + ": " + msg);
@@ -281,24 +262,12 @@ public class Discord extends ListenerAdapter implements Runnable {
                                 ((ChatUI.MultiChat) w).send(author.getName() + ": " + msg);
                             gui.chat.notify((ChatUI.MultiChat) w, sentmsg);
                             ((ChatUI.MultiChat) w).updurgency(1);
+                            System.out.println("Discord message : "+discordmessage);
                             break;
-                            /*}else {
-                                ChatUI.Channel.Message sentmsg = new ChatUI.Channel.SimpleMessage(msg, Color.green, iw);
-                                ((ChatUI.MultiChat) w).send(msg);
-                                gui.chat.notify((ChatUI.MultiChat)w, sentmsg);
-                                ((ChatUI.MultiChat) w).updurgency(1);
-                                break;
-                            }*/
                         }
                     }
                 }
             }
-            //  }
-
-            // gui.Discord.append(channel.getName()+" - "+author.getName() + ":  " + msg, Color.green);
-            // ChatUI.Channel.Message sendmsg = new ChatUI.Channel.SimpleMessage(channel.getName()+" - "+author.getName() + ": " + msg, Color.green, 0);
-            // gui.chat.notify(gui.Discord, sendmsg);
-            //  gui.Discord.updurgency(1);
         }
 
 

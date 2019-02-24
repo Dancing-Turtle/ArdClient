@@ -52,7 +52,6 @@ public class FilterWnd extends GameUI.Hidewnd {
 	ItemFilter filter = null;
 	if (text != null) {
 	    filter = ItemFilter.create(text);
-	    System.out.println("filter : "+text);
 	}
 	GItem.setFilter(filter);
     }

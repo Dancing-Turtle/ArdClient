@@ -49,6 +49,7 @@ public class UI {
     public int keycode;
     public boolean readytodrop = false;
     public Object lasttip;
+    public Cal calwdg;
     double lastevent, lasttick;
     public Widget mouseon;
     public List<Integer> Questwidgetarray = new ArrayList<>();
@@ -163,7 +164,7 @@ public class UI {
     }
 
     public void newwidget(int id, String type, int parent, Object[] pargs, Object... cargs) throws InterruptedException {
-     //  System.out.println("Widget ID : "+id+" Type : "+type+" Parent : "+parent);
+       //System.out.println("Widget ID : "+id+" Type : "+type+" Parent : "+parent);
 
 
         if (Config.quickbelt && type.equals("wnd") && cargs[1].equals("Belt")) {

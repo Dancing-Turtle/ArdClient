@@ -66,6 +66,7 @@ public class Window extends Widget implements DTarget {
     public static final Coord cpo = new Coord(36, 15);
     public static final int capo = 7, capio = 2;
     public static boolean CurioReport = false;
+    Collection Curios = new ArrayList();
     public Button checkcurios;
     public boolean justclose = false;
     public static final Coord dlmrgn = new Coord(23, 14), dsmrgn = new Coord(9, 9);
@@ -202,16 +203,6 @@ public class Window extends Widget implements DTarget {
 
     protected void drawframe(GOut g) {
         // Study Table total LP and durations of curiosities
-        Collection Curios = new ArrayList();
-
-        Utils.loadprefchklist("curiosel", Config.curiolist);
-
-
-
-        for (CheckListboxItem itm : Config.curiolist.values())
-        if (itm != null && itm.selected)
-            Curios.add(itm.name);
-
         Collection GetCurios = new ArrayList();
         Collection FinalCurios = new ArrayList();
 
@@ -327,6 +318,10 @@ public class Window extends Widget implements DTarget {
                 resize(265,sizeY);
                 if (CurioReport) {
                     CurioReport = false;
+                    Curios.clear();
+                    for (String itm : Config.curioslist.keySet())
+                        if (itm != null && Config.curioslist.get(itm))
+                            Curios.add(itm);
                     Curios.removeAll(GetCurios);
                     if (!Curios.isEmpty()) {
                         BotUtils.sysMsg("Missing Curios : " + Curios, Color.WHITE);

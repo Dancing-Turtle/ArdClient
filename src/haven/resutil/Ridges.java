@@ -741,17 +741,17 @@ public class Ridges extends MapMesh.Hooks {
     }
 
     public static boolean brokenp(MCache map, Coord tc) {
-        Tiler t = map.tiler(map.gettile(tc));
+        Tiler t = map.tiler(map.gettile_safe(tc));
         if (!(t instanceof RidgeTile))
             return (false);
         int bz = ((RidgeTile) t).breakz();
         for (Coord ec : tecs) {
-            t = map.tiler(map.gettile(tc.add(ec)));
+            t = map.tiler(map.gettile_safe(tc.add(ec)));
             if (t instanceof RidgeTile)
                 bz = Math.min(bz, ((RidgeTile) t).breakz());
         }
         for (int i = 0; i < 4; i++) {
-            if (Math.abs(map.getz(tc.add(tccs[(i + 1) % 4])) - map.getz(tc.add(tccs[i]))) > bz)
+            if (Math.abs(map.getz_safe(tc.add(tccs[(i + 1) % 4])) - map.getz_safe(tc.add(tccs[i]))) > bz)
                 return (true);
         }
         return (false);

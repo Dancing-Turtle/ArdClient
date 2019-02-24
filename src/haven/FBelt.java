@@ -113,14 +113,59 @@ public class FBelt extends Widget implements DTarget, DropTarget {
                 }
                 return true;
             }
-
             if (button == 1) {
-                use(slot);
+               Resource res = belt[slot].get();
+                if (Config.confirmmagic && res.name.startsWith("paginae/seid/") && !res.name.equals("paginae/seid/rawhide")) {
+                    Window confirmwnd = new Window(new Coord(225, 100), "Confirm") {
+                        @Override
+                        public void wdgmsg(Widget sender, String msg, Object... args) {
+                            if (sender == cbtn)
+                                reqdestroy();
+                            else
+                                super.wdgmsg(sender, msg, args);
+                        }
+
+                        @Override
+                        public boolean type(char key, KeyEvent ev) {
+                            if (key == 27) {
+                                reqdestroy();
+                                return true;
+                            }
+                            return super.type(key, ev);
+                        }
+                    };
+
+                    confirmwnd.add(new Label(Resource.getLocString(Resource.BUNDLE_LABEL, "Using magic costs experience points. Are you sure you want to proceed?")),
+                            new Coord(10, 20));
+                    confirmwnd.pack();
+
+                    Button yesbtn = new Button(70, "Yes") {
+                        @Override
+                        public void click() {
+                            use(slot);
+                            parent.reqdestroy();
+                        }
+                    };
+                    confirmwnd.add(yesbtn, new Coord(confirmwnd.sz.x / 2 - 60 - yesbtn.sz.x, 60));
+                    Button nobtn = new Button(70, "No") {
+                        @Override
+                        public void click() {
+                            parent.reqdestroy();
+                        }
+                    };
+                    confirmwnd.add(nobtn, new Coord(confirmwnd.sz.x / 2 + 20, 60));
+                    confirmwnd.pack();
+
+                    GameUI gui = gameui();
+                    gui.add(confirmwnd, new Coord(gui.sz.x / 2 - confirmwnd.sz.x / 2, gui.sz.y / 2 - 200));
+                    confirmwnd.show();
+                } else
+                   use(slot);
             } else if (button == 3) {
-                Indir<Resource> res = belt[slot];
+                Resource res = belt[slot].get();
                 if (res != null) {
                     try {
-                        if (!res.get().name.startsWith("paginae/amber"))
+                        if (!res.name.startsWith("paginae/amber"))
                             gameui().wdgmsg("setbelt", getServerSlot(slot), 1);
                     } catch (Exception e) {
                     }
@@ -159,8 +204,57 @@ public class FBelt extends Widget implements DTarget, DropTarget {
             return false;
         for (int i = 0; i < beltkeys.length; i++) {
             if (ev.getKeyCode() == beltkeys[i]) {
-                if (belt[i] != null)
-                    use(i);
+                if (belt[i] != null) {
+                    int slot = i;
+                    Resource res = belt[i].get();
+                    if (Config.confirmmagic && res.name.startsWith("paginae/seid/") && !res.name.equals("paginae/seid/rawhide")) {
+                        Window confirmwnd = new Window(new Coord(225, 100), "Confirm") {
+                            @Override
+                            public void wdgmsg(Widget sender, String msg, Object... args) {
+                                if (sender == cbtn)
+                                    reqdestroy();
+                                else
+                                    super.wdgmsg(sender, msg, args);
+                            }
+
+                            @Override
+                            public boolean type(char key, KeyEvent ev) {
+                                if (key == 27) {
+                                    reqdestroy();
+                                    return true;
+                                }
+                                return super.type(key, ev);
+                            }
+                        };
+
+                        confirmwnd.add(new Label(Resource.getLocString(Resource.BUNDLE_LABEL, "Using magic costs experience points. Are you sure you want to proceed?")),
+                                new Coord(10, 20));
+                        confirmwnd.pack();
+
+                        Button yesbtn = new Button(70, "Yes") {
+                            @Override
+                            public void click() {
+                                use(slot);
+                                parent.reqdestroy();
+                            }
+                        };
+                        confirmwnd.add(yesbtn, new Coord(confirmwnd.sz.x / 2 - 60 - yesbtn.sz.x, 60));
+                        Button nobtn = new Button(70, "No") {
+                            @Override
+                            public void click() {
+                                parent.reqdestroy();
+                            }
+                        };
+                        confirmwnd.add(nobtn, new Coord(confirmwnd.sz.x / 2 + 20, 60));
+                        confirmwnd.pack();
+
+                        GameUI gui = gameui();
+                        gui.add(confirmwnd, new Coord(gui.sz.x / 2 - confirmwnd.sz.x / 2, gui.sz.y / 2 - 200));
+                        confirmwnd.show();
+                    } else
+                        use(i);
+
+                }
                 return true;
             }
         }

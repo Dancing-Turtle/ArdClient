@@ -441,6 +441,12 @@ public class RenderList {
                 return;
             else
                 throw(l);
+        } catch(Defer.NotDoneException e){
+            if(Config.noloadscreen){
+                return;
+            }else{
+                throw (e);
+            }
         }
     }
 

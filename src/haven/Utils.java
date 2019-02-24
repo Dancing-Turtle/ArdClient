@@ -26,6 +26,9 @@
 
 package haven;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -302,6 +305,28 @@ public class Utils {
         } catch (SecurityException e) {
         } catch (Exception ex) {
             ex.printStackTrace();
+        }
+    }
+    @SuppressWarnings("SynchronizeOnNonFinalField")
+    public static void  saveCurioList() {
+        synchronized (Config.curioslist) {
+            Gson gson = (new GsonBuilder()).create();
+            Config.saveFile("curiolist.json", gson.toJson(Config.curioslist));
+        }
+    }
+
+    public static void loadCurioList() {
+        String json = Config.loadFile("curiolist.json");
+        if(json != null){
+            try {
+                Gson gson = (new GsonBuilder()).create();
+                Type collectionType = new TypeToken<HashMap<String, Boolean>>(){}.getType();
+                Config.curioslist = gson.fromJson(json, collectionType);
+            }catch(Exception ignored){ }
+        }
+        if(Config.curioslist == null){
+            Config.curioslist = new HashMap<>();
+            Config.curioslist.put("Chiming Bluebell", false);
         }
     }
 

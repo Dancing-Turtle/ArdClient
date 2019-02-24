@@ -491,12 +491,16 @@ public class ItemFilter {
 	protected boolean match(ItemInfo item) {
 	    if(item instanceof FoodInfo) {
 		FoodInfo food = (FoodInfo) item;
+			for(FoodInfo.Effect event : food.efs)
+				System.out.println("Food event : " +event);
 		if("energy".equals(text)) {
 		    return test(Utils.round(100 * food.end, 2));
 		} else if("hunger".equals(text)) {
 		    return test(Utils.round(100 * food.glut, 2));
-		}
+		}else if("satiate".equals(text))
+				System.out.println("Satiation Found");
 	    }
+
 	    return false;
 	}
     } 

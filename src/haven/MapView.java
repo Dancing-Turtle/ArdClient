@@ -53,7 +53,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     public Coord2d cc;
     public String curcamera;
     public final Glob glob;
-    private static final int view = 2;
+    private int view = (Config.lowerterraindistance ? 1: 2);
     private Collection<Delayed> delayed = new LinkedList<Delayed>();
     private Collection<Delayed> delayed2 = new LinkedList<Delayed>();
     private Collection<Rendered> extradraw = new LinkedList<Rendered>();
@@ -193,46 +193,45 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         private double fl = Math.sqrt(2);
         private double fa = ((fl * (f1 - f0)) - (f2 - f0)) / (fl - 2);
         private double fb = ((f2 - f0) - (2 * (f1 - f0))) / (fl - 2);
-
         private float field(float elev) {
             double a = elev / (Math.PI / 4);
-            return ((float) (f0 + (fa * a) + (fb * Math.sqrt(a))));
+	    return((float)(f0 + (fa * a) + (fb * Math.sqrt(a))));
         }
 
         private float dist(float elev) {
-            float da = (float) Math.atan(ca * field(elev));
-            return ((float) (((cd - (h / Math.tan(elev))) * Math.sin(elev - da) / Math.sin(da)) - (h / Math.sin(elev))));
+	    float da = (float)Math.atan(ca * field(elev));
+	    return((float)(((cd - (h / Math.tan(elev))) * Math.sin(elev - da) / Math.sin(da)) - (h / Math.sin(elev))));
         }
 
         public void tick(double dt) {
-            elev += (telev - elev) * (float) (1.0 - Math.pow(500, -dt));
-            if (Math.abs(telev - elev) < 0.0001)
+	    elev += (telev - elev) * (float)(1.0 - Math.pow(500, -dt));
+	    if(Math.abs(telev - elev) < 0.0001)
                 elev = telev;
 
             float dangl = tangl - angl;
-            while (dangl > Math.PI) dangl -= (float) (2 * Math.PI);
-            while (dangl < -Math.PI) dangl += (float) (2 * Math.PI);
-            angl += dangl * (float) (1.0 - Math.pow(500, -dt));
-            if (Math.abs(tangl - angl) < 0.0001)
+	    while(dangl >  Math.PI) dangl -= (float)(2 * Math.PI);
+	    while(dangl < -Math.PI) dangl += (float)(2 * Math.PI);
+	    angl += dangl * (float)(1.0 - Math.pow(500, -dt));
+	    if(Math.abs(tangl - angl) < 0.0001)
                 angl = tangl;
 
             Coord3f cc = getcc();
             cc.y = -cc.y;
-            if (curc == null)
+	    if(curc == null)
                 curc = cc;
             float dx = cc.x - curc.x, dy = cc.y - curc.y;
-            float dist = (float) Math.sqrt((dx * dx) + (dy * dy));
-            if (dist > 250) {
+	    float dist = (float)Math.sqrt((dx * dx) + (dy * dy));
+	    if(dist > 250) {
                 curc = cc;
-            } else if (dist > fr) {
+	    } else if(dist > fr) {
                 Coord3f oc = curc;
-                float pd = (float) Math.cos(elev) * dist(elev);
-                Coord3f cambase = new Coord3f(curc.x + ((float) Math.cos(tangl) * pd), curc.y + ((float) Math.sin(tangl) * pd), 0.0f);
+		float pd = (float)Math.cos(elev) * dist(elev);
+		Coord3f cambase = new Coord3f(curc.x + ((float)Math.cos(tangl) * pd), curc.y + ((float)Math.sin(tangl) * pd), 0.0f);
                 float a = cc.xyangle(curc);
-                float nx = cc.x + ((float) Math.cos(a) * fr), ny = cc.y + ((float) Math.sin(a) * fr);
+		float nx = cc.x + ((float)Math.cos(a) * fr), ny = cc.y + ((float)Math.sin(a) * fr);
                 Coord3f tgtc = new Coord3f(nx, ny, cc.z);
-                curc = curc.add(tgtc.sub(curc).mul((float) (1.0 - Math.pow(500, -dt))));
-                if (curc.dist(tgtc) < 0.01)
+		curc = curc.add(tgtc.sub(curc).mul((float)(1.0 - Math.pow(500, -dt))));
+		if(curc.dist(tgtc) < 0.01)
                     curc = tgtc;
                 tangl = curc.xyangle(cambase);
             }
@@ -243,34 +242,31 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         }
 
         public float angle() {
-            return (angl);
+	    return(angl);
         }
 
-        private static final float maxang = (float) (Math.PI / 2 - 0.1);
+	private static final float maxang = (float)(Math.PI / 2 - 0.1);
         private static final float mindist = 50.0f;
 
         public boolean wheel(Coord c, int amount) {
             float fe = telev;
             telev += amount * telev * 0.02f;
-            if (telev > maxang)
+	    if(telev > maxang)
                 telev = maxang;
-            if (dist(telev) < mindist)
+	    if(dist(telev) < mindist)
                 telev = fe;
-            return (true);
+	    return(true);
         }
 
         public String toString() {
-            return (String.format("%f %f %f", elev, dist(elev), field(elev)));
+	    return(String.format("%f %f %f", elev, dist(elev), field(elev)));
         }
     }
-
-    static {
-        camtypes.put("follow", FollowCam.class);
-    }
+    static {camtypes.put("follow", FollowCam.class);}
 
     public class FreeCam extends Camera {
         private float dist = 50.0f;
-        private float elev = (float) Math.PI / 4.0f;
+	private float elev = (float)Math.PI / 4.0f;
         private float angl = 0.0f;
         private Coord dragorig = null;
         private float elevorig, anglorig;
@@ -590,15 +586,29 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         public boolean setup(RenderList rl) {
             Coord cc = MapView.this.cc.floor(tilesz).div(MCache.cutsz);
             Coord o = new Coord();
-            for (o.y = -view; o.y <= view; o.y++) {
-                for (o.x = -view; o.x <= view; o.x++) {
-                    Coord2d pc = cc.add(o).mul(MCache.cutsz).mul(tilesz);
-                    try {
-                        MapMesh cut = glob.map.getcut(cc.add(o));
-                        rl.add(cut, Location.xlate(new Coord3f((float)pc.x, -(float)pc.y, 0)));
-                    } catch (Defer.DeferredException e) {
-                        // there seems to be a rare problem with fetching gridcuts when teleporting, not sure why...
-                        // we ignore Defer.DeferredException to prevent the client for crashing
+            if(Config.noloadscreen) {
+                for (o.y = -view; o.y <= view; o.y++) {
+                    for (o.x = -view; o.x <= view; o.x++) {
+                        Coord2d pc = cc.add(o).mul(MCache.cutsz).mul(tilesz);
+                        try {
+                            MapMesh cut = glob.map.getcut(cc.add(o));
+                            if (cut != null) {
+                                rl.add(cut, Location.xlate(new Coord3f((float) pc.x, -(float) pc.y, 0)));
+                            }
+                        } catch (Exception e) {}
+                    }
+                }
+            } else {
+                for (o.y = -view; o.y <= view; o.y++) {
+                    for (o.x = -view; o.x <= view; o.x++) {
+                        Coord2d pc = cc.add(o).mul(MCache.cutsz).mul(tilesz);
+                        try {
+                            MapMesh cut = glob.map.getcut(cc.add(o));
+                            rl.add(cut, Location.xlate(new Coord3f((float)pc.x, -(float)pc.y, 0)));
+                        } catch (Defer.DeferredException e) {
+                            // there seems to be a rare problem with fetching gridcuts when teleporting, not sure why...
+                            // we ignore Defer.DeferredException to prevent the client for crashing
+                        }
                     }
                 }
             }
@@ -606,7 +616,29 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                 if(!(rl.state().get(PView.ctx) instanceof ClickContext))
                     rl.add(flavobjs, null);
             }
-            return (false);
+		return(false);
+	    }
+	};
+
+    private final Rendered grid = new Rendered() {
+	public void draw(GOut g) {}
+
+	public boolean setup(RenderList rl) {
+	    Coord cc = MapView.this.cc.floor(tilesz).div(MCache.cutsz);
+	    Coord o = new Coord();
+	    for(o.y = -view; o.y <= view; o.y++) {
+		for(o.x = -view; o.x <= view; o.x++) {
+		    Coord2d pc = cc.add(o).mul(MCache.cutsz).mul(tilesz);
+		    try {
+			FastMesh cut = glob.map.getgcut(cc.add(o));
+			if(cut != null) {
+			    rl.add(cut, Location.xlate(new Coord3f((float)pc.x, (float)-pc.y, 0)));
+			}
+		    } catch(Loading e) {
+		    }
+		}
+	    }
+	    return(false);
         }
     };
 
@@ -632,28 +664,29 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                     States.presdepth));
         }
 
-        public void draw(GOut g) {
-        }
+	    public void draw(GOut g) {}
 
         public boolean setup(RenderList rl) {
             Coord cc = MapView.this.cc.floor(tilesz).div(MCache.cutsz);
             Coord o = new Coord();
-            for (o.y = -view; o.y <= view; o.y++) {
-                for (o.x = -view; o.x <= view; o.x++) {
+		for(o.y = -view; o.y <= view; o.y++) {
+		    for(o.x = -view; o.x <= view; o.x++) {
                     Coord2d pc = cc.add(o).mul(MCache.cutsz).mul(tilesz);
-                    for (int i = 0; i < visol.length; i++) {
-                        if (mats[i] == null)
+			for(int i = 0; i < visol.length; i++) {
+			    if(mats[i] == null)
                             continue;
-                        if (visol[i] > 0) {
+			    if(visol[i] > 0) {
                             Rendered olcut;
+				try {
                             olcut = glob.map.getolcut(i, cc.add(o));
                             if (olcut != null)
-                                rl.add(olcut, GLState.compose(Location.xlate(new Coord3f((float)pc.x, -(float)pc.y, 0)), mats[i]));
+					rl.add(olcut, GLState.compose(Location.xlate(new Coord3f((float) pc.x, -(float) pc.y, 0)), mats[i]));
+				} catch (Loading e) {}
                         }
                     }
                 }
             }
-            return (false);
+		return(false);
         }
     };
 
@@ -663,17 +696,17 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         GLState xf;
         try {
             xf = Following.xf(gob);
-        } catch (Loading e) {
+	} catch(Loading e) {
             xf = null;
         }
         GLState extra = null;
-        if (xf == null) {
+	if(xf == null) {
             xf = gob.loc;
             try {
                 Coord3f c = gob.getc();
                 Tiler tile = glob.map.tiler(glob.map.gettile(new Coord2d(c).floor(tilesz)));
                 extra = tile.drawstate(glob, rl.cfg, c);
-            } catch (Loading e) {
+	    } catch(Loading e) {
                 extra = null;
             }
         }
@@ -826,13 +859,13 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
             int cycle = 0;
 
             void update() {
-                if (++cycle >= 300) {
+		    if(++cycle >= 300) {
                     Collection<Gob> cache = new ArrayList<Gob>();
-                    for (Map.Entry<Gob, Integer> ob : age.entrySet()) {
-                        if (ticks - ob.getValue() > 450)
+			for(Map.Entry<Gob, Integer> ob : age.entrySet()) {
+			    if(ticks - ob.getValue() > 450)
                             cache.add(ob.getKey());
                     }
-                    for (Gob ob : cache)
+			for(Gob ob : cache)
                         put(oldfags, ob);
                     cycle = 0;
                 }
@@ -953,13 +986,8 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         return(String.format("Camera[%s (%s)], Caches[%s]", cc, camera, gobs));
     }
 
-    public GLState camera() {
-        return (camera);
-    }
-
-    protected Projection makeproj() {
-        return (null);
-    }
+    public GLState camera()         {return(camera);}
+    protected Projection makeproj() {return(null);}
 
     private Coord3f smapcc = null;
     private ShadowMap smap = null;
@@ -975,20 +1003,20 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
             cc.y = -cc.y;
             boolean ch = false;
             double now = Utils.rtime();
-            if ((smapcc == null) || (smapcc.dist(cc) > 50)) {
+	    if((smapcc == null) || (smapcc.dist(cc) > 50)) {
                 smapcc = cc;
                 ch = true;
             } else {
-                if (now - lsmch > 0.1)
+		if(now - lsmch > 0.1)
                     ch = true;
             }
-            if (ch) {
+	    if(ch) {
                 smap.setpos(smapcc.add(dir.neg().mul(1000f)), dir);
                 lsmch = now;
             }
             rl.prepc(smap);
         } else {
-            if (smap != null)
+	    if(smap != null)
                 smap.dispose();
             smap = null;
             smapcc = null;
@@ -999,13 +1027,19 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     private Outlines outlines = new Outlines(false);
 
     public void setup(RenderList rl) {
+        Gob pl = player();
+        if(pl != null)
+            this.cc = new Coord2d(pl.getc());
         synchronized (glob) {
             if (glob.lightamb != null) {
                 Color lightamb, lightdif, lightspc;
                 if (Config.daylight) {
-                    lightamb = glob.dlightamb;
-                    lightdif = glob.dlightamb;
-                    lightspc = glob.dlightspc;
+                   // lightamb = glob.dlightamb;
+                   // lightdif = glob.dlightdif;
+                   // lightspc = glob.dlightspc;
+                    lightamb = new Color(Config.AmbientRed,Config.AmbientGreen,Config.AmbientBlue);
+                    lightdif = new Color(Config.DiffuseRed,Config.DiffuseGreen,Config.DiffuseBlue);
+                    lightspc = new Color(Config.SpecRed,Config.SpecGreen,Config.SpecBlue);
                 } else {
                     lightamb = glob.lightamb;
                     lightdif = glob.lightdif;
@@ -1019,11 +1053,17 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                 amb = null;
             }
             if (Config.showweather) {
-                for (Glob.Weather w : glob.weather)
-                    w.gsetup(rl);
-                for (Glob.Weather w : glob.weather) {
-                    if (w instanceof Rendered)
-                        rl.add((Rendered) w, null);
+                try {
+                    for (Glob.Weather w : glob.weather)
+                        w.gsetup(rl);
+                    for (Glob.Weather w : glob.weather) {
+                        if (w instanceof Rendered)
+                            rl.add((Rendered) w, null);
+                    }
+                }catch (Exception e){
+                    if(!Config.noloadscreen){
+                        throw e;
+                    }
                 }
             }
         }
@@ -1080,29 +1120,29 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         public void apply(GOut g, VarID loc) {
             int idx = -1;
             RenderContext ctx = g.st.get(PView.ctx);
-            if (ctx instanceof WidgetContext) {
-                Widget wdg = ((WidgetContext) ctx).widget();
-                if (wdg instanceof MapView)
-                    idx = g.st.get(Light.lights).index(((MapView) wdg).amb);
+		if(ctx instanceof WidgetContext) {
+		    Widget wdg = ((WidgetContext)ctx).widget();
+		    if(wdg instanceof MapView)
+			idx = g.st.get(Light.lights).index(((MapView)wdg).amb);
             }
             g.gl.glUniform1i(loc, idx);
         }
     };
 
     public void drawadd(Rendered extra) {
-        synchronized (extradraw) {
+	synchronized(extradraw) {
             extradraw.add(extra);
         }
     }
 
     public Gob player() {
-        return ((plgob < 0) ? null : glob.oc.getgob(plgob));
+	return((plgob < 0) ? null : glob.oc.getgob(plgob));
     }
 
     public Coord3f getcc() {
         Gob pl = player();
-        if (pl != null)
-            return (pl.getc());
+	if(pl != null)
+	    return(pl.getc());
         else
             return(glob.map.getzp(cc));
     }
@@ -1117,19 +1157,17 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     private GLState.Buffer clickbasic(GOut g) {
         GLState.Buffer ret = basic(g);
         clickctx.prep(ret);
-        if ((clickbuf == null) || !clickbuf.sz().equals(sz)) {
-            if (clickbuf != null) {
-                clickfb.dispose();
-                clickfb = null;
-                clickbuf.dispose();
-                clickbuf = null;
+	if((clickbuf == null) || !clickbuf.sz().equals(sz)) {
+	    if(clickbuf != null) {
+		clickfb.dispose(); clickfb = null;
+		clickbuf.dispose(); clickbuf = null;
             }
             clickbuf = new TexE(sz, GL.GL_RGBA, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE);
             clickfb = new GLFrameBuffer(clickbuf, null);
         }
         clickfb.prep(ret);
         new States.Blending(GL.GL_ONE, GL.GL_ZERO).prep(ret);
-        return (ret);
+	return(ret);
     }
 
     private abstract static class Clicklist<T> extends RenderList {
@@ -1147,9 +1185,9 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
 
         protected States.ColState getcol(T t) {
             Reference<States.ColState> prevr = idmap.get(t);
-            States.ColState prev = (prevr == null) ? null : prevr.get();
-            if (prev != null)
-                return (prev);
+	    States.ColState prev = (prevr == null)?null:prevr.get();
+	    if(prev != null)
+		return(prev);
             int cr = ((i & 0x00000f) << 4) | ((i & 0x00f000) >> 12),
                     cg = ((i & 0x0000f0) << 0) | ((i & 0x0f0000) >> 16),
                     cb = ((i & 0x000f00) >> 4) | ((i & 0xf00000) >> 20);
@@ -1158,16 +1196,15 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
             i++;
             rmap.put(cst, t);
             idmap.put(t, new WeakReference<States.ColState>(cst));
-            return (cst);
+	    return(cst);
         }
 
         protected void render(GOut g, Rendered r) {
             try {
-                if (r instanceof FRendered)
-                    ((FRendered) r).drawflat(g);
-            } catch (RenderList.RLoad l) {
-                if (ignload) return;
-                else throw (l);
+		if(r instanceof FRendered)
+		    ((FRendered)r).drawflat(g);
+	    } catch(RenderList.RLoad l) {
+		if(ignload) return; else throw(l);
             }
         }
 
@@ -1186,12 +1223,12 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
             s.os.copy(bk);
             plain.copy(s.os);
             bk.copy(s.os, GLState.Slot.Type.GEOM);
-            if (t != null)
+	    if(t != null)
                 getcol(t).prep(s.os);
         }
 
         public boolean aging() {
-            return (i > (1 << 20));
+	    return(i > (1 << 20));
         }
     }
 
@@ -1204,17 +1241,17 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         }
 
         protected MapMesh map(Rendered r) {
-            if (r instanceof MapMesh)
-                return ((MapMesh) r);
-            return (null);
+	    if(r instanceof MapMesh)
+		return((MapMesh)r);
+	    return(null);
         }
 
         protected void render(GOut g, Rendered r) {
-            if (r instanceof MapMesh) {
-                MapMesh m = (MapMesh) r;
-                if (mode != 0)
+	    if(r instanceof MapMesh) {
+		MapMesh m = (MapMesh)r;
+		if(mode != 0)
                     g.state(States.vertexcolor);
-                if ((limit == null) || (limit == m))
+		if((limit == null) || (limit == m))
                     m.drawflat(g, mode);
             }
         }
@@ -1358,8 +1395,8 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     }
 
     protected void undelay(Collection<Delayed> list, GOut g) {
-        synchronized (list) {
-            for (Delayed d : list)
+	synchronized(list) {
+	    for(Delayed d : list)
                 d.run(g);
             list.clear();
         }
@@ -1382,19 +1419,19 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     }
 
     private void poldraw(GOut g) {
-        if (polowners.isEmpty())
+	if(polowners.isEmpty())
             return;
         double now = Utils.rtime();
-        synchronized (polowners) {
+	synchronized(polowners) {
             int y = (sz.y - polowners.values().stream().map(t -> t.text.sz().y).reduce(0, (a, b) -> a + b + 10)) / 2;
-            for (Iterator<PolText> i = polowners.values().iterator(); i.hasNext(); ) {
+	    for(Iterator<PolText> i = polowners.values().iterator(); i.hasNext();) {
                 PolText t = i.next();
                 double poldt = now - t.tm;
-                if (poldt < 6.0) {
+		if(poldt < 6.0) {
                     int a;
-                    if (poldt < 1.0)
-                        a = (int) (255 * poldt);
-                    else if (poldt < 4.0)
+		    if(poldt < 1.0)
+			a = (int)(255 * poldt);
+		    else if(poldt < 4.0)
                         a = 255;
                     else
                         a = (int) ((255 * (2.0 - (poldt - 4.0))) / 2.0);
@@ -1465,6 +1502,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     }
 
     private void partydraw(GOut g) {
+        synchronized (ui.sess.glob.party) {
         for (Party.Member m : ui.sess.glob.party.memb.values()) {
             if (m.gobid == this.plgob)
                 continue;
@@ -1477,57 +1515,54 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
             g.chcolor(m.col);
             drawarrow(g, a);
         }
+	}
         g.chcolor();
     }
 
     private Loading camload = null, lastload = null;
-
     public void draw(GOut g) {
-        glob.map.sendreqs();
-        if ((olftimer != 0) && (olftimer < Utils.rtime()))
-            unflashol();
-        try {
-            if (camload != null)
-                throw (new Loading(camload));
-            Gob pl = player();
-            if (pl != null)
-                this.cc = new Coord2d(pl.getc());
-            undelay(delayed, g);
-            super.draw(g);
-            undelay(delayed2, g);
-            poldraw(g);
-            partydraw(g);
+            glob.map.sendreqs();
+	if((olftimer != 0) && (olftimer < Utils.rtime()))
+                unflashol();
             try {
+	    if(camload != null)
+		throw(new Loading(camload));
+                undelay(delayed, g);
+                super.draw(g);
+                undelay(delayed2, g);
+                poldraw(g);
+                partydraw(g);
+                if (showgrid) {
+                    double tx = Math.ceil(cc.x / tilesz.x / MCache.cutsz.x);
+                    double ty = Math.ceil(cc.y / tilesz.y / MCache.cutsz.y);
+                    Coord tc = new Coord((int) (tx - view - 1) * MCache.cutsz.x, (int) (ty - view - 1) * MCache.cutsz.y);
+                    if (!tc.equals(lasttc)) {
+                        lasttc = tc;
+                        gridol.update(tc);
+                    }
+                }
+                //  try {
                 glob.map.reqarea(cc.floor(tilesz).sub(MCache.cutsz.mul(view + 1)),
                         cc.floor(tilesz).add(MCache.cutsz.mul(view + 1)));
-            } catch (Defer.DeferredException e) {
-                // there seems to be a rare problem with fetching gridcuts when teleporting, not sure why...
-                // we ignore Defer.DeferredException to prevent the client for crashing
-            }
-
-            if (showgrid) {
-                double tx = Math.ceil(cc.x / tilesz.x / MCache.cutsz.x);
-                double ty = Math.ceil(cc.y / tilesz.y / MCache.cutsz.y);
-                Coord tc = new Coord((int)(tx - view - 1) * MCache.cutsz.x, (int)(ty - view - 1) * MCache.cutsz.y);
-                if (!tc.equals(lasttc)) {
-                    lasttc = tc;
-                    gridol.update(tc);
+	} catch(Loading e) {
+                lastload = e;
+                String text = e.getMessage();
+	    if(text == null)
+                    text = "Loading...";
+                if (!Config.noloadscreen) {
+                    g.chcolor(Color.BLACK);
+                    g.frect(Coord.z, sz);
+                } else {
+                    System.out.println(text);
+                    e.printStackTrace();
+                }
+                g.chcolor(Color.WHITE);
+                g.atext(text, sz.div(2), 0.5, 0.5);
+	    if(e instanceof Resource.Loading) {
+		((Resource.Loading)e).boostprio(5);
                 }
             }
-        } catch (Loading e) {
-            lastload = e;
-            String text = e.getMessage();
-            if (text == null)
-                text = "Loading...";
-            g.chcolor(Color.BLACK);
-            g.frect(Coord.z, sz);
-            g.chcolor(Color.WHITE);
-            g.atext(text, sz.div(2), 0.5, 0.5);
-            if (e instanceof Resource.Loading) {
-                ((Resource.Loading) e).boostprio(5);
-            }
         }
-    }
 
     public void tick(double dt) {
         camload = null;
@@ -1543,6 +1578,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         }
         if (placing != null)
             placing.ctick((int) (dt * 1000));
+
         partyHighlight.update();
     }
 
@@ -1562,27 +1598,27 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         Coord2d gran = (plobgran == 0)?null:new Coord2d(1.0 / plobgran, 1.0 / plobgran).mul(tilesz);
 
         public void adjust(Plob plob, Coord pc, Coord2d mc, int modflags) {
-            if ((modflags & 2) == 0)
+	    if((modflags & 2) == 0)
                 plob.rc = mc.floor(tilesz).mul(tilesz).add(tilesz.div(2));
             else if(gran != null)
                 plob.rc = mc.add(gran.div(2)).floor(gran).mul(gran);
             else
                 plob.rc = mc;
             Gob pl = plob.mv().player();
-            if ((pl != null) && !freerot)
+	    if((pl != null) && !freerot)
                 plob.a = Math.round(plob.rc.angle(pl.rc) / (Math.PI / 2)) * (Math.PI / 2);
         }
 
         public boolean rotate(Plob plob, int amount, int modflags) {
-            if ((modflags & 1) == 0)
-                return (false);
+	    if((modflags & 1) == 0)
+		return(false);
             freerot = true;
-            if ((modflags & 2) == 0)
+	    if((modflags & 2) == 0)
                 plob.a = (Math.PI / 4) * Math.round((plob.a + (amount * Math.PI / 4)) / (Math.PI / 4));
             else
                 plob.a += amount * Math.PI / 16;
             plob.a = Utils.cangle(plob.a);
-            return (true);
+	    return(true);
         }
     }
 
@@ -1593,14 +1629,12 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         private Plob(Indir<Resource> res, Message sdt) {
             super(MapView.this.glob, Coord2d.z);
             setattr(new ResDrawable(this, res, sdt));
-            if (ui.mc.isect(rootpos(), sz)) {
+	    if(ui.mc.isect(rootpos(), sz)) {
                 delay(new Adjust(ui.mc.sub(rootpos()), 0));
             }
         }
 
-        public MapView mv() {
-            return (MapView.this);
-        }
+	public MapView mv() {return(MapView.this);}
 
         private class Adjust extends Maptest {
             int modflags;
@@ -1621,8 +1655,8 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     private double olftimer;
 
     private void unflashol() {
-        for (int i = 0; i < visol.length; i++) {
-            if ((olflash & (1 << i)) != 0)
+	for(int i = 0; i < visol.length; i++) {
+	    if((olflash & (1 << i)) != 0)
                 visol[i]--;
         }
         olflash = 0;
@@ -1630,7 +1664,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     }
 
     public void uimsg(String msg, Object... args) {
-        if (msg == "place") {
+	if(msg == "place") {
             int a = 0;
             Indir<Resource> res = ui.sess.getres((Integer) args[a++]);
             Message sdt;
@@ -1962,7 +1996,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                 } else {
                   //  System.out.println("sending click with else2 arguments");
                     wdgmsg("click", args);
-                    if (Config.autopickmussels && gob.type == Gob.Type.MUSSEL)
+                    if (Config.autopickmussels && (gob.getres().basename().equals("mussels") || gob.getres().basename().equals("oyster")))
                         startMusselsPicker(gob);
                         if(Config.autopickclay && gob.type == Gob.Type.CLAY)
                         startClayPicker(gob);

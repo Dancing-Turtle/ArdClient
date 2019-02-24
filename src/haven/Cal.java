@@ -37,7 +37,7 @@ public class Cal extends Widget {
     static Tex nsky = Resource.loadtex("gfx/hud/calendar/nightsky");
     static Resource.Anim sun = Resource.local().loadwait("gfx/hud/calendar/sun").layer(Resource.animc);
     static Resource.Anim moon = Resource.local().loadwait("gfx/hud/calendar/moon").layer(Resource.animc);
-
+	public int id;
     public Cal() {
 	super(bg.sz());
     }
@@ -51,6 +51,8 @@ public class Cal extends Widget {
 	Resource.Image sun = Cal.sun.f[(int)((now / Cal.sun.d) % Cal.sun.f.length)][0];
 	Coord mc = Coord.sc((a.dt + 0.25) * 2 * PI, hbr).add(sz.div(2)).sub(moon.sz.div(2));
 	Coord sc = Coord.sc((a.dt + 0.75) * 2 * PI, hbr).add(sz.div(2)).sub(sun.sz.div(2));
+	this.parent.ui.sess.glob.moonid = moon.id;
+	this.parent.ui.sess.glob.night = a.night;
 	g.chcolor(a.mc);
 	g.image(moon, mc);
 	g.chcolor();

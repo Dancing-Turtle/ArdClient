@@ -26,6 +26,8 @@
 
 package haven;
 
+import haven.purus.BotUtils;
+
 import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.event.KeyEvent;
@@ -34,6 +36,7 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Scanner;
 
 public class LoginScreen extends Widget {
 	boolean serverStatus;
@@ -61,7 +64,7 @@ public class LoginScreen extends Widget {
         optbtn = adda(new Button(100, "Options"), sz.x-110, 40, 0, 1);
        // new UpdateChecker().start();
         add(new LoginList(200, 29), new Coord(10, 10));
-        statusbtn = adda(new Button(100, "Initializing..."), sz.x-110, 80, 0, 1);
+        statusbtn = adda(new Button(200, "Initializing..."), sz.x-210, 80, 0, 1);
         StartUpdaterThread();
         GameUI.swimon = false;
         GameUI.trackon = false;
@@ -342,16 +345,14 @@ public class LoginScreen extends Widget {
             opts.reqdestroy();
             opts = null;
         } else if(sender == statusbtn) {
-        	if(!serverStatus) {
         		Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
         		if(desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
         			try {
-						desktop.browse(new URI("https://youtu.be/insM7oUYNOE"));
+                    desktop.browse(new URI("https://www.havenandhearth.com/portal/"));
 					} catch (IOException | URISyntaxException e) {
 						e.printStackTrace();
 					}
         		}
-        	}
         } else
         	super.wdgmsg(sender, msg, args);
     }
@@ -415,30 +416,27 @@ public class LoginScreen extends Widget {
         Thread statusupdaterthread = new Thread(new Runnable() {
             public void run() {
 				try {
-	        		URL url = new URL("http://www.havenandhearth.com/mt/srv-mon"); // URL to connect
-	        		HttpURLConnection con = (HttpURLConnection) url.openConnection(); // Initialise connection
-	        		InputStream is;
-					is = con.getInputStream(); // Inputstream from url
-	        		String stringBuf = ""; // Initialize buffer
+
+					URL url = new URL("http://www.havenandhearth.com/portal/index/status");
 	        		while(true) {
-	        			int i = is.read(); // Reads next char as int
-	        			if(i!=10) { // If its not line break, add char to current buffer
-	        				stringBuf = stringBuf+(char)i;
-	        			} else { // Here we have one full line of textif(stringBuf.contains("state hafen ")) {
-	        				if(stringBuf.contains("state hafen ")) {
-	        					if(stringBuf.substring(12).equals("up")) {
-		        					statusbtn.change("Server is up M8", Color.GREEN);
-		        					serverStatus = true;
-		        				} else {
-		        					statusbtn.change("Server is " + stringBuf.substring(1), Color.RED);
-		        					serverStatus = false;
+						Scanner scan = new Scanner(url.openStream());
+						while(scan.hasNextLine()) {
+							String line = scan.nextLine();
+							if(line.contains("h2")) {
+								statusbtn.change(line.substring(line.indexOf("<h2>")+4, line.indexOf("</h2>")), Color.WHITE);
 		        				}
 	        				}
-		        			stringBuf = "";
-	        			}
+                        GameUI gui = BotUtils.gui;
+	        				if(gui != null) {
+                                if (gui.ui.sess.alive()) {
+                                   break;
+                                }
+                            }
+						Thread.sleep(5000);
 	        		}
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
+				} catch(IOException e) {
+					e.printStackTrace();
+				} catch(InterruptedException e) {
 					e.printStackTrace();
 				} 
             }

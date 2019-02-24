@@ -444,6 +444,29 @@ public class MapFileWidget extends Widget {
         return(super.mouseup(c, button));
     }
 
+    public boolean mousewheel(Coord c, int amount) {
+        if(amount > 0) {
+            if (MapFileWidget.zoom < 4) {
+               // zoomtex = null;
+                Coord tc = curloc.tc.mul(MapFileWidget.scalef());
+                MapFileWidget.zoom++;
+                tc = tc.div(MapFileWidget.scalef());
+                curloc.tc.x = tc.x;
+                curloc.tc.y = tc.y;
+            }
+        } else {
+            if (MapFileWidget.zoom > 0) {
+               // zoomtex = null;
+                Coord tc = curloc.tc.mul(MapFileWidget.scalef());
+                MapFileWidget.zoom--;
+                tc = tc.div(MapFileWidget.scalef());
+                curloc.tc.x = tc.x;
+                curloc.tc.y = tc.y;
+            }
+        }
+        return(true);
+    }
+
     public Object tooltip(Coord c, Widget prev) {
         if(curloc != null) {
             Coord tc = c.sub(sz.div(2)).add(curloc.tc);

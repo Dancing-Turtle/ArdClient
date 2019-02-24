@@ -205,6 +205,11 @@ public class SteelRefueler extends Window implements GobSelectCallback {
 
                     // take fuel
                    // System.out.println("Take fuel");
+                    if(fuel == null){//this shouldn't happen, assume the worst and just close.
+                        terminate = true;
+                        terminate();
+                        break;
+                    }
                     fuel.item.wdgmsg("take", new Coord(fuel.item.sz.x / 2, fuel.item.sz.y / 2));
                     int timeout = 0;
                     while (gui.hand.isEmpty()) {

@@ -26,6 +26,8 @@
 
 package haven;
 
+import haven.purus.BotUtils;
+
 import java.awt.Color;
 import java.util.Collection;
 import java.util.HashMap;
@@ -48,6 +50,7 @@ public class Glob {
     public Color olightamb = null, olightdif = null, olightspc = null;
     public Color tlightamb = null, tlightdif = null, tlightspc = null;
     public static Color dlightamb = new Color(200, 200, 200);
+    public static Color dlightdif = new Color(200, 200, 200);
     public static Color dlightspc = new Color(255, 255, 255);
     public double lightang = 0.0, lightelev = 0.0;
     public double olightang = 0.0, olightelev = 0.0;
@@ -59,6 +62,8 @@ public class Glob {
     public static haven.timers.TimersThread timersThread;
     public String servertime;
     public Tex servertimetex;
+    public int moonid = 0;
+    public boolean night =false; //true is night
 
     static {
         timersThread = new haven.timers.TimersThread();
@@ -204,6 +209,25 @@ public class Glob {
         servertime = String.format(Resource.getLocString(Resource.BUNDLE_LABEL, "Day %d, %02d:%02d"), day, hours, mins);
         if (secintoday >= dewyladysmantletimemin && secintoday <= dewyladysmantletimemax)
             servertime += Resource.getLocString(Resource.BUNDLE_LABEL, " (Dewy Lady's Mantle)");
+        if(night) {
+            if (moonid == 128)
+                servertime += Resource.getLocString(Resource.BUNDLE_LABEL, " (New Moon)");
+            else if (moonid == 129)
+                servertime += Resource.getLocString(Resource.BUNDLE_LABEL, " (Waxing Crescent)");
+            else if (moonid == 130)
+                servertime += Resource.getLocString(Resource.BUNDLE_LABEL, " (First Quarter)");
+            else if (moonid == 131)
+                servertime += Resource.getLocString(Resource.BUNDLE_LABEL, " (Waxing Gibbous)");
+            else if (moonid == 132)
+                servertime += Resource.getLocString(Resource.BUNDLE_LABEL, " (Full Moon)");
+            else if (moonid == 133)
+                servertime += Resource.getLocString(Resource.BUNDLE_LABEL, " (Waning Gibbous)");
+            else if (moonid == 134)
+                servertime += Resource.getLocString(Resource.BUNDLE_LABEL, " (Last Quarter)");
+            else if (moonid == 135)
+                servertime += Resource.getLocString(Resource.BUNDLE_LABEL, " (Waning Crescent)");
+        }else
+            servertime += Resource.getLocString(Resource.BUNDLE_LABEL, " (Daytime)");
         servertimetex = Text.render(servertime).tex();
     }
 

@@ -89,7 +89,7 @@ public class Fightview extends Widget {
         public void give(int state) {
             if (this == current)
                 curgive.state = state;
-            else this.give.state = state;
+             this.give.state = state;
         }
 
         public void show(boolean state) {
