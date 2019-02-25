@@ -3594,6 +3594,7 @@ public class OptWnd extends Window {
     public void wdgmsg(Widget sender, String msg, Object... args) {
         if ((sender == this) && (msg == "close")) {
             hide();
+            if(ui.gui != null)
             setfocus(ui.gui.invwnd);
         } else {
             super.wdgmsg(sender, msg, args);

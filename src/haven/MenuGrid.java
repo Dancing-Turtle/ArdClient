@@ -62,7 +62,6 @@ public class MenuGrid extends Widget {
     private Map<Character, PagButton> hotmap = new HashMap<>();
     private boolean togglestuff = true;
     public boolean discordconnected;
-    public boolean arddiscordconnected;
     public Pagina lastCraft = null;
     public int pagseq = 0;
     @RName("scm")

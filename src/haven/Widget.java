@@ -669,10 +669,13 @@ public class Widget {
     public void wdgmsg(Widget sender, String msg, Object... args) {
 
     	if(!sender.toString().contains("Changer") && msg.equals("click") && args.length>=5 && (int)args[3]==1) {
-    	 //   System.out.println("shift right click detected");
-            CheckListboxItem itm = Config.disableshiftclick.get(ui.sess.glob.oc.getgob(Long.valueOf((int)args[5])).getres().basename());
-            if(itm!= null && itm.selected)
-                 return;
+            //   System.out.println("shift right click detected");
+            try {
+                CheckListboxItem itm = Config.disableshiftclick.get(ui.sess.glob.oc.getgob(Long.valueOf((int) args[5])).getres().basename());
+                if (itm != null && itm.selected)
+                    return;
+            } catch (NullPointerException fucknulls) {//do nothing because fuck nulls}
+                }
         }
 
         if (parent == null)

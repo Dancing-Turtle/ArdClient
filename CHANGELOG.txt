@@ -1,3 +1,9 @@
+1.00.90
+Fixed crash if you exit the options window from the login screen by clicking "x"
+Fixed shift left click crash.
+Some small changes to FPS counter in upper right.
+~
+
 1.00.89
 Small patch to fix combat hotkeys triggering keybinds.
 ~
