@@ -140,6 +140,8 @@ public class Window extends Widget implements DTarget {
     }
 
     protected void added() {
+        if(this.origcap.equals("This is bait")) //stop the fishing window from grabbing focus from anything, because why should it?
+            return;
         parent.setfocus(this);
     }
 

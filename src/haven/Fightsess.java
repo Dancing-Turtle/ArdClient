@@ -621,59 +621,111 @@ if(delta.intValue() > 10000)
         if (Config.combatkeys == 0) {
             if ((key == 0) && (ev.getModifiersEx() & (InputEvent.CTRL_DOWN_MASK | KeyEvent.META_DOWN_MASK | KeyEvent.ALT_DOWN_MASK)) == 0) {
 
-                switch(ev.getKeyCode()) {
-                    case KeyEvent.VK_1: n = 0; break;
-                    case KeyEvent.VK_2: n = 1; break;
-                    case KeyEvent.VK_3: n = 2; break;
-                    case KeyEvent.VK_4: n = 3; break;
-                    case KeyEvent.VK_5: n = 4; break;
+                switch (ev.getKeyCode()) {
+                    case KeyEvent.VK_1:
+                        n = 0;
+                        break;
+                    case KeyEvent.VK_2:
+                        n = 1;
+                        break;
+                    case KeyEvent.VK_3:
+                        n = 2;
+                        break;
+                    case KeyEvent.VK_4:
+                        n = 3;
+                        break;
+                    case KeyEvent.VK_5:
+                        n = 4;
+                        break;
                 }
-                if((n >= 0) && ((ev.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) != 0))
+                if ((n >= 0) && ((ev.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) != 0))
                     n += 5;
             }
-        } else if(Config.combatkeys == 1) { // F1-F5
+        } else if (Config.combatkeys == 1) { // F1-F5
             if (key == 0) {
 
-                switch(ev.getKeyCode()) {
-                    case KeyEvent.VK_1: n = 0; break;
-                    case KeyEvent.VK_2: n = 1; break;
-                    case KeyEvent.VK_3: n = 2; break;
-                    case KeyEvent.VK_4: n = 3; break;
-                    case KeyEvent.VK_5: n = 4; break;
-                    case KeyEvent.VK_F1: n = 5; break;
-                    case KeyEvent.VK_F2: n = 6; break;
-                    case KeyEvent.VK_F3: n = 7; break;
-                    case KeyEvent.VK_F4: n = 8; break;
-                    case KeyEvent.VK_F5: n = 9; break;
+                switch (ev.getKeyCode()) {
+                    case KeyEvent.VK_1:
+                        n = 0;
+                        break;
+                    case KeyEvent.VK_2:
+                        n = 1;
+                        break;
+                    case KeyEvent.VK_3:
+                        n = 2;
+                        break;
+                    case KeyEvent.VK_4:
+                        n = 3;
+                        break;
+                    case KeyEvent.VK_5:
+                        n = 4;
+                        break;
+                    case KeyEvent.VK_F1:
+                        n = 5;
+                        break;
+                    case KeyEvent.VK_F2:
+                        n = 6;
+                        break;
+                    case KeyEvent.VK_F3:
+                        n = 7;
+                        break;
+                    case KeyEvent.VK_F4:
+                        n = 8;
+                        break;
+                    case KeyEvent.VK_F5:
+                        n = 9;
+                        break;
                 }
             }
-        }
-        else { // F1-F10
-	        if (key == 0) {
+        } else { // F1-F10
+            if (key == 0) {
 
-	            switch(ev.getKeyCode()) {
-	                case KeyEvent.VK_F1: n = 0; break;
-	                case KeyEvent.VK_F2: n = 1; break;
-	                case KeyEvent.VK_F3: n = 2; break;
-	                case KeyEvent.VK_F4: n = 3; break;
-	                case KeyEvent.VK_F5: n = 4; break;
-	                case KeyEvent.VK_F6: n = 5; break;
-	                case KeyEvent.VK_F7: n = 6; break;
-	                case KeyEvent.VK_F8: n = 7; break;
-	                case KeyEvent.VK_F9: n = 8; break;
-	                case KeyEvent.VK_F10: n = 9; break;
-	            }
-        }
+                switch (ev.getKeyCode()) {
+                    case KeyEvent.VK_F1:
+                        n = 0;
+                        break;
+                    case KeyEvent.VK_F2:
+                        n = 1;
+                        break;
+                    case KeyEvent.VK_F3:
+                        n = 2;
+                        break;
+                    case KeyEvent.VK_F4:
+                        n = 3;
+                        break;
+                    case KeyEvent.VK_F5:
+                        n = 4;
+                        break;
+                    case KeyEvent.VK_F6:
+                        n = 5;
+                        break;
+                    case KeyEvent.VK_F7:
+                        n = 6;
+                        break;
+                    case KeyEvent.VK_F8:
+                        n = 7;
+                        break;
+                    case KeyEvent.VK_F9:
+                        n = 8;
+                        break;
+                    case KeyEvent.VK_F10:
+                        n = 9;
+                        break;
+                }
+            }
         }
 
         int fn = n;
-	    if ((n >= 0) && (n < actions.length) && (last_button != fn || (System.currentTimeMillis() - last_sent) >= 150)) {
+        if ((n >= 0) && (n < actions.length) && (last_button != fn || (System.currentTimeMillis() - last_sent) >= 150)) {
             wdgmsg("use", fn, 1, ui.modflags());
             System.out.println("Use: " + fn);
             last_button = fn;
             last_sent = System.currentTimeMillis();
             return (true);
         }
+        else if((n >= 0) && (n < actions.length))
+        return (true);
+        else
         return(super.globtype(key, ev));
     }
 }

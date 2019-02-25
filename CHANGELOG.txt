@@ -1,3 +1,7 @@
+1.00.89
+Small patch to fix combat hotkeys triggering keybinds.
+~
+
 1.00.88
 Adding toggle (on by default) to video settings to disable black loading screens, thx boshaw. 
 Added "Crack open" and "Collect coal" to auto select list.
