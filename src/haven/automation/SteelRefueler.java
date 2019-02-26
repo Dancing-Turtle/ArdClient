@@ -455,8 +455,9 @@ public class SteelRefueler extends Window implements GobSelectCallback {
         double smallY = selectedAreaA.y < selectedAreaB.y ? selectedAreaA.y : selectedAreaB.y;
         synchronized (ui.sess.glob.oc) {
             for (Gob gob : ui.sess.glob.oc) {
-                if (gob.rc.x <= bigX && gob.rc.x >= smallX && gob.getres() != null && gob.rc.y <= bigY
-                        && gob.rc.y >= smallY && gob.getres().name.contains("branch")) {
+                if (gob.rc.x <= bigX && gob.rc.x >= smallX && gob.getres() != null && gob.rc.y <= bigY && gob.rc.y >= smallY && gob.getres().name.contains("branch") ||
+                        gob.rc.x <= bigX && gob.rc.x >= smallX && gob.getres() != null && gob.rc.y <= bigY && gob.rc.y >= smallY && gob.getres().name.contains("coal") ||
+                        gob.rc.x <= bigX && gob.rc.x >= smallX && gob.getres() != null && gob.rc.y <= bigY && gob.rc.y >= smallY && gob.getres().name.contains("block")) {
                     gobs.add(gob);
                 }
             }
