@@ -51,6 +51,7 @@ public class StudyWnd extends GameUI.Hidewnd {
 			public Integer value() {
 				return (tlph);
 			}
+			//test
 
 			public String text(Integer v) {
 				return (Integer.toString(tlph));
