@@ -45,6 +45,7 @@ public class KeyBinder {
     public static final Map<Action, KeyBind> binds;
     private static final List<Action> order;
     private static final KeyBind EMPTY = new KeyBind(0, 0, null);
+
     
     static {
 	gson = (new GsonBuilder()).setPrettyPrinting().create();
@@ -124,7 +125,13 @@ public class KeyBinder {
 			KeyEvent f = new KeyEvent(e.getComponent(),e.getID(),e.getWhen(),0,KeyEvent.VK_BACK_QUOTE);
 			return get(f).execute(ui);
 		}
-    	return get(e).execute(ui);
+		if(get(e).code == 0 && get(e).mods == 0) //if the "null" unbound keybind, do nothing, else execute keybind.
+		{
+			return false;
+		}
+		else {
+			return get(e).execute(ui);
+		}
     }
     
     public static int getModFlags(int modflags) {
@@ -187,7 +194,7 @@ public class KeyBinder {
     
     public static class KeyBind {
 	private final int code;
-	private final int mods;
+	public final int mods;
 	transient private Action action;
 	
 	public KeyBind(int code, int mods, Action action) {
@@ -226,6 +233,7 @@ public class KeyBinder {
 	    return code == 0 && mods == 0;
 	}
     }
+
     
     public static class ShortcutWidget extends Widget implements ShortcutSelectorWdg.Result {
     

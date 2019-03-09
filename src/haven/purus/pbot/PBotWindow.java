@@ -28,7 +28,7 @@ public class PBotWindow extends Window {
 	 * @param x X-Coordinate of the button
 	 * @param y Y-Coordinate of the button
 	 */
-	public void addButton(String name, String label, int width, int x, int y) {
+	public Button addButton(String name, String label, int width, int x, int y) {
 		Button button = new Button(width, label) {
 			@Override
 			public void click() {
@@ -47,6 +47,7 @@ public class PBotWindow extends Window {
 			}
 		};
 		add(button, new Coord(x, y));
+		return button;
 	}
 	
 	/**
@@ -58,7 +59,7 @@ public class PBotWindow extends Window {
 	 * @param x X-Coordinate of the checkbox
 	 * @param y Y-Coordinate of the checkbox
 	 */
-	public void addCheckbox(String name, String label, boolean initialState, int x, int y) {
+	public CheckBox addCheckbox(String name, String label, boolean initialState, int x, int y) {
 		CheckBox checkbox = new CheckBox(label, initialState) {
 			@Override
             public void set(boolean val) {
@@ -78,6 +79,7 @@ public class PBotWindow extends Window {
             }
 		};
 		add(checkbox, new Coord(x, y));
+		return checkbox;
 	}
 	
 	/**
@@ -86,10 +88,12 @@ public class PBotWindow extends Window {
 	 * @param x X-Coordinate of the checkbox
 	 * @param y Y-Coordinate of the checkbox
 	 */
-	public void addLabel(String text, int x, int y) {
+	public Label addLabel(String text, int x, int y) {
 		Label label = new Label(text);
 		add(label, new Coord(x, y));
+		return label;
 	}
+
 	
 	/**
 	 * Closes the window

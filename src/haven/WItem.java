@@ -57,6 +57,7 @@ import haven.res.ui.tt.q.qbuff.QBuff;
 
 public class WItem extends Widget implements DTarget {
 	public static final Resource missing = Resource.local().loadwait("gfx/invobjs/missing");
+	public static final Tex lockt = Resource.loadtex("custom/inv/locked");
 	public GItem item;
 	public static final Color famountclr = new Color(24, 116, 205);
 	private static final Color qualitybg = new Color(20, 20, 20, 255 - Config.qualitybgtransparency);
@@ -67,7 +68,9 @@ public class WItem extends Widget implements DTarget {
 	public static final Color[] wearclr = new Color[]{
 			new Color(233, 0, 14), new Color(218, 128, 87), new Color(246, 233, 87), new Color(145, 225, 60)
 	};
-
+	private Resource cspr = null;
+	private Message csdt = Message.nil;
+	private boolean locked = false;
 	private WItemDestroyCallback destroycb;
 
 	public WItem(GItem item) {
@@ -75,6 +78,8 @@ public class WItem extends Widget implements DTarget {
 		this.item = item;
 	}
 
+    public boolean locked() { return locked; }
+    public void setLock(final boolean val) { locked = val; }
 	public void drawmain(GOut g, GSprite spr) {
 		spr.draw(g);
 	}
@@ -149,7 +154,7 @@ public class WItem extends Widget implements DTarget {
 				shorttip = longtip = null;
 				ttinfo = info;
 			}
-			if (now - hoverstart < 1.0) {
+			if (now - hoverstart < 1.0 && !Config.longtooltips) {
 				if (shorttip == null)
 					shorttip = new ShortTip(info);
 				return (shorttip);
@@ -359,11 +364,15 @@ public class WItem extends Widget implements DTarget {
 				} catch (Exception e) {
 				}
 			}
+			if (locked) {
+				g.image(lockt, Coord.z);
+			}
 		}
-				else
+			else
 				g.image(missing.layer(Resource.imgc).tex(), Coord.z, sz);
 
 		}
+
 
 
 	private void drawamountbar(GOut g, double content, boolean isseeds) {
@@ -389,38 +398,44 @@ public class WItem extends Widget implements DTarget {
 
 	public boolean mousedown(Coord c, int btn) {
 		if (btn == 1) {
-			if(ui.gui.itemClickCallback != null) {
-				ui.gui.itemClickCallback.itemClick(this);
+			if(!locked) {
+				if (ui.gui.itemClickCallback != null) {
+					ui.gui.itemClickCallback.itemClick(this);
+					return true;
+				}
+				if (ui.modctrl && ui.modmeta)
+					wdgmsg("drop-identical", this.item);
+				else if (ui.modctrl && ui.modshift) {
+					String name = ItemInfo.find(ItemInfo.Name.class, item.info()).str.text;
+					name = name.replace(' ', '_');
+					if (!Resource.language.equals("en")) {
+						int i = name.indexOf('(');
+						if (i > 0)
+							name = name.substring(i + 1, name.length() - 1);
+					}
+					try {
+						WebBrowser.self.show(new URL(String.format("http://ringofbrodgar.com/wiki/%s", name)));
+					} catch (MalformedURLException e) {
+					} catch (Exception e) {
+						getparent(GameUI.class).error("Could not launch web browser.");
+					}
+				} else if (ui.modshift && !ui.modmeta) {
+					// server side transfer all identical: pass third argument -1 (or 1 for single item)
+					item.wdgmsg("transfer", c);
+				} else if (ui.modctrl)
+					item.wdgmsg("drop", c);
+				else if (ui.modmeta)
+					wdgmsg("transfer-identical", this.item);
+				else
+					item.wdgmsg("take", c);
+				return (true);
+			}
+		} else if (btn == 3) {
+			if(ui.modctrl) {
+				locked = !locked;
 				return true;
 			}
-			if (ui.modctrl && ui.modmeta)
-				wdgmsg("drop-identical", this.item);
-			else if (ui.modctrl && ui.modshift) {
-				String name = ItemInfo.find(ItemInfo.Name.class, item.info()).str.text;
-				name = name.replace(' ', '_');
-				if (!Resource.language.equals("en")) {
-					int i = name.indexOf('(');
-					if (i > 0)
-						name = name.substring(i + 1, name.length() - 1);
-				}
-				try {
-					WebBrowser.self.show(new URL(String.format("http://ringofbrodgar.com/wiki/%s", name)));
-				} catch (MalformedURLException e) {
-				} catch (Exception e) {
-					getparent(GameUI.class).error("Could not launch web browser.");
-				}
-			} else if (ui.modshift && !ui.modmeta) {
-				// server side transfer all identical: pass third argument -1 (or 1 for single item)
-				item.wdgmsg("transfer",c);
-			} else if (ui.modctrl)
-				item.wdgmsg("drop", c);
-			else if (ui.modmeta)
-				wdgmsg("transfer-identical", this.item);
-			else
-				item.wdgmsg("take", c);
-			return (true);
-		} else if (btn == 3) {
-			if (ui.modmeta && !(parent instanceof Equipory))
+			else if (ui.modmeta && !(parent instanceof Equipory))
 				wdgmsg("transfer-identical-asc", this.item);
 			else
 				item.wdgmsg("iact", c, ui.modflags());

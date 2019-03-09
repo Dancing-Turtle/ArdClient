@@ -60,8 +60,6 @@ public class UI {
     public int beltWndId = -1;
 	public GameUI gui;
 	public Widget realmchat;
-	public String VillageShield = "";
-	public String PrivateShield = "";
 	public Widget makewnd;
 
 
@@ -164,12 +162,10 @@ public class UI {
     }
 
     public void newwidget(int id, String type, int parent, Object[] pargs, Object... cargs) throws InterruptedException {
-       //System.out.println("Widget ID : "+id+" Type : "+type+" Parent : "+parent);
-
-
+    //  System.out.println("Widget ID : "+id+" Type : "+type+" Parent : "+parent);
         if (Config.quickbelt && type.equals("wnd") && cargs[1].equals("Belt")) {
             // use custom belt window
-            type = "wnd-belt";
+            type = "alt-wnd-belt";
             beltWndId = id;
         } else if (type.equals("inv") && pargs[0].toString().equals("study")) {
             // use custom study inventory
@@ -378,6 +374,11 @@ public class UI {
                 return;
 
             if(!rwidgets.containsKey(sender)) {
+                if(msg.equals("close")) {
+                    sender.reqdestroy();
+                    return;
+                }
+                else
                 System.err.printf("Wdgmsg sender (%s) is not in rwidgets, message is %s\n", sender.getClass().getName(), msg);
                  //   System.out.println("Args:"+args[0]);
               // System.out.println("Sender is : "+sender);
@@ -402,18 +403,6 @@ public class UI {
                 }
             }}
                 if (wdg != null) {
-                    try {
-                        for (Object obj : args) {
-                            if (obj.toString().contains("Village shield")) {
-                                VillageShield = obj.toString();
-                                System.out.println("Village shield : " + VillageShield);
-                            }
-                            if (obj.toString().contains("Claim shield")) {
-                                PrivateShield = obj.toString();
-                                System.out.println("Claim shield : " + PrivateShield);
-                            }
-                        }
-                    } catch (NullPointerException q) {}
              // try { for(Object obj:args) if(!wdg.toString().contains("CharWnd")) System.out.println("UI Wdg : " + wdg + " msg : "+msg+" id = " + id + " arg 1 : " + obj); }catch(ArrayIndexOutOfBoundsException qq){}
                 wdg.uimsg(msg.intern(), args); }
                     else throw (new UIException("Uimsg to non-existent widget " + id, msg, args));

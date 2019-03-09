@@ -30,14 +30,16 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.util.function.Consumer;
+import java.util.regex.Pattern;
 
 public class TextEntry extends SIWidget {
     public static final Color defcol = new Color(255, 205, 109), dirtycol = new Color(255, 232, 209);
     public static final Text.Foundry fnd = new Text.Foundry(Text.serif, 12).aa(true);
-    public static final BufferedImage lcap = Resource.loadimg("gfx/hud/text/l");
-    public static final BufferedImage rcap = Resource.loadimg("gfx/hud/text/r");
-    public static final BufferedImage mext = Resource.loadimg("gfx/hud/text/m");
-    public static final Tex caret = Resource.loadtex("gfx/hud/text/caret");
+    public static final BufferedImage lcap = Theme.img("textedit", 0);
+    public static final BufferedImage mext = Theme.img("textedit", 1);
+    public static final BufferedImage rcap = Theme.img("textedit", 2);
+    public static final BufferedImage caret = Resource.loadimg("gfx/hud/text/caret");
     public static final Coord toff = new Coord(lcap.getWidth() - 1, 3);
     public static final Coord coff = new Coord(-3, -1);
     public static final int wmarg = lcap.getWidth() + rcap.getWidth() + 1;
@@ -45,6 +47,8 @@ public class TextEntry extends SIWidget {
     public LineEdit buf;
     public int sx;
     public boolean pw = false;
+    private final static Pattern numpat = Pattern.compile("(-)|(-?[0-9]+)");
+    public boolean numeric = false;
     public String text;
     private boolean dirty = false;
     private double focusstart;
@@ -72,14 +76,23 @@ public class TextEntry extends SIWidget {
             }
 
             protected void changed() {
+		    if(!numeric || (line.length() == 0 || numpat.matcher(line).matches())) {
                 redraw();
                 TextEntry.this.text = line;
                 TextEntry.this.changed();
+		    } else {
+		        //deny
+		        line = TextEntry.this.text;
+		    }
             }
         };
         redraw();
     }
 
+    public void setpw(final boolean val) {
+        this.pw = val;
+        commit();
+    }
     public void commit() {
         dirty = false;
         redraw();
@@ -101,6 +114,18 @@ public class TextEntry extends SIWidget {
         }
     }
 
+    public int numvalue() {
+        if(numeric) {
+            if(text.length() == 0)
+                return 0;
+            else if(text.equals("-"))
+                return 0;
+            else
+                return Integer.parseInt(text);
+	} else {
+            return 0;
+	}
+    }
     protected String dtext() {
         if (pw) {
             String ret = "";
@@ -116,40 +141,43 @@ public class TextEntry extends SIWidget {
         Graphics g = img.getGraphics();
         String dtext = dtext();
         tcache = fnd.render(dtext, (dshow && dirty) ? dirtycol : defcol);
-        g.drawImage(mext, 0, 0, sz.x, sz.y, null);
-
-        g.drawImage(tcache.img, toff.x - sx, toff.y, null);
 
         g.drawImage(lcap, 0, 0, null);
+	g.drawImage(mext, lcap.getWidth(), 0, sz.x - lcap.getWidth() - rcap.getWidth(), sz.y, null);
         g.drawImage(rcap, sz.x - rcap.getWidth(), 0, null);
 
+	g.drawImage(tcache.img, toff.x - sx, toff.y, null);
         g.dispose();
     }
 
     public void draw(GOut g) {
+	g.chcolor(DefSettings.TXBCOL.get());
         super.draw(g);
+	g.chcolor();
         if (hasfocus) {
             int cx = tcache.advance(buf.point);
             int lx = cx - sx + 1;
-            if (cx < sx) {
-                sx = cx;
-                redraw();
-            }
-            if (cx > sx + (sz.x - wmarg)) {
-                sx = cx - (sz.x - wmarg);
-                redraw();
-            }
+	    if(cx < sx) {sx = cx; redraw();}
+	    if(cx > sx + (sz.x - wmarg)) {sx = cx - (sz.x - wmarg); redraw();}
             if (((Utils.rtime() - focusstart) % 1.0) < 0.5)
                 g.image(caret, toff.add(coff).add(lx, 0));
         }
     }
 
-    public TextEntry(int w, String deftext) {
+    private final Consumer<String> onChange;
+    private final Consumer<String> onActivate;
+
+    public TextEntry(final int w, final String deftext, final Consumer<String> onChange, final Consumer<String> onActivate) {
         super(new Coord(w, mext.getHeight()));
+	this.onChange = onChange;
+	this.onActivate = onActivate;
         rsettext(deftext);
         setcanfocus(true);
     }
 
+    public TextEntry(int w, String deftext) {
+        this(w, deftext, null, null);
+    }
     @Deprecated
     public TextEntry(Coord sz, String deftext) {
         this(sz.x, deftext);
@@ -157,11 +185,15 @@ public class TextEntry extends SIWidget {
 
     protected void changed() {
         dirty = true;
+	if(onChange != null)
+	    onChange.accept(text);
     }
 
     public void activate(String text) {
         if (canactivate)
             wdgmsg("activate", text);
+	if(onActivate != null)
+	    onActivate.accept(text);
     }
 
     public boolean type(char c, KeyEvent ev) {
@@ -169,6 +201,11 @@ public class TextEntry extends SIWidget {
     }
 
     public boolean keydown(KeyEvent e) {
+        if(e.getKeyCode() == KeyEvent.VK_F1 || e.getKeyCode() == KeyEvent.VK_F2|| e.getKeyCode() == KeyEvent.VK_F3|| e.getKeyCode() == KeyEvent.VK_F4|| e.getKeyCode() == KeyEvent.VK_F5
+                || e.getKeyCode() == KeyEvent.VK_F6|| e.getKeyCode() == KeyEvent.VK_F7|| e.getKeyCode() == KeyEvent.VK_F8|| e.getKeyCode() == KeyEvent.VK_F9|| e.getKeyCode() == KeyEvent.VK_F10
+                || e.getKeyCode() == KeyEvent.VK_F11|| e.getKeyCode() == KeyEvent.VK_F12) {
+            return super.keydown(e);
+        }
         buf.key(e);
         return (true);
     }

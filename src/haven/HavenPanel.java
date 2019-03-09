@@ -500,6 +500,7 @@ public class HavenPanel extends GLCanvas implements Runnable, Console.Directory 
                 glconf.pref.save();
                 glconf.pref.dirty = false;
             }
+            DefSettings.checkForDirty();
             f.doneat = System.currentTimeMillis();
         }
     }

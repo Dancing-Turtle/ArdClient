@@ -56,6 +56,10 @@ public class BPRadSprite extends Sprite {
         return true;
     }
 
+    public void updateSmatSupports(){
+        smatSupports = new ColState(new Color(Config.smatSupportsred, Config.smatSupportsgreen, Config.smatSupportsblue, 100));
+    }
+
     public void draw(GOut g) {
         g.state(smat);
         g.apply();

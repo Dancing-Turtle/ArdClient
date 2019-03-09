@@ -26,11 +26,9 @@
 
 package haven.error;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Queue;
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import haven.Config;
 
@@ -89,6 +87,19 @@ public class ErrorHandler extends ThreadGroup {
         public void report(Throwable t) {
             Report r = new Report(t);
             r.props.putAll(props);
+            String filename ="Haven Exception ";
+            filename =  filename + new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+            filename = filename + ".log";
+            String info = ("Java "+System.getProperty("java.runtime.version")+ "\n"
+                    + "OS "+System.getProperty("os.name")+ " " + System.getProperty("os.version") + " " + System.getProperty("os.arch") + "\n"
+                    + "GPU " + (String)r.props.get("gpu")+ "\n");
+            File file = new File(filename);
+            try {
+                PrintWriter pw = new PrintWriter(file);
+                pw.append(info);
+                t.printStackTrace(pw);
+                pw.close();
+            }catch(FileNotFoundException qq){}
             synchronized (errors) {
                 errors.add(r);
                 errors.notifyAll();

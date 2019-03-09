@@ -45,6 +45,7 @@ public class LoginScreen extends Widget {
     IButton btn;
     Button statusbtn;
     Button optbtn;
+    private TextEntry user;
     OptWnd opts;
     static Text.Foundry textf, textfs, special;
     static Tex bg = Resource.loadtex("gfx/loginscr");
@@ -105,7 +106,7 @@ public class LoginScreen extends Widget {
     }
 
     private class Pwbox extends Login {
-        TextEntry user, pass;
+        TextEntry  pass;
 
         private Pwbox(String username, boolean save) {
             setfocustab(true);
@@ -274,6 +275,7 @@ public class LoginScreen extends Widget {
                 } else if (c.x < sz.x - 35) {
                     parent.wdgmsg("forget");
                     parent.wdgmsg("login", new Object[]{new AuthClient.NativeCred(itm.name, itm.pass), false});
+                    Context.accname = itm.name;
                 }
                 super.itemclick(itm, button);
             }
@@ -325,8 +327,10 @@ public class LoginScreen extends Widget {
 
     public void wdgmsg(Widget sender, String msg, Object... args) {
         if (sender == btn) {
-            if (cur.enter())
+            if (cur.enter()) {
+                Context.accname = user.text;
                 super.wdgmsg("login", cur.data());
+            }
             return;
         } else if (sender == optbtn) {
             if (opts == null) {
@@ -348,7 +352,7 @@ public class LoginScreen extends Widget {
         		Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
         		if(desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
         			try {
-                    desktop.browse(new URI("https://www.havenandhearth.com/portal/"));
+                    desktop.browse(new URI("http://www.havenandhearth.com/portal/"));
 					} catch (IOException | URISyntaxException e) {
 						e.printStackTrace();
 					}
@@ -405,8 +409,10 @@ public class LoginScreen extends Widget {
 
     public boolean type(char k, KeyEvent ev) {
         if (k == 10) {
-            if ((cur != null) && cur.enter())
+            if ((cur != null) && cur.enter()) {
+                Context.accname = user.text;
                 wdgmsg("login", cur.data());
+            }
             return (true);
         }
         return (super.type(k, ev));

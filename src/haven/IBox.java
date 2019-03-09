@@ -26,6 +26,8 @@
 
 package haven;
 
+import java.awt.*;
+
 public class IBox {
     public final Tex ctl, ctr, cbl, cbr;
     public final Tex bl, br, bt, bb;
@@ -52,6 +54,16 @@ public class IBox {
                 Resource.loadtex(base + "/" + bb));
     }
 
+    public IBox(final String res) {
+        this(Resource.loadtex(res, 0),
+		Resource.loadtex(res, 1),
+		Resource.loadtex(res, 2),
+		Resource.loadtex(res, 3),
+		Resource.loadtex(res, 4),
+		Resource.loadtex(res, 5),
+		Resource.loadtex(res, 6),
+		Resource.loadtex(res, 7));
+    }
     public Coord btloff() {
         return (new Coord(bl.sz().x, bt.sz().y));
     }
@@ -79,6 +91,7 @@ public class IBox {
     }
 
     public void draw(GOut g, Coord tl, Coord sz) {
+        g.chcolor(DefSettings.WNDCOL.get());
         g.image(bt, tl.add(new Coord(ctl.sz().x, 0)), new Coord(sz.x - ctr.sz().x - ctl.sz().x, bt.sz().y));
         g.image(bb, tl.add(new Coord(cbl.sz().x, sz.y - bb.sz().y)), new Coord(sz.x - cbr.sz().x - cbl.sz().x, bb.sz().y));
         g.image(bl, tl.add(new Coord(0, ctl.sz().y)), new Coord(bl.sz().x, sz.y - cbl.sz().y - ctl.sz().y));
@@ -87,5 +100,6 @@ public class IBox {
         g.image(ctr, tl.add(sz.x - ctr.sz().x, 0));
         g.image(cbl, tl.add(0, sz.y - cbl.sz().y));
         g.image(cbr, new Coord(sz.x - cbr.sz().x + tl.x, sz.y - cbr.sz().y + tl.y));
+	g.chcolor();
     }
 }

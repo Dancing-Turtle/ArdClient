@@ -44,6 +44,9 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.Stack;
 import java.util.TreeMap;
+import haven.MovableWidget;
+
+import static haven.MovableWidget.VISIBLE_PER;
 
 public class Widget {
     public UI ui;
@@ -102,9 +105,7 @@ public class Widget {
                         ch.resize(sz);
                 }
 
-                public void added() {
-                    presize();
-                }
+		    public void added() {presize();}
 
                 public void addchild(Widget child, Object... args) {
                     if ((args[0] instanceof String) && args[0].equals("fill")) {
@@ -263,6 +264,15 @@ public class Widget {
             ch.attached();
     }
 
+
+    public <T extends Widget> T add(T child, Coord c) {
+        if (child instanceof AltBeltWnd)    // FIXME. this is ugly
+            child.c = Utils.getprefc(((AltBeltWnd) child).origcap + "_c", c);
+         else
+            child.c = c;
+        return (add(child));
+    }
+
     private <T extends Widget> T add0(T child) {
         if ((child.ui == null) && (this.ui != null))
             ((Widget) child).attach(this.ui);
@@ -286,16 +296,10 @@ public class Widget {
         }
     }
 
-    public <T extends Widget> T add(T child, Coord c) {
-        if (child instanceof Window) {
-            child.c = Utils.getprefc(((Window) child).origcap + "_c", c);
-        } else if (child instanceof BeltWnd) {   // FIXME. this is ugly
-            child.c = Utils.getprefc(((BeltWnd) child).origcap + "_c", c);
-        } else {
-            child.c = c;
-        }
-        return (add(child));
-    }
+  //  public <T extends Widget> T add(T child, Coord c) {
+    //        child.c = c;
+    //    return (add(child));
+  //  }
 
     public <T extends Widget> T add(T child, int x, int y) {
         return (add(child, new Coord(x, y)));
@@ -313,7 +317,28 @@ public class Widget {
         return (adda(child, (int) (sz.x * ax), (int) (sz.y * ay), ax, ay));
     }
 
-    protected void added() {
+    protected void added() {}
+    protected void binded() {}
+    protected void removed() {}
+
+    public Coord2d relpos() {
+        return new Coord2d(c.x/(double)parent.sz.x,
+		c.y/(double)parent.sz.y);
+    }
+
+    public void setPosRel(final Coord2d rel) {
+        c = new Coord((int)(rel.x * parent.sz.x),
+		(int)(rel.y * parent.sz.y));
+	if( (c.x + sz.x * VISIBLE_PER) > parent.sz.x) {
+	    c.x = parent.sz.x - sz.x;
+	} else if((c.x + (sz.x * VISIBLE_PER)) < 0) {
+	    c.x = 0;
+	}
+	if((c.y + sz.y * VISIBLE_PER) > parent.sz.y) {
+	    c.y = parent.sz.y - sz.y;
+	} else if((c.y + (sz.y * VISIBLE_PER)) < 0) {
+	    c.y = 0;
+	}
     }
 
     public Coord relpos(String spec, Object self, Object[] args, int off) {
@@ -465,7 +490,7 @@ public class Widget {
     public Coord parentpos(Widget in) {
         if (in == this)
             return (new Coord(0, 0));
-        return (xlate(parent.parentpos(in).add(c), true));
+	return(parent.xlate(parent.parentpos(in).add(c), true));
     }
 
     public Coord rootpos() {

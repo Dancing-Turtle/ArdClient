@@ -30,7 +30,6 @@ import static haven.Action.*;
 import static haven.Action.TOGGLE_KIN_LIST;
 import static haven.Action.TOGGLE_OPTIONS;
 import static haven.Inventory.invsq;
-
 import haven.automation.*;
 import haven.automation.Discord;
 import haven.livestock.LivestockManager;
@@ -39,14 +38,13 @@ import haven.purus.ItemClickCallback;
 import haven.purus.pbot.PBotAPI;
 import haven.purus.pbot.PBotScriptlist;
 import haven.resutil.FoodInfo;
-
 import static haven.KeyBinder.*;
-
 import java.awt.*;
 import java.util.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.WritableRaster;
 import java.util.List;
+import haven.MapPointer;
 
 import static haven.Inventory.invsq;
 
@@ -71,22 +69,21 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public Inventory maininv;
     public CharWnd chrwdg;
     public MapWnd mapfile;
-    private Widget qqview;
+    public Widget qqview;
+    public QuestWnd questwnd;
     public boolean discordconnected = false;
     public BuddyWnd buddies;
-    public Window craftbot;
     public Equipory equipory;
-    public final Zergwnd zerg;
+    private Zergwnd zerg;
     public final Collection<Polity> polities = new ArrayList<Polity>();
     public HelpWnd help;
-    public EquipProxy eqproxy;
     public OptWnd opts;
     public Collection<DraggedItem> hand = new LinkedList<DraggedItem>();
     private Collection<DraggedItem> handSave = new LinkedList<DraggedItem>();
     private int MinerDrinkTimer, StarvationAlertDelay;
     public WItem vhand;
     public ChatUI chat;
-    public Window ChatWnd;
+    private ChatWnd chatwnd;
     private int saferadius = 1;
     public Speedget speedget;
     public ChatUI.Channel syslog;
@@ -94,15 +91,13 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     private boolean afk = false;
     @SuppressWarnings("unchecked")
     public Indir<Resource>[] belt = new Indir[144];
-    public Belt beltwdg = add(new NKeyBelt());
     public final Map<Integer, String> polowners = new HashMap<Integer, String>();
     public Bufflist buffs;
-    public MinimapWnd minimapWnd;
     public LocalMiniMap mmap;
+    private MinimapWnd mmapwnd;
     public haven.timers.TimersWnd timerswnd;
     public QuickSlotsWdg quickslots;
     public StatusWdg statuswindow;
-    public Window questpanel;
     public static boolean swimon = false;
     public static boolean crimeon = false;
     public static boolean trackon = false;
@@ -110,16 +105,15 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public boolean crimeautotgld = false;
     public boolean swimautotgld = false;
     public boolean trackautotgld = false;
-    public FBelt fbelt;
     public CraftHistoryBelt histbelt;
     private ErrorSysMsgCallback errmsgcb;
     public StudyWnd studywnd;
     public LivestockManager livestockwnd;
     public ItemClickCallback itemClickCallback;
     public CraftWindow makewnd;
-    public ActWindow craftlist, buildlist, actlist;
-
-
+    public BeltWnd fbelt, nbelt, npbelt;
+    public MapPointer pointer;
+    public Cal cal;
 
 
     public abstract class Belt extends Widget {
@@ -166,12 +160,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         this.genus = genus;
         setcanfocus(true);
         setfocusctl(true);
-        chat = add(new ChatUI(0, 0));
-        if (Utils.getprefb("chatvis", true)) {
-            chat.resize(0, chat.savedh);
-            chat.show();
-        }
-        beltwdg.raise();
         ulpanel = add(new Hidepanel("gui-ul", null, new Coord(-1, -1)));
         umpanel = add(new Hidepanel("gui-um", null, new Coord(0, -1)) {
             @Override
@@ -196,14 +184,15 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 
         brpanel.add(new Img(Resource.loadtex("gfx/hud/brframe")), 0, 0);
         menupanel.add(new MainMenu(), 0, 0);
-
         portrait = ulpanel.add(new Avaview(Avaview.dasz, plid, "avacam") {
             public boolean mousedown(Coord c, int button) {
                 return (true);
             }
         }, new Coord(10, 10));
         buffs = ulpanel.add(new Bufflist(), new Coord(95, 65));
-        umpanel.add(new Cal(), new Coord(0, 10));
+        cal = umpanel.add(new Cal(), new Coord(0, 10));
+        if(Config.hidecalendar)
+            cal.hide();
         add(new Widget(new Coord(400, 40)) {
             @Override
             public void draw(GOut g) {
@@ -214,15 +203,9 @@ public class GameUI extends ConsoleHost implements Console.Directory {
                 }
             }
         }, new Coord(HavenPanel.w / 2 - 300 / 2, umpanel.sz.y));
-        filter = new FilterWnd();
-        add(filter,300,300);
-        syslog = chat.add(new ChatUI.Log(Resource.getLocString(Resource.BUNDLE_LABEL, "System")));
+
         opts = add(new OptWnd());
         opts.hide();
-        zerg = add(new Zergwnd(), 187, 50);
-        zerg.hide();
-
-
         timerswnd = new haven.timers.TimersWnd(this);
         timerswnd.hide();
         add(timerswnd, new Coord(HavenPanel.w / 2 - timerswnd.sz.x / 2, 100));
@@ -241,39 +224,21 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             add(statuswindow, new Coord(HavenPanel.w / 2 + 80, 10));
         }
 
-        if (!chrid.equals("")) {
-            Utils.loadprefchklist("boulderssel_" + chrid, Config.boulders);
-            Utils.loadprefchklist("bushessel_" + chrid, Config.bushes);
-            Utils.loadprefchklist("treessel_" + chrid, Config.trees);
-            Utils.loadprefchklist("iconssel_" + chrid, Config.icons);
-            opts.setMapSettings();
-        }
 
-        fbelt = new FBelt(chrid, Utils.getprefb("fbelt_vertical", true));
-        fbelt.loadLocal();
-        add(fbelt, Utils.getprefc("fbelt_c", new Coord(20, 200)));
-        if (!Config.fbelt)
-            fbelt.hide();
+
 
         histbelt = new CraftHistoryBelt(Utils.getprefb("histbelt_vertical", true));
         add(histbelt, Utils.getprefc("histbelt_c", new Coord(70, 200)));
         if (!Config.histbelt)
             histbelt.hide();
 
-        menuSearch = new MenuSearch();
-        add(menuSearch, 300, 300);
-        menuSearch.hide();
+
 
         PBotScriptlist = new PBotScriptlist();
         add(PBotScriptlist, 300, 300);
         PBotScriptlist.hide();
         BotUtils.gui = this;
         PBotAPI.gui = this;
-        if(!chat.visible) {
-            chat.resize(0, chat.savedh);
-            chat.show();
-        }
-
         if(Config.showTroughrad && Config.showBeehiverad)
             saferadius = 4;
         else if(Config.showTroughrad && Config.showBeehiverad)
@@ -294,11 +259,12 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 
     protected void added() {
         resize(parent.sz);
+        ui.gui = this;
         ui.cons.out = new java.io.PrintWriter(new java.io.Writer() {
             StringBuilder buf = new StringBuilder();
 
             public void write(char[] src, int off, int len) {
-                List<String> lines = new ArrayList<String>();
+		    List<String> lines = new ArrayList<>();
                 synchronized(this) {
                     buf.append(src, off, len);
                     int p;
@@ -311,14 +277,25 @@ public class GameUI extends ConsoleHost implements Console.Directory {
                     syslog.append(ln, Color.WHITE);
             }
 
-            public void close() {
-            }
-
-            public void flush() {
-            }
+		public void close() {}
+		public void flush() {}
         });
         Debug.log = ui.cons.out;
+        if (!chrid.equals("")) {
+            Utils.loadprefchklist("boulderssel_" + chrid, Config.boulders);
+            Utils.loadprefchklist("bushessel_" + chrid, Config.bushes);
+            Utils.loadprefchklist("treessel_" + chrid, Config.trees);
+            Utils.loadprefchklist("iconssel_" + chrid, Config.icons);
+            opts.setMapSettings();
+        }
+        zerg = add(new Zergwnd(), new Coord(187, 50));
+        zerg.hide();
+	    questwnd = add(new QuestWnd(), new Coord(0, sz.y-200));
+        chatwnd = add(new ChatWnd(chat = new ChatUI(600, 150)), new Coord(20, sz.y-200));
+        syslog = chat.add(new ChatUI.Log("System"));
         opts.c = sz.sub(opts.sz).div(2);
+        pointer = add(new MapPointer());
+
     }
 
    /* public void toggleCraftList() {
@@ -399,19 +376,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         }
     }
 
-    public void toggleChat() {
-        if(chat.visible && !chat.hasfocus) {
-            setfocus(chat);
-        } else {
-            if(chat.targeth == 0) {
-                chat.sresize(chat.savedh);
-                setfocus(chat);
-            } else {
-                chat.sresize(0);
-            }
-        }
-        Utils.setprefb("chatvis", chat.targeth != 0);
-    }
+
 
   //  public void toggleCraftDB() {
     //    if(craftwnd == null) {
@@ -498,7 +463,11 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             return (vis);
         }
 
+	public boolean mshow() {
+	    return(mshow(Utils.getprefb(id + "-visible", true)));
+	}
         public boolean cshow(boolean vis) {
+	    Utils.setprefb(id + "-visible", vis);
             if (vis != tvis)
                 mshow(vis);
             return (vis);
@@ -511,13 +480,12 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 
     public static class Hidewnd extends Window {
         Hidewnd(Coord sz, String cap, boolean lg) {
-            super(sz, cap, lg);
+	    super(sz, cap, cap, lg);
         }
 
-        protected Hidewnd(Coord sz, String cap) {
-            super(sz, cap);
+	public Hidewnd(Coord sz, String cap) {
+            super(sz, cap, cap,false);
         }
-
         public void wdgmsg(Widget sender, String msg, Object... args) {
             if ((sender == this) && msg.equals("close")) {
                 this.hide();
@@ -793,27 +761,32 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         return (opt);
     }
 
+    private void savewndpos() {
+	if(mapfile != null) {
+	    Utils.setprefc("wndsz-map", mapfile.asz);
+	}
+    }
     public void addchild(Widget child, Object... args) {
         String place = ((String) args[0]).intern();
         if (place == "mapview") {
             child.resize(sz);
             map = add((MapView) child, Coord.z);
             map.lower();
-            if (minimapWnd != null)
-                ui.destroy(minimapWnd);
+            if(mmap != null)
+                ui.destroy(mmap);
             if(mapfile != null) {
                 ui.destroy(mapfile);
                 mapfile = null;
             }
-            minimapWnd = minimap();
-            mmap = minimapWnd.mmap;
+            mmap = new LocalMiniMap(new Coord(133, 133), map);
+            mmapwnd = adda(new MinimapWnd(mmap), new Coord(sz.x, 0), 1, 0);
             if(ResCache.global != null) {
                 MapFile file = MapFile.load(ResCache.global, mapfilename());
                 mmap.save(file);
                 mapfile = new MapWnd(mmap.save, map, new Coord(700, 500), "Map");
                 mapfile.hide();
                 add(mapfile, 50, 50);
-                minimapWnd.mapfile = mapfile;
+                mmapwnd.mapfile = mapfile;
             }
 
             if (trackon) {
@@ -834,6 +807,14 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             }
         } else if (place == "menu") {
             menu = (MenuGrid)brpanel.add(child, 20, 34);
+            final BeltData data = new BeltData(Context.accname+"::"+Context.charname);
+            fbelt = add(new BeltWnd("fk", data, KeyEvent.VK_F1, KeyEvent.VK_F10,5,50), new Coord(0, 50));
+            npbelt = add(new BeltWnd("np", data, KeyEvent.VK_NUMPAD0, KeyEvent.VK_NUMPAD9,4,100), new Coord(0, 100));
+            nbelt = add(new BeltWnd("n", data, KeyEvent.VK_0, KeyEvent.VK_9, 5, 0), new Coord(0, 150));
+            menuSearch = add(new MenuSearch("Search..."));
+            menuSearch.hide();
+            filter = add(new FilterWnd("Filter"));
+            filter.hide();
         } else if (place == "fight") {
             fv = urpanel.add((Fightview) child, 0, 0);
         } else if (place == "fsess") {
@@ -867,7 +848,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             chrwdg = add((CharWnd) child, new Coord(300, 50));
             chrwdg.hide();
             if(Config.hungermeter)
-            	addcmeter(new HungerMeter(chrwdg.glut));
+                addcmeter(new HungerMeter(chrwdg.glut));
             if(Config.fepmeter)
             	addcmeter(new FepMeter(chrwdg.feps));
         } else if (place == "craft") {
@@ -885,11 +866,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             polities.add(p);
             zerg.addpol(p);
         } else if (place == "chat") {
-            ChatUI.Channel prevchannel = chat.sel;
             chat.addchild(child);
-            if (prevchannel != null && chat.sel.cb == null) {
-                chat.select(prevchannel);
-            }
         } else if (place == "party") {
             add(child, 10, 95);
         } else if (place == "meter") {
@@ -901,40 +878,11 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         } else if (place == "buff") {
             buffs.addchild(child);
         } else if (place == "qq") {
-            if (qqview != null)
+            if(qqview != null) {
                 qqview.reqdestroy();
-            final Widget cref = qqview = child;
-            questpanel = new Window(Coord.z,"Quest Log",true) {
-             //   questpanel = new Window(Coord.z,"Quest Log",true) {
-                {
-                    add(cref);
-                }
-
-                public void cresize(Widget ch) {
-                    pack();
-                    if(parent != null)
-                        presize();
-                }
-
-                protected Coord getc() {
-                    return (new Coord(10, GameUI.this.sz.y - chat.sz.y - beltwdg.sz.y - this.sz.y - 10));
-                }
-
-                public void cdestroy(Widget ch) {
-                    qqview = null;
-                    destroy();
-                }
-                @Override
-                public void wdgmsg(Widget sender, String msg, Object... args) {
-                    if (sender == cbtn)
-                        this.hide();
-                    else
-                        super.wdgmsg(sender, msg, args);
-                }
-            };
-            add(questpanel, c);
-            if (Config.noquests)
-                questpanel.hide();
+            }
+            qqview = child;
+            questwnd.add(child, Coord.z);
         } else if (place == "misc") {
             Coord c;
             if(args[1] instanceof Coord) {
@@ -955,14 +903,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         }
     }
 
-    private MinimapWnd minimap() {
-        Coord mwsz = Utils.getprefc("mmapwndsz", new Coord(290, 310));
-        minimapWnd = new MinimapWnd(mwsz, map);
-        add(minimapWnd, Utils.getprefc("mmapc", new Coord(10, 100)));
-        mmap = (LocalMiniMap)minimapWnd.mmap;
-        return minimapWnd;
-    }
-
     public void cdestroy(Widget w) {
         if (w instanceof GItem) {
             for (Iterator<DraggedItem> i = hand.iterator(); i.hasNext(); ) {
@@ -972,7 +912,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
                     updhand();
                 }
             }
-        } else if (polities.contains(w)) {
+	} else if(w instanceof Polity && polities.contains(w)) {
             polities.remove(w);
             zerg.dtab(zerg.pol);
         } else if (w == chrwdg) {
@@ -1007,15 +947,12 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         }
 
     public void draw(GOut g) {
-        beltwdg.c = new Coord(chat.c.x, Math.min(chat.c.y - beltwdg.sz.y + 4, sz.y - beltwdg.sz.y));
         super.draw(g);
         if (prog >= 0)
             drawprog(g, prog);
         int by = sz.y;
-        if (chat.visible)
-            by = Math.min(by, chat.c.y);
-        if (beltwdg.visible)
-            by = Math.min(by, beltwdg.c.y);
+        if (chatwnd.visible)
+            by = Math.min(by, chatwnd.c.y);
         if (cmdline != null) {
             drawcmd(g, new Coord(blpw + 10, by -= 20));
         } else if (lastmsg != null) {
@@ -1027,9 +964,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
                 g.chcolor();
                 g.image(lastmsg.tex(), new Coord(blpw + 10, by -= 20));
             }
-        }
-        if (!chat.visible) {
-            chat.drawsmall(g, new Coord(blpw + 10, by), 50);
         }
     }
 
@@ -1128,13 +1062,15 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             int slot = (Integer) args[0];
             if (args.length < 2) {
                 belt[slot] = null;
-                if (fbelt != null)
-                    fbelt.delete(slot);
             } else {
                 belt[slot] = ui.sess.getres((Integer) args[1]);
-                if (fbelt != null)
-                    fbelt.add(slot, belt[slot]);
             }
+            if(slot <= 49)
+                nbelt.update(slot);
+            else if(slot <= 99)
+                fbelt.update(slot);
+            else
+                npbelt.update(slot);
         } else if (msg == "polowner") {
             int id = (Integer)args[0];
             String o = (String)args[1];
@@ -1170,14 +1106,19 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 
     public void wdgmsg(Widget sender, String msg, Object... args) {
       //  System.out.println("############");if(!sender.toString().contains("Camera")) System.out.println(sender);System.out.println(msg);for(Object o :args) System.out.println(o);
-        if ((sender == chrwdg) && (msg == "close")) {
-            chrwdg.hide();
-        } else if((polities.contains(sender)) && (msg == "close")) {
-            sender.hide();
-        } else if ((sender == help) && (msg == "close")) {
-            ui.destroy(help);
-            help = null;
-            return;
+        if(msg.equals("close")) {
+            if (sender == chrwdg) {
+                chrwdg.hide();
+                return;
+            } else if (sender == mapfile) {
+                mapfile.hide();
+                return;
+            } else if (sender == help) {
+                ui.destroy(help);
+                help = null;
+                return;
+            } else if ((polities.contains(sender)) && (msg == "close"))
+                sender.hide();
         }
         super.wdgmsg(sender, msg, args);
     }
@@ -1258,6 +1199,79 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             map.refreshGobsAll();
     }
 
+    public void OpenChat() {
+        if(chatwnd != null && chatwnd.show(!chatwnd.visible)) {
+            chatwnd.raise();
+            fitwdg(chatwnd);
+            setfocus(chatwnd);
+        }
+    }
+
+    public void toggleKin() {
+        if(zerg.show(!zerg.visible)) {
+            zerg.raise();
+            fitwdg(zerg);
+            setfocus(zerg);
+        }
+    }
+
+    void toggleInv() {
+        if((invwnd != null) && invwnd.show(!invwnd.visible)) {
+            invwnd.raise();
+            fitwdg(invwnd);
+            setfocus(invwnd);
+        }
+    }
+
+
+    void toggleCharWnd() {
+        if((chrwdg != null) && chrwdg.show(!chrwdg.visible)) {
+            chrwdg.raise();
+            fitwdg(chrwdg);
+            setfocus(chrwdg);
+        }
+    }
+
+    public void toggleMapfile() {
+        if((mapfile != null) && mapfile.show(!mapfile.visible)) {
+            mapfile.raise();
+            fitwdg(mapfile);
+            setfocus(mapfile);
+        }
+    }
+
+    public void toggleChat() {
+        if(chatwnd.visible && !chat.hasfocus) {
+            setfocus(chat);
+        } else {
+            if(chat.targeth == 0) {
+                chat.sresize(chat.savedh);
+                setfocus(chat);
+            } else {
+                chat.sresize(0);
+            }
+        }
+        Utils.setprefb("chatvis", chat.targeth != 0);
+    }
+
+    public void toggleMinimap() {
+        if(mmapwnd != null && mmapwnd.show(!mmapwnd.visible)) {
+            mmapwnd.raise();
+            fitwdg(mmapwnd);
+            setfocus(mmapwnd);
+        }
+    }
+
+    public void toggleMapGrid(){
+        Config.mapshowgrid = !Config.mapshowgrid;
+        Utils.setprefb("mapshowgrid", Config.mapshowgrid);
+    }
+
+    public void toggleMapViewDist(){
+        Config.mapshowviewdist = !Config.mapshowviewdist;
+        Utils.setprefb("mapshowviewdist", Config.mapshowviewdist);
+    }
+
     public void toggleMute(){
         if(Audio.volume > 0) {
             BotUtils.sysMsg("Audio muted.",Color.white);
@@ -1290,16 +1304,29 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     }
 
     public void toggleSearch(){
+       KeyBind k = KeyBinder.get(TOGGLE_SEARCH);
     if (menuSearch.show(!menuSearch.visible)) {
        menuSearch.raise();
        fitwdg(menuSearch);
-        setfocus(menuSearch.search);
+        if(k.mods == 4)
+        menuSearch.ignoreinit = true;
     }
+    }
+
+    public void doNothing(){
+        //ugly hack to stop unbound keybinds from being triggered
     }
 
     public void toggleDaylight(){
         Config.daylight = !Config.daylight;
         Utils.setprefb("daylight", Config.daylight);
+    }
+
+    public void toggleFilter(){
+        if (filter.show(!filter.visible)) {
+            filter.raise();
+            fitwdg(filter);
+        }
     }
 
     public void toggleUI(){
@@ -1444,53 +1471,96 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     }
 
     public void fixAlarms(){ //this is to fix me being a retard and relabeling previously boolean values as strings
-        if(Config.alarmunknownplayer.toLowerCase().equals("true") || Config.alarmunknownplayer.toLowerCase().equals("false"))
-            Utils.setpref("alarmunknownplayer","sfx/OhShitItsAGuy");
-        if(Config.alarmredplayer.toLowerCase().equals("true") || Config.alarmredplayer.toLowerCase().equals("false"))
-            Utils.setpref("alarmredplayer","sfx/Siren");
-        if(Config.alarmforagable.toLowerCase().equals("true") || Config.alarmforagable.toLowerCase().equals("false"))
-            Utils.setpref("alarmforagable","sfx/awwyeah");
-        if(Config.alarmbear.toLowerCase().equals("true") || Config.alarmbear.toLowerCase().equals("false"))
-            Utils.setpref("alarmbear","sfx/BearRoar");
-        if(Config.alarmlynx.toLowerCase().equals("true") || Config.alarmlynx.toLowerCase().equals("false"))
-            Utils.setpref("alarmlynx","sfx/lynx");
-        if(Config.alarmadder.toLowerCase().equals("true") || Config.alarmadder.toLowerCase().equals("false"))
-            Utils.setpref("alarmadder","sfx/DangerNoodle");
-        if(Config.alarmwalrus.toLowerCase().equals("true") || Config.alarmwalrus.toLowerCase().equals("false"))
-            Utils.setpref("alarmwalrus","sfx/Walrus");
-        if(Config.alarmseal.toLowerCase().equals("true") || Config.alarmseal.toLowerCase().equals("false"))
-            Utils.setpref("alarmseal","sfx/seal");
-        if(Config.alarmtroll.toLowerCase().equals("true") || Config.alarmtroll.toLowerCase().equals("false"))
-            Utils.setpref("alarmtroll","sfx/troll");
-        if(Config.alarmmammoth.toLowerCase().equals("true") || Config.alarmmammoth.toLowerCase().equals("false"))
-            Utils.setpref("alarmmammoth","sfx/mammoth");
-        if(Config.alarmeagle.toLowerCase().equals("true") || Config.alarmeagle.toLowerCase().equals("false"))
-            Utils.setpref("alarmeagle","sfx/EagleScreech");
-        if(Config.alarmdoomed.toLowerCase().equals("true") || Config.alarmdoomed.toLowerCase().equals("false"))
-            Utils.setpref("alarmdoomed","sfx/Doomed");
-        if(Config.alarmwball.toLowerCase().equals("true") || Config.alarmwball.toLowerCase().equals("false"))
-            Utils.setpref("alarmwball","sfx/WreckingBall");
-        if(Config.alarmswag.toLowerCase().equals("true") || Config.alarmswag.toLowerCase().equals("false"))
-            Utils.setpref("alarmswag","sfx/Swag");
-        if(Config.alarmeyeball.toLowerCase().equals("true") || Config.alarmeyeball.toLowerCase().equals("false"))
-            Utils.setpref("alarmeyeball","sfx/OhShitItsAGuy");
-        if(Config.alarmnidbane.toLowerCase().equals("true") || Config.alarmnidbane.toLowerCase().equals("false"))
-            Utils.setpref("alarmnidbane","sfx/GhostBusters");
-        if(Config.alarmdungeon.toLowerCase().equals("true") || Config.alarmdungeon.toLowerCase().equals("false"))
-            Utils.setpref("alarmdungeon","sfx/Zelda");
-        if(Config.alarmbeaverdungeon.toLowerCase().equals("true") || Config.alarmbeaverdungeon.toLowerCase().equals("false"))
-            Utils.setpref("alarmbeaverdungeon","sfx/BeaverDungeon");
-        if(Config.alarmsiege.toLowerCase().equals("true") || Config.alarmsiege.toLowerCase().equals("false"))
-            Utils.setpref("alarmsiege","sfx/siege");
-        if(Config.alarmstudy.toLowerCase().equals("true") || Config.alarmstudy.toLowerCase().equals("false"))
-            Utils.setpref("alarmstudy","sfx/Study");
-        if(Config.cleavesfx.toLowerCase().equals("true") || Config.cleavesfx.toLowerCase().equals("false"))
-            Utils.setpref("cleavesfx","sfx/oof");
+        if(Config.alarmunknownplayer.toLowerCase().equals("true") || Config.alarmunknownplayer.toLowerCase().equals("false")) {
+            Utils.setpref("alarmunknownplayer", "sfx/OhShitItsAGuy");
+            Config.alarmunknownplayer = "sfx/OhShitItsAGuy";
+        }
+        if(Config.alarmredplayer.toLowerCase().equals("true") || Config.alarmredplayer.toLowerCase().equals("false")) {
+            Utils.setpref("alarmredplayer", "sfx/Siren");
+            Config.alarmredplayer = "sfx/Siren";
+        }
+        if(Config.alarmforagable.toLowerCase().equals("true") || Config.alarmforagable.toLowerCase().equals("false")) {
+            Utils.setpref("alarmforagable", "sfx/awwyeah");
+            Config.alarmforagable ="sfx/awwyeah";
+        }
+        if(Config.alarmbear.toLowerCase().equals("true") || Config.alarmbear.toLowerCase().equals("false")) {
+            Utils.setpref("alarmbear", "sfx/BearRoar");
+            Config.alarmbear = "sfx/BearRoar";
+        }
+        if(Config.alarmlynx.toLowerCase().equals("true") || Config.alarmlynx.toLowerCase().equals("false")) {
+            Utils.setpref("alarmlynx", "sfx/lynx");
+            Config.alarmlynx = "sfx/lynx";
+        }
+        if(Config.alarmadder.toLowerCase().equals("true") || Config.alarmadder.toLowerCase().equals("false")) {
+            Utils.setpref("alarmadder", "sfx/DangerNoodle");
+            Config.alarmadder  ="sfx/DangerNoodle";
+        }
+        if(Config.alarmwalrus.toLowerCase().equals("true") || Config.alarmwalrus.toLowerCase().equals("false")) {
+            Utils.setpref("alarmwalrus", "sfx/Walrus");
+            Config.alarmwalrus = "sfx/Walrus";
+        }
+        if(Config.alarmseal.toLowerCase().equals("true") || Config.alarmseal.toLowerCase().equals("false")) {
+            Utils.setpref("alarmseal", "sfx/seal");
+            Config.alarmseal  ="sfx/seal";
+        }
+        if(Config.alarmtroll.toLowerCase().equals("true") || Config.alarmtroll.toLowerCase().equals("false")) {
+            Utils.setpref("alarmtroll", "sfx/troll");
+            Config.alarmtroll = "sfx/troll";
+        }
+        if(Config.alarmmammoth.toLowerCase().equals("true") || Config.alarmmammoth.toLowerCase().equals("false")) {
+            Utils.setpref("alarmmammoth", "sfx/mammoth");
+            Config.alarmmammoth = "sfx/mammoth";
+        }
+        if(Config.alarmeagle.toLowerCase().equals("true") || Config.alarmeagle.toLowerCase().equals("false")) {
+            Utils.setpref("alarmeagle", "sfx/EagleScreech");
+            Config.alarmeagle = "sfx/EagleScreech";
+        }
+        if(Config.alarmdoomed.toLowerCase().equals("true") || Config.alarmdoomed.toLowerCase().equals("false")) {
+            Utils.setpref("alarmdoomed", "sfx/Doomed");
+            Config.alarmdoomed = "sfx/Doomed";
+        }
+        if(Config.alarmwball.toLowerCase().equals("true") || Config.alarmwball.toLowerCase().equals("false")) {
+            Utils.setpref("alarmwball", "sfx/WreckingBall");
+            Config.alarmwball  ="sfx/WreckingBall";
+        }
+        if(Config.alarmswag.toLowerCase().equals("true") || Config.alarmswag.toLowerCase().equals("false")) {
+            Utils.setpref("alarmswag", "sfx/Swag");
+            Config.alarmswag = "sfx/Swag";
+        }
+        if(Config.alarmeyeball.toLowerCase().equals("true") || Config.alarmeyeball.toLowerCase().equals("false")) {
+            Utils.setpref("alarmeyeball", "sfx/OhShitItsAGuy");
+            Config.alarmeyeball = "sfx/OhShitItsAGuy";
+        }
+        if(Config.alarmnidbane.toLowerCase().equals("true") || Config.alarmnidbane.toLowerCase().equals("false")) {
+            Utils.setpref("alarmnidbane", "sfx/GhostBusters");
+            Config.alarmnidbane = "sfx/GhostBusters";
+        }
+        if(Config.alarmdungeon.toLowerCase().equals("true") || Config.alarmdungeon.toLowerCase().equals("false")) {
+            Utils.setpref("alarmdungeon", "sfx/Zelda");
+            Config.alarmdungeon = "sfx/Zelda";
+        }
+        if(Config.alarmbeaverdungeon.toLowerCase().equals("true") || Config.alarmbeaverdungeon.toLowerCase().equals("false")) {
+            Utils.setpref("alarmbeaverdungeon", "sfx/BeaverDungeon");
+            Config.alarmbeaverdungeon = "sfx/BeaverDungeon";
+        }
+        if(Config.alarmsiege.toLowerCase().equals("true") || Config.alarmsiege.toLowerCase().equals("false")) {
+            Utils.setpref("alarmsiege", "sfx/siege");
+            Config.alarmsiege = "sfx/siege";
+        }
+        if(Config.alarmstudy.toLowerCase().equals("true") || Config.alarmstudy.toLowerCase().equals("false")) {
+            Utils.setpref("alarmstudy", "sfx/Study");
+            Config.alarmstudy = "sfx/Study";
+        }
+        if(Config.cleavesfx.toLowerCase().equals("true") || Config.cleavesfx.toLowerCase().equals("false")) {
+            Utils.setpref("cleavesfx", "sfx/oof");
+            Config.cleavesfx = "sfx/oof";
+        }
     }
 
     public void toggleres(){
         Config.resinfo = !Config.resinfo;
         Utils.setprefb("resinfo", Config.resinfo);
+        map.tooltip = null;
         msg("Resource info on shift/shift+ctrl is now turned " + (Config.resinfo ? "on" : "off"), Color.WHITE);
     }
 
@@ -1508,8 +1578,9 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             map.togglegrid();
             return true;
         }
-        else
-         return KeyBinder.handle(ui, ev) || (super.globtype(key, ev));
+        else {
+            return KeyBinder.handle(ui, ev) || (super.globtype(key, ev));
+        }
     }
 
     public boolean chatfocused(){
@@ -1524,19 +1595,13 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     }
 
     public boolean mousedown(Coord c, int button) {
-     //   System.out.println("Mousedown Detected gui");
         return (super.mousedown(c, button));
     }
 
     public void resize(Coord sz) {
         this.sz = sz;
-        chat.resize(Config.chatsz);
-        chat.move(new Coord(0, sz.y));
-        if (!Utils.getprefb("chatvis", true))
-            chat.sresize(0);
         if (map != null)
             map.resize(sz);
-        beltwdg.c = new Coord(blpw + 10, sz.y - beltwdg.sz.y - 5);
         if (statuswindow != null)
             statuswindow.c = new Coord(HavenPanel.w / 2 + 80, 10);
         super.resize(sz);
@@ -1671,146 +1736,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     }
 
     private static final Tex nkeybg = Resource.loadtex("gfx/hud/hb-main");
-
-    public class NKeyBelt extends Belt implements DTarget, DropTarget {
-        public int curbelt = 0;
-        final Coord pagoff = new Coord(5, 25);
-
-        public NKeyBelt() {
-            super(nkeybg.sz());
-            adda(new IButton("gfx/hud/hb-btn-chat", "", "-d", "-h") {
-                Tex glow;
-                {
-                    this.tooltip = RichText.render(Resource.getLocString(Resource.BUNDLE_LABEL, "Chat ($col[255,255,0]{Ctrl+C})"), 0);
-                    glow = new TexI(PUtils.rasterimg(PUtils.blurmask(up.getRaster(), 2, 2, Color.WHITE)));
-                    KeyBinder.add(KeyEvent.VK_C, CTRL, TOGGLE_CHAT);
-                }
-
-                public void click() {
-                    if (chat.targeth == 0) {
-                        chat.sresize(chat.savedh);
-                        setfocus(chat);
-                    } else {
-                        chat.sresize(0);
-                    }
-                    Utils.setprefb("chatvis", chat.targeth != 0);
-                }
-
-                @Override
-                public Object tooltip(Coord c, Widget prev) {
-                    if(!checkhit(c)) {
-                        return null;
-                    }
-                    KeyBinder.KeyBind bind = KeyBinder.get(TOGGLE_CHAT);
-                    String tt = "Chat";
-                    if(bind != null && !bind.isEmpty()) {
-                        tt = String.format("%s ($col[255,255,0]{%s})", tt, bind.shortcut());
-                    }
-                    return RichText.render(tt, 0);
-                }
-
-                public void draw(GOut g) {
-                    super.draw(g);
-                    Color urg = chat.urgcols[chat.urgency];
-                    if (urg != null) {
-                        GOut g2 = g.reclipl(new Coord(-2, -2), g.sz.add(4, 4));
-                        g2.chcolor(urg.getRed(), urg.getGreen(), urg.getBlue(), 128);
-                        g2.image(glow, Coord.z);
-                    }
-                }
-            }, sz, 1, 1);
-        }
-
-        private Coord beltc(int i) {
-            return (pagoff.add(((invsq.sz().x + 2) * i) + (10 * (i / 5)), 0));
-        }
-
-        private int beltslot(Coord c) {
-            for (int i = 0; i < 10; i++) {
-                if (c.isect(beltc(i), invsq.sz()))
-                    return (i + (curbelt * 12));
-            }
-            return (-1);
-        }
-
-        public void draw(GOut g) {
-            g.image(nkeybg, Coord.z);
-            for (int i = 0; i < 10; i++) {
-                int slot = i + (curbelt * 12);
-                Coord c = beltc(i);
-                g.image(invsq, beltc(i));
-                try {
-                    if (belt[slot] != null) {
-                        Resource.Image img = belt[slot].get().layer(Resource.imgc);
-                        if (img == null)
-                            throw (new NullPointerException("No image in " + belt[slot].get().name));
-                        g.image(img.tex(), c.add(1, 1));
-                    }
-                } catch (Loading e) {
-                }
-                g.chcolor(FBelt.keysClr);
-                FastText.aprint(g, new Coord(c.x + invsq.sz().x - 2, c.y + invsq.sz().y), 1, 1, "" + (i + 1));
-                g.chcolor();
-            }
-            super.draw(g);
-        }
-
-        public boolean mousedown(Coord c, int button) {
-            int slot = beltslot(c);
-            if (slot != -1) {
-                if (button == 1)
-                    GameUI.this.wdgmsg("belt", slot, 1, ui.modflags());
-                if (button == 3)
-                    GameUI.this.wdgmsg("setbelt", slot, 1);
-                return (true);
-            }
-            return (super.mousedown(c, button));
-        }
-
-        public boolean globtype(char key, KeyEvent ev) {
-            if(key != 0)
-                return(false);
-            int c = ev.getKeyCode();
-            if((c < KeyEvent.VK_0) || (c > KeyEvent.VK_9))
-                return (false);
-
-            int i = Utils.floormod(c - KeyEvent.VK_0 - 1, 10);
-            boolean M = (ev.getModifiersEx() & (KeyEvent.META_DOWN_MASK | KeyEvent.ALT_DOWN_MASK)) != 0;
-            if (M) {
-                curbelt = i;
-            } else {
-                keyact(i + (curbelt * 12));
-            }
-            return (true);
-        }
-
-        public boolean drop(Coord c, Coord ul) {
-            int slot = beltslot(c);
-            if (slot != -1) {
-                GameUI.this.wdgmsg("setbelt", slot, 0);
-                return (true);
-            }
-            return (false);
-        }
-
-        public boolean iteminteract(Coord c, Coord ul) {
-            return (false);
-        }
-
-        public boolean dropthing(Coord c, Object thing) {
-            int slot = beltslot(c);
-            if (slot != -1) {
-                if (thing instanceof Resource) {
-                    Resource res = (Resource) thing;
-                    if (res.layer(Resource.action) != null) {
-                        GameUI.this.wdgmsg("setbelt", slot, res.name);
-                        return (true);
-                    }
-                }
-            }
-            return (false);
-        }
-    }
 
     private Map<String, Console.Command> cmdmap = new TreeMap<String, Console.Command>();
     {

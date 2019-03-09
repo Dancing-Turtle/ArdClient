@@ -50,6 +50,7 @@ import haven.MapFile.Marker;
 import haven.MapFile.PMarker;
 import haven.MapFile.SMarker;
 import haven.MapFile.Segment;
+import haven.purus.BotUtils;
 
 public class MapFileWidget extends Widget {
     public final MapFile file;
@@ -401,27 +402,50 @@ public class MapFileWidget extends Widget {
 
     public boolean mousedown(Coord c, int button) {
         Coord tc = null;
-        if(curloc != null)
+        if (curloc != null)
             tc = c.sub(sz.div(2)).add(curloc.tc);
-        if(tc != null) {
+        if (tc != null) {
             DisplayMarker mark = markerat(tc);
-            if((mark != null) && clickmarker(mark, button))
-                return(true);
-            if(clickloc(new Location(curloc.seg, tc.mul(scalef())), button))
-                return(true);
-        }
-        if(button == 1) {
-            Location loc = curloc;
-            if((drag == null) && (loc != null)) {
-                drag = ui.grabmouse(this);
-                dsc = c;
-                dmc = loc.tc;
-                dragging = false;
+            if ((mark != null) && clickmarker(mark, button))
+                return (true);
+            if (clickloc(new Location(curloc.seg, tc.mul(scalef())), button))
+                return (true);
+            if (button == 1 && (ui.modctrl || ui.modmeta)) {
+                //Only works if we're on the same map segment as our player
+                try {
+                    final Location pl = resolve(new MapLocator(ui.gui.map));
+                    if (curloc != null && curloc.seg == pl.seg) {
+                        final Coord2d plc = new Coord2d(ui.sess.glob.oc.getgob(ui.gui.map.plgob).getc());
+                        //Offset in terms of loftar map coordinates
+                        //XXX: Previous worlds had randomized north/south/east/west directions, still the case? Assuming not for now.
+                        final Coord2d offset = new Coord2d(pl.tc.sub(tc));
+                        //Translate this to real map units and add to current map position
+                        final Coord2d mc = plc.sub(offset.mul(MCache.tilesz));
+                        if (ui.modmeta) {
+                            ui.gui.map.queuemove(mc);
+                        } else {
+                            ui.gui.map.moveto(mc);
+                        }
+                    }
+                } catch (Exception e) {
+                    BotUtils.sysLogAppend("Failed to resolve player location with map move", "white");
+                }
+                return true;
             }
-            return(true);
+	}
+	if(button == 1 && ui.modflags() == 0) {
+                Location loc = curloc;
+                if ((drag == null) && (loc != null)) {
+                    drag = ui.grabmouse(this);
+                    dsc = c;
+                    dmc = loc.tc;
+                    dragging = false;
+                }
+                return (true);
+
         }
-        return(super.mousedown(c, button));
-    }
+            return (super.mousedown(c, button));
+        }
 
     public void mousemove(Coord c) {
         if(drag != null) {

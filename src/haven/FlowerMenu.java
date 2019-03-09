@@ -35,11 +35,12 @@ import static java.lang.Math.PI;
 
 public class FlowerMenu extends Widget {
     public static final Color pink = new Color(255, 0, 128);
-    public static final Text.Foundry ptf = new Text.Foundry(Text.dfont, Text.cfg.flowerMenu);
+    public static final Color ptc = Color.YELLOW;
+    public static final Text.Foundry ptf = new Text.Foundry(Text.dfont, 12);
+    public static final Coord customBoxPadding = new Coord(4,4);
     public static final IBox pbox = Window.wbox;
     public static final Tex pbg = Window.bg;
-    public static final int ph = 30;
-    public Thread horsemounter;
+    public static final int ph = 30, ppl = 8;
     private static final int HORSE_DELAY = 1;
     private static final int TIMEOUT = 5000;
     public Petal[] opts;
@@ -47,7 +48,7 @@ public class FlowerMenu extends Widget {
     private static String nextAutoSel;
     private static long nextAutoSelTimeout;
     public static String lastSel;
-
+    public Thread horsemounter;
     @RName("sm")
     public static class $_ implements Factory {
         public Widget create(UI ui, Object[] args) {
@@ -75,6 +76,9 @@ public class FlowerMenu extends Widget {
             resize(text.sz().x + 25, ph);
         }
 
+	public void move(Coord c) {
+	    this.c = c.sub(sz.div(2));
+	}
         public void move(double a, double r) {
             this.c = Coord.sc(a, r).sub(sz.div(2));
             // adjust horizontal position for potentially parallel petals to avoid overlap
@@ -91,11 +95,8 @@ public class FlowerMenu extends Widget {
         }
 
         public void draw(GOut g) {
-            g.chcolor(new Color(255, 255, 255, (int) (255 * a)));
+            g.chcolor(DefSettings.WNDCOL.get());
             g.image(pbg, new Coord(3, 3), new Coord(3, 3), sz.add(new Coord(-6, -6)));
-            // pbg is to short for wide petals
-            if (pbg.sz().x < sz.x)
-                g.image(pbg, new Coord(pbg.sz().x, 3), new Coord(3, 3), sz.add(new Coord(-6, -6)));
             pbox.draw(g, Coord.z, sz);
             g.image(text.tex(), sz.div(2).sub(text.sz().div(2)));
         }

@@ -43,12 +43,12 @@ public class MCache {
     private final Reference<Tileset>[] csets = new Reference[256];
     @SuppressWarnings("unchecked")
     private final Reference<Tiler>[] tiles = new Reference[256];
-    Map<Coord, Request> req = new HashMap<Coord, Request>();
-    Map<Coord, Grid> grids = new HashMap<Coord, Grid>();
+    Map<Coord, Request> req = new HashMap<>();
+    final Map<Coord, Grid> grids = new HashMap<>();
     Session sess;
-    Set<Overlay> ols = new HashSet<Overlay>();
+    Set<Overlay> ols = new HashSet<>();
     public int olseq = 0;
-    Map<Integer, Defrag> fragbufs = new TreeMap<Integer, Defrag>();
+    Map<Integer, Defrag> fragbufs = new TreeMap<>();
 
     public static class LoadingMap extends Loading {
         public final Coord gc;
@@ -284,7 +284,6 @@ public class MCache {
         Random rnd = new Random(id);
 	    cut.dgrid = Defer.later(new Defer.Callable<FastMesh>() {
 		public FastMesh call() {
-		  //  return(GridMesh.build(MCache.this, ul.add(cc.mul(cutsz)), cutsz));
 		    return(GridMesh.build(MCache.this,ul.add(cc.mul(cutsz)),cutsz));
 		}
 
@@ -478,8 +477,24 @@ public class MCache {
                     return Optional.empty();
                 }
             }
+	    return Optional.of(cached);
+	}
+    }
+
+    public Optional<Grid> getgrido(final long id) {
+	synchronized(grids) {
+	    if ((cached == null) || cached.id != id) {
+		for (Grid g : grids.values()) {
+		    if (g.id == id) {
+			cached = g;
+			return Optional.of(g);
+		    }
+		}
+		return Optional.empty();
+	    } else {
             return Optional.of(cached);
         }
+    }
     }
 
     public Grid getgridt(Coord tc) {

@@ -139,9 +139,11 @@ public class MapMesh implements Rendered, Disposable {
         public final boolean[] split = new boolean[ts.l];
 
         public MapSurface() {
+            float z;
             for (int y = vs.ul.y; y < vs.br.y; y++) {
                 for (int x = vs.ul.x; x < vs.br.x; x++) {
-                    surf[vs.o(x, y)] = new Vertex(x * (float)tilesz.x, y * -(float)tilesz.y, Config.disableelev ? 0 : map.getz(ul.add(x, y)));
+                    z = !Config.disableelev ? map.getz(ul.add(x, y)) : 0;
+                    surf[vs.o(x, y)] = new Vertex(x * (float)tilesz.x, y * -(float)tilesz.y, z);
                 }
             }
             for (int y = ts.ul.y; y < ts.br.y; y++) {
@@ -387,7 +389,7 @@ public class MapMesh implements Rendered, Disposable {
             final float si = (float) Math.sin(a), co = (float) Math.cos(a);
             this.cc = cc;
             final MeshBuf buf = new MeshBuf();
-            final float cz = Config.disableelev ? 0 : (float)map.getcz(cc);
+            final float cz =  (float)map.getcz(cc);
             final Coord ult, brt;
             {
                 Coord tult = null, tbrt = null;

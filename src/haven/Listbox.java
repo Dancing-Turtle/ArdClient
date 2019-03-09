@@ -29,6 +29,7 @@ package haven;
 import haven.purus.BotUtils;
 
 import java.awt.Color;
+import java.util.Optional;
 
 public abstract class Listbox<T> extends ListWidget<T> {
     public static final Color selc = new Color(114, 179, 82, 128);
@@ -37,6 +38,7 @@ public abstract class Listbox<T> extends ListWidget<T> {
     public int h;
     public final Scrollbar sb;
     private T over;
+    private int selindex;
 
     public Listbox(int w, int h, int itemh) {
         super(new Coord(w, h * itemh), itemh);
@@ -44,11 +46,7 @@ public abstract class Listbox<T> extends ListWidget<T> {
         this.sb = adda(new Scrollbar(sz.y, 0, 0), sz.x, 0, 1, 0);
     }
 
-    protected void drawsel(GOut g)
-    {
-        drawsel(g, selc);
-    }
-    protected void drawsel(GOut g, Color color) {
+    protected void drawsel(GOut g) {
         g.chcolor(255, 255, 0, 128);
         g.frect(Coord.z, g.sz);
         g.chcolor();
@@ -64,14 +62,14 @@ public abstract class Listbox<T> extends ListWidget<T> {
         sb.max = listitems() - h;
         drawbg(g);
         int n = listitems();
-        for (int i = 0; (i * itemh) < sz.y; i++) {
+        for(int i = 0; (i * itemh) < sz.y; i++) {
             int idx = i + sb.val;
-            if (idx >= n)
+            if(idx >= n)
                 break;
             T item = listitem(idx);
-            int w = sz.x - (sb.vis() ? sb.sz.x : 0);
+            int w = sz.x - (sb.vis()?sb.sz.x:0);
             GOut ig = g.reclip(new Coord(0, i * itemh), new Coord(w, itemh));
-            if (item == sel)
+            if(item == sel)
                 drawsel(ig);
             drawitem(ig, item, idx);
         }
@@ -80,74 +78,70 @@ public abstract class Listbox<T> extends ListWidget<T> {
 
     public boolean mousewheel(Coord c, int amount) {
         sb.ch(amount);
-        return (true);
-    }
-
-    protected void itemclick(T item, int button) {
-        if (button == 1)
-            change(item);
-    }
-
-    protected void itemactivate(T item) {}
-
-    public T itemat(Coord c) {
-        int idx = (c.y / itemh) + sb.val;
-        if (idx >= listitems())
-            return (null);
-        return (listitem(idx));
-    }
-
-    public boolean mousedown(Coord c, int button) {
-        if (super.mousedown(c, button))
-            return (true);
-        T item = itemat(c);
-        if ((item == null) && (button == 1))
-            change(null);
-        else if (item != null) {
-            itemclick(item, button);
-        }
-        return (true);
-    }
-
-
-    @Override
-    public void mousemove(Coord c) {
-        super.mousemove(c);
-        if(c.isect(Coord.z, sz)){
-            over = itemat(c);
-        } else{
-            over = null;
-        }
-    }
-
-
-    public void showsel() {
-        if (sb.val + h - 1 < selindex)
-            sb.val = Math.max(0, selindex - h + 1);
-        if (sb.val > selindex)
-            sb.val = Math.max(0, selindex);
-    }
-
-    public boolean mouseclick(Coord c, int button, int count) {
-        if(super.mouseclick(c, button, count))
-            return(true);
-        T item = itemat(c);
-        if(item != null && button == 1 && count >= 2)
-            itemactivate(item);
         return(true);
     }
 
+    protected void itemclick(T item, int button) {
+        if(button == 1)
+            change(item);
+    }
+
+    public void change(final int idx) {
+        if(idx >= 0 && idx < listitems()) {
+            sel = listitem(idx);
+            selindex = idx;
+            showsel();
+        }
+    }
+
+    public Optional<Integer> selindex() {
+        return selindex >= 0 ? Optional.of(selindex) : Optional.empty();
+    }
+
+    private Optional<Integer> itemato(Coord c) {
+        int idx = (c.y / itemh) + sb.val;
+        if(idx >= listitems())
+            return Optional.empty();
+        return Optional.of(idx);
+    }
+
+    public T itemat(Coord c) {
+        int idx = (c.y / itemh) + sb.val;
+        if(idx >= listitems())
+            return null;
+        return listitem(idx);
+    }
+
+    public boolean mousedown(Coord c, int button) {
+        if(super.mousedown(c, button))
+            return(true);
+        final Optional<Integer> idx = itemato(c);
+        if(idx.isPresent()) {
+            selindex = idx.get();
+            T item = listitem(selindex);
+            itemclick(item, button);
+        } else if(button == 1) {
+            change(null);
+            selindex = -1;
+        }
+        return(true);
+    }
+
+    public void showsel() {
+        selindex().ifPresent(this::display);
+    }
+
     public void display(int idx) {
-        if (idx < sb.val) {
+        if(idx < sb.val) {
             sb.val = idx;
-        } else if (idx >= sb.val + h) {
+        } else if(idx >= sb.val + h) {
             sb.val = Math.max(idx - (h - 1), 0);
         }
     }
 
     public void display(T item) {
         int p = find(item);
-        if (p >= 0)
+        if(p >= 0)
             display(p);
     }
 
@@ -156,9 +150,9 @@ public abstract class Listbox<T> extends ListWidget<T> {
     }
 
     public void resize(Coord sz) {
-	super.resize(sz);
-    this.h = Math.max(sz.y / itemh, 1);
-	sb.resize(sz.y);
-	sb.c = new Coord(sz.x - sb.sz.x, 0);
+        super.resize(sz);
+        this.h = Math.max(sz.y / itemh, 1);
+        sb.resize(sz.y);
+        sb.c = new Coord(sz.x - sb.sz.x, 0);
     }
 }

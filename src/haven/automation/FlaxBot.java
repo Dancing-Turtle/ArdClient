@@ -379,11 +379,6 @@ public class FlaxBot extends Window {
                             flax2 = flax.item;
                             items = gui.maininv.getIdenticalItems((flax2));
                             sort(items);
-                            for (int i = 0; i < 5; i++) {
-                                QBuff qual = items.get(i).item.quality();
-                                System.out.println("Item " + i + " quality  = " + qual.q);
-                            }
-
                             if (BotUtils.getItemAtHand() != null)
                                 BotUtils.dropItem(0);
                             BotUtils.pfRightClick(barrel, 0);
@@ -415,10 +410,6 @@ public class FlaxBot extends Window {
                             }
                             // while (BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), Arrays.asList(seedname)).size() != 0) {
                             items.subList(0, 14).clear();
-                            for (int i = 0; i < 5; i++) {
-                                QBuff qual = items.get(i).item.quality();
-                                System.out.println("Item2 " + i + " quality  = " + qual.q);
-                            }
                             for (WItem seed : items) {
                                 if (stopThread)
                                     break;

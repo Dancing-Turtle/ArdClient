@@ -45,12 +45,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class MenuGrid extends Widget {
     public final static Coord bgsz = Inventory.invsq.sz().add(-1, -1);
     public final static RichText.Foundry ttfnd = new RichText.Foundry(TextAttribute.FAMILY, Text.cfg.font.get("sans"), TextAttribute.SIZE, Text.cfg.tooltipCap); //aa(true)
-    public final Set<Pagina> paginae = new HashSet<Pagina>();
+    public final Map<String, SpecialPagina> specialpag = new HashMap<>();
+    public final ObservableCollection<Pagina> paginae = new ObservableCollection<>(new HashSet<>());
     private static Coord gsz = new Coord(4, 4);
     private Pagina cur, dragging;
     private Collection<PagButton> curbtns = null;
@@ -80,16 +82,13 @@ public class MenuGrid extends Widget {
             this.res = pag.res();
         }
 
-        private static final OwnerContext.ClassResolver<PagButton> ctxr = new OwnerContext.ClassResolver<PagButton>()
-                .add(Glob.class, p -> p.pag.scm.ui.sess.glob)
-                .add(Session.class, p -> p.pag.scm.ui.sess);
-        public <T> T context(Class<T> cl) {return(ctxr.context(cl, this));}
 
         public BufferedImage img() {return(res.layer(Resource.imgc).img);}
         public String name() {return(res.layer(Resource.action).name);}
         public char hotkey() {return(res.layer(Resource.action).hk);}
-        public void use() {
-            pag.scm.wdgmsg("act", (Object[])res.layer(Resource.action).ad);
+        public void use()
+        {
+	    pag.use();
         }
 
         public String sortkey() {
@@ -105,6 +104,10 @@ public class MenuGrid extends Widget {
                 info = ItemInfo.buildinfo(this, pag.rawinfo);
             return(info);
         }
+	private static final OwnerContext.ClassResolver<PagButton> ctxr = new OwnerContext.ClassResolver<PagButton>()
+	    .add(Glob.class, p -> p.pag.scm.ui.sess.glob)
+	    .add(Session.class, p -> p.pag.scm.ui.sess);
+	public <T> T context(Class<T> cl) {return(ctxr.context(cl, this));}
 
         public BufferedImage rendertt(boolean withpg) {
             Resource.AButton ad = res.layer(Resource.action);
@@ -133,24 +136,6 @@ public class MenuGrid extends Widget {
         }
     }
 
-    public static interface CustomPaginaAction {
-        void perform(OwnerContext ctx);
-    }
-
-    public class CustomPagButton extends PagButton {
-
-        private final CustomPaginaAction action;
-
-        public CustomPagButton(Pagina pag, CustomPaginaAction action) {
-            super(pag);
-            this.action = action;
-        }
-
-        @Override
-        public void use() {
-            action.perform(pag.button);
-        }
-    }
 
     public final PagButton next = new PagButton(new Pagina(this, Resource.local().loadwait("gfx/hud/sc-next").indir())) {
         public void use() {
@@ -167,8 +152,14 @@ public class MenuGrid extends Widget {
 
     public final PagButton bk = new PagButton(new Pagina(this, Resource.local().loadwait("gfx/hud/sc-back").indir())) {
         public void use() {
-            pag.scm.cur = paginafor(pag.scm.cur.act().parent);
-            curoff = 0;
+            if((curoff - 14) >= 0)
+                curoff -= 14;
+            else {
+                pag.scm.cur = paginafor(pag.scm.cur.act().parent);
+                curoff = 0;
+            }
+
+
         }
 
         public BufferedImage rendertt(boolean withpg) {
@@ -184,6 +175,7 @@ public class MenuGrid extends Widget {
         public Indir<Tex> img;
         public int newp;
         public Object[] rawinfo = {};
+        private final Consumer<Pagina> onUse;
 
         public static enum State {
             ENABLED, DISABLED {
@@ -201,7 +193,16 @@ public class MenuGrid extends Widget {
             this.scm = scm;
             this.res = res;
             state(State.ENABLED);
+            this.onUse = (me) -> scm.wdgmsg("act", (Object[])res().layer(Resource.action).ad);
         }
+
+        public Pagina(MenuGrid scm, Indir<Resource> res, final Consumer<Pagina> onUse) {
+            this.scm = scm;
+            this.res = res;
+            state(State.ENABLED);
+            this.onUse = onUse;
+        }
+
 
         public Resource res() {
             return (res.get());
@@ -211,6 +212,9 @@ public class MenuGrid extends Widget {
             return (res().layer(Resource.action));
         }
 
+	public void use() {
+	    onUse.accept(this);
+	}
         private PagButton button = null;
 
         public PagButton button() {
@@ -265,13 +269,6 @@ public class MenuGrid extends Widget {
         }
     }
 
-    @SuppressWarnings("SameParameterValue")
-    private Pagina makeLocal(String path, CustomPaginaAction action) {
-        Pagina p = new Pagina(this, Resource.local().loadwait(path).indir());
-        p.button(new CustomPagButton(p, action));
-        return p;
-    }
-
     public Map<Indir<Resource>, Pagina> pmap = new WeakHashMap<Indir<Resource>, Pagina>();
     public Pagina paginafor(Indir<Resource> res) {
         if(res == null)
@@ -284,65 +281,12 @@ public class MenuGrid extends Widget {
         }
     }
 
-   /* private boolean cons(Pagina p, Collection<PagButton> buf) {
-        Pagina[] cp = new Pagina[0];
-        Collection<Pagina> open, close = new HashSet<Pagina>();
-        synchronized (paginae) {
-            open = new LinkedList<Pagina>();
-            for (Pagina pag : paginae) {
-                if (pag.newp == 2) {
-                    pag.newp = 0;
-                    pag.fstart = 0;
-                }
-                open.add(pag);
-            }
-            for (Pagina pag : pmap.values()) {
-                if (pag.newp == 2) {
-                    pag.newp = 0;
-                    pag.fstart = 0;
-                }
-            }
-        }
-        boolean ret = true;
-        while (!open.isEmpty()) {
-            Iterator<Pagina> iter = open.iterator();
-            Pagina pag = iter.next();
-            iter.remove();
-            try {
-                AButton ad = pag.act();
-                if (ad == null)
-                    throw(new RuntimeException("Pagina in " + pag.res + " lacks action"));
-                Pagina parent = paginafor(ad.parent);
-                if ((pag.newp != 0) && (parent != null) && (parent.newp == 0)) {
-                    parent.newp = 2;
-                    parent.fstart = (parent.fstart == 0) ? pag.fstart : Math.min(parent.fstart, pag.fstart);
-                }
-                if (parent == p)
-                    buf.add(pag);
-                    //buf.add(pag.button());
-                else if ((parent != null) && !close.contains(parent) && !open.contains(parent))
-                    open.add(parent);
-                close.add(pag);
-            } catch (Loading e) {
-                ret = false;
-            }
-        }
-        return (ret);
-    }*/
 
-    public boolean consb(Pagina p, Collection<PagButton> buf) {
-        List<Pagina> pags = buf.stream().map(btn -> btn.pag).collect(Collectors.toList());
-        boolean result = cons(p, pags);
-        buf.clear();
-        for(Pagina pag : pags) { buf.add(pag.button());	}
-        return result;
-    }
 
-    public boolean cons(Pagina p, Collection<Pagina> buf) {
-        Pagina[] cp = new Pagina[0];
-        Collection<Pagina> open, close = new HashSet<Pagina>();
+    public boolean cons(Pagina p, Collection<PagButton> buf) {
+        Collection<Pagina> open, close = new HashSet<>();
         synchronized(paginae) {
-            open = new LinkedList<Pagina>();
+            open = new LinkedList<>();
             for(Pagina pag : paginae) {
                 if(pag.newp == 2) {
                     pag.newp = 0;
@@ -372,7 +316,7 @@ public class MenuGrid extends Widget {
                     parent.fstart = (parent.fstart == 0)?pag.fstart:Math.min(parent.fstart, pag.fstart);
                 }
                 if(parent == p)
-                    buf.add(pag);
+                    buf.add(pag.button());
                 else if((parent != null) && !close.contains(parent) && !open.contains(parent))
                     open.add(parent);
                 close.add(pag);
@@ -383,81 +327,426 @@ public class MenuGrid extends Widget {
         return(ret);
     }
 
-    public MenuGrid() {
-        super(bgsz.mul(gsz).add(1, 1));
+    public static class SpecialPagina extends Pagina {
+        public final String key;
+        public SpecialPagina(MenuGrid scm, String key, Indir<Resource> res, final Consumer<Pagina> onUse) {
+            super(scm, res, onUse);
+            this.key = key;
+        }
+    }
+    private void addSpecial(final SpecialPagina pag) {
+        paginae.add(pag);
+        specialpag.put(pag.key, pag);
+
     }
 
-    @Override
-    protected void attach(UI ui) {
-        super.attach(ui);
-        synchronized (paginae) {
-            Collection<Pagina> p = paginae;
-            p.add(paginafor(Resource.local().load("paginae/amber/coal9")));
-            p.add(paginafor(Resource.local().load("paginae/amber/coal12")));
-            p.add(paginafor(Resource.local().load("paginae/amber/branchoven")));
-            p.add(paginafor(Resource.local().load("paginae/amber/steel")));
-            p.add(paginafor(Resource.local().load("paginae/amber/torch")));
-            p.add(paginafor(Resource.local().load("paginae/amber/CoalToSmelters")));
-            p.add(paginafor(Resource.local().load("paginae/amber/DestroyArea")));
-            p.add(paginafor(Resource.local().load("paginae/amber/Coracleslol")));
-            p.add(paginafor(Resource.local().load("paginae/amber/MinerAlert")));
-            p.add(paginafor(Resource.local().load("paginae/amber/clover")));
-            p.add(paginafor(Resource.local().load("paginae/amber/rope")));
-            p.add(paginafor(Resource.local().load("paginae/amber/fish")));
-            p.add(paginafor(Resource.local().load("paginae/amber/timers")));
-            p.add(paginafor(Resource.local().load("paginae/amber/livestock")));
-           // p.add(paginafor(Resource.local().load("paginae/amber/shoo")));
-            p.add(paginafor(Resource.local().load("paginae/amber/dream")));
-            p.add(paginafor(Resource.local().load("paginae/amber/trellisharvest")));
-            p.add(paginafor(Resource.local().load("paginae/amber/trellisdestroy")));
-            p.add(paginafor(Resource.local().load("paginae/amber/cheesetrayfiller")));
-            p.add(paginafor(Resource.local().load("paginae/amber/equipweapon")));
-            p.add(paginafor(Resource.local().load("paginae/amber/BeltDrink")));
-            p.add(paginafor(Resource.local().load("paginae/amber/SliceCheese")));
-            p.add(paginafor(Resource.local().load("paginae/amber/SplitLogs")));
-            p.add(paginafor(Resource.local().load("paginae/amber/OpenRacks")));
-            p.add(paginafor(Resource.local().load("paginae/amber/CountGobs")));
-         //   p.add(paginafor(Resource.local().load("paginae/amber/ShieldChecker")));
-         //   p.add(paginafor(Resource.local().load("paginae/amber/PepperBot")));
-            p.add(paginafor(Resource.local().load("paginae/amber/MothKiller")));
-/*            try {
-                URL url = new URL("https://ardenneslol.github.io/Hafen/WhiteList.txt");
-                HttpURLConnection conn=(HttpURLConnection) url.openConnection();
-                conn.setConnectTimeout(60000); // timing out in a minute
-                BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                String str;
-                str = in.readLine();
-                String[] values = str.split(";");
-                in.close();
-                if(Arrays.asList(values).contains(ui.sess.username)) {*/
-                    p.add(paginafor(Resource.local().load("paginae/amber/FlaxBot")));
-                    p.add(paginafor(Resource.local().load("paginae/amber/PepperBotPro")));
-               // }
-
-           // }catch(FileNotFoundException | MalformedURLException notfound){} catch (IOException e) {
-               // e.printStackTrace();
-          //  }
-            p.add(paginafor(Resource.local().load("paginae/amber/TakeTrays")));
-           // p.add(paginafor(Resource.local().load("paginae/amber/CraftAllBot")));
-            p.add(paginafor(Resource.local().load("paginae/amber/PepperFood")));
-            p.add(paginafor(Resource.local().load("paginae/amber/PlaceTrays")));
-           // p.add(paginafor(Resource.local().load("paginae/amber/dismount")));
-            // Purus Pasta
-            p.add(paginafor(Resource.local().load("paginae/purus/farmer")));
-            p.add(paginafor(Resource.local().load("paginae/purus/troughfill")));
-            p.add(paginafor(Resource.local().load("paginae/purus/study")));
-           // p.add(paginafor(Resource.local().load("paginae/purus/barrelfill")));
-            p.add(paginafor(Resource.local().load("paginae/purus/stockpilefill")));
-            // PBot Scripts
-            p.add(paginafor(Resource.local().load("paginae/purus/PBotMenu")));
-        }
+    public MenuGrid() {
+        super(bgsz.mul(gsz).add(1, 1));
+        addSpecial(new SpecialPagina(this, "paginae::amber::coal12",
+                Resource.local().load("paginae/amber/coal12"),
+                (pag) -> {
+            GameUI gui = gameui();
+            if(gui != null){
+            Thread t = new Thread(new AddCoalToSmelter(gui, 12), "AddCoalToSmelter");
+             t.start();
+            }}
+        ));
+        addSpecial(new SpecialPagina(this, "paginae::amber::coal9",
+                Resource.local().load("paginae/amber/coal9"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                        Thread t = new Thread(new AddCoalToSmelter(gui, 9), "AddCoalToSmelter");
+                        t.start();
+                    }}
+        ));
+        addSpecial(new SpecialPagina(this, "paginae::amber::branchoven",
+                Resource.local().load("paginae/amber/branchoven"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                        Thread t = new Thread(new AddBranchesToOven(gui,4), "AddBranchesToOven");
+                        t.start();
+                    }}
+        ));
+        addSpecial(new SpecialPagina(this, "paginae::amber::steel",
+                Resource.local().load("paginae/amber/steel"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                        if (gui.getwnd("Steel Refueler") == null) {
+                            SteelRefueler sw = new SteelRefueler();
+                            gui.map.steelrefueler = sw;
+                            gui.add(sw, new Coord(gui.sz.x / 2 - sw.sz.x / 2, gui.sz.y / 2 - sw.sz.y / 2 - 200));
+                            synchronized (GobSelectCallback.class) {
+                                gui.map.registerGobSelect(sw);
+                            }
+                        }
+                    }}
+        ));
+        addSpecial(new SpecialPagina(this, "paginae::amber::torch",
+                Resource.local().load("paginae/amber/torch"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                        if (gui.getwnd("Torch Lighter") == null) {
+                            LightWithTorch sw = new LightWithTorch(gui);
+                            gui.map.torchlight = sw;
+                            gui.add(sw, new Coord(gui.sz.x / 2 - sw.sz.x / 2, gui.sz.y / 2 - sw.sz.y / 2 - 200));
+                            synchronized (GobSelectCallback.class) {
+                                gui.map.registerGobSelect(sw);
+                            }
+                        }
+                    }}
+        ));
+        addSpecial(new SpecialPagina(this, "paginae::amber::coaltosmelters",
+                Resource.local().load("paginae/amber/CoalToSmelters"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                        if (gui.getwnd("Add Coal To Smelters") == null) {
+                            CoalToSmelters sw = new CoalToSmelters(gui);
+                            gui.map.coaltosmelters = sw;
+                            gui.add(sw, new Coord(gui.sz.x / 2 - sw.sz.x / 2, gui.sz.y / 2 - sw.sz.y / 2 - 200));
+                            synchronized (GobSelectCallback.class) {
+                                gui.map.registerGobSelect(sw);
+                            }
+                        }
+                    }}
+        ));
+        addSpecial(new SpecialPagina(this, "paginae::amber::destroyarea",
+                Resource.local().load("paginae/amber/DestroyArea"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                        if (gui.getwnd("Destroy Gobs in Area") == null) {
+                            DestroyArea sw = new DestroyArea(gui);
+                            gui.map.destroyarea = sw;
+                            gui.add(sw, new Coord(gui.sz.x / 2 - sw.sz.x / 2, gui.sz.y / 2 - sw.sz.y / 2 - 200));
+                            synchronized (GobSelectCallback.class) {
+                                gui.map.registerGobSelect(sw);
+                            }
+                        }
+                    }}
+        ));
+        addSpecial(new SpecialPagina(this, "paginae::amber::coracleslol",
+                Resource.local().load("paginae/amber/Coracleslol"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                        new Thread(new Coracleslol(gui), "Coracleslol").start();
+                    }}
+        ));
+        addSpecial(new SpecialPagina(this, "paginae::amber:mineralert",
+                Resource.local().load("paginae/amber/MinerAlert"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                        if (gui.getwnd("Miner Alert") == null) {
+                            MinerAlert sw = new MinerAlert(gui);
+                            gui.map.mineralert = sw;
+                            gui.add(sw, new Coord(gui.sz.x / 2 - sw.sz.x / 2, gui.sz.y / 2 - sw.sz.y / 2 - 200));
+                        }
+                    }}
+        ));
+        addSpecial(new SpecialPagina(this, "paginae::amber::clover",
+                Resource.local().load("paginae/amber/clover"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                        new Thread(new FeedClover(gui), "FeedClover").start();
+                    }}
+        ));
+        addSpecial(new SpecialPagina(this, "paginae::amber::rope",
+                Resource.local().load("paginae/amber/rope"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                        new Thread(new LeashAnimal(gui), "LeashAnimal").start();
+                    }}
+        ));
+        addSpecial(new SpecialPagina(this, "paginae::amber::fish",
+                Resource.local().load("paginae/amber/fish"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                        new Thread(new ButcherFish(gui), "ButcherFish").start();
+                    }}
+        ));
+        addSpecial(new SpecialPagina(this, "paginae::windows::timers",
+                Resource.local().load("paginae/amber/timers"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                        gui.timerswnd.show(!gui.timerswnd.visible);
+                        gui.timerswnd.raise();
+                    }}
+        ));
+        addSpecial(new SpecialPagina(this, "paginae::windows::livestock",
+                Resource.local().load("paginae/amber/livestock"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                        gui.livestockwnd.show(!gui.livestockwnd.visible);
+                        gui.livestockwnd.raise();
+                    }}
+        ));
+        addSpecial(new SpecialPagina(this, "paginae::amber::dream",
+                Resource.local().load("paginae/amber/dream"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                        new Thread(new DreamHarvester(gui), "DreamHarvester").start();
+                    }}
+        ));
+        addSpecial(new SpecialPagina(this, "paginae::amber::trellisharvest",
+                Resource.local().load("paginae/amber/trellisharvest"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                        new Thread(new TrellisHarvest(gui), "TrellisHarvest").start();
+                    }}
+        ));
+        addSpecial(new SpecialPagina(this, "paginae::amber::trellisdestroy",
+                Resource.local().load("paginae/amber/trellisdestroy"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                        new Thread(new TrellisDestroy(gui), "TrellisDestroy").start();
+                    }}
+        ));
+        addSpecial(new SpecialPagina(this, "paginae::amber::cheesetrayfiller",
+                Resource.local().load("paginae/amber/cheesetrayfiller"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                        new Thread(new FillCheeseTray(gui), "FillCheeseTray").start();
+                    }}
+        ));
+        addSpecial(new SpecialPagina(this, "paginae::amber::equipweapon",
+                Resource.local().load("paginae/amber/equipweapon"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                        new Thread(new EquipWeapon(gui), "EquipWeapon").start();
+                    }}
+        ));
+        addSpecial(new SpecialPagina(this, "paginae::amber::slicecheese",
+                Resource.local().load("paginae/amber/SliceCheese"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                        new Thread(new SliceCheese(gui), "SliceCheese").start();
+                    }}
+        ));
+        addSpecial(new SpecialPagina(this, "paginae::amber::splitlogs",
+                Resource.local().load("paginae/amber/SplitLogs"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                        new Thread(new SplitLogs(gui), "SplitLogs").start();
+                    }}
+        ));
+        addSpecial(new SpecialPagina(this, "paginae::amber::countgobs",
+                Resource.local().load("paginae/amber/CountGobs"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                        new Thread(new CountGobs(gui), "CountGobs").start();
+                    }}
+        ));
+        addSpecial(new SpecialPagina(this, "paginae::amber::mothkillers",
+                Resource.local().load("paginae/amber/MothKiller"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                        new Thread(new MothKiller(gui), "MothKiller").start();
+                    }}
+        ));
+        addSpecial(new SpecialPagina(this, "paginae::amber::flaxbot",
+                Resource.local().load("paginae/amber/FlaxBot"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                        if (gui.getwnd("Flax Bot") == null) {
+                            FlaxBot sw = new FlaxBot(gui);
+                            gui.map.flaxbot = sw;
+                            gui.add(sw, new Coord(gui.sz.x / 2 - sw.sz.x / 2, gui.sz.y / 2 - sw.sz.y / 2 - 200));
+                        }
+                    }}
+        ));
+        addSpecial(new SpecialPagina(this, "paginae::amber::pepperbotpro",
+                Resource.local().load("paginae/amber/PepperBotPro"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                        if (gui.getwnd("Pepper Bot") == null) {
+                            PepperBotPro sw = new PepperBotPro(gui);
+                            gui.map.pepperbotpro = sw;
+                            gui.add(sw, new Coord(gui.sz.x / 2 - sw.sz.x / 2, gui.sz.y / 2 - sw.sz.y / 2 - 200));
+                            synchronized (GobSelectCallback.class) {
+                                // gui.map.registerAreaSelect(sw);
+                                gui.map.registerGobSelect(sw);
+                            }
+                        }
+                    }}
+        ));
+        addSpecial(new SpecialPagina(this, "paginae::amber::taketrays",
+                Resource.local().load("paginae/amber/TakeTrays"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                        new Thread(new TakeTrays(gui), "TakeTrays").start();
+                    }}
+        ));
+        addSpecial(new SpecialPagina(this, "paginae::amber::pepperfood",
+                Resource.local().load("paginae/amber/PepperFood"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                        new Thread(new PepperFood(gui), "PepperFood").start();
+                    }}
+        ));
+        addSpecial(new SpecialPagina(this, "paginae::amber::placetrays",
+                Resource.local().load("paginae/amber/PlaceTrays"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                        new Thread(new PlaceTrays(gui), "PlaceTrays").start();
+                    }}
+        ));
+        addSpecial(new SpecialPagina(this, "paginae::amber::farmer",
+                Resource.local().load("paginae/purus/farmer"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                        Farmer f = new Farmer();
+                        Window w = f;
+                        gui.add(w, new Coord(gui.sz.x/2 - w.sz.x/2, gui.sz.y/2 - w.sz.y/2 - 200));
+                        synchronized (GobSelectCallback.class) {
+                            gameui().map.registerAreaSelect(f);
+                            gui.map.registerGobSelect(f);
+                        }
+                    }}
+        ));
+        addSpecial(new SpecialPagina(this, "paginae::amber::troughfill",
+                Resource.local().load("paginae/purus/troughfill"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                        TroughFiller tf = new TroughFiller();
+                        gui.add(tf, new Coord(gui.sz.x / 2 - tf.sz.x / 2, gui.sz.y / 2 - tf.sz.y / 2 - 200));
+                        synchronized (GobSelectCallback.class) {
+                            gui.map.registerGobSelect(tf);
+                        }
+                    }}
+        ));
+        addSpecial(new SpecialPagina(this, "paginae::amber::stockpilefill",
+                Resource.local().load("paginae/purus/stockpilefill"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                        StockpileFiller spf = new StockpileFiller();
+                        gui.add(spf, new Coord(gui.sz.x / 2 - spf.sz.x / 2, gui.sz.y / 2 - spf.sz.y / 2 - 200));
+                        synchronized (GobSelectCallback.class) {
+                            gui.map.registerGobSelect(spf);
+                        }
+                    }}
+        ));
+        addSpecial(new SpecialPagina(this, "paginae::amber::dismount",
+                Resource.local().load("paginae/amber/dismount"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                        new Thread(new Dismount(gui), "Dismount").start();
+                    }}
+        ));
+        addSpecial(new SpecialPagina(this, "paginae::amber::pbotmenu",
+                Resource.local().load("paginae/purus/PBotMenu"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                        if (gui.PBotScriptlist.show(!gui.PBotScriptlist.visible)) {
+                            gui.PBotScriptlist.raise();
+                            gui.fitwdg(gui.PBotScriptlist);
+                            setfocus(gui.PBotScriptlist);
+                        }
+                    }}
+        ));
+        addSpecial(new SpecialPagina(this, "paginae::windows::char",
+                Resource.local().load("paginae/windows/char"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                       gui.toggleCharWnd();
+                    }}
+        ));
+        addSpecial(new SpecialPagina(this, "paginae::windows::chat",
+                Resource.local().load("paginae/windows/chat"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                      gui.OpenChat();
+                    }}
+        ));
+        addSpecial(new SpecialPagina(this, "paginae::windows::equ",
+                Resource.local().load("paginae/windows/equ"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                      gui.toggleEquipment();
+                    }}
+        ));
+        addSpecial(new SpecialPagina(this, "paginae::windows::inv",
+                Resource.local().load("paginae/windows/inv"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                      gui.toggleInv();
+                    }}
+        ));
+        addSpecial(new SpecialPagina(this, "paginae::windows::kithnkin",
+                Resource.local().load("paginae/windows/kithnkin"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                      gui.toggleKinList();
+                    }}
+        ));
+        addSpecial(new SpecialPagina(this, "paginae::windows::search",
+                Resource.local().load("paginae/windows/search"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                      gui.toggleSearch();
+                    }}
+        ));
+        addSpecial(new SpecialPagina(this, "paginae::windows::smap",
+                Resource.local().load("paginae/windows/smap"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                       gui.toggleMinimap();
+                    }}
+        ));
+        addSpecial(new SpecialPagina(this, "paginae::windows::study",
+                Resource.local().load("paginae/windows/study"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                      gui.toggleStudy();
+                    }}
+        ));
+        addSpecial(new SpecialPagina(this, "paginae::windows::lmap",
+                Resource.local().load("paginae/windows/lmap"),
+                (pag) -> ui.gui.toggleMapfile()));
     }
 
     private void updlayout() {
         synchronized(paginae) {
             List<PagButton> cur = new ArrayList<>();
-            recons = !consb(this.cur, cur);
-            Collections.sort(cur, Comparator.comparing(PagButton::sortkey));
+            recons = !cons(this.cur, cur);
+            cur.sort(Comparator.comparing(PagButton::sortkey));
             this.curbtns = cur;
             int i = curoff;
             hotmap.clear();
@@ -471,7 +760,7 @@ public class MenuGrid extends Widget {
                     PagButton btn = null;
                     if((this.cur != null) && (x == gsz.x - 1) && (y == gsz.y - 1)) {
                         btn = bk;
-                    } else if ((cur.size() - curoff > gsz.x * gsz.y - 1) && (x == gsz.x - 2) && (y == gsz.y - 1)) {
+                    } else if((cur.size() > ((gsz.x * gsz.y) - 1)) && (x == gsz.x - 2) && (y == gsz.y - 1)) {
                         btn = next;
                     } else if(i < cur.size()) {
                         btn = cur.get(i++);
@@ -585,283 +874,104 @@ public class MenuGrid extends Widget {
             return (null);
     }
 
+
     public boolean mousedown(Coord c, int button) {
         PagButton h = bhit(c);
-        if ((button == 1) && (h != null)) {
+        if((button == 1) && (h != null)) {
             pressed = h;
             grab = ui.grabmouse(this);
+            return(true);
+        } else {
+            return super.mousedown(c, button);
         }
-        return (true);
     }
 
     public void mousemove(Coord c) {
-        if ((dragging == null) && (pressed != null)) {
+        if((dragging == null) && (pressed != null)) {
             PagButton h = bhit(c);
-            if (h != pressed)
+            if(h != pressed)
                 dragging = pressed.pag;
+        } else {
+            super.mousemove(c);
         }
     }
 
-    public void use(String[] ad) {
-        GameUI gui = gameui();
-        if (gui == null)
-            return;
-        if (ad[1].equals("coal")) {
-            Thread t = new Thread(new AddCoalToSmelter(gui, Integer.parseInt(ad[2])), "AddCoalToSmelter");
-            t.start();
-        } else if (ad[1].equals("branchoven")) {
-            Thread t = new Thread(new AddBranchesToOven(gui, Integer.parseInt(ad[2])), "AddBranchesToOven");
-            t.start();
-        } else if (ad[1].equals("steel")) {
-            if (gui.getwnd("Steel Refueler") == null) {
-                SteelRefueler sw = new SteelRefueler();
-                gui.map.steelrefueler = sw;
-                gui.add(sw, new Coord(gui.sz.x / 2 - sw.sz.x / 2, gui.sz.y / 2 - sw.sz.y / 2 - 200));
-                synchronized (GobSelectCallback.class) {
-                    gui.map.registerGobSelect(sw);
-                }
-            }
-        } else if (ad[1].equals("checkshield")) {
-            if (gui.getwnd("Shield Checker") == null) {
-                ShieldChecker sw = new ShieldChecker();
-                gui.map.shieldchecker = sw;
-                gui.add(sw, new Coord(gui.sz.x / 2 - sw.sz.x / 2, gui.sz.y / 2 - sw.sz.y / 2 - 200));
-            }
-        } else if (ad[1].equals("torch")) {
-            if (gui.getwnd("Torch Lighter") == null) {
-                LightWithTorch sw = new LightWithTorch(gui);
-                gui.map.torchlight = sw;
-                gui.add(sw, new Coord(gui.sz.x / 2 - sw.sz.x / 2, gui.sz.y / 2 - sw.sz.y / 2 - 200));
-                synchronized (GobSelectCallback.class) {
-                    gui.map.registerGobSelect(sw);
-                }
-            }
-        } else if (ad[1].equals("destroyarea")) {
-            if (gui.getwnd("Destroy Gobs in Area") == null) {
-                DestroyArea sw = new DestroyArea(gui);
-                gui.map.destroyarea = sw;
-                gui.add(sw, new Coord(gui.sz.x / 2 - sw.sz.x / 2, gui.sz.y / 2 - sw.sz.y / 2 - 200));
-                synchronized (GobSelectCallback.class) {
-                    gui.map.registerGobSelect(sw);
-                }
-            }
-        } else if (ad[1].equals("coaltosmelters")) {
-            if (gui.getwnd("Add Coal To Smelters") == null) {
-                CoalToSmelters sw = new CoalToSmelters(gui);
-                gui.map.coaltosmelters = sw;
-                gui.add(sw, new Coord(gui.sz.x / 2 - sw.sz.x / 2, gui.sz.y / 2 - sw.sz.y / 2 - 200));
-                synchronized (GobSelectCallback.class) {
-                    gui.map.registerGobSelect(sw);
-                }
-            }
-        } else if (ad[1].equals("PepperBot")) {
-            if (gui.getwnd("Pepper Bot") == null) {
-                PepperBot sw = new PepperBot(gui);
-                gui.map.pepperbot = sw;
-                gui.add(sw, new Coord(gui.sz.x / 2 - sw.sz.x / 2, gui.sz.y / 2 - sw.sz.y / 2 - 200));
-                synchronized (GobSelectCallback.class) {
-                    gui.map.registerAreaSelect(sw);
-                    gui.map.registerGobSelect(sw);
-                }
-            }
-        } else if (ad[1].equals("PepperBotPro")) {
-            if (gui.getwnd("Pepper Bot") == null) {
-                PepperBotPro sw = new PepperBotPro(gui);
-                gui.map.pepperbotpro = sw;
-                gui.add(sw, new Coord(gui.sz.x / 2 - sw.sz.x / 2, gui.sz.y / 2 - sw.sz.y / 2 - 200));
-                synchronized (GobSelectCallback.class) {
-                    // gui.map.registerAreaSelect(sw);
-                    gui.map.registerGobSelect(sw);
-                }
-            }
-        } else if (ad[1].equals("FlaxBot")) {
-           // if (ui.sess.username.toLowerCase().equals("ardennesss") || ui.sess.username.toLowerCase().equals("infectedking")) {
-                if (gui.getwnd("Flax Bot") == null) {
-                    FlaxBot sw = new FlaxBot(gui);
-                    gui.map.flaxbot = sw;
-                    gui.add(sw, new Coord(gui.sz.x / 2 - sw.sz.x / 2, gui.sz.y / 2 - sw.sz.y / 2 - 200));
-                }
-          //  } else
-             //   BotUtils.sysMsg("Did you actually think I'd release a fully public flax bot? C'mon " + ui.sess.username.toLowerCase(), Color.white);
 
-        } else if (ad[1].equals("MinerAlert")) {
-            if (gui.getwnd("Miner Alert") == null) {
-                MinerAlert sw = new MinerAlert(gui);
-                gui.map.mineralert = sw;
-                gui.add(sw, new Coord(gui.sz.x / 2 - sw.sz.x / 2, gui.sz.y / 2 - sw.sz.y / 2 - 200));
-            }
-        }
-        else if (ad[1].equals("CraftAllBot")) {
-            if (gui.getwnd("CraftAllBot") == null) {
-                CraftAllBot sw = new CraftAllBot(gui);
-                gui.map.craftbot = sw;
-                gui.add(sw, new Coord(gui.sz.x / 2 - sw.sz.x / 2, gui.sz.y / 2 - sw.sz.y / 2 - 200));
-                synchronized (GobSelectCallback.class) {
-                    gui.map.registerGobSelect(sw);
-                }
-            }
-        } else if (ad[1].equals("timers")) {
-            gui.timerswnd.show(!gui.timerswnd.visible);
-            gui.timerswnd.raise();
-        } else if (ad[1].equals("clover")) {
-            new Thread(new FeedClover(gui), "FeedClover").start();
-        } else if (ad[1].equals("fish")) {
-            new Thread(new ButcherFish(gui), "ButcherFish").start();
-        } else if (ad[1].equals("rope")) {
-            new Thread(new LeashAnimal(gui), "LeashAnimal").start();
-        } else if (ad[1].equals("livestock")) {
-            gui.livestockwnd.show(!gui.livestockwnd.visible);
-            gui.livestockwnd.raise();
-        } else if (ad[1].equals("shoo")) {
-            new Thread(new Shoo(gui), "Shoo").start();
-        } else if (ad[1].equals("Coracleslol")) {
-            new Thread(new Coracleslol(gui), "Coracleslol").start();
-        } else if (ad[1].equals("dream")) {
-            new Thread(new DreamHarvester(gui), "DreamHarvester").start();
-        } else if (ad[1].equals("trellis-harvest")) {
-            new Thread(new TrellisHarvest(gui), "TrellisHarvest").start();
-        } else if (ad[1].equals("trellis-destroy")) {
-            new Thread(new TrellisDestroy(gui), "TrellisDestroy").start();
-        } else if (ad[1].equals("cheesetray-fill")) {
-            new Thread(new FillCheeseTray(gui), "FillCheeseTray").start();
-        } else if (ad[1].equals("equipweapon")) {
-            new Thread(new EquipWeapon(gui), "EquipWeapon").start();
-        } else if (ad[1].equals("BeltDrink")) {
-            new Thread(new BeltDrink(gui), "BeltDrink").start();
-        } else if (ad[1].equals("CountGobs")) {
-            new Thread(new CountGobs(gui), "CountGobs").start();
-        } else if (ad[1].equals("TakeTrays")) {
-            new Thread(new TakeTrays(gui), "TakeTrays").start();
-        } else if (ad[1].equals("PepperFood")) {
-            new Thread(new PepperFood(gui), "PepperFood").start();
-        } else if (ad[1].equals("PlaceTrays")) {
-            new Thread(new PlaceTrays(gui), "PlaceTrays").start();
-        } else if (ad[1].equals("OpenRacks")) {
-            new Thread(new OpenRacks(gui), "OpenRacks").start();
-        } else if (ad[1].equals("SliceCheese")) {
-            new Thread(new SliceCheese(gui), "SliceCheese").start();
-        } else if (ad[1].equals("SplitLogs")) {
-            new Thread(new SplitLogs(gui), "SplitLogs").start();
-        } else if (ad[1].equals("MothKiller")) {
-            new Thread(new MothKiller(gui), "MothKiller").start();
-        } else if (ad[1].equals("dismount")) {
-            new Thread(new Dismount(gui), "Dismount").start();
-        } else if(ad[1].equals("farmbot")) {
-        	Farmer f = new Farmer();
-        	Window w = f;
-        	gui.add(w, new Coord(gui.sz.x/2 - w.sz.x/2, gui.sz.y/2 - w.sz.y/2 - 200));
-            synchronized (GobSelectCallback.class) {
-                gameui().map.registerAreaSelect(f);
-                gui.map.registerGobSelect(f);
-            }
-
-        } else if(ad[1].equals("troughfill")) {
-        	TroughFiller tf = new TroughFiller();
-        	gui.add(tf, new Coord(gui.sz.x / 2 - tf.sz.x / 2, gui.sz.y / 2 - tf.sz.y / 2 - 200));
-            synchronized (GobSelectCallback.class) {
-                gui.map.registerGobSelect(tf);
-            }
-        } else if(ad[1].equals("study")) {
-        	if(ui.gui != null)
-        		ui.gui.toggleStudy();
-        } else if(ad[1].equals("barrelfill")) {
-        	BarrelFiller bf = new BarrelFiller();
-        	gui.add(bf, new Coord(gui.sz.x / 2 - bf.sz.x / 2, gui.sz.y / 2 - bf.sz.y / 2 - 200));
-            synchronized (GobSelectCallback.class) {
-                gui.map.registerGobSelect(bf);
-            }
-        } else if(ad[1].equals("stockpilefill")) {
-        	StockpileFiller spf = new StockpileFiller();
-        	gui.add(spf, new Coord(gui.sz.x / 2 - spf.sz.x / 2, gui.sz.y / 2 - spf.sz.y / 2 - 200));
-            synchronized (GobSelectCallback.class) {
-        		gui.map.registerGobSelect(spf);
-        	}
-        } else if(ad[1].equals("PBotList")) {
-            if (gui.PBotScriptlist.show(!gui.PBotScriptlist.visible)) {
-            	gui.PBotScriptlist.raise();
-            	gui.fitwdg(gui.PBotScriptlist);
-                setfocus(gui.PBotScriptlist);
-            }
-        }
-    }
 
     public void use(PagButton r, boolean reset) {
-      //  Collection<PagButton> sub = new ArrayList<>();
-        Collection<Pagina> sub = new ArrayList<>();
+        Collection<PagButton> sub = new ArrayList<>();
         cons(r.pag, sub);
-        if (sub.size() > 0) {
+        if(sub.size() > 0) {
             this.cur = r.pag;
             curoff = 0;
         } else {
-            r.pag.newp = 0;
             Resource.AButton act = r.pag.act();
-            if (act == null) {
+            if (act == null)
                 r.use();
-            } else {
+            else {
                 String[] ad = r.pag.act().ad;
-                if (ad[0].equals("@")) {
-                    use(ad);
+                if (ad.length > 0 && (ad[0].equals("craft") || ad[0].equals("bp"))) {
+                    lastCraft = r.pag;
+                    gameui().histbelt.push(r.pag);
+                }
+                if (Config.confirmmagic && r.res.name.startsWith("paginae/seid/") && !r.res.name.equals("paginae/seid/rawhide")) {
+                    Window confirmwnd = new Window(new Coord(225, 100), "Confirm") {
+                        @Override
+                        public void wdgmsg(Widget sender, String msg, Object... args) {
+                            if (sender == cbtn)
+                                reqdestroy();
+                            else
+                                super.wdgmsg(sender, msg, args);
+                        }
+
+                        @Override
+                        public boolean type(char key, KeyEvent ev) {
+                            if (key == 27) {
+                                reqdestroy();
+                                return true;
+                            }
+                            return super.type(key, ev);
+                        }
+                    };
+
+                    confirmwnd.add(new Label(Resource.getLocString(Resource.BUNDLE_LABEL, "Using magic costs experience points. Are you sure you want to proceed?")),
+                            new Coord(10, 20));
+                    confirmwnd.pack();
+
+                    MenuGrid mg = this;
+                    Button yesbtn = new Button(70, "Yes") {
+                        @Override
+                        public void click() {
+                            r.use();
+                            parent.reqdestroy();
+                        }
+                    };
+                    confirmwnd.add(yesbtn, new Coord(confirmwnd.sz.x / 2 - 60 - yesbtn.sz.x, 60));
+                    Button nobtn = new Button(70, "No") {
+                        @Override
+                        public void click() {
+                            parent.reqdestroy();
+                        }
+                    };
+                    confirmwnd.add(nobtn, new Coord(confirmwnd.sz.x / 2 + 20, 60));
+                    confirmwnd.pack();
+
+                    GameUI gui = gameui();
+                    gui.add(confirmwnd, new Coord(gui.sz.x / 2 - confirmwnd.sz.x / 2, gui.sz.y / 2 - 200));
+                    confirmwnd.show();
                 } else {
-                    if (ad.length > 0 && (ad[0].equals("craft") || ad[0].equals("bp"))) {
-                        lastCraft = r.pag;
-                        gameui().histbelt.push(r.pag);
-                    }
-                    if (Config.confirmmagic && r.res.name.startsWith("paginae/seid/") && !r.res.name.equals("paginae/seid/rawhide")) {
-                        Window confirmwnd = new Window(new Coord(225, 100), "Confirm") {
-                            @Override
-                            public void wdgmsg(Widget sender, String msg, Object... args) {
-                                if (sender == cbtn)
-                                    reqdestroy();
-                                else
-                                    super.wdgmsg(sender, msg, args);
-                            }
-
-                            @Override
-                            public boolean type(char key, KeyEvent ev) {
-                                if (key == 27) {
-                                    reqdestroy();
-                                    return true;
-                                }
-                                return super.type(key, ev);
-                            }
-                        };
-
-                        confirmwnd.add(new Label(Resource.getLocString(Resource.BUNDLE_LABEL, "Using magic costs experience points. Are you sure you want to proceed?")),
-                                new Coord(10, 20));
-                        confirmwnd.pack();
-
-                        MenuGrid mg = this;
-                        Button yesbtn = new Button(70, "Yes") {
-                            @Override
-                            public void click() {
-                                r.use();
-                                parent.reqdestroy();
-                            }
-                        };
-                        confirmwnd.add(yesbtn, new Coord(confirmwnd.sz.x / 2 - 60 - yesbtn.sz.x, 60));
-                        Button nobtn = new Button(70, "No") {
-                            @Override
-                            public void click() {
-                                parent.reqdestroy();
-                            }
-                        };
-                        confirmwnd.add(nobtn, new Coord(confirmwnd.sz.x / 2 + 20, 60));
-                        confirmwnd.pack();
-
-                        GameUI gui = gameui();
-                        gui.add(confirmwnd, new Coord(gui.sz.x / 2 - confirmwnd.sz.x / 2, gui.sz.y / 2 - 200));
-                        confirmwnd.show();
-                    } else {
-                        r.use();
+                    r.pag.newp = 0;
+                    r.use();
+                    if (reset) {
+                        this.cur = null;
+                        curoff = 0;
                     }
                 }
             }
-
-            if (reset)
-                this.cur = null;
         }
         updlayout();
     }
+
 
     public void senduse(String... ad) {
         wdgmsg("act", (Object[]) ad);
@@ -920,26 +1030,46 @@ public class MenuGrid extends Widget {
                     }
                 }
             }
+            if (DefSettings.SHOWPCLAIM.get())
+                ui.gui.map.enol(0, 1);
+            else
+                ui.gui.map.disol(0,1);
+
+            if (DefSettings.SHOWVCLAIM.get())
+                ui.gui.map.enol(2, 3);
+            else
+                ui.gui.map.disol(2,3);
+
+            if (DefSettings.SHOWKCLAIM.get())
+                ui.gui.map.enol(4, 5);
+            else
+                ui.gui.map.disol(4, 5);
             togglestuff = false;
         }
     }
 
     public boolean mouseup(Coord c, int button) {
         PagButton h = bhit(c);
-        if ((button == 1) && (grab != null)) {
-            if (dragging != null) {
-                ui.dropthing(ui.root, ui.mc, dragging.res());
+        if((button == 1) && (grab != null)) {
+            if(dragging != null) {
+                if(!(dragging instanceof SpecialPagina)) {
+                    ui.dropthing(ui.root, ui.mc, dragging.res());
+                } else {
+                    ui.dropthing(ui.root, ui.mc, dragging);
+                }
                 pressed = null;
                 dragging = null;
-            } else if (pressed != null) {
-                if (pressed == h)
+            } else if(pressed != null) {
+                if(pressed == h)
                     use(h, false);
                 pressed = null;
             }
             grab.remove();
             grab = null;
+            return(true);
+        } else {
+            return super.mouseup(c, button);
         }
-        return (true);
     }
 
     public void uimsg(String msg, Object... args) {
@@ -997,40 +1127,44 @@ public class MenuGrid extends Widget {
     public boolean globtype(char k, KeyEvent ev) {
         if(Config.disablemenugrid)
             return false;
-        else if (ev.isShiftDown() || ev.isAltDown()) {
+        if (ev.isShiftDown() || ev.isAltDown()) {
             return false;
-        } else if ((k == 27) && (this.cur != null)) {
+        }
+        else if((k == 27) && (this.cur != null)) {
             this.cur = null;
             curoff = 0;
             updlayout();
-            return (true);
-        } else if ((k == 8) && (this.cur != null)) {
+            return(true);
+        } else if((k == 8) && (this.cur != null)) {
             this.cur = paginafor(this.cur.act().parent);
             curoff = 0;
             updlayout();
-            return (true);
-        } else if ((k == 'N') && (layout[gsz.x - 2][gsz.y - 1] == next)) {
+            return(true);
+        } else if((k == 'N') && (layout[gsz.x - 2][gsz.y - 1] == next)) {
             use(next, false);
-            return (true);
+            return(true);
         }
         PagButton r = hotmap.get(Character.toUpperCase(k));
-        if (r != null) {
+        if(r != null) {
             use(r, true);
-            return (true);
+            return(true);
         }
-        return (false);
+        return(false);
     }
-   /* private void selectCraft(Pagina r) {
-        if(r == null){
-            return;
-        }
-        if(ui.gui.craftwnd != null){
-            ui.gui.craftwnd.select(r, true);
-        }
-    }*/
 
     public boolean isCrafting(Pagina p) {
         return (p != null) && (isCrafting(p.res()) || isCrafting(getParent(p)));
+    }
+
+    public Pagina getPagina(String ad){
+        for(Pagina p : paginae) {
+            if(p.act().ad.length > 1) {
+                if (p.act().ad[1].equals(ad)) {
+                    return p;
+                }
+            }
+        }
+        return null;
     }
 
     public boolean isCrafting(Resource res){

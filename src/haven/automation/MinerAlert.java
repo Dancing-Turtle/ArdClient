@@ -125,10 +125,7 @@ public class MinerAlert extends Window {
         mutebtn = new Button(100, "Mute") {
             @Override
             public void click() {
-                if(audiomute)
-                    audiomute = false;
-                else
-                    audiomute = true;
+                audiomute = !audiomute;
                 BotUtils.sysMsg("Mute status : "+audiomute,Color.white);
             }
         };
@@ -272,8 +269,10 @@ public class MinerAlert extends Window {
                         double now = Utils.rtime();
                         if (now - lasterror > 15) {
                             BotUtils.sysMsg("Silver visible on screen!!", Color.green);
-                            if (!audiomute)
+                            if (!audiomute) {
+                                System.out.println("playign silver effect mute status is : "+audiomute);
                                 Audio.play(silversfx);
+                            }
                             lasterror = now;
                         }
                     }

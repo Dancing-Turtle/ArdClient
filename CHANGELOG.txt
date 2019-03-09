@@ -1,3 +1,26 @@
+1.00.91
+Merged Ape Client's Themes functionality.
+Implemented numpad belt, uses numberpad keys to trigger. 
+Fixed feast all button eating food from study as well.
+Added toggle to display options to always display long tooltips.
+Added ability to lock inventory and equipped objects with ctrl right click. This will stop you from being able to accidentally left click them. Right clicks will still work.
+Fixed back button on menugrid taking you out an entire level, will now just go back one page unless on page one, and then it'll go back a full level.
+Merged some outdated wound stuff.
+Maybe fixed unbound keybinds triggering from anything. This could potentially have other implications I guess? Let me know if anything weird happens.
+Added debug crash write outs to the client folder to help with troubleshooting. They simply write the stacktrace in a text file that can be sent or copied to me whenever.
+Added display setting selectors for water and deep ocean colors.
+Added movement queing, alt click in the world, alt click on Ctrl+A map, and shift click on minimap. 
+Made the magic confirmation window popup for magic that is cast from a hotbar.
+Added animation disable toggles for visitor flags and the new flag pole.
+Added toggle in ui settings to disable the escape key closing UI windows, and ensured that escape will never close the chat window.
+Added another snake alarm.
+Reworked Coracle script, should have a 0% chance of crashing and will also work with coracles equipped now. Please test and let me know if you find a bug.
+Expanded study desk functionality to include adjustable colors for Low/Target/High timers and a variable slider for target study time.
+Made F1-F12 supersede all text entry boxes.
+Added ui settings toggle to disable calendar at the top of the screen. 
+Replaced "Search" window with Boshaw's, allows searching for scripts as well as things that previously weren't searchable before such as village and realm functions. 
+~
+
 1.00.90
 Fixed crash if you exit the options window from the login screen by clicking "x"
 Fixed shift left click crash.

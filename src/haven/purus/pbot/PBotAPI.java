@@ -7,21 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import haven.Coord;
-import haven.Coord2d;
-import haven.FlowerMenu;
-import haven.GItem;
-import haven.GameUI;
-import haven.Gob;
-import haven.Inventory;
-import haven.ItemInfo;
-import haven.Loading;
-import haven.MCache;
-import haven.Makewindow;
-import haven.ResDrawable;
-import haven.WItem;
-import haven.Widget;
-import haven.Window;
+import haven.*;
 import haven.purus.BotUtils;
 
 public class PBotAPI {
@@ -38,6 +24,11 @@ public class PBotAPI {
 	public static void sysMsg(String str, Color col) {
 		gui.msg(str, col);
 	}
+
+	public static int getState(Fightview fv, int relation){
+		return fv.lsrel.get(relation).give.state;
+	}
+
 	
 	/**
 	 * Send a system message to the user

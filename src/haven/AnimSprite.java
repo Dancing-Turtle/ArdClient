@@ -40,7 +40,6 @@ public class AnimSprite extends Sprite {
             CheckListboxItem itm = Config.disableanim.get(res.name);
             if (itm != null && itm.selected)
                 return null;
-
             return (new AnimSprite(owner, res, sdt));
         }
     };
@@ -81,6 +80,7 @@ public class AnimSprite extends Sprite {
     }
 
     public boolean tick(int idt) {
+
         boolean ret = false;
         float dt = idt / 1000.0f;
         for (MeshAnim.Anim anim : anims)

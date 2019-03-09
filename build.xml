@@ -2,7 +2,7 @@
 
 <project name="hafen" default="deftgt">
   <property name="name" value="ArdClient"/>
-  <property name="version" value="1.00.90"/>
+  <property name="version" value="1.00.91"/>
 
   <target name="build-env">
     <mkdir dir="build" />
@@ -32,9 +32,13 @@
 	<pathelement path="lib/jogl.jar" />
 	<pathelement path="lib/gluegen-rt.jar" />
 	<pathelement path="lib/jglob.jar" />
-        <pathelement path="lib/junit.jar" />
-     <pathelement path="lib/HavenDiscord.jar" />
-          <pathelement path="lib/rxjava-1.1.5.jar" />
+    <pathelement path="lib/junit.jar" />
+    <pathelement path="lib/HavenDiscord.jar" />
+    <pathelement path="lib/rxjava-1.1.5.jar" />
+    <pathelement path="lib/flogger-0.3.1.jar" />
+    <pathelement path="lib/flogger-system-backend-0.3.1.jar" />
+    <pathelement path="lib/sql-jdbc-3.26.0.jar" />
+
       </classpath>
       <compilerarg value="-Xlint:unchecked" />
       <compilerarg value="-Xlint:-options" />
@@ -65,7 +69,7 @@
         <fileset file="changelog.txt" />
       <manifest>
 	<attribute name="Main-Class" value="haven.MainFrame" />
-	<attribute name="Class-Path" value="jogl.jar gluegen-rt.jar amber-res.jar builtin-res.jar hafen-res.jar l10n.jar HavenDiscord.jar rxjava-1.1.5.jar rxjava-1.1.5-javadoc.jar" />
+	<attribute name="Class-Path" value="jogl.jar gluegen-rt.jar amber-res.jar builtin-res.jar hafen-res.jar l10n.jar HavenDiscord.jar rxjava-1.1.5.jar rxjava-1.1.5-javadoc.jar sqlite-jdbc-3.26.0.jar flogger-0.3.1.jar flogger-system-backend-0.3.1.jar" />
       </manifest>
     </jar>
     <chmod file="build/hafen.jar" perm="a+x" />
@@ -153,14 +157,32 @@
         <delete file="D:\GithubFolder\Ardenneslol.github.io\Hafen\rxjava-1.1.5.jar"/>
         <delete file="D:\GithubFolder\Ardenneslol.github.io\Hafen\rxjava-1.1.5-javadoc.jar"/>
         <delete file="D:\GithubFolder\Ardenneslol.github.io\Hafen\ArdClient.rar"/>
+        <delete file="D:\GithubFolder\Ardenneslol.github.io\Hafen\flogger-0.3.1.jar"/>
+        <delete file="D:\GithubFolder\Ardenneslol.github.io\Hafen\flogger-system-backend-0.3.1.jar"/>
+        <delete file="D:\GithubFolder\Ardenneslol.github.io\Hafen\sqlite-jdbc-3.26.0.jar"/>
         <copy todir="${basedir}">
             <fileset dir="build/classes" includes="changelog.txt" />
         </copy>
-        <zip destfile="D:\GithubFolder\Ardenneslol.github.io\Hafen\ArdClient.rar" update="false">
+        <zip destfile="D:\GithubFolder\Ardenneslol.github.io\Hafen\ArdClient.rar" update="true">
             <fileset dir="build" includes="*.jar,grid_ids.txt, *.bat, changelog.txt" excludes="chatlog.txt, *.log, *.dat"/>
         </zip>
         <copy todir="D:\GithubFolder\Ardenneslol.github.io\Hafen">
             <fileset dir="build" includes="amber-res.jar, hafen.jar, HavenDiscord.jar, rxjava-1.1.5.jar, rxjava-1.1.5-javadoc.jar, ArdClient.rar" />
+        </copy>
+    </target>
+
+    <target name="New Beta Distribute">
+        <delete file="D:\GithubFolder\Ardenneslol.github.io\Hafen-Beta\amber-res.jar"/>
+        <delete file="D:\GithubFolder\Ardenneslol.github.io\Hafen-Beta\hafen.jar"/>
+        <!--<delete file="D:\GithubFolder\Ardenneslol.github.io\Hafen-Beta\ArdClientBeta.rar"/>-->
+        <copy todir="${basedir}">
+            <fileset dir="build/classes" includes="changelog.txt" />
+        </copy>
+     <!--   <zip destfile="D:\GithubFolder\Ardenneslol.github.io\Hafen-Beta\ArdClientBeta.rar" update="true">
+            <fileset dir="build" includes="*.jar,grid_ids.txt, *.bat, changelog.txt" excludes="chatlog.txt, *.log, *.dat"/>
+        </zip>-->
+        <copy todir="D:\GithubFolder\Ardenneslol.github.io\Hafen-Beta">
+            <fileset dir="build" includes="amber-res.jar, hafen.jar, ArdClientBeta.rar" />
         </copy>
     </target>
 

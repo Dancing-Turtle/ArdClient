@@ -265,8 +265,8 @@ public class SteelRefueler extends Window implements GobSelectCallback {
                  //   System.out.println("Refueled with "+(curbranches - gui.maininv.getItemPartialCount("Branch")));
                  //   System.out.println("Branches in inv : "+gui.maininv.getItemPartialCount("Branch"));
                 }
-                Collections.sort(completepercent);
-                lowest = completepercent.get(0);
+
+
                 if(reportouttimer == 4)
                     reportouttimer = 1;
                 if(reportouttimer == 1) {
@@ -274,6 +274,9 @@ public class SteelRefueler extends Window implements GobSelectCallback {
                         for (Widget w = gui.chat.lchild; w != null; w = w.prev) {
                             if (w instanceof ChatUI.DiscordChannel) {
                                 if (((ChatUI.DiscordChannel) w).name().contains("steel")) {
+                                    Collections.sort(completepercent);
+                                    if(completepercent.size()>0)
+                                        lowest = completepercent.get(0);
                                     ((ChatUI.DiscordChannel) w).send("!check");
                                     ((ChatUI.DiscordChannel) w).send("Lowest Complete % was : " + round(lowest, 2));
                                 }

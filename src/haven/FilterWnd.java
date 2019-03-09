@@ -2,11 +2,10 @@ package haven;
 
 import java.awt.event.KeyEvent;
 
-public class FilterWnd extends GameUI.Hidewnd {
+public class FilterWnd extends Window {
     private final TextEntry input;
-    
-    FilterWnd() {
-	super(new Coord(120, 200), "Filter");
+    FilterWnd(String caption) {
+	super(Coord.z, caption, caption);
 	//cap = null;
 	
 	input = add(new TextEntry(200, "") {
@@ -22,9 +21,8 @@ public class FilterWnd extends GameUI.Hidewnd {
 		ItemFilter.showHelp(ui, ItemFilter.FILTER_HELP);
 	    }
 	}));
-	
+
 	pack();
-	hide();
     }
     
     @Override
@@ -69,6 +67,13 @@ public class FilterWnd extends GameUI.Hidewnd {
 	super.hide();
 	setFilter(null);
     }
+
+	@Override
+	protected void added() {
+		super.added();
+	}
+
+	public void close() { hide(); }
     
     @Override
     public void show() {
@@ -79,6 +84,6 @@ public class FilterWnd extends GameUI.Hidewnd {
     }
     
     public void toggle() {
-        show(!visible);
+    	show(!visible);
     }
 }

@@ -143,8 +143,7 @@ public class Composite extends Drawable {
                 np.set(ipollen);
                 tposes = null;
                 retainequ = true;
-            } catch (Loading e) {
-            }
+	    } catch(Loading e) {}
         } else if (!retainequ) {
             updequ();
         }

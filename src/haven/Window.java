@@ -26,123 +26,181 @@
 
 package haven;
 
+import static haven.DefSettings.CURIOHIGH;
+import static haven.DefSettings.CURIOLOW;
+import static haven.DefSettings.CURIOTARGET;
 import static haven.PUtils.blurmask2;
 import static haven.PUtils.rasterimg;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
+import static haven.Resource.cdec;
+
+import haven.MovableWidget;
+import haven.Theme;
+import haven.DefSettings;
+import haven.purus.BotUtils;
+import haven.purus.pbot.PBotAPI;
+import haven.resutil.Curiosity;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.*;
 import java.util.List;
-import java.util.Map.Entry;
-import java.awt.Color;
-import java.awt.Font;
+import java.util.stream.Collectors;
 
+public class Window extends MovableWidget implements DTarget {
+    @Resource.LayerName("windowconfig")
+    public static class WindowConfig extends Resource.Layer {
+	final Coord tlc;
+	final Coord brc;
+	final Coord capc;
+	final Coord btnc;
 
-import haven.glsl.Array;
-import haven.purus.BotUtils;
-import haven.purus.pbot.PBotAPI;
-import haven.purus.pbot.PBotUtils;
-import haven.resutil.Curiosity;
+	public WindowConfig(Resource res, Message buf) {
+	    res.super();
+	    tlc = cdec(buf);
+	    brc = cdec(buf);
+	    capc = cdec(buf);
+	    btnc = cdec(buf);
+	}
 
-public class Window extends Widget implements DTarget {
-    public static final Tex bg = Resource.loadtex("gfx/hud/wnd/lg/bg");
-    public static final Tex bgl = Resource.loadtex("gfx/hud/wnd/lg/bgl");
-    public static final Tex bgr = Resource.loadtex("gfx/hud/wnd/lg/bgr");
-    public static final Tex cl = Resource.loadtex("gfx/hud/wnd/lg/cl");
-    public static final TexI cm = new TexI(Resource.loadimg("gfx/hud/wnd/lg/cm"));
-    public static final Tex cr = Resource.loadtex("gfx/hud/wnd/lg/cr");
-    public static final Tex tm = Resource.loadtex("gfx/hud/wnd/lg/tm");
-    public static final Tex tr = Resource.loadtex("gfx/hud/wnd/lg/tr");
-    public static final Tex lm = Resource.loadtex("gfx/hud/wnd/lg/lm");
-    public static final Tex lb = Resource.loadtex("gfx/hud/wnd/lg/lb");
-    public static final Tex rm = Resource.loadtex("gfx/hud/wnd/lg/rm");
-    public static final Tex bl = Resource.loadtex("gfx/hud/wnd/lg/bl");
-    public static final Tex bm = Resource.loadtex("gfx/hud/wnd/lg/bm");
-    public static final Tex br = Resource.loadtex("gfx/hud/wnd/lg/br");
-    public static final Coord tlm = new Coord(18, 30), brm = new Coord(13, 22);
-    public static final Coord cpo = new Coord(36, 15);
-    public static final int capo = 7, capio = 2;
+	public void init() {}
+    }
+
+    // 0 = bg, 1 = bgl, 2 = bgr
+    // 3 = capl, 4 = capm, 5 = capr
+    // 6 = bl, 7 = br
+    // 8 = l, 9 = r, 10 = b
+    private static final Resource res = Theme.res("window");
+
+    //bg, left bg, right bg
+    public static final TexI bg = res.layer(Resource.imgc, 0).texi();
+    public static final TexI bgl = res.layer(Resource.imgc, 1).texi();
+    public static final TexI bgr = res.layer(Resource.imgc, 2).texi();
+    //caption left, mid, right
+    public static final TexI cl = res.layer(Resource.imgc, 3).texi();
+    public static final TexI cm = res.layer(Resource.imgc, 4).texi();
+    public static final TexI cr = res.layer(Resource.imgc, 5).texi();
+    // bottom left, right
+    public static final TexI bl = res.layer(Resource.imgc, 6).texi();
+    public static final TexI br = res.layer(Resource.imgc, 7).texi();
+    //left, right, bottom
+    public static final TexI lm = res.layer(Resource.imgc, 8).texi();
+    public static final TexI rm = res.layer(Resource.imgc, 9).texi();
+    public static final TexI bm = res.layer(Resource.imgc, 10).texi();
+
+    //top left corner, bottom right corner, caption position
+    public static final WindowConfig cfg = res.layer(WindowConfig.class);
     public static boolean CurioReport = false;
     Collection Curios = new ArrayList();
     public Button checkcurios;
+    public Label curiosliderlabel, studyhours;
+    private Widget curiotarget, curiohigh, curiolow;
+    public HSlider curioslider;
+    public int curiocount =0 ;
     public boolean justclose = false;
-    public static final Coord dlmrgn = new Coord(23, 14), dsmrgn = new Coord(9, 9);
+    //Large margin vs small margin
+    public static final Coord dlmrgn = new Coord(23, 14), dsmrgn = new Coord(3, 3);
+    //caption foundry
     public static final BufferedImage ctex = Resource.loadimg("gfx/hud/fonttex");
-    public static final Text.Furnace cf = new Text.Imager(new PUtils.TexFurn(new Text.Foundry(Text.serif.deriveFont(Font.BOLD, 16)).aa(true), ctex)) {
+    public static final Text.Furnace cf = new Text.Imager(new PUtils.TexFurn(new Text.Foundry(Text.sans, 15).aa(true), ctex)) {
         protected BufferedImage proc(Text text) {
             return(rasterimg(blurmask2(text.img.getRaster(), 1, 1, Color.BLACK)));
         }
     };
-    public static final IBox wbox = new IBox("gfx/hud/wnd", "tl", "tr", "bl", "br", "extvl", "extvr", "extht", "exthb") {
+    //Basic frame box
+    public static final IBox wbox = new IBox(Theme.fullres("frame")) {
         final Coord co = new Coord(3, 3), bo = new Coord(2, 2);
 
-        public Coord btloff() {
-            return (super.btloff().sub(bo));
-        }
+	    public Coord btloff() {return(super.btloff().sub(bo));}
+	    public Coord ctloff() {return(super.ctloff().sub(co));}
+	    public Coord bisz() {return(super.bisz().sub(bo.mul(2)));}
+	    public Coord cisz() {return(super.cisz().sub(co.mul(2)));}
+	};
 
-        public Coord ctloff() {
-            return (super.ctloff().sub(co));
-        }
+    //margin based off large or not
+    public final Coord mrgn;
+    //close button
+    public final IButton cbtn, lbtn;
+    private final BufferedImage on, off;
 
-        public Coord bisz() {
-            return (super.bisz().sub(bo.mul(2)));
-        }
-
-        public Coord cisz() {
-            return (super.cisz().sub(co.mul(2)));
-        }
-    };
-    private static final BufferedImage[] cbtni = new BufferedImage[]{
-            Resource.loadimg("gfx/hud/wnd/lg/cbtnu"),
-            Resource.loadimg("gfx/hud/wnd/lg/cbtnd"),
-            Resource.loadimg("gfx/hud/wnd/lg/cbtnh")};
-    public final Coord tlo, rbo, mrgn;
-    public final IButton cbtn;
     public boolean dt = false;
+    //Caption
     public Text cap;
-    public final String origcap;
-    public Coord wsz, ctl, csz, atl, asz, cptl, cpsz;
-    public int cmw;
-    private UI.Grab dm = null;
-    private Coord doff;
+    public String origcap;
+    //Window size, usable space top left, usable space size
+    public Coord wsz, atl, asz;
+    //close position, close size
+    public Coord ctl, csz;
     private final Collection<Widget> twdgs = new LinkedList<Widget>();
-
     @RName("wnd")
     public static class $_ implements Factory {
         public Widget create(UI ui, Object[] args) {
             Coord sz = (Coord) args[0];
             String cap = (args.length > 1) ? (String) args[1] : null;
-            boolean lg = (args.length > 2) ? ((Integer) args[2] != 0) : false;
-            return (new Window(sz, cap, lg, Coord.z, Coord.z));
+	        boolean lg = (args.length > 2) && ((Integer)args[2] != 0);
+            return (new Window(sz, cap, cap, lg, Coord.z, Coord.z));
         }
     }
 
    public Window(Coord sz, String cap, boolean lg, Coord tlo, Coord rbo) {
-        this.tlo = tlo;
-        this.rbo = rbo;
+	this.mrgn = lg?dlmrgn:dsmrgn;
+	cbtn = add(new IButton(Theme.fullres("buttons/close"), null, this::close));
+	lbtn = null;
+	on = off = null;
+	origcap = cap;
+	chcap(cap);
+	resize2(sz);
+	setfocustab(true);
+    }
+
+    public Window(Coord sz, String cap, final String moveKey, boolean lg, Coord tlo, Coord rbo) {
+        super(moveKey);
         this.mrgn = lg ? dlmrgn : dsmrgn;
-        origcap = cap;
-        cbtn = add(new IButton(cbtni[0], cbtni[1], cbtni[2]));
-        chcap(Resource.getLocString(Resource.BUNDLE_WINDOW, cap));
+	cbtn = add(new IButton(Theme.fullres("buttons/close"), null, this::close));
+	lbtn = add(new IButton(Theme.fullres("buttons/lock"), null, this::toggleLock));
+	on = lbtn.hover;
+	off = lbtn.up;
+	origcap = cap;
+	chcap(cap);
         resize2(sz);
         setfocustab(true);
     }
 
+    public Window(Coord sz, String cap, boolean lg) {
+	this(sz, cap, lg, Coord.z, Coord.z);
+    }
 
+    public Window(Coord sz, String cap, final String moveKey, boolean lg) {
+	this(sz, cap, moveKey, lg, Coord.z, Coord.z);
+    }
 
-    public Window(Coord sz, String cap, boolean lg) { this(sz, cap, lg, Coord.z, Coord.z); }
     public Window(Coord sz, String cap) {
         this(sz, cap, false);
+    }
 
+    public Window(final Coord sz, final String cap, final String moveKey) {
+	this(sz, cap, moveKey,false);
     }
 
     protected void added() {
-        if(this.origcap.equals("This is bait")) //stop the fishing window from grabbing focus from anything, because why should it?
-            return;
         parent.setfocus(this);
+	super.added();
+        if(lbtn != null && locked()) {
+            lbtn.up = on;
+            lbtn.hover = off;
+        }
+
+    }
+
+    @Override
+    public void toggleLock() {
+        if(locked()) {
+	    lbtn.up = off;
+	    lbtn.hover = on;
+	} else {
+	    lbtn.up = on;
+	    lbtn.hover = off;
+	}
+        super.toggleLock();
     }
 
     public void chcap(String cap) {
@@ -205,9 +263,31 @@ public class Window extends Widget implements DTarget {
 
     protected void drawframe(GOut g) {
         // Study Table total LP and durations of curiosities
-        Collection GetCurios = new ArrayList();
-        Collection FinalCurios = new ArrayList();
+        Collection GetCurios = new ArrayList(); //add curios from tables to this before parsing
+        Collection FinalCurios = new ArrayList(); //parsed out list for checking against the curios you should be studying from Config.curiolist
+        Collection CurioCounter = new ArrayList(); //used to see if the number of curios on the table changes to redraw the addons
 
+
+	g.chcolor(DefSettings.WNDCOL.get());
+
+
+        //corners
+        g.image(cl, Coord.z);
+        g.image(bl, new Coord(0, sz.y-bl.sz().y));
+        g.image(br, sz.sub(br.sz()));
+       	g.image(cr, new Coord(sz.x - cr.sz().x, 0));
+
+	//draw background
+	g.rimagev(bgl, ctl, csz.y);
+	g.rimagev(bgr, ctl.add(csz.x-bgr.sz().x, 0), csz.y);
+	g.rimage(bg, ctl.add(bgl.sz().x, 0), csz.sub(bgl.sz().x + bgr.sz().x, 0));
+
+       	//horizontal and vertical tiling of the long parts
+	g.rimagev(lm, new Coord(0, cl.sz().y), sz.y - bl.sz().y - cl.sz().y);
+	g.rimagev(rm, new Coord(sz.x - rm.sz().x, cr.sz().y), sz.y - br.sz().y - cr.sz().y);
+	g.rimageh(bm, new Coord(bl.sz().x, sz.y - bm.sz().y), sz.x - br.sz().x - bl.sz().x);
+	g.rimageh(cm, new Coord(cl.sz().x, 0), sz.x - cl.sz().x - cr.sz().x);
+	g.chcolor();
 
         try {
             if(BotUtils.istable(this)){
@@ -221,11 +301,14 @@ public class Window extends Widget implements DTarget {
                                 try {
                                     for (Widget q = gui.ui.root.lchild; q != null; q = q.rnext()) {
                                         if (q instanceof Inventory) {
-                                            List<WItem> foods = getfoods((Inventory) q);
-                                            for (WItem item : foods){
-                                                GItem food = item.item;
-                                                food.wdgmsg("iact",Coord.z,-1);
-                                            }
+                                            if(q.parent instanceof Window)
+                                                if(!((Window)q.parent).cap.text.equals("Study")) {
+                                                    List<WItem> foods = getfoods((Inventory) q);
+                                                    for (WItem item : foods) {
+                                                        GItem food = item.item;
+                                                        food.wdgmsg("iact", Coord.z, -1);
+                                                    }
+                                                }
                                         }
                                     }
 
@@ -233,7 +316,7 @@ public class Window extends Widget implements DTarget {
                                 }
                             }
                             BotUtils.sleep(1000);
-                        Map idk2 = getStats();
+                            Map idk2 = getStats();
                             idk2.forEach((k,v) ->{
                                 if((Integer)idk2.get(k) - (Integer)idk.get(k) > 0) {
                                     System.out.println("Bulk Stats gained : " + k + " value : " + ((Integer) idk2.get(k) - (Integer) idk.get(k)));
@@ -253,8 +336,6 @@ public class Window extends Widget implements DTarget {
             }
 
             if (cap.text.equals("Study Desk")) {
-                if (checkcurios != null)
-                    checkcurios.destroy();
                 int sizeY = 285;
                 int totalLP = 0;
                 HashMap<String, Double> studyTimes = new HashMap<String, Double>();
@@ -271,10 +352,11 @@ public class Window extends Widget implements DTarget {
                 }
                 g.image(Text.labelFnd.render("Total LP: " + String.format("%,d", totalLP)).tex(), new Coord(30, 306));
                 int y = 320;
-                for (Entry<String, Double> entry : studyTimes.entrySet()) {
-
-                    if (entry.getValue() > 4320) {
-                        g.image(Text.labelFnd.render(entry.getKey() + ": " + sensibleTimeFormat(entry.getValue()), Color.pink).tex(), new Coord(30, y));
+                List<Map.Entry<String, Double>> lst = studyTimes.entrySet().stream().sorted((e1, e2)-> e1.getValue().compareTo(e2.getValue())).collect(Collectors.toList());
+                for(Map.Entry<String, Double> entry : lst) {
+                CurioCounter.add(entry.getKey());
+                    if (entry.getValue() > Config.curiotimetarget * 3) {
+                        g.image(Text.labelFnd.render(entry.getKey() + ": " + sensibleTimeFormat(entry.getValue()), CURIOHIGH.get()).tex(), new Coord(30, y));
                         y += 15;
                         sizeY += 15;
                         for (int i = 0; i < Curios.size(); i++) {
@@ -284,10 +366,8 @@ public class Window extends Widget implements DTarget {
                         }
                         GetCurios.add(entry.getKey());
                     }
-                        else
-
-                    if (entry.getValue() < 1380) {
-                        g.image(Text.labelFnd.render(entry.getKey() + ": " + sensibleTimeFormat(entry.getValue()), Color.RED).tex(), new Coord(30, y));
+                    else if (entry.getValue() < Config.curiotimetarget) {
+                        g.image(Text.labelFnd.render(entry.getKey() + ": " + sensibleTimeFormat(entry.getValue()), CURIOLOW.get()).tex(), new Coord(30, y));
                         y += 15;
                         sizeY += 15;
                         for (int i = 0; i < Curios.size(); i++) {
@@ -298,7 +378,7 @@ public class Window extends Widget implements DTarget {
                         GetCurios.add(entry.getKey());
 
                     } else {
-                        g.image(Text.labelFnd.render(entry.getKey() + ": " + sensibleTimeFormat(entry.getValue()), Color.GREEN).tex(), new Coord(30, y));
+                        g.image(Text.labelFnd.render(entry.getKey() + ": " + sensibleTimeFormat(entry.getValue()), CURIOTARGET.get()).tex(), new Coord(30, y));
                         y += 15;
                         sizeY += 15;
                         for (int i = 0; i < Curios.size(); i++) {
@@ -310,13 +390,55 @@ public class Window extends Widget implements DTarget {
                     GetCurios.add(entry.getKey());
                 }
 
+                if(curiocount != CurioCounter.size()) {
+                    //messy as fuck, if curio number changes redraw everything so it's in the right place.
+                    if (checkcurios != null)
+                        checkcurios.destroy();
+                    if (curiotarget != null)
+                        curiotarget.destroy();
+                    if (curiohigh != null)
+                        curiohigh.destroy();
+                    if (curiolow != null)
+                        curiolow.destroy();
+                    if (studyhours != null)
+                        studyhours.destroy();
+                    if (curiosliderlabel != null)
+                        curiosliderlabel.destroy();
+                    if (curioslider != null)
+                        curioslider.destroy();
+                    curiotarget = add(ColorPreWithLabel("Target Color", CURIOTARGET), new Coord(0, y - 5));
+                    curiohigh = add(ColorPreWithLabel("High Color", CURIOHIGH), new Coord(0, y + 15));
+                    curiolow = add(ColorPreWithLabel("Low Color", CURIOLOW), new Coord(0, y + 35));
+                    studyhours = add(new Label(""), new Coord(140, y + 40));
+                    curiosliderlabel = add(new Label("Curio Time Target:"), new Coord(0, y + 50));
+                    System.out.println("adding new sliders and stuff");
+                    curioslider = add(new HSlider(130, 0, 10080, Config.curiotimetarget) {
+                        public void added() {
+                            updateLabel();
+                        }
 
-                checkcurios = add(new Button(100, "Check Curios") {
-                    public void click() {
-                        CurioReport = true;
-                    }
-                }, new Coord(80, y - 30));
-                sizeY += 50;
+                        protected void attach(UI ui) {
+                            super.attach(ui);
+                            val = (Config.curiotimetarget);
+                        }
+
+                        public void changed() {
+                            Utils.setprefi("curiotimetarget", val);
+                            Config.curiotimetarget = val;
+                            updateLabel();
+                        }
+
+                        private void updateLabel() {
+                            studyhours.settext(String.format("%d Hours", val / 60));
+                        }
+                    }, new Coord(105, y + 55));
+                    checkcurios = add(new Button(110, "Check Curios") {
+                        public void click() {
+                            CurioReport = true;
+                        }
+                    }, new Coord(90, y - 5));
+                }
+                sizeY += 120;
                 resize(265,sizeY);
                 if (CurioReport) {
                     CurioReport = false;
@@ -331,78 +453,35 @@ public class Window extends Widget implements DTarget {
                         BotUtils.sysMsg("No Curios missing! GJ bro", Color.WHITE);
                 }
             }
-
-    	} catch(Loading l) {
-    		
+        } catch(Loading l) {}
+     curiocount = CurioCounter.size(); //set this so we can only trigger the button/label redraw when the value changes.
+	//caption if applies
+	if(cap != null) {
+	    g.image(cap.tex(), cfg.capc);
     	}
-        Coord mdo, cbr;
-        g.image(cl, tlo);
-        mdo = tlo.add(cl.sz().x, 0);
-        cbr = mdo.add(cmw, cm.sz().y);
-        for (int x = 0; x < cmw; x += cm.sz().x)
-            g.image(cm, mdo.add(x, 0), Coord.z, cbr);
-        g.image(cr, tlo.add(cl.sz().x + cmw, 0));
-        g.image(cap.tex(), tlo.add(cpo));
-        mdo = tlo.add(cl.sz().x + cmw + cr.sz().x, 0);
-        cbr = tlo.add(wsz.add(-tr.sz().x, tm.sz().y));
-        for (; mdo.x < cbr.x; mdo.x += tm.sz().x)
-            g.image(tm, mdo, Coord.z, cbr);
-        g.image(tr, tlo.add(wsz.x - tr.sz().x, 0));
-
-        mdo = tlo.add(0, cl.sz().y);
-        cbr = tlo.add(lm.sz().x, wsz.y - bl.sz().y);
-        if (cbr.y - mdo.y >= lb.sz().y) {
-            cbr.y -= lb.sz().y;
-            g.image(lb, new Coord(tlo.x, cbr.y));
-        }
-        for (; mdo.y < cbr.y; mdo.y += lm.sz().y)
-            g.image(lm, mdo, Coord.z, cbr);
-
-        mdo = tlo.add(wsz.x - rm.sz().x, tr.sz().y);
-        cbr = tlo.add(wsz.x, wsz.y - br.sz().y);
-        for (; mdo.y < cbr.y; mdo.y += rm.sz().y)
-            g.image(rm, mdo, Coord.z, cbr);
-
-        g.image(bl, tlo.add(0, wsz.y - bl.sz().y));
-        mdo = tlo.add(bl.sz().x, wsz.y - bm.sz().y);
-        cbr = tlo.add(wsz.x - br.sz().x, wsz.y);
-        for (; mdo.x < cbr.x; mdo.x += bm.sz().x)
-            g.image(bm, mdo, Coord.z, cbr);
-        g.image(br, tlo.add(wsz.sub(br.sz())));
     }
 
     public void draw(GOut g) {
-        Coord bgc = new Coord();
-        for (bgc.y = ctl.y; bgc.y < ctl.y + csz.y; bgc.y += bg.sz().y) {
-            for (bgc.x = ctl.x; bgc.x < ctl.x + csz.x; bgc.x += bg.sz().x)
-                g.image(bg, bgc, ctl, csz);
-        }
-        bgc.x = ctl.x;
-        for (bgc.y = ctl.y; bgc.y < ctl.y + csz.y; bgc.y += bgl.sz().y)
-            g.image(bgl, bgc, ctl, csz);
-        bgc.x = ctl.x + csz.x - bgr.sz().x;
-        for (bgc.y = ctl.y; bgc.y < ctl.y + csz.y; bgc.y += bgr.sz().y)
-            g.image(bgr, bgc, ctl, csz);
-        cdraw(g.reclip(atl, asz));
         drawframe(g);
-    /*
-    wbox.draw(g, wtl, wsz);
-	if(cap != null) {
-	    int w = cap.sz().x;
-	    int y = wtl.y - capo;
-	    g.image(cl, new Coord(wtl.x + (wsz.x / 2) - (w / 2) - cl.sz().x, y));
-	    g.image(cm, new Coord(wtl.x + (wsz.x / 2) - (w / 2), y), new Coord(w, cm.sz().y));
-	    g.image(cr, new Coord(wtl.x + (wsz.x / 2) + (w / 2), y));
-	    g.image(cap.tex(), new Coord(wtl.x + (wsz.x / 2) - (w / 2), y + capio));
-	}
-	*/
+	cdraw(g.reclip(atl, asz));
         super.draw(g);
+    }
+
+    private Widget ColorPreWithLabel(final String text, final IndirSetting<Color> cl) {
+        final Widget container = new Widget();
+        final Label lbl = new Label(text);
+        final IndirColorPreview pre = new IndirColorPreview(new Coord(16, 16), cl);
+        final int height = Math.max(lbl.sz.y, pre.sz.y) / 2;
+        container.add(lbl, new Coord(0, height - lbl.sz.y/2));
+        container.add(pre, new Coord(lbl.sz.x, height - pre.sz.y/2));
+        container.pack();
+        return container;
     }
 
     public Coord contentsz() {
         Coord max = new Coord(0, 0);
         for(Widget wdg = child; wdg != null; wdg = wdg.next) {
-            if(wdg == cbtn || twdgs.contains(wdg))
+	   if(wdg == cbtn || twdgs.contains(wdg))
                 continue;
             if(!wdg.visible)
                 continue;
@@ -428,26 +507,29 @@ public class Window extends Widget implements DTarget {
             }
         }
     }
-
     private void placecbtn() {
-        cbtn.c = xlate(new Coord(ctl.x + csz.x - cbtn.sz.x, ctl.y).add(2, -2), false);
+	cbtn.c = new Coord(sz.x - cbtn.sz.x - atl.x - cfg.btnc.x,-atl.y + cfg.btnc.y);
+	if(lbtn != null) {
+	    lbtn.c = cbtn.c.sub(lbtn.sz.x + 5, 0);
+	}
     }
 
     private void resize2(Coord sz) {
-        asz = sz;
-        csz = asz.add(mrgn.mul(2));
-        wsz = csz.add(tlm).add(brm);
-        this.sz = wsz.add(tlo).add(rbo);
-        ctl = tlo.add(tlm);
+	asz = sz; //usable size for content
+	csz = asz.add(mrgn.mul(2)); //add margin around usable size
+	wsz = csz.add(cfg.tlc).add(cfg.brc); //usable size + margin + frame size
+	//tlo, rbo = top left offset, bottom right offset usually 0 always...
+	//Basically same job as tlc, brc
+	this.sz = wsz;
+	//top left coordinate of inner content area
+	ctl = cfg.tlc;
+	//Top left coordinate of where usable space starts after accounting for margin
         atl = ctl.add(mrgn);
-        cmw = (cap == null) ? 0 : (cap.sz().x);
-        cmw = Math.max(cmw, wsz.x / 4);
-        cptl = new Coord(ctl.x, tlo.y);
-        cpsz = tlo.add(cpo.x + cmw, cm.sz().y).sub(cptl);
-        cmw = cmw - (cl.sz().x - cpo.x) - 5;
-        cbtn.c = xlate(tlo.add(wsz.x - cbtn.sz.x, 0), false);
+	//Where the close button goes
+	cbtn.c = new Coord(sz.x - cfg.btnc.x - cbtn.sz.x, cfg.btnc.y);
         for (Widget ch = child; ch != null; ch = ch.next)
             ch.presize();
+	placecbtn();
     }
 
     public void resize(Coord sz) {
@@ -455,15 +537,20 @@ public class Window extends Widget implements DTarget {
     }
 
     public void uimsg(String msg, Object... args) {
-        if (msg == "pack") {
+        switch (msg) {
+	    case "pack":
             pack();
-        } else if (msg == "dt") {
+		break;
+	    case "dt":
             dt = (Integer) args[0] != 0;
-        } else if (msg == "cap") {
+		break;
+	    case "cap":
             String cap = (String) args[0];
             chcap(cap.equals("") ? null : cap);
-        } else {
+		break;
+	    default:
             super.uimsg(msg, args);
+	        break;
         }
     }
 
@@ -474,18 +561,23 @@ public class Window extends Widget implements DTarget {
             return (c.sub(atl));
     }
 
+    @Override
+    protected boolean moveHit(Coord c, int btn) {
+	Coord cpc = c.sub(cl.sz().x, 0);
+	Coord cprc = c.sub(sz.x - cr.sz().x, 0);
+	//content size
+	return c.isect(ctl, csz) ||
+		//or left caption
+		(c.isect(Coord.z, cl.sz()) && cl.back.getRaster().getSample(c.x, c.y, 3) >= 128) ||
+		//or right caption
+		(c.isect(new Coord(sz.x - cr.sz().x, 0), cr.sz()) &&
+			cr.back.getRaster().getSample(cprc.x % cr.back.getWidth(), cprc.y, 3) >= 128) ||
+		//or mid caption
+		(c.isect(new Coord(cl.sz().x, 0), new Coord(sz.x - cr.sz().x - cl.sz().x, cm.sz().y)) &&
+			(cm.back.getRaster().getSample(cpc.x % cm.back.getWidth(), cpc.y, 3) >= 128));
+    }
     public boolean mousedown(Coord c, int button) {
         if (super.mousedown(c, button)) {
-            parent.setfocus(this);
-            raise();
-            return (true);
-        }
-        Coord cpc = c.sub(cptl);
-        if (c.isect(ctl, csz) || (c.isect(cptl, cpsz) && (cm.back.getRaster().getSample(cpc.x % cm.back.getWidth(), cpc.y, 3) >= 128))) {
-            if (button == 1) {
-                dm = ui.grabmouse(this);
-                doff = c;
-            }
             parent.setfocus(this);
             raise();
             return (true);
@@ -494,46 +586,34 @@ public class Window extends Widget implements DTarget {
     }
 
     public boolean mouseup(Coord c, int button) {
-        if (dm != null) {
-            dm.remove();
-            dm = null;
-            if (!origcap.equals("Options"))
-                Utils.setprefc(origcap + "_c", this.c);
-        } else {
-            super.mouseup(c, button);
-        }
+        super.mouseup(c, button);
         return (true);
     }
 
     public void mousemove(Coord c) {
-        if (dm != null) {
-            this.c = this.c.add(c.add(doff.inv()));
-        } else {
             super.mousemove(c);
         }
+    public void close() {
+        wdgmsg("close");
     }
 
     public void wdgmsg(Widget sender, String msg, Object... args) {
         if (sender == cbtn) {
-            if(justclose)
                 close();
-            else
-            wdgmsg("close");
         } else {
             super.wdgmsg(sender, msg, args);
         }
     }
 
-    public void close() {
-        ui.destroy(this);
-    }
 
     public boolean type(char key, java.awt.event.KeyEvent ev) {
         if (super.type(key, ev))
             return (true);
-        if (key == 27) {
-            wdgmsg("close");
-            return (true);
+        if (key == 27 && Config.escclosewindows) {
+            if(!this.origcap.equals("Chat")) {
+                wdgmsg("close");
+                return (true);
+            }
         }
         return (false);
     }
@@ -600,9 +680,5 @@ public class Window extends Widget implements DTarget {
 
         statmap.forEach((k, v) -> System.out.println("Key : "+k+" value : "+v));
         return statmap;
-    }
-
-    public boolean ismousegrab() {
-        return dm != null;
     }
 }

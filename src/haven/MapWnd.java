@@ -192,17 +192,58 @@ public class MapWnd extends Window {
             return (super.mousedown(c, button));
         }
 
+
+
+
+        /**
+         * Ideally this will be a line -> X -> line -> X
+         * Where X is some icon for destinations
+         * Start at map.moveto
+         * Then follow map.movequeue
+         * XXX: does it need an icon?
+         */
+        private void drawmovement(GOut g, final Location ploc) {
+            final Coord pc = new Coord2d(mv.getcc()).floor(tilesz);
+            final Coord2d movingto = mv.movingto();
+            final Iterator<Coord2d> queue = mv.movequeue();
+            Coord last;
+            if (movingto != null) {
+                //Make the line first
+                g.chcolor(Color.MAGENTA);
+                final Coord cloc = xlate(ploc);
+                last = xlate(new Location(ploc.seg, ploc.tc.add(movingto.floor(tilesz).sub(pc))));
+                if(last != null && cloc != null) {
+                    g.dottedline(cloc, last, 2);
+                    if (queue.hasNext()) {
+                        while (queue.hasNext()) {
+                            final Coord next = xlate(new Location(ploc.seg, ploc.tc.add(queue.next().floor(tilesz).sub(pc))));
+                            if(next != null) {
+                                g.dottedline(last, next, 2);
+                                last = next;
+                            } else {
+                                break;
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+
+
         public void draw(GOut g) {
             g.chcolor(0, 0, 0, 128);
             g.frect(Coord.z, sz);
             g.chcolor();
             super.draw(g);
             try {
+                final Location loc = resolve(player);
                 Coord ploc = xlate(resolve(player));
                 if (ploc != null) {
                     g.chcolor(255, 0, 0, 255);
                     g.image(plx, ploc.sub(plx.sz().div(2)));
                     g.chcolor();
+                    drawmovement(g.reclip(view.c, view.sz), loc);
                 }
             } catch (Loading l) {
             }
@@ -267,7 +308,7 @@ public class MapWnd extends Window {
 
     @SuppressWarnings("unchecked")
     private Dropbox<Pair<String, String>> markersFilter() {
-        Dropbox<Pair<String, String>> modes = new Dropbox<Pair<String, String>>(200 - 10, filters.length, Math.max(Text.render(filters[0].a.toString()).sz().y, 16)) {
+        Dropbox<Pair<String, String>> modes = new Dropbox<Pair<String, String>>(195, filters.length, Math.max(Text.render(filters[0].a.toString()).sz().y, 20)) {
             @Override
             protected Pair<String, String> listitem(int i) {
                 return filters[i];

@@ -204,28 +204,30 @@ public class Pointer extends Widget {
     private Text.Line tt = null;
     private int dist;
     public Object tooltip(Coord c, Widget wdg) {
-	if ((this.lc != null) && (this.lc.dist(c) < 20.0D)) {
-	    if(tooltip instanceof Text.Line) {
-	        final Gob me = ui.sess.glob.oc.getgob(ui.gui.map.plgob);
-	        final int cdist = (int)(Math.ceil(me.rc.dist(tc)/11.0));
-	        if(cdist != dist) {
-	            dist = cdist;
-	            final String extra;
-	            if(dist >= 1000) {
-	                extra = " - May be further than the client can see";
-		    } else {
-	                extra = "";
-		    }
-	            if(tt != null && tt.tex() != null)
-	                tt.tex().dispose();
-		    return tt = Text.render(((Text.Line) this.tooltip).text + " - Distance: " + dist + extra);
-		} else {
-		    return tt;
+		if ((this.lc != null) && (this.lc.dist(c) < 20.0D) && tc != null) {
+			if(tooltip instanceof Text.Line) {
+				final Gob me = ui.sess.glob.oc.getgob(ui.gui.map.plgob);
+				if(me != null) {
+					final int cdist = (int) (Math.ceil(me.rc.dist(tc) / 11.0));
+					if (cdist != dist) {
+						dist = cdist;
+						final String extra;
+						if (dist >= 1000) {
+							extra = " - May be further than the client can see";
+						} else {
+							extra = "";
+						}
+						if (tt != null && tt.tex() != null)
+							tt.tex().dispose();
+						return tt = Text.render(((Text.Line) this.tooltip).text + " - Distance: " + dist + extra);
+					} else {
+						return tt;
+					}
+				}
+			} else {
+				return this.tooltip;
+			}
 		}
-	    } else {
-		return this.tooltip;
-	    }
+		return null;
 	}
-	return null;
-    }
 }

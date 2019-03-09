@@ -718,7 +718,6 @@ if(delta.intValue() > 10000)
         int fn = n;
         if ((n >= 0) && (n < actions.length) && (last_button != fn || (System.currentTimeMillis() - last_sent) >= 150)) {
             wdgmsg("use", fn, 1, ui.modflags());
-            System.out.println("Use: " + fn);
             last_button = fn;
             last_sent = System.currentTimeMillis();
             return (true);

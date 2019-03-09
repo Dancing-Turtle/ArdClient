@@ -34,7 +34,8 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
+public class
+Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
     public Coord2d rc;
     public Coord sc;
     public Coord3f sczu;
@@ -44,6 +45,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
     public long id;
     public int frame;
     public final Glob glob;
+
     Map<Class<? extends GAttrib>, GAttrib> attr = new HashMap<Class<? extends GAttrib>, GAttrib>();
     public Collection<Overlay> ols = new LinkedList<Overlay>() {
         public boolean add(Overlay item) {
@@ -460,6 +462,8 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             type = Type.TREE;
         else if (name.endsWith("oldtrunk"))
             type = Type.OLDTRUNK;
+        else if(name.contains("pig") || name.contains("sheep") || name.contains("cattle") || (name.contains("goat") && !name.contains("wild")) || name.contains("horse"))
+            type = Type.LIVESTOCK;
         else if (name.startsWith("gfx/terobjs/ttub"))
             type = Type.TANTUB;
         else if(name.startsWith("gfx/kritter/nidbane/nidbane"))
@@ -530,8 +534,6 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             type = Type.DFRAME;
         else if (name.endsWith("/gardenpot"))
             type = Type.GARDENPOT;
-     //   else if (name.endsWith("/mussels") || name.endsWith("/oyster"))
-        //    type = Type.MUSSEL;
         else if(name.endsWith("/clay-gray"))
             type = Type.CLAY;
         else if(name.endsWith("/cupboard"))
@@ -735,7 +737,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
                             rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, true)), null);
                         }
                     }
-                    else if (Config.hideanimals && type != null && this.getres().name.contains("kritter")) {
+                    else if (Config.hideanimals && type != null && type == Type.LIVESTOCK) {
                         GobHitbox.BBox bbox = GobHitbox.getBBox(this);
                         if (bbox != null && Config.showoverlay) {
                             rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, true)), null);
@@ -774,15 +776,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
                         d.setup(rl);
                 } else
                     d.setup(rl);
-            }catch(NullPointerException q){}
-          /*if (Config.hidegobs && (type == Type.TREE || type == Type.BUSH)) {
-                GobHitbox.BBox bbox = GobHitbox.getBBox(this, true);
-                if (bbox != null) {
-                    rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, true)), null);
-                }
-            } else {
-                d.setup(rl);
-            }*/
+            }catch(Exception q){}
 
             if (Config.showboundingboxes) {
                 GobHitbox.BBox bbox = GobHitbox.getBBox(this);
@@ -866,8 +860,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
                             }
                             break;
                         }
-                    } catch (Loading l) {
-                    }
+                    } catch (Loading l) { }
                 }
 
                 if (!targetting && bowvector != null) {

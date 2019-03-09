@@ -1,17 +1,7 @@
 package haven.automation;
 
 
-import haven.BeltWnd;
-import haven.Config;
-import haven.Coord;
-import haven.Equipory;
-import haven.GItem;
-import haven.GameUI;
-import haven.Inventory;
-import haven.InventoryBelt;
-import haven.WItem;
-import haven.Widget;
-import haven.Window;
+import haven.*;
 
 public class EquipWeapon implements Runnable {
     private GameUI gui;
@@ -32,7 +22,7 @@ public class EquipWeapon implements Runnable {
             if (Config.quickbelt) {
                 Widget belt = null;
                 for (Widget w = gui.lchild; w != null; w = w.prev) {
-                    if (w instanceof BeltWnd) {
+                    if (w instanceof AltBeltWnd) {
                         belt = w;
                         break;
                     }

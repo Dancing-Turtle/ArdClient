@@ -36,8 +36,10 @@ public class Buff extends Widget implements ItemInfo.ResOwner {
     public static final Text.Foundry nfnd = new Text.Foundry(Text.dfont, 10);
     public static final Tex frame = Resource.loadtex("gfx/hud/buffs/frame");
     public static final Tex cframe = Resource.loadtex("gfx/hud/buffs/cframe");
+    public static final Tex scframe = Theme.tex("scframe");
     public static final Coord imgoff = new Coord(3, 3);
     public static final Coord ameteroff = new Coord(3, 37), ametersz = new Coord(32, 3);
+    public static final Coord sameteroff = new Coord(3, 27), sametersz = new Coord(22, 2);
     public Indir<Resource> res;
     public double cmeter = -1;
     public double cmrem = -1;
@@ -52,7 +54,6 @@ public class Buff extends Widget implements ItemInfo.ResOwner {
     int nmeter = -1;
     Tex ntext = null;
     public Tex atex;
-
     @RName("buff")
     public static class $_ implements Factory {
         public Widget create(UI ui, Object[] args) {
@@ -74,9 +75,7 @@ public class Buff extends Widget implements ItemInfo.ResOwner {
             .add(Glob.class, wdg -> wdg.ui.sess.glob)
             .add(Session.class, wdg -> wdg.ui.sess);
 
-    public <T> T context(Class<T> cl) {
-        return (ctxr.context(cl, this));
-    }
+    public <T> T context(Class<T> cl) {return(ctxr.context(cl, this));}
 
     public List<ItemInfo> info() {
         if (info == null)
@@ -104,13 +103,8 @@ public class Buff extends Widget implements ItemInfo.ResOwner {
             l.cmp.add(Text.render(" (" + n + "%)").img, new Coord(l.cmp.sz.x, 0));
         }
 
-        public int order() {
-            return (10);
-        }
-
-        public Tip shortvar() {
-            return (this);
-        }
+	public int order() {return(10);}
+	public Tip shortvar() {return(this);}
     }
 
     private final AttrCache<Double> ameteri = new AttrCache<>(this::info, AttrCache.map1(AMeterInfo.class, minf -> minf::ameter));
@@ -118,6 +112,8 @@ public class Buff extends Widget implements ItemInfo.ResOwner {
     private final AttrCache<Double> cmeteri = new AttrCache<>(this::info, AttrCache.map1(GItem.MeterInfo.class, minf -> minf::meter));
 
     public void draw(GOut g) {
+        if(TexGL.disableall)
+            return;
         g.chcolor(255, 255, 255, a);
         Double ameter = (this.ameter >= 0) ? (this.ameter / 100.0) : ameteri.get();
         if (ameter != null) {
@@ -154,8 +150,7 @@ public class Buff extends Widget implements ItemInfo.ResOwner {
                 g.prect(imgoff.add(ccc), ccc.inv(), img.sz().sub(ccc), Math.PI * 2 * m);
                 g.chcolor(255, 255, 255, a);
             }
-        } catch (Loading e) {
-        }
+	} catch(Loading e) {}
         if (this.ameter >= 0) {
             final int width = FastText.textw(this.ameter + "");
             final Coord c = new Coord(sz.x / 2 - width / 2, sz.y / 2 - 5);
@@ -274,6 +269,8 @@ public class Buff extends Widget implements ItemInfo.ResOwner {
             super.uimsg(msg, args);
         }
     }
+
+
 
     public boolean mousedown(Coord c, int btn) {
         wdgmsg("cl", c.sub(imgoff), btn, ui.modflags());

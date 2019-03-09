@@ -43,6 +43,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
+import static haven.DefSettings.DARKMODE;
+import static haven.DefSettings.NIGHTVISION;
 import static haven.MCache.tilesz;
 import static haven.OCache.posres;
 
@@ -65,9 +67,9 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     private MCache.Overlay miningOverlay;
     private Coord3f camoff = new Coord3f(Coord3f.o);
     public double shake = 0.0;
-    public static int plobgran = 8;
+    public static int plobgran = Utils.getprefi("placegridval", 8);
     private static final Map<String, Class<? extends Camera>> camtypes = new HashMap<String, Class<? extends Camera>>();
-    private String tooltip;
+    public String tooltip;
     private boolean showgrid;
     private TileOutline gridol;
     private Coord lasttc = Coord.z;
@@ -102,6 +104,11 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     private static TexCube sky = new TexCube(Resource.loadimg("skycube"));
     public boolean farmSelect = false;
     public boolean PBotAPISelect = false;
+    private Coord2d movingto;
+    private Coord2d lastrc;
+    private double mspeed;
+    private long lastMove = System.currentTimeMillis();
+    private Queue<Coord2d> movequeue = new ArrayDeque<>();
 
     public interface Delayed {
         public void run(GOut g);
@@ -1033,18 +1040,13 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         synchronized (glob) {
             if (glob.lightamb != null) {
                 Color lightamb, lightdif, lightspc;
-                if (Config.daylight) {
-                   // lightamb = glob.dlightamb;
-                   // lightdif = glob.dlightdif;
-                   // lightspc = glob.dlightspc;
-                    lightamb = new Color(Config.AmbientRed,Config.AmbientGreen,Config.AmbientBlue);
-                    lightdif = new Color(Config.DiffuseRed,Config.DiffuseGreen,Config.DiffuseBlue);
-                    lightspc = new Color(Config.SpecRed,Config.SpecGreen,Config.SpecBlue);
-                } else {
-                    lightamb = glob.lightamb;
-                    lightdif = glob.lightdif;
-                    lightspc = glob.lightspc;
-                }
+                    final boolean darkmode = DARKMODE.get();
+                    lightamb = darkmode ? Color.BLACK : Config.daylight ? new Color(Config.AmbientRed,Config.AmbientGreen,Config.AmbientBlue) : glob.lightamb;
+                    lightdif = darkmode ? Color.BLACK : Config.daylight ? new Color(Config.DiffuseRed,Config.DiffuseGreen,Config.DiffuseBlue) : glob.lightdif;
+                    lightspc = darkmode ? Color.BLACK : Config.daylight ? new Color(Config.SpecRed,Config.SpecGreen,Config.SpecBlue) : glob.lightspc;
+                  //  lightamb = new Color(Config.AmbientRed,Config.AmbientGreen,Config.AmbientBlue);
+                   // lightdif = new Color(Config.DiffuseRed,Config.DiffuseGreen,Config.DiffuseBlue);
+                   // lightspc = new Color(Config.SpecRed,Config.SpecGreen,Config.SpecBlue);
                 DirLight light = new DirLight(lightamb, lightdif, lightspc, Coord3f.o.sadd((float) glob.lightelev, (float) glob.lightang, 1f));
                 rl.add(light, null);
                 updsmap(rl, light);
@@ -1564,6 +1566,58 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
             }
         }
 
+    /**
+     * 1) If you made it to your destination within a reasonable limit
+     * a) Exactly on target destination
+     * b) Not moving anymore and within 5 units of it
+     * c) Predictive model said it was okay
+     */
+    private boolean triggermove(final double dt) {
+        final Gob pl = ui.sess.glob.oc.getgob(plgob);
+        if(pl != null) {
+            if(movingto != null && pl.getattr(Moving.class) != null) {
+                final Coord2d plc = new Coord2d(pl.getc());
+                if(lastrc != null) {
+                    mspeed = plc.dist(lastrc) / dt;
+                } else {
+                    mspeed = 0;
+                }
+                final double left = plc.dist(movingto) / mspeed;
+                //Only predictive models can trigger here
+                lastrc = plc;
+                return movingto.dist(pl.rc) <= 5 || left == 0;
+            } else if(movingto == null || movingto.dist(pl.rc) <= 5) {
+                return true;
+            } else {
+                //Way off target and not moving, cancel
+                clearmovequeue();
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    private void clearmovequeue() {
+        movequeue.clear();
+        movingto = null;
+        ui.gui.pointer.update(null);
+    }
+
+    public void queuemove(final Coord2d c) {
+        movequeue.add(c);
+    }
+
+    public void moveto(final Coord2d c) {
+        clearmovequeue();
+        wdgmsg("click", new Coord(1,1), c.floor(posres), 1, 0);
+    }
+
+    public Coord2d movingto() { return movingto; }
+    public Iterator<Coord2d> movequeue() {
+        return movequeue.iterator();
+    }
+
     public void tick(double dt) {
         camload = null;
         try {
@@ -1578,7 +1632,12 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         }
         if (placing != null)
             placing.ctick((int) (dt * 1000));
-
+        if (movequeue.size() > 0 && (System.currentTimeMillis() - lastMove > 500) && triggermove(dt)) {
+            movingto = movequeue.poll();
+            ui.gui.pointer.update(movingto);
+            wdgmsg("click", new Coord(1, 1), movingto.floor(posres), 1, 0);
+            lastMove = System.currentTimeMillis();
+        }
         partyHighlight.update();
     }
 
@@ -1925,22 +1984,20 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                     }
                 }
             }
-
-
-
-
-
-
-
-
+            final Object[] gobargs = gobclickargs(inf);
             Object[] args = {pc, mc.floor(posres), clickb, modflags};
             args = Utils.extend(args, gobclickargs(inf));
 
             if (inf == null) {
                 if (Config.pf && clickb == 1 && curs != null && !curs.name.equals("gfx/hud/curs/study")) {
                     pfLeftClick(mc.floor(), null);
+                } else if (clickb == 1 && ui.modmeta && gameui().vhand == null) {
+                    //Queued movement
+                    movequeue.add(mc);
                 } else {
-                  // System.out.println("sending click with else arguments");
+                    args = Utils.extend(args, gobargs);
+                    if(clickb == 1 || gobargs.length > 0)
+                        clearmovequeue();
                     wdgmsg("click", args);
                 }
             } else {
@@ -1953,8 +2010,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                     glob.oc.changed(gob);
 
                 }
-                else
-                if(ui.modctrl && clickb == 1 && gob != null && Config.shooanimals){
+                else if(ui.modctrl && clickb == 1 && gob != null && Config.shooanimals){
                     Resource res = gob.getres();
                     if (res != null && (res.name.startsWith("gfx/kritter/horse") ||
                             res.name.startsWith("gfx/kritter/sheep") ||
@@ -1965,9 +2021,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                         GameUI gui = gameui();
                         new Thread(new ShooTargeted(gui), "ShooTargeted").start();
                     }
-                }
-                else
-                if (ui.modmeta && ui.modctrl && clickb == 1 && gob != null) {
+                } else if (ui.modmeta && ui.modctrl && clickb == 1 && gob != null) {
                     if (markedGobs.contains(gob.id))
                         markedGobs.remove(gob.id);
                     else
@@ -1977,6 +2031,12 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                 } else if (ui.modmeta && clickb == 1) {
                     if (gobselcb != null)
                         gobselcb.gobselect(gob);
+
+                    if(gob == null && gameui().vhand == null) {
+                        System.out.println("adding to move que");
+                        //Queued movement
+                        movequeue.add(mc);
+                    }
 
                     if (gameui().vhand == null) {   // do not highlight when walking with an item
                         for (Widget w = gameui().chat.lchild; w != null; w = w.prev) {
@@ -1989,21 +2049,21 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                             }
                         }
                     }
-                }
-
-                if (Config.pf && curs != null && !curs.name.equals("gfx/hud/curs/study") && gob != null) {
+                } else if (Config.pf && curs != null && !curs.name.equals("gfx/hud/curs/study") && gob != null) {
                     pfRightClick(gob, (int)args[8], clickb, 0, null);
                 } else {
-                  //  System.out.println("sending click with else2 arguments");
+                    args = Utils.extend(args, gobargs);
+                    if(clickb == 1 || gobargs.length > 0)
+                        clearmovequeue();
                     wdgmsg("click", args);
                     if (Config.autopickmussels && (gob.getres().basename().equals("mussels") || gob.getres().basename().equals("oyster")))
                         startMusselsPicker(gob);
-                        if(Config.autopickclay && gob.type == Gob.Type.CLAY)
+                    if(Config.autopickclay && gob.type == Gob.Type.CLAY)
                         startClayPicker(gob);
+                }
                 }
             }
         }
-    }
 
     public void registerGobSelect(GobSelectCallback callback) {
         this.gobselcb = callback;
@@ -2134,7 +2194,9 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         if (grab != null)
             grab.mmousemove(c);
         if (camdrag != null) {
-            ((Camera) camera).drag(c);
+            try {
+                ((Camera) camera).drag(c);
+            }catch(Exception e){}//ignore exceptions here, possible to cause a crash if you change camera WHILE dragging the camera. Why you'd do this, I have no idea, but pls dont crash from it.
         } else if (placing != null) {
             if ((placing.lastmc == null) || !placing.lastmc.equals(c)) {
                 delay(placing.new Adjust(c, ui.modflags()));
@@ -2519,6 +2581,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
             public void run(Console cons, String[] args) {
                 if ((plobgran = Integer.parseInt(args[1])) < 0)
                     plobgran = 0;
+                Utils.setprefi("placegridval", plobgran);
             }
         });
         cmdmap.put("whyload", (cons, args) -> {

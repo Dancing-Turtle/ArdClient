@@ -36,7 +36,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Fightview extends Widget {
-    static Tex bg = Resource.loadtex("gfx/hud/bosq");
+    static Tex bg = Theme.tex("bosq");
     static int height = 5;
     static int ymarg = 5;
     static int width = 165;
@@ -109,8 +109,11 @@ public class Fightview extends Widget {
             lastact = act;
             lastuse = Utils.rtime();
             if(lastact != null)
-            if(lastact.get().basename().contains("cleave") && Config.cleavesound)
-                Audio.play(Resource.local().loadwait(Config.cleavesfx), Config.cleavesoundvol);
+            if(lastact.get().basename().contains("cleave") && Config.cleavesound) {
+                try {
+                    Audio.play(Resource.local().loadwait(Config.cleavesfx), Config.cleavesoundvol);
+                }catch(Exception e){}//ignore because a crash here would prob get someone killed
+            }
             if (lastact != null && Config.logcombatactions) {
                     Resource res = lastact.get();
                     Resource.Tooltip tt = res.layer(Resource.tooltip);
@@ -137,8 +140,11 @@ public class Fightview extends Widget {
         lastact = act;
         lastuse = Utils.rtime();
         if(lastact != null)
-            if(lastact.get().basename().contains("cleave") && Config.cleavesound)
+            if(lastact.get().basename().contains("cleave") && Config.cleavesound) {
+            try{
                 Audio.play(Resource.local().loadwait(Config.cleavesfx), Config.cleavesoundvol);
+            }catch(Exception e){}//ignore because a crash here would prob get someone killed
+            }
         if (lastact != null && Config.logcombatactions) {
             try {
                 Resource res = lastact.get();

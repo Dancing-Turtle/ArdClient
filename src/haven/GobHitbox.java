@@ -137,6 +137,6 @@ public class GobHitbox extends Sprite {
             }
         }
 
-        return neg == null ? null : new BBox(neg.ac, neg.bc);
+        return neg == null ? null : new BBox(neg.bs, neg.bc);
     }
 }

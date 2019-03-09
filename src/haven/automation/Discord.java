@@ -262,7 +262,6 @@ public class Discord extends ListenerAdapter implements Runnable {
                                 ((ChatUI.MultiChat) w).send(author.getName() + ": " + msg);
                             gui.chat.notify((ChatUI.MultiChat) w, sentmsg);
                             ((ChatUI.MultiChat) w).updurgency(1);
-                            System.out.println("Discord message : "+discordmessage);
                             break;
                         }
                     }

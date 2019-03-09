@@ -51,6 +51,8 @@ public class LocalMiniMap extends Widget {
     private UI.Grab dragging;
     private Coord doff = Coord.z;
     private Coord delta = Coord.z;
+    private boolean showGrid = DefSettings.MMSHOWGRID.get();
+    private boolean showView = DefSettings.MMSHOWVIEW.get();
 
 
 	private final HashSet<Long> sgobs = new HashSet<Long>();
@@ -97,6 +99,7 @@ public class LocalMiniMap extends Widget {
             this.seq = seq;
         }
     }
+
 
     private BufferedImage tileimg(int t, BufferedImage[] texes) {
         BufferedImage img = texes[t];
@@ -239,71 +242,6 @@ public class LocalMiniMap extends Widget {
                         if(stage == 10 || stage == 14)
                         g.image(dooricn, p2c(gob.rc).sub(dooricn.sz().div(2)).add(delta));
                     }
-                } catch (Loading l) {}
-            }
-
-            for (Gob gob : dangergobs) {
-                try {
-                    GobIcon icon = gob.getattr(GobIcon.class);
-                    if (icon != null) {
-                        Tex tex;
-                        if (icon != null)
-                            tex = gob.knocked == Boolean.TRUE ? icon.texgrey() : icon.tex();
-                        else
-                            tex = Config.additonalicons.get(gob.getres().name);
-                        g.image(tex, p2c(gob.rc).sub(tex.sz().div(2)).add(delta));
-                    }
-                } catch (Loading l) {
-                }
-            }
-            
-            for (Gob gob : oc) {
-                try {
-                    Resource res = gob.getres();
-                    if (res == null)
-                        continue;
-
-                    if (gob.type == Gob.Type.PLAYER && gob.id != mv.player().id) {
-                        if (ui.sess.glob.party.memb.containsKey(gob.id))
-                            continue;
-
-                        Coord pc = p2c(gob.rc).add(delta);
-
-                        KinInfo kininfo = gob.getattr(KinInfo.class);
-                        if (pc.x >= 0 && pc.x <= sz.x && pc.y >= 0 && pc.y < sz.y) {
-                            g.chcolor(Color.BLACK);
-                            g.fcircle(pc.x, pc.y, 5, 16);
-                            g.chcolor(kininfo != null ? BuddyWnd.gc[kininfo.group] : Color.WHITE);
-                            g.fcircle(pc.x, pc.y, 4, 16);
-                            g.chcolor();
-                        }
-
-                        if (sgobs.contains(gob.id))
-                            continue;
-
-
-
-                        boolean enemy = false;
-                        if (!Config.alarmunknownplayer.equals("None") && kininfo == null) {
-                            sgobs.add(gob.id);
-                           // Audio.play(alarmredplayersfx, Config.alarmunknownvol);
-                            Audio.play(Resource.local().loadwait(Config.alarmunknownplayer), Config.alarmunknownvol);
-                            enemy = true;
-                        } else if (!Config.alarmredplayer.equals("None") && kininfo != null && kininfo.group == 2) {
-                            sgobs.add(gob.id);
-                            Audio.play(Resource.local().loadwait(Config.alarmredplayer), Config.alarmredvol);
-                            enemy = true;
-                        }
-
-                        if (Config.autologout && enemy) {
-                            BotUtils.sysMsg("Ememy spotted! Logging out!",Color.white);
-                            gameui().act("lo");
-                        }
-                        else if (Config.autohearth && enemy)
-                            gameui().act("travel", "hearth");
-
-                        continue;
-                    }
 
                     if (sgobs.contains(gob.id))
                         continue;
@@ -318,8 +256,8 @@ public class LocalMiniMap extends Widget {
                         this.sgobs.add(gob.id);
                         Audio.play(Resource.local().loadwait(Config.alarmbear), Config.alarmbearsvol);
                     }else if (gob.type == Gob.Type.SNAKE && gob.knocked == Boolean.FALSE && !Config.alarmadder.equals("None")){
-                            this.sgobs.add(gob.id);
-                            Audio.play(Resource.local().loadwait(Config.alarmadder), Config.alarmaddervol);
+                        this.sgobs.add(gob.id);
+                        Audio.play(Resource.local().loadwait(Config.alarmadder), Config.alarmaddervol);
                     } else if (gob.type == Gob.Type.LYNX && gob.knocked == Boolean.FALSE) {
                         this.sgobs.add(gob.id);
                         Audio.play(Resource.local().loadwait(Config.alarmlynx), Config.alarmbearsvol);
@@ -341,7 +279,7 @@ public class LocalMiniMap extends Widget {
                     } else if (!Config.alarmsiege.equals("None") && gob.type == Gob.Type.SIEGE_MACHINE) {
                         this.sgobs.add(gob.id);
                         if(!gob.getres().basename().contains("ball"))
-                        Audio.play(Resource.local().loadwait(Config.alarmsiege), Config.alarmbramvol);
+                            Audio.play(Resource.local().loadwait(Config.alarmsiege), Config.alarmbramvol);
                     }else if (!Config.alarmwball.equals("None") && gob.type == Gob.Type.SIEGE_MACHINE){
                         this.sgobs.add(gob.id);
                         if(gob.getres().basename().contains("ball"))
@@ -359,6 +297,59 @@ public class LocalMiniMap extends Widget {
                         }else if(!gob.getres().basename().contains("beaver")) {
                             this.sgobs.add(gob.id);
                             Audio.play(Resource.local().loadwait(Config.alarmdungeon), Config.alarmdungeonvol);
+                        }
+                    }
+
+                } catch (Loading l) {}
+            }
+
+            for (Gob gob : dangergobs) {
+                try {
+                    if (gob.type == Gob.Type.PLAYER && gob.id != mv.player().id) {
+                        if (ui.sess.glob.party.memb.containsKey(gob.id))
+                            continue;
+
+                        Coord pc = p2c(gob.rc).add(delta);
+
+                        KinInfo kininfo = gob.getattr(KinInfo.class);
+                        if (pc.x >= 0 && pc.x <= sz.x && pc.y >= 0 && pc.y < sz.y) {
+                            g.chcolor(Color.BLACK);
+                            g.fcircle(pc.x, pc.y, 5, 16);
+                            g.chcolor(kininfo != null ? BuddyWnd.gc[kininfo.group] : Color.WHITE);
+                            g.fcircle(pc.x, pc.y, 4, 16);
+                            g.chcolor();
+                        }
+
+                        if (sgobs.contains(gob.id))
+                            continue;
+
+                        boolean enemy = false;
+                        if (!Config.alarmunknownplayer.equals("None") && kininfo == null) {
+                            sgobs.add(gob.id);
+                            Audio.play(Resource.local().loadwait(Config.alarmunknownplayer), Config.alarmunknownvol);
+                            enemy = true;
+                        } else if (!Config.alarmredplayer.equals("None") && kininfo != null && kininfo.group == 2) {
+                            sgobs.add(gob.id);
+                            Audio.play(Resource.local().loadwait(Config.alarmredplayer), Config.alarmredvol);
+                            enemy = true;
+                        }
+
+                        if (Config.autologout && enemy) {
+                            BotUtils.sysMsg("Ememy spotted! Logging out!",Color.white);
+                            gameui().act("lo");
+                        }
+                        else if (Config.autohearth && enemy)
+                            gameui().act("travel", "hearth");
+
+                    }else {
+                        GobIcon icon = gob.getattr(GobIcon.class);
+                        if (icon != null) {
+                            Tex tex;
+                            if (icon != null)
+                                tex = gob.knocked == Boolean.TRUE ? icon.texgrey() : icon.tex();
+                            else
+                                tex = Config.additonalicons.get(gob.getres().name);
+                            g.image(tex, p2c(gob.rc).sub(tex.sz().div(2)).add(delta));
                         }
                     }
                 } catch (Exception e) { // fail silently
@@ -508,10 +499,6 @@ public class LocalMiniMap extends Widget {
     public void draw(GOut g) {
         if (cc == null)
             return;
-      //  if(biometex != null) {
-        //    g.image(biometex, Coord.z);
-      //  }
-
         map:
         {
             final MCache.Grid plg;
@@ -642,10 +629,22 @@ public class LocalMiniMap extends Widget {
                 g.chcolor();
             }
         }
+        if(MinimapWnd.biometex!=null)
+            g.image(MinimapWnd.biometex, Coord.z);
     }
 
     public void center() {
         delta = Coord.z;
+    }
+
+    public void toggleGrid() {
+        showGrid = !showGrid;
+        DefSettings.MMSHOWGRID.set(showGrid);
+    }
+
+    public void toggleView() {
+        showView = !showView;
+        DefSettings.MMSHOWVIEW.set(showView);
     }
 
     public boolean mousedown(Coord c, int button) {
@@ -657,14 +656,19 @@ public class LocalMiniMap extends Widget {
             if (button == 1)
                 MapView.pllastcc = mc;
             Gob gob = findicongob(csd.add(delta));
-            if (gob == null) {
-                mv.wdgmsg("click", rootpos().add(csd), mc.floor(posres), button, ui.modflags());
-            } else {
-                mv.wdgmsg("click", rootpos().add(csd), mc.floor(posres), button, ui.modflags(), 0, (int) gob.id, gob.rc.floor(posres), 0, -1);
-                if (Config.autopickmussels && gob.type == Gob.Type.MUSSEL)
-                    mv.startMusselsPicker(gob);
-                if(Config.autopickclay && gob.type == Gob.Type.CLAY)
-                    mv.startClayPicker(gob);
+            if (gob == null && (ui.modflags() == 0 || ui.modshift)) { //click tile
+                if(ui.modshift) {
+                    mv.queuemove(c2p(c.sub(delta)));
+                } else {
+                    mv.moveto(c2p(c.sub(delta)));
+                }
+                return true;
+            } else if(gob != null) {
+            mv.wdgmsg("click", rootpos().add(csd.add(delta)), mc.floor(posres), button, ui.modflags(), 0, (int) gob.id, gob.rc.floor(posres), 0, -1);
+            if (Config.autopickmussels && gob.type == Gob.Type.MUSSEL)
+                mv.startMusselsPicker(gob);
+            if(Config.autopickclay && gob.type == Gob.Type.CLAY)
+                mv.startClayPicker(gob);
             }
         } else if (button == 2) {
             doff = c;

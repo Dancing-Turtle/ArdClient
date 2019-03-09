@@ -345,6 +345,7 @@ public class MainFrame extends java.awt.Frame implements Runnable, Console.Direc
             return;
         }
         setupres();
+        DefSettings.init(); //init after res has been setup...
         MainFrame f = new MainFrame(null);
         if (Utils.getprefb("fullscreen", false))
             f.setfs();
