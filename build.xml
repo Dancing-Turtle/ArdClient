@@ -138,28 +138,10 @@
     </zip>
 </target>
 
-    <target name="distribute">
-        <zip destfile="${basedir}/${name}-${version}.zip" update="false">
-            <fileset dir="${basedir}" includes="README, CHANGELOG"/>
-            <fileset dir="build" includes="*.jar,grid_ids.txt" excludes="chatlog.txt, *.log"/>
-            <fileset dir="etc" includes="*.bat,run.sh,run.command"/>
-        </zip>
-        <zip destfile="${basedir}/${name}-${version}-upd.zip" update="false">
-            <fileset dir="build" includes="amber-res.jar, hafen.jar, l10n.jar, builtin-res.jar, grid_ids.txt" />
-            <fileset dir="${basedir}" includes="CHANGELOG"/>
-        </zip>
-    </target>
-
     <target name="New Distribute">
         <delete file="D:\GithubFolder\Ardenneslol.github.io\Hafen\amber-res.jar"/>
         <delete file="D:\GithubFolder\Ardenneslol.github.io\Hafen\hafen.jar"/>
-        <delete file="D:\GithubFolder\Ardenneslol.github.io\Hafen\HavenDiscord.jar"/>
-        <delete file="D:\GithubFolder\Ardenneslol.github.io\Hafen\rxjava-1.1.5.jar"/>
-        <delete file="D:\GithubFolder\Ardenneslol.github.io\Hafen\rxjava-1.1.5-javadoc.jar"/>
         <delete file="D:\GithubFolder\Ardenneslol.github.io\Hafen\ArdClient.rar"/>
-        <delete file="D:\GithubFolder\Ardenneslol.github.io\Hafen\flogger-0.3.1.jar"/>
-        <delete file="D:\GithubFolder\Ardenneslol.github.io\Hafen\flogger-system-backend-0.3.1.jar"/>
-        <delete file="D:\GithubFolder\Ardenneslol.github.io\Hafen\sqlite-jdbc-3.26.0.jar"/>
         <copy todir="${basedir}">
             <fileset dir="build/classes" includes="changelog.txt" />
         </copy>
@@ -167,22 +149,18 @@
             <fileset dir="build" includes="*.jar,grid_ids.txt, *.bat, changelog.txt" excludes="chatlog.txt, *.log, *.dat"/>
         </zip>
         <copy todir="D:\GithubFolder\Ardenneslol.github.io\Hafen">
-            <fileset dir="build" includes="amber-res.jar, hafen.jar, HavenDiscord.jar, rxjava-1.1.5.jar, rxjava-1.1.5-javadoc.jar, ArdClient.rar" />
+            <fileset dir="build" includes="amber-res.jar, hafen.jar" />
         </copy>
     </target>
 
     <target name="New Beta Distribute">
         <delete file="D:\GithubFolder\Ardenneslol.github.io\Hafen-Beta\amber-res.jar"/>
         <delete file="D:\GithubFolder\Ardenneslol.github.io\Hafen-Beta\hafen.jar"/>
-        <!--<delete file="D:\GithubFolder\Ardenneslol.github.io\Hafen-Beta\ArdClientBeta.rar"/>-->
         <copy todir="${basedir}">
             <fileset dir="build/classes" includes="changelog.txt" />
         </copy>
-     <!--   <zip destfile="D:\GithubFolder\Ardenneslol.github.io\Hafen-Beta\ArdClientBeta.rar" update="true">
-            <fileset dir="build" includes="*.jar,grid_ids.txt, *.bat, changelog.txt" excludes="chatlog.txt, *.log, *.dat"/>
-        </zip>-->
         <copy todir="D:\GithubFolder\Ardenneslol.github.io\Hafen-Beta">
-            <fileset dir="build" includes="amber-res.jar, hafen.jar, ArdClientBeta.rar" />
+            <fileset dir="build" includes="amber-res.jar, hafen.jar" />
         </copy>
     </target>
 
