@@ -434,7 +434,7 @@ public class Config {
         put("towercap", new CheckListboxItem("Towercaps"));
     }};
 
-    public final static HashMap<String, CheckListboxItem> icons = new HashMap<String, CheckListboxItem>(56) {{
+    public final static HashMap<String, CheckListboxItem> icons = new HashMap<String, CheckListboxItem>(60) {{
         put("dandelion", new CheckListboxItem("Dandelion"));
         put("chantrelle", new CheckListboxItem("Chantrelle"));
         put("blueberry", new CheckListboxItem("Blueberry"));
@@ -494,6 +494,7 @@ public class Config {
         put("stagbeetle", new CheckListboxItem("Stagbeetles"));
         put("monarchbutterfly", new CheckListboxItem("Monarch Butterfly"));
         put("irrbloss", new CheckListboxItem("Irrlight"));
+        put("cavecentipede", new CheckListboxItem("Cave Centipede"));
     }};
 
     public final static HashMap<String, CheckListboxItem> flowermenus = new HashMap<String, CheckListboxItem>(33) {{
@@ -909,6 +910,7 @@ public class Config {
         if (isUpdate) {
          //   Config.version = newversion;
             Utils.setpref("version",newversion);
+            Config.version = newversion;
         }
         try {
             InputStream in = ErrorHandler.class.getResourceAsStream("/CHANGELOG");

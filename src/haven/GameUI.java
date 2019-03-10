@@ -374,10 +374,16 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     }
 
     public void toggleQuestHelper(){
-        questhelper.show(true);
-        questhelper.active = true;
-        questhelper.raise();
-        questhelper.refresh();
+        if(questhelper.visible) {
+            questhelper.show(false);
+            questhelper.active = false;
+        }
+        else {
+            questhelper.show(true);
+            questhelper.active = true;
+            questhelper.raise();
+            questhelper.refresh();
+        }
     }
 
     public void toggleOptions() {
@@ -1255,7 +1261,10 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public void toggleChat() {
         if(chatwnd.visible && !chat.hasfocus) {
             setfocus(chat);
-        } else {
+        } else if(chatwnd.visible && chat.hasfocus){
+            OpenChat();
+            setfocus(maininv);
+        } else{
             if(!chatwnd.visible){
                OpenChat();
             } else {

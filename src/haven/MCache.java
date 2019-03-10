@@ -26,6 +26,8 @@
 
 package haven;
 
+import haven.purus.BotUtils;
+
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.util.*;
@@ -531,7 +533,12 @@ public class MCache {
             final Grid g = grid.get();
             return g.getz(tc.sub(g.ul));
         } else {
-            return 0;
+            if(Utils.getpref("defcam", "ortho").equals("follow")) { //follow cam doesn't play nice with getting a 0 axis returned to it.
+                Grid g = getgridt(tc);
+                return(g.getz(tc.sub(g.ul)));
+            } else {
+                return 0;
+            }
         }
     }
 
@@ -559,6 +566,8 @@ public class MCache {
     public Coord3f getzp(Coord2d pc) {
         return(new Coord3f((float)pc.x, (float)pc.y, (float)getcz(pc)));
     }
+
+
 
     public int getol(Coord tc) {
         Grid g = getgridt(tc);

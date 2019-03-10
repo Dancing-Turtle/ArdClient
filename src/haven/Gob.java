@@ -315,6 +315,7 @@ Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
         return(glob.map.getzp(rc));
     }
 
+
     public double geta() {
         return a;
     }

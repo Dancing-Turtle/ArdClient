@@ -86,6 +86,7 @@ public class StockpileFiller extends Window implements GobSelectCallback, ItemCl
 
 	Thread t = new Thread(new Runnable() {
 		public void run() {
+			main:
 			try {
 				while (BotUtils.findObjectByNames(5000, terobj) != null) {
 					System.out.println("In main loop");
@@ -186,8 +187,14 @@ public class StockpileFiller extends Window implements GobSelectCallback, ItemCl
 						}
 						BotUtils.sleep(1000);
 						System.out.println("clicking stockpile");
-						while (BotUtils.getItemAtHand() == null)
-							BotUtils.takeItem(BotUtils.getInventoryItemsByName(BotUtils.playerInventory(), invobj).get(0).item);
+						try {
+							while (BotUtils.getItemAtHand() == null)
+								BotUtils.takeItem(BotUtils.getInventoryItemsByName(BotUtils.playerInventory(), invobj).get(0).item);
+						}catch(NullPointerException q){
+							//break on null pointer here, bot is prob done
+							stop = true;
+							break main;
+						}
 						int cnt = BotUtils.invFreeSlots();
 						try {
 							BotUtils.gui.map.wdgmsg("itemact", Coord.z, stockpiles.get(0).rc.floor(posres), 1, 0, (int) stockpiles.get(0).id, stockpiles.get(0).rc.floor(posres), 0, -1);

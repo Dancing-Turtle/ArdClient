@@ -21,21 +21,6 @@ public class AltBeltWnd extends Widget implements DTarget {
     }
 
     @Override
-    public Coord contentsz() {
-        Coord max = new Coord(0, 0);
-        for (Widget wdg = child; wdg != null; wdg = wdg.next) {
-            if (!wdg.visible)
-                continue;
-            Coord br = wdg.c.add(wdg.sz);
-            if (br.x > max.x)
-                max.x = br.x;
-            if (br.y > max.y)
-                max.y = br.y;
-        }
-        return (max);
-    }
-
-    @Override
     public void resize(Coord sz) {
         this.sz = sz;
         for (Widget ch = child; ch != null; ch = ch.next)

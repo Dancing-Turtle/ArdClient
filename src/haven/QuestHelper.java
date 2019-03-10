@@ -13,7 +13,7 @@ public class QuestHelper extends Window{
     public QuestHelper() {
         super(new Coord(300, 380), "Quest Helper");
         new Coord(20, 55);
-        this.add(new QuestHelper.PButton(80, "Refresh", this.questList), new Coord(20, 10));
+        this.add(new QuestHelper.PButton(80, "Refresh", this.questList), new Coord(100, 20));
         this.questList = new QuestHelper.QuestList(270, 13, this);
         this.add(this.questList, new Coord(10, 55));
     }

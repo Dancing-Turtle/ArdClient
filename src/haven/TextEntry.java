@@ -28,6 +28,7 @@ package haven;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.function.Consumer;
@@ -203,7 +204,7 @@ public class TextEntry extends SIWidget {
     public boolean keydown(KeyEvent e) {
         if(e.getKeyCode() == KeyEvent.VK_F1 || e.getKeyCode() == KeyEvent.VK_F2|| e.getKeyCode() == KeyEvent.VK_F3|| e.getKeyCode() == KeyEvent.VK_F4|| e.getKeyCode() == KeyEvent.VK_F5
                 || e.getKeyCode() == KeyEvent.VK_F6|| e.getKeyCode() == KeyEvent.VK_F7|| e.getKeyCode() == KeyEvent.VK_F8|| e.getKeyCode() == KeyEvent.VK_F9|| e.getKeyCode() == KeyEvent.VK_F10
-                || e.getKeyCode() == KeyEvent.VK_F11|| e.getKeyCode() == KeyEvent.VK_F12) {
+                || e.getKeyCode() == KeyEvent.VK_F11|| e.getKeyCode() == KeyEvent.VK_F12 || e.getModifiers() == InputEvent.ALT_MASK || e.getModifiers() == InputEvent.CTRL_MASK) {
             return super.keydown(e);
         }
         buf.key(e);

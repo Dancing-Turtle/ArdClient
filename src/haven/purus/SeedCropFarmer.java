@@ -92,17 +92,52 @@ public class SeedCropFarmer extends Window implements Runnable {
 			lblProg2.settext("Harvesting");
 			try {
 				BotUtils.doClick(g, 1, 0);
+				//BotUtils.pfRightClick(g,0);
 			}catch(NullPointerException ii){continue;}
-			BotUtils.gui.map.wdgmsg("click", Coord.z, g.rc.floor(posres), 1, 0);
-			while (BotUtils.player().rc.x != g.rc.x || BotUtils.player().rc.y != g.rc.y)
+		//	BotUtils.gui.map.wdgmsg("click", Coord.z, g.rc.floor(posres), 1, 0);
+			int retryharvest = 0;
+			int retrycount = 0;
+			while (BotUtils.player().rc.x != g.rc.x || BotUtils.player().rc.y != g.rc.y) {
+				lblProg2.settext("Moving to Harvest");
+				retryharvest++;
+				if(retryharvest > 300)
+				{
+					lblProg2.settext("Unstucking");
+					BotUtils.sysLogAppend("Moving char", "white");
+					Gob player = gui.map.player();
+					Coord location = player.rc.floor(posres);
+					int x = location.x + getrandom();
+					int y = location.y + getrandom();
+					Coord finalloc = new Coord(x, y);
+					gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
+					BotUtils.sleep(1000);
+					BotUtils.doClick(g, 1, 0);
+					retryharvest = 0;
+					retrycount++;
+				}
+				if(retrycount > 5){
+					BotUtils.sysLogAppend("Tried to move to crop 3 times, skipping left click loop","white");
+					//super stuck, fuck it skip this wait
+					break;
+				}
 				BotUtils.sleep(10);
+			}
 
 			BotUtils.pfRightClick(g, 0);
 
 			// Wait for harvest menu to appear and harvest the crop
+			retryharvest = 0;
 			while (ui.root.findchild(FlowerMenu.class) == null) {
+				retryharvest++;
+				if(retryharvest > 500)
+				{
+					BotUtils.pfRightClick(g,0);
+					retryharvest = 0;
+				}
 				BotUtils.sleep(10);
 			}
+
+
 
 			if (stopThread)
 				return;
@@ -116,6 +151,7 @@ public class SeedCropFarmer extends Window implements Runnable {
 					}
 				}
 			}
+
 			while (BotUtils.findObjectById(g.id) != null) {
 				BotUtils.sleep(10);
 			}
@@ -631,6 +667,12 @@ public class SeedCropFarmer extends Window implements Runnable {
 			else
 				return 1;
 		});
+	}
+
+	public int getrandom(){
+		Random r = new Random();
+		int randomNumber = r.ints(1, -6000, 6000).findFirst().getAsInt();
+		return randomNumber;
 	}
 
 	public void stop() {

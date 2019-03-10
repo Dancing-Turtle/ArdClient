@@ -99,28 +99,19 @@ public class MinerAlert extends Window {
         runbtn = new Button(100, "Run") {
             @Override
             public void click() {
-                // this.hide();
-                // cbtn.show();
-                // stopbtn.show();
                 terminate = false;
-                // labelcountiron.settext("");
                 runner = new Thread(new MinerAlert.runner(), "Miner Alert");
                 runner.start();
             }
         };
-       // add(runbtn, new Coord(35, 440));
 
         stopbtn = new Button(100, "Stop") {
             @Override
             public void click() {
-                //BotUtils.sysMsg("Stopping",Color.white);
-                // this.hide();
-                // runbtn.show();
                 cbtn.show();
                 terminate = true;
             }
         };
-        //add(stopbtn, new Coord(35, 470));
 
         mutebtn = new Button(100, "Mute") {
             @Override
@@ -130,14 +121,7 @@ public class MinerAlert extends Window {
             }
         };
         add(mutebtn, new Coord(35, yvalue+=20));
-
-        ActionListener timedevent = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                runbtn.click();
-            }
-        };  new javax.swing.Timer(delay,timedevent).start();
-
+        runbtn.click();
     }
 
 
@@ -145,12 +129,13 @@ public class MinerAlert extends Window {
     private class runner implements Runnable {
         @Override
         public void run() {
-            while (!terminate) {
+            while (gui.getwnd("Miner Alert") != null) {
+                BotUtils.sleep(5000);//sleep 5 seconds every iteration, no reason to update more than once every 5 seconds.
                 try {
+                    System.out.println("Miner alert running mute status : "+audiomute+ " terminate is : "+terminate);
                     countiron = 0;
                     countgold = 0;
                     countsilver = 0;
-                    MCache mcache = gui.map.glob.map;
                     Glob g = gui.map.glob;
                     Gob player = gui.map.player();
                     List<Gob> allGobs = PBotAPI.getGobs();
@@ -292,7 +277,6 @@ public class MinerAlert extends Window {
                     countmagnetite = 0;
                     countcinnabar = 0;
                     countslimes = 0;
-                    stopbtn.click();
                 }catch(Loading lolloadingerrors){}
             }
         }
@@ -305,6 +289,11 @@ public class MinerAlert extends Window {
         else
             super.wdgmsg(sender, msg, args);
     }
+
+    public void close(){
+        reqdestroy();
+    }
+
     @Override
     public boolean type(char key, KeyEvent ev) {
         if (key == 27) {
@@ -314,11 +303,6 @@ public class MinerAlert extends Window {
         }
         return super.type(key, ev);
     }
-    public void terminate() {
-        terminate = true;
-        if (runner != null)
-            runner.interrupt();
-        this.destroy();
-    }
+
 }
 

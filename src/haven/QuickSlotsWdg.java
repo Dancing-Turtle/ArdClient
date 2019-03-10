@@ -1,5 +1,11 @@
 package haven;
 
+import haven.res.ui.tt.q.qbuff.QBuff;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.util.List;
+
 public class QuickSlotsWdg extends Widget implements DTarget {
     private static final Tex sbg = Resource.loadtex("gfx/hud/slots");
     public static final Coord lc =  new Coord(6, 6);
@@ -7,6 +13,7 @@ public class QuickSlotsWdg extends Widget implements DTarget {
     private static final Coord ssz = new Coord(44, 44);
     private UI.Grab dragging;
     private Coord dc;
+    private static final Color qualitybg = new Color(20, 20, 20, 255 - Config.qualitybgtransparency);
 
     public QuickSlotsWdg() {
         super(new Coord(44 + 44 + 6, 44));
@@ -21,11 +28,15 @@ public class QuickSlotsWdg extends Widget implements DTarget {
             if (left != null) {
                 drawitem(g.reclipl(lc, g.sz), left);
                 drawamountbar(g, left.item, 44 + 6);
+                if(Config.showquality)
+                    drawQualityLeft(g, left);
             }
             WItem right = e.quickslots[7];
             if (right != null) {
                 drawitem(g.reclipl(rc, g.sz), right);
                 drawamountbar(g, right.item, 0);
+                if(Config.showquality)
+                drawQualityRight(g, right);
             }
         }
     }
@@ -39,6 +50,38 @@ public class QuickSlotsWdg extends Widget implements DTarget {
             g.defstate();
         } else {
             g.image(WItem.missing.layer(Resource.imgc).tex(), Coord.z, ssz);
+        }
+    }
+
+    private void drawQualityLeft(GOut g, WItem witem){
+        QBuff quality = witem.item.quality();
+        if (Config.showquality) {
+            if (quality != null && quality.qtex != null) {
+                Coord btm = new Coord(0, sz.y - 12);
+                Tex t = Config.qualitywhole ? quality.qwtex : quality.qtex;
+                if (Config.qualitybg) {
+                    g.chcolor(qualitybg);
+                    g.frect(btm, t.sz().add(1, -1));
+                    g.chcolor();
+                }
+                g.image(t, btm);
+            }
+        }
+    }
+
+    private void drawQualityRight(GOut g, WItem witem){
+        QBuff quality = witem.item.quality();
+        if (Config.showquality) {
+            if (quality != null && quality.qtex != null) {
+                Coord btm = new Coord(50, sz.y - 12);
+                Tex t = Config.qualitywhole ? quality.qwtex : quality.qtex;
+                if (Config.qualitybg) {
+                    g.chcolor(qualitybg);
+                    g.frect(btm, t.sz().add(1, -1));
+                    g.chcolor();
+                }
+                g.image(t, btm);
+            }
         }
     }
 

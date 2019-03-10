@@ -153,6 +153,11 @@ public class BotUtils {
 		gui.map.pfRightClick(gob, -1, 3, mod, null);
 	}
 
+    //same thing but left click
+	public static void pfLeftClick(Gob gob, int mod) {
+		gui.map.pfLeftClick(gob.rc.floor(posres),null);
+	}
+
 	// Chooses option from flower menu
 	public static void Choose(Petal option) {
 		gui.wdgmsg("cl", option.num, gui.ui.modflags());

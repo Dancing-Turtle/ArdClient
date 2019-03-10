@@ -403,15 +403,43 @@ public class BeltWnd extends MovableWidget {
 
     private void reposition_grid() {
         int x = 0 , y = 0;
-        for(BeltBtn btn : btns) {
-            btn.c = new Coord(x * (Inventory.invsq.sz().x + 2),
-                    y * (Inventory.invsq.sz().y + 2));
-            x++;
-            if(x >= 3) {
-                x = 0;
-                y++;
+        if(!this.name.equals("np")) {
+            for (BeltBtn btn : btns) {
+                btn.c = new Coord(x * (Inventory.invsq.sz().x + 2),
+                        y * (Inventory.invsq.sz().y + 2));
+                x++;
+                if (x >= 3) {
+                    x = 0;
+                    y++;
+                }
             }
+        }else {
+            for (BeltBtn btn : btns) {
+                if(btn.key == 96)
+                    btn.c = new Coord(0,108);
+                if(btn.key == 97)
+                    btn.c = new Coord(0,72);
+                if(btn.key == 98)
+                    btn.c = new Coord(36,72);
+                if(btn.key == 99)
+                    btn.c = new Coord(72,72);
+                if(btn.key == 100)
+                    btn.c = new Coord(0,36);
+                if(btn.key == 101)
+                    btn.c = new Coord(36,36);
+                if(btn.key == 102)
+                    btn.c = new Coord(72,36);
+                if(btn.key == 103)
+                    btn.c = new Coord(0,0);
+                if(btn.key == 104)
+                    btn.c = new Coord(36,0);
+                if(btn.key == 105)
+                    btn.c = new Coord(72,0);
+            }
+            x =  1;
+            y = 3;
         }
+
         up.c = new Coord(x * (Inventory.invsq.sz().x + 2),
                 y * (Inventory.invsq.sz().y + 2));
         down.c = new Coord(x * (Inventory.invsq.sz().x + 2) + up.sz.x + 2,

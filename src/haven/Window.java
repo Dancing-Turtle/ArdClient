@@ -577,6 +577,8 @@ public class Window extends MovableWidget implements DTarget {
 			(cm.back.getRaster().getSample(cpc.x % cm.back.getWidth(), cpc.y, 3) >= 128));
     }
     public boolean mousedown(Coord c, int button) {
+        if(button == 4 || button == 5) //ignore these because why allow every mousedown to move the window?
+            return false;
         if (super.mousedown(c, button)) {
             parent.setfocus(this);
             raise();

@@ -246,7 +246,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
             }
 
             float field = field(elev);
-            view.update(PointedCam.compute(cc.add(camoff).add(0.0f, 0.0f, h), dist(elev), elev, angl));
+            view.update(PointedCam.compute(curc.add(camoff).add(0.0f, 0.0f, h), dist(elev), elev, angl));
             proj.update(Projection.makefrustum(new Matrix4f(), -field, field, -ca * field, ca * field, 1, 5000));
         }
 
@@ -1146,9 +1146,9 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     public Coord3f getcc() {
         Gob pl = player();
 	if(pl != null)
-	    return(pl.getc());
-        else
-            return(glob.map.getzp(cc));
+        return (pl.getc());
+             else
+                 return (glob.map.getzp(cc));
     }
 
     public static class ClickContext extends RenderContext {
