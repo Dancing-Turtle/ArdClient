@@ -27,6 +27,7 @@
 package haven;
 
 import static haven.Text.num10Fnd;
+import static haven.Text.num12boldFnd;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -113,7 +114,10 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
         }
 
         public static BufferedImage numrender(int num, Color col) {
+            if(!Config.largeqfont)
             return Text.renderstroked(num + "", col, Color.BLACK).img;
+            else
+                return Text.renderstroked(num + "", col, Color.BLACK,num12boldFnd).img;
         }
     }
 

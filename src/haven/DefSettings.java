@@ -235,7 +235,7 @@ public class DefSettings {
 		FREECAMREYAXIS.ensure(false);
 		FREECAMLOCKELAV.ensure(false);
 		//Figure out our themes
-		HUDTHEME.ensure("Default");
+		HUDTHEME.ensure("ardclient");
 		MENUTHEME.ensure("default");
 		{
 			final Color slothc = new Color(85, 144, 87, 228);
@@ -251,6 +251,11 @@ public class DefSettings {
 			global.ensure(String.format(BTNCOLFMT, "sloth"), Color.WHITE);
 			global.ensure(String.format(TXBCOLFMT, "sloth"), Color.WHITE);
 			global.ensure(String.format(SLIDERCOLFMT, "sloth"), Color.WHITE);
+			huds.add("ardclient");
+			global.ensure(String.format(WNDCOLFMT, "ardclient"), Color.WHITE);
+			global.ensure(String.format(BTNCOLFMT, "ardclient"), Color.WHITE);
+			global.ensure(String.format(TXBCOLFMT, "ardclient"), Color.WHITE);
+			global.ensure(String.format(SLIDERCOLFMT, "ardclient"), Color.WHITE);
 			//For options window
 			THEMES.set(huds.toArray(new String[0]));
 		}

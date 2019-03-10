@@ -212,6 +212,7 @@ public class Config {
     public static boolean colorfulcaveins = Utils.getprefb("colorfulcaveins", false);
     public static boolean fontaa = Utils.getprefb("fontaa", false);
     public static boolean usefont = Utils.getprefb("usefont", false);
+    public static boolean largeqfont = Utils.getprefb("largeqfont", false);
     public static String font = Utils.getpref("font", "SansSerif");
     public static int fontadd = Utils.getprefi("fontadd", 0);
     public static boolean proximityaggro = Utils.getprefb("proximityaggro", false);

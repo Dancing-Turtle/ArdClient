@@ -224,7 +224,6 @@ public class MapWnd extends Window {
                                 break;
                             }
                         }
-
                     }
                 }
             }

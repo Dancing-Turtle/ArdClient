@@ -2383,7 +2383,17 @@ public class OptWnd extends Window {
             }
         },
                 makeFontsDropdown());
-                final Label fonttest = new Label("Font Example");
+        appender.add(new CheckBox("Larger quality/quantity text (req. restart):") {
+            {
+                a = Config.largeqfont;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("largeqfont", val);
+                Config.largeqfont = val;
+                a = val;
+            }
+        });
         final Label fontAdd = new Label("");
         appender.addRow(
                 new Label("Increase font size by (req. restart):"),

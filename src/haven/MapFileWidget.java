@@ -403,7 +403,7 @@ public class MapFileWidget extends Widget {
     public boolean mousedown(Coord c, int button) {
         Coord tc = null;
         if (curloc != null)
-            tc = c.sub(sz.div(2)).add(curloc.tc);
+		tc = c.sub(sz.div(2)).mul(scalef()).add(curloc.tc);
         if (tc != null) {
             DisplayMarker mark = markerat(tc);
             if ((mark != null) && clickmarker(mark, button))

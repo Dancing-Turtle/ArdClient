@@ -14,13 +14,8 @@ public class FilterWnd extends Window {
 		checkInput();
 	    }
 	});
-    
-	addtwdg(add(new IButton("gfx/hud/btn-help", "","-d","-h"){
-	    @Override
-	    public void click() {
-		ItemFilter.showHelp(ui, ItemFilter.FILTER_HELP);
-	    }
-	}));
+
+		addBtn_base("gfx/hud/helpbtn", "Show Filter Help", () -> ItemFilter.showHelp(ui, ItemFilter.FILTER_HELP));
 
 	pack();
     }

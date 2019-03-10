@@ -1,3 +1,11 @@
+1.00.95
+Added "ardclient" theme and set it to default. Not 100% identical to the old style, but moderately close. 
+Movement queue from the Ctrl+A map should now be somewhat accurate at different zoom lives, albeit the line is still not accurate.
+Added toggle to ui settings to increase font size of quality and quantity fields.
+Fixed filter window not having the help button on sloth theme.
+Actual fix for follow cam now, sorta, disable "no black load screens" if you want to use follow cam - sorry.
+~
+
 1.00.94
 Rollback on follow cam "fix" because it slowed every camera's loading down, fuck follow cam.
 ~

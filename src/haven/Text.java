@@ -134,7 +134,6 @@ public class Text {
         num10Fnd = new Foundry(latin);
         num11Fnd = new Text.Foundry(latin, 11);
         num12boldFnd = new Text.Foundry(latin.deriveFont(Font.BOLD), 12).aa(true);
-
         delfnd = new Text.Foundry(latin.deriveFont(Font.BOLD), 16);
 
         std = new Foundry(sans, Text.cfg.def);

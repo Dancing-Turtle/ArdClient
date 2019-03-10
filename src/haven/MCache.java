@@ -528,12 +528,18 @@ public class MCache {
     }
 
     public int getz_safe(Coord tc) {
+    if (Config.noloadscreen){
         final Optional<Grid> grid = getgridto(tc);
         if (grid.isPresent()) {
             final Grid g = grid.get();
             return g.getz(tc.sub(g.ul));
         } else {
-                return 0;
+            return 0;
+        }
+    }
+    else {
+            Grid g = getgridt(tc);
+            return(g.getz(tc.sub(g.ul)));
         }
     }
 

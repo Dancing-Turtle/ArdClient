@@ -34,6 +34,8 @@ import haven.res.ui.tt.Wear;
 import haven.res.ui.tt.q.qbuff.QBuff;
 import static haven.Inventory.sqsz;
 import static haven.Text.num10Fnd;
+
+
 import haven.automation.WItemDestroyCallback;
 
 import java.awt.Color;

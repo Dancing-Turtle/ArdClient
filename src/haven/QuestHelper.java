@@ -5,6 +5,7 @@ import java.awt.event.KeyEvent;
 import java.util.*;
 import java.util.List;
 
+//Ported from mamber, adjusted for public use,  credits to Matias
 
 public class QuestHelper extends Window{
     public boolean active = false;

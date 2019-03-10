@@ -26,9 +26,7 @@
 
 package haven;
 
-import static haven.DefSettings.CURIOHIGH;
-import static haven.DefSettings.CURIOLOW;
-import static haven.DefSettings.CURIOTARGET;
+import static haven.DefSettings.*;
 import static haven.PUtils.blurmask2;
 import static haven.PUtils.rasterimg;
 import static haven.Resource.cdec;
@@ -121,6 +119,7 @@ public class Window extends MovableWidget implements DTarget {
     //close button
     public final IButton cbtn, lbtn;
     private final BufferedImage on, off;
+    public final ArrayList<IButton> btns = new ArrayList<>();
 
     public boolean dt = false;
     //Caption
@@ -188,7 +187,14 @@ public class Window extends MovableWidget implements DTarget {
             lbtn.up = on;
             lbtn.hover = off;
         }
+    }
 
+    public void addBtn(final String res, final String tt, final Runnable action) {
+        btns.add(add(new IButton(Theme.fullres(res), tt, action)));
+    }
+
+    public void addBtn_base(final String res, final String tt, final Runnable action) {
+        btns.add(add(new IButton(res, tt, action)));
     }
 
     @Override
@@ -267,27 +273,47 @@ public class Window extends MovableWidget implements DTarget {
         Collection FinalCurios = new ArrayList(); //parsed out list for checking against the curios you should be studying from Config.curiolist
         Collection CurioCounter = new ArrayList(); //used to see if the number of curios on the table changes to redraw the addons
 
+    if(!HUDTHEME.get().equals("ardclient")) {
+        g.chcolor(DefSettings.WNDCOL.get());
+        //corners
+        g.image(cl, Coord.z);
+        g.image(bl, new Coord(0, sz.y - bl.sz().y));
+        g.image(br, sz.sub(br.sz()));
+        g.image(cr, new Coord(sz.x - cr.sz().x, 0));
 
-	g.chcolor(DefSettings.WNDCOL.get());
+        //draw background
+        g.rimagev(bgl, ctl, csz.y);
+        g.rimagev(bgr, ctl.add(csz.x - bgr.sz().x, 0), csz.y);
+        g.rimage(bg, ctl.add(bgl.sz().x, 0), csz.sub(bgl.sz().x + bgr.sz().x, 0));
 
+        //horizontal and vertical tiling of the long parts
+        g.rimagev(lm, new Coord(0, cl.sz().y), sz.y - bl.sz().y - cl.sz().y);
+        g.rimagev(rm, new Coord(sz.x - rm.sz().x, cr.sz().y), sz.y - br.sz().y - cr.sz().y);
+        g.rimageh(bm, new Coord(bl.sz().x, sz.y - bm.sz().y), sz.x - br.sz().x - bl.sz().x);
+        g.rimageh(cm, new Coord(cl.sz().x, 0), sz.x - cl.sz().x - cr.sz().x);
+        g.chcolor();
+    }else {
+        g.chcolor(DefSettings.WNDCOL.get());
+
+        //draw background
+        g.rimagev(bgl, ctl, csz.y);
+        g.rimagev(bgr, ctl.add(csz.x - bgr.sz().x, 0), csz.y);
+        g.rimage(bg, ctl.add(bgl.sz().x, 0), csz.sub(bgl.sz().x + bgr.sz().x, 0));
 
         //corners
         g.image(cl, Coord.z);
-        g.image(bl, new Coord(0, sz.y-bl.sz().y));
+        g.image(bl, new Coord(0, sz.y - bl.sz().y));
         g.image(br, sz.sub(br.sz()));
-       	g.image(cr, new Coord(sz.x - cr.sz().x, 0));
+        g.image(cr, new Coord(sz.x - cr.sz().x, 0));
 
-	//draw background
-	g.rimagev(bgl, ctl, csz.y);
-	g.rimagev(bgr, ctl.add(csz.x-bgr.sz().x, 0), csz.y);
-	g.rimage(bg, ctl.add(bgl.sz().x, 0), csz.sub(bgl.sz().x + bgr.sz().x, 0));
+        //horizontal and vertical tiling of the long parts
+        g.rimagev(lm, new Coord(0, cl.sz().y), sz.y - bl.sz().y - cl.sz().y);
+        g.rimagev(rm, new Coord(sz.x - rm.sz().x, cr.sz().y), sz.y - br.sz().y - cr.sz().y);
+        g.rimageh(bm, new Coord(bl.sz().x, sz.y - bm.sz().y), sz.x - br.sz().x - bl.sz().x);
+        g.rimageh(cm, new Coord(cl.sz().x, 0), sz.x - cl.sz().x - cr.sz().x);
+        g.chcolor();
+    }
 
-       	//horizontal and vertical tiling of the long parts
-	g.rimagev(lm, new Coord(0, cl.sz().y), sz.y - bl.sz().y - cl.sz().y);
-	g.rimagev(rm, new Coord(sz.x - rm.sz().x, cr.sz().y), sz.y - br.sz().y - cr.sz().y);
-	g.rimageh(bm, new Coord(bl.sz().x, sz.y - bm.sz().y), sz.x - br.sz().x - bl.sz().x);
-	g.rimageh(cm, new Coord(cl.sz().x, 0), sz.x - cl.sz().x - cr.sz().x);
-	g.chcolor();
 
         try {
             if(BotUtils.istable(this)){
@@ -481,7 +507,7 @@ public class Window extends MovableWidget implements DTarget {
     public Coord contentsz() {
         Coord max = new Coord(0, 0);
         for(Widget wdg = child; wdg != null; wdg = wdg.next) {
-	   if(wdg == cbtn || twdgs.contains(wdg))
+	    if(wdg == cbtn || wdg == lbtn)
                 continue;
             if(!wdg.visible)
                 continue;
@@ -509,8 +535,16 @@ public class Window extends MovableWidget implements DTarget {
     }
     private void placecbtn() {
 	cbtn.c = new Coord(sz.x - cbtn.sz.x - atl.x - cfg.btnc.x,-atl.y + cfg.btnc.y);
+	final Coord c;
 	if(lbtn != null) {
 	    lbtn.c = cbtn.c.sub(lbtn.sz.x + 5, 0);
+	    c = new Coord(lbtn.c.x - (lbtn.sz.x + 5), lbtn.c.y);
+	} else {
+	    c = new Coord(cbtn.c.x - (cbtn.sz.x + 5), cbtn.c.y);
+	}
+	for(final IButton btn : btns) {
+	    btn.c = c.copy();
+	    c.x -= btn.sz.x + 5;
 	}
     }
 
