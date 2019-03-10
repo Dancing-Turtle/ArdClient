@@ -1,3 +1,7 @@
+1.00.94
+Rollback on follow cam "fix" because it slowed every camera's loading down, fuck follow cam.
+~
+
 1.00.93
 Added quest helper window, alt Q by default.
 Made textentry boxes ignore keypresses including ctrl and alt so that keybinds will continue to work.
