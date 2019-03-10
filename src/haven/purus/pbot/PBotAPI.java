@@ -596,8 +596,9 @@ public class PBotAPI {
 	 */
 	public static List<Gob> getGobs() {
 		List<Gob> list = new ArrayList<Gob>();
-		for(Gob gob : gui.ui.sess.glob.oc) {
-			list.add(gob);
+		synchronized (gui.ui.sess.glob.oc) {
+			for (Gob gob : gui.ui.sess.glob.oc)
+				list.add(gob);
 		}
 		return list;
 	}

@@ -223,6 +223,8 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                 angl = tangl;
 
             Coord3f cc = getcc();
+            if(Config.disableelev)
+                cc.z = 0;
             cc.y = -cc.y;
 	    if(curc == null)
                 curc = cc;
@@ -244,7 +246,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
             }
 
             float field = field(elev);
-            view.update(PointedCam.compute(curc.add(camoff).add(0.0f, 0.0f, h), dist(elev), elev, angl));
+            view.update(PointedCam.compute(cc.add(camoff).add(0.0f, 0.0f, h), dist(elev), elev, angl));
             proj.update(Projection.makefrustum(new Matrix4f(), -field, field, -ca * field, ca * field, 1, 5000));
         }
 

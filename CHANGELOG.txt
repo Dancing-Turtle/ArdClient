@@ -1,3 +1,14 @@
+1.00.92
+Added LP/HR to pop out study window.
+Toggle chat keybind will now reopen the chat window if it's hidden.
+Added irrlight map icon and to icon list, Q should now work with irrlights.
+Fixed buttons not using themes.
+Fixed an elevation bug with follow cam. Could potentially cause other issues, let me know. 
+Fixed pclaim vclaim and realm minimap buttons not having mousedown animations anymore. 
+Added gates to "PickForagable" keybind. Will not work on visitor gates. Let me know if this causes weird interactions.
+Fixed Character Sheet not saving window position.
+~
+
 1.00.91
 Merged Ape Client's Themes functionality.
 Implemented numpad belt, uses numberpad keys to trigger. 

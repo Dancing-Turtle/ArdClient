@@ -852,7 +852,7 @@ Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
                 for (Composited.ED ed : ((Composite) d).comp.cequ) {
                     try {
                         Resource res = ed.res.res.get();
-                        if (res != null && res.name.endsWith("huntersbow") && ed.res.sdt.peekrbuf(0) == 5 || res != null && res.name.endsWith("rangersbow") && ed.res.sdt.peekrbuf(0) == 5) {
+                        if (res != null && (res.name.endsWith("huntersbow") || res.name.endsWith("rangersbow")) && ed.res.sdt.peekrbuf(0) == 5) {
                             targetting = true;
                             if (bowvector == null) {
                                 bowvector = new Overlay(new GobArcheryVector(this, followGob));

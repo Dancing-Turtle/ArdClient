@@ -493,6 +493,7 @@ public class Config {
         put("bat", new CheckListboxItem("Bats"));
         put("stagbeetle", new CheckListboxItem("Stagbeetles"));
         put("monarchbutterfly", new CheckListboxItem("Monarch Butterfly"));
+        put("irrbloss", new CheckListboxItem("Irrlight"));
     }};
 
     public final static HashMap<String, CheckListboxItem> flowermenus = new HashMap<String, CheckListboxItem>(33) {{
@@ -593,6 +594,7 @@ public class Config {
         put("gfx/terobjs/vehicle/cart", Resource.loadtex("gfx/icons/cart"));
         put("gfx/terobjs/vehicle/wreckingball", Resource.loadtex("gfx/icons/wball"));
         put("gfx/kritter/nidbane/nidbane", Resource.loadtex("gfx/icons/spooky"));
+        put("gfx/kritter/irrbloss/irrbloss", Resource.loadtex("gfx/icons/irrbloss"));
     }};
 
     public final static HashMap<String, CheckListboxItem> alarmitems = new HashMap<String, CheckListboxItem>(51) {{

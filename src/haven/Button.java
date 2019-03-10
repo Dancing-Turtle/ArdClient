@@ -33,14 +33,13 @@ import java.awt.image.BufferedImage;
 
 
 public class Button extends SIWidget {
-    public static final BufferedImage bl = Resource.loadimg("gfx/hud/buttons/tbtn/left");
-    public static final BufferedImage br = Resource.loadimg("gfx/hud/buttons/tbtn/right");
-    public static final BufferedImage bt = Resource.loadimg("gfx/hud/buttons/tbtn/top");
-    public static final BufferedImage bb = Resource.loadimg("gfx/hud/buttons/tbtn/bottom");
-    public static final BufferedImage dt = Resource.loadimg("gfx/hud/buttons/tbtn/dtex");
-    public static final BufferedImage ut = Resource.loadimg("gfx/hud/buttons/tbtn/utex");
-    public static final BufferedImage bm = Resource.loadimg("gfx/hud/buttons/tbtn/mid");
-    public static final int hs = bl.getHeight(), hl = bm.getHeight();
+    public static final BufferedImage ul = Theme.img("buttons/textbtn", 0);
+    public static final BufferedImage um = Theme.img("buttons/textbtn", 1);
+    public static final BufferedImage ur = Theme.img("buttons/textbtn", 2);
+    public static final BufferedImage dl = Theme.img("buttons/textbtn", 3);
+    public static final BufferedImage dm = Theme.img("buttons/textbtn", 4);
+    public static final BufferedImage dr = Theme.img("buttons/textbtn", 5);
+    public static final int hs = ul.getHeight(), hl = um.getHeight();
     public static final Resource click = Loading.waitfor(Resource.local().load("sfx/hud/btn"));
     public static final Resource.Audio lbtdown = Loading.waitfor(Resource.local().load("sfx/hud/lbtn")).layer(Resource.audio, "down");
     public static final Resource.Audio lbtup = Loading.waitfor(Resource.local().load("sfx/hud/lbtn")).layer(Resource.audio, "up");
@@ -77,7 +76,7 @@ public class Button extends SIWidget {
     }
 
     private static boolean largep(int w) {
-        return(w >= (bl.getWidth() + bm.getWidth() + br.getWidth()));
+	return(w >= (ul.getWidth() + um.getWidth() + ur.getWidth()));
     }
 
     private Button(int w, boolean lg) {
@@ -129,22 +128,30 @@ public class Button extends SIWidget {
 
     public void draw(BufferedImage img) {
         Graphics g = img.getGraphics();
-        int yo = lg ? ((hl - hs) / 2) : 0;
-        g.drawImage(a ? dt : ut, 4, yo + 4, sz.x - 8, hs - 8, null);
+
+	if(a) {
+	    //down
+	    g.drawImage(dl, 0, 0, null);
+	    g.drawImage(dm, dl.getWidth(), 0, sz.x - dr.getWidth() - dl.getWidth(), sz.y, null);
+	    g.drawImage(dr, sz.x - dr.getWidth(), 0, null);
+	} else {
+	    //up
+	    g.drawImage(ul, 0, 0, null);
+	    g.drawImage(um, ul.getWidth(), 0, sz.x - ur.getWidth() - ul.getWidth(), sz.y, null);
+	    g.drawImage(ur, sz.x - ur.getWidth(), 0, null);
+	}
 
         Coord tc = sz.sub(Utils.imgsz(cont)).div(2);
-        if (a)
-            tc = tc.add(1, 1);
         g.drawImage(cont, tc.x, tc.y, null);
 
-        g.drawImage(bl, 0, yo, null);
-        g.drawImage(br, sz.x - br.getWidth(), yo, null);
-        g.drawImage(bt, bl.getWidth(), yo, sz.x - bl.getWidth() - br.getWidth(), bt.getHeight(), null);
-        g.drawImage(bb, bl.getWidth(), yo + hs - bb.getHeight(), sz.x - bl.getWidth() - br.getWidth(), bb.getHeight(), null);
-        if (lg)
-            g.drawImage(bm, (sz.x - bm.getWidth()) / 2, 0, null);
-
         g.dispose();
+    }
+
+    @Override
+    public void draw(GOut g) {
+	g.chcolor(DefSettings.BTNCOL.get());
+	super.draw(g);
+	g.chcolor();
     }
 
     public void change(String text, Color col) {

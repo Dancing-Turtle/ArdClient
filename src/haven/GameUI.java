@@ -114,6 +114,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public BeltWnd fbelt, nbelt, npbelt;
     public MapPointer pointer;
     public Cal cal;
+    public QuestHelper questhelper;
 
 
     public abstract class Belt extends Widget {
@@ -248,6 +249,10 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         else if(!Config.showTroughrad && !Config.showBeehiverad)
             saferadius = 1;
 
+        this.questhelper = new QuestHelper();
+        this.questhelper.hide();
+        this.add(this.questhelper, new Coord(HavenPanel.w / 2 - this.timerswnd.sz.x / 2, 100));
+
         fixAlarms();
     }
 
@@ -366,6 +371,13 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             fitwdg(zerg);
           //  setfocus(zerg);
         }
+    }
+
+    public void toggleQuestHelper(){
+        questhelper.show(true);
+        questhelper.active = true;
+        questhelper.raise();
+        questhelper.refresh();
     }
 
     public void toggleOptions() {
@@ -1244,14 +1256,12 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         if(chatwnd.visible && !chat.hasfocus) {
             setfocus(chat);
         } else {
-            if(chat.targeth == 0) {
-                chat.sresize(chat.savedh);
-                setfocus(chat);
+            if(!chatwnd.visible){
+               OpenChat();
             } else {
-                chat.sresize(0);
+                setfocus(chat);
             }
         }
-        Utils.setprefb("chatvis", chat.targeth != 0);
     }
 
     public void toggleMinimap() {

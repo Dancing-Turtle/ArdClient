@@ -48,7 +48,8 @@ public enum Action {
     TOGGLE_SEARCH(GameUI::toggleSearch,"Toggles the search menu"),
     AGGRO_CLOSEST(GameUI::aggroClosest,"Aggro closest player."),
     CYCLE_SPEED(GameUI::cycleSpeed,"Cycles between the run speeds."),
-    SWITCH_TARGETS(GameUI::SwitchTargets,"Switches combat targets");
+    SWITCH_TARGETS(GameUI::SwitchTargets,"Switches combat targets"),
+    TOGGLE_QUESTHELPER(GameUI::toggleQuestHelper,"Toggles Questhelper window");
 
     
     public final String name;

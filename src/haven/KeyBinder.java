@@ -112,6 +112,7 @@ public class KeyBinder {
 	add(KeyEvent.VK_I,SHIFT,TOGGLE_RES);
 	add(KeyEvent.VK_R,CTRL,CYCLE_SPEED);
 	add(KeyEvent.VK_TAB,0,SWITCH_TARGETS);
+	add(KeyEvent.VK_NUMPAD9,0,TOGGLE_QUESTHELPER);
 	//add(KeyEvent.VK_TAB,NONE,TARGET_CLOSEST);
     }
     
