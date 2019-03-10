@@ -1,3 +1,16 @@
+1.00.93
+Added quest helper window, alt Q by default.
+Made textentry boxes ignore keypresses including ctrl and alt so that keybinds will continue to work.
+Toggle chat keybind will now hide chat if chat has focus, unhide chat if its hidden, and focus chat if unhidden but not focused. Should be a cleaner way to interact with it.
+Numpad hotbar when in "Grid" style will now match the layout of the actual numbpad. Let me know if this causes new issues.
+Various bugs with Miner Alert should be fixed, mute button should work again, as well as miner alert not continuing to run once closed. 
+Added cave centipede hide option, should also enable th em to be picked up with Q
+Hand slots widget now displays equipped quality.
+Windows will now ignore mousedown clicks from mouse4/mouse5. 
+Fixed a Z axis issue when using follow cam and entering/leaving buildings. The fix will disable the "no black load screens" for follow cam, not sure another way around that.
+Added some basic unstucking to farmer bot to navigate around beehives and such. 
+~
+
 1.00.92
 Added LP/HR to pop out study window.
 Toggle chat keybind will now reopen the chat window if it's hidden.

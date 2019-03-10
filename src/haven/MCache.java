@@ -533,12 +533,7 @@ public class MCache {
             final Grid g = grid.get();
             return g.getz(tc.sub(g.ul));
         } else {
-            if(Utils.getpref("defcam", "ortho").equals("follow")) { //follow cam doesn't play nice with getting a 0 axis returned to it.
-                Grid g = getgridt(tc);
-                return(g.getz(tc.sub(g.ul)));
-            } else {
                 return 0;
-            }
         }
     }
 
