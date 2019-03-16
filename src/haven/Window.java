@@ -30,6 +30,7 @@ import static haven.DefSettings.*;
 import static haven.PUtils.blurmask2;
 import static haven.PUtils.rasterimg;
 import static haven.Resource.cdec;
+import haven.HiddenWndData;
 
 import haven.MovableWidget;
 import haven.Theme;
@@ -118,6 +119,7 @@ public class Window extends MovableWidget implements DTarget {
     public final Coord mrgn;
     //close button
     public final IButton cbtn, lbtn;
+    private IButton hbtn;
     private final BufferedImage on, off;
     public final ArrayList<IButton> btns = new ArrayList<>();
 
@@ -129,23 +131,30 @@ public class Window extends MovableWidget implements DTarget {
     public Coord wsz, atl, asz;
     //close position, close size
     public Coord ctl, csz;
+    private boolean hidable = false, hidden;
     private final Collection<Widget> twdgs = new LinkedList<Widget>();
     @RName("wnd")
     public static class $_ implements Factory {
         public Widget create(UI ui, Object[] args) {
-            Coord sz = (Coord) args[0];
-            String cap = (args.length > 1) ? (String) args[1] : null;
-	        boolean lg = (args.length > 2) && ((Integer)args[2] != 0);
-            return (new Window(sz, cap, cap, lg, Coord.z, Coord.z));
+            Coord sz = (Coord)args[0];
+            String cap = (args.length > 1)?(String)args[1]:null;
+            boolean lg = (args.length > 2) && ((Integer)args[2] != 0);
+            if(cap == null || !cap.equals("Belt")) {
+                return (new Window(sz, cap, lg, Coord.z, Coord.z));
+            } else {
+                return (new Window(sz, cap, cap, lg, Coord.z, Coord.z));
+            }
         }
     }
 
-   public Window(Coord sz, String cap, boolean lg, Coord tlo, Coord rbo) {
+
+    public Window(Coord sz, String cap, boolean lg, Coord tlo, Coord rbo) {
 	this.mrgn = lg?dlmrgn:dsmrgn;
 	cbtn = add(new IButton(Theme.fullres("buttons/close"), null, this::close));
 	lbtn = null;
 	on = off = null;
 	origcap = cap;
+
 	chcap(cap);
 	resize2(sz);
 	setfocustab(true);
@@ -159,8 +168,11 @@ public class Window extends MovableWidget implements DTarget {
 	on = lbtn.hover;
 	off = lbtn.up;
 	origcap = cap;
+        if(origcap.equals("Belt"))
+            makeHidable();
 	chcap(cap);
         resize2(sz);
+
         setfocustab(true);
     }
 
@@ -189,9 +201,46 @@ public class Window extends MovableWidget implements DTarget {
         }
     }
 
-    public void addBtn(final String res, final String tt, final Runnable action) {
-        btns.add(add(new IButton(Theme.fullres(res), tt, action)));
+    public void makeHidable() {
+      //  hbtn = add(new IButton("custom/hud/sloth/buttons/hide", "Toggle Transparency", this::toggleHide));
+       // hbtn = addBtn("buttons/hide", null, this::toggleHide);
+        hbtn = addBtn_other("custom/hud/sloth/buttons/hide", "Toggle Transparency", this::toggleHide);
+        if(cap != null) {
+            hidable = HiddenWndData.shouldHide(cap.text);
+            hidden = false;
+            if(hidable) {
+                final BufferedImage tmp = hbtn.down;
+                hbtn.down = hbtn.up;
+                hbtn.up = tmp;
+            }
+        }
     }
+
+    public void toggleHide() {
+        hidable = !hidable;
+        hidden = false;
+        final BufferedImage tmp = hbtn.down;
+        hbtn.down = hbtn.up;
+        hbtn.up = tmp;
+        if(cap != null) {
+            HiddenWndData.saveHide(cap.text, hidable);
+        }
+
+    }
+
+
+    public IButton addBtn(final String res, final String tt, final Runnable action) {
+        final IButton btn = add(new IButton("res/"+Theme.fullres(res), tt, action));
+        btns.add(btn);
+        return btn;
+    }
+
+    public IButton addBtn_other(final String res, final String tt, final Runnable action) {
+        final IButton btn = add(new IButton(res, tt, action));
+        btns.add(btn);
+        return btn;
+    }
+
 
     public void addBtn_base(final String res, final String tt, final Runnable action) {
         btns.add(add(new IButton(res, tt, action)));
@@ -364,6 +413,7 @@ public class Window extends MovableWidget implements DTarget {
             if (cap.text.equals("Study Desk")) {
                 int sizeY = 285;
                 int totalLP = 0;
+                int totalAttn = 0;
                 HashMap<String, Double> studyTimes = new HashMap<String, Double>();
                 for (Widget wdg = this.lchild; wdg != null; wdg = wdg.prev) {
                     if (wdg instanceof Inventory) {
@@ -371,12 +421,14 @@ public class Window extends MovableWidget implements DTarget {
                             try {
                                 Curiosity ci = ItemInfo.find(Curiosity.class, item.item.info());
                                 totalLP += ci.exp;
+                                totalAttn += ci.mw;
                             }catch(NullPointerException qq){}
                             studyTimes.put(item.item.getname(), studyTimes.get(item.item.getname()) == null ? item.item.studytime : studyTimes.get(item.item.getname()) + item.item.studytime);
                         }
                     }
                 }
                 g.image(Text.labelFnd.render("Total LP: " + String.format("%,d", totalLP)).tex(), new Coord(30, 306));
+                g.image(Text.labelFnd.render("Total Attention: " + String.format("%,d", totalAttn)).tex(), new Coord(30, 293));
                 int y = 320;
                 List<Map.Entry<String, Double>> lst = studyTimes.entrySet().stream().sorted((e1, e2)-> e1.getValue().compareTo(e2.getValue())).collect(Collectors.toList());
                 for(Map.Entry<String, Double> entry : lst) {
@@ -437,7 +489,7 @@ public class Window extends MovableWidget implements DTarget {
                     curiolow = add(ColorPreWithLabel("Low Color", CURIOLOW), new Coord(0, y + 35));
                     studyhours = add(new Label(""), new Coord(140, y + 40));
                     curiosliderlabel = add(new Label("Curio Time Target:"), new Coord(0, y + 50));
-                    System.out.println("adding new sliders and stuff");
+                  //  System.out.println("adding new sliders and stuff");
                     curioslider = add(new HSlider(130, 0, 10080, Config.curiotimetarget) {
                         public void added() {
                             updateLabel();
@@ -488,8 +540,10 @@ public class Window extends MovableWidget implements DTarget {
     }
 
     public void draw(GOut g) {
-        drawframe(g);
-	cdraw(g.reclip(atl, asz));
+        if(!hidden) {
+            drawframe(g);
+        }
+        cdraw(g.reclip(atl, asz));
         super.draw(g);
     }
 
@@ -627,7 +681,22 @@ public class Window extends MovableWidget implements DTarget {
     }
 
     public void mousemove(Coord c) {
-            super.mousemove(c);
+        if (hidable) {
+            if (c.isect(Coord.z, sz) || moving()) {
+                hidden = false;
+                cbtn.visible = true;
+                if (lbtn != null)
+                    lbtn.visible = true;
+                btns.forEach(btn -> btn.visible = true);
+            } else {
+                hidden = true;
+                cbtn.visible = false;
+                if (lbtn != null)
+                    lbtn.visible = false;
+                btns.forEach(btn -> btn.visible = false);
+            }
+        }
+        super.mousemove(c);
         }
     public void close() {
         wdgmsg("close");
@@ -646,7 +715,7 @@ public class Window extends MovableWidget implements DTarget {
         if (super.type(key, ev))
             return (true);
         if (key == 27 && Config.escclosewindows) {
-            if(!this.origcap.equals("Chat")) {
+            if(!this.origcap.equals("Chat") && !this.origcap.equals("Minimap")) {
                 wdgmsg("close");
                 return (true);
             }

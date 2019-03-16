@@ -286,7 +286,7 @@ public class BeltWnd extends MovableWidget {
     private int start_slot;
     private int pagecount;
     //What page we're currently on
-    private int page;
+    public int page;
 
     //Belt data
     private final BeltData data;
@@ -392,7 +392,7 @@ public class BeltWnd extends MovableWidget {
         return false;
     }
 
-    private void upd_page() {
+    public void upd_page() {
         DefSettings.global.set("belt."+name+".page", page);
         int i = 0;
         for(BeltBtn btn : btns) {

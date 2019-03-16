@@ -3,7 +3,8 @@ package haven;
 public class QuestWnd extends Window {
     public QuestWnd() {
         super(Coord.z, "Quest Log", "Quest Log");
-	hide();
+	makeHidable();
+        hide();
     }
 
     @Override

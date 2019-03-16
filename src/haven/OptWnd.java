@@ -2160,6 +2160,17 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
+        appender.add(new CheckBox("Disable pick forage keybind (Q by Default) opening/closing gates.") {
+            {
+                a = Config.disablegatekeybind;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("disablegatekeybind", val);
+                Config.disablegatekeybind = val;
+                a = val;
+            }
+        });
         appender.add(new Label("Disable Shift Right Click for :"));
         CheckListbox disableshiftclick = new CheckListbox(320, Math.min(8, Config.disableshiftclick.values().size()), 18 + Config.fontadd) {
             @Override
@@ -2851,7 +2862,7 @@ public class OptWnd extends Window {
             }
         });
 
-        appender.add(new CheckBox("Hide Animals") {
+        appender.add(new CheckBox("Hide Domestic Animals (Except Horses)") {
             {
                 a = Config.hideanimals;
             }
@@ -2859,6 +2870,18 @@ public class OptWnd extends Window {
             public void set(boolean val) {
                 Utils.setprefb("hideanimals", val);
                 Config.hideanimals = val;
+                a = val;
+            }
+        });
+
+        appender.add(new CheckBox("Hide Domestic Horses") {
+            {
+                a = Config.hidehorses;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("hidehorses", val);
+                Config.hidehorses = val;
                 a = val;
             }
         });
@@ -2923,7 +2946,7 @@ public class OptWnd extends Window {
             }
         });
 
-        appender.add(new CheckBox("Draw colored overlay for hidden objects. Hide will need to be toggled if this setting is changed.") {
+        appender.add(new CheckBox("Draw colored overlay for hidden objects. Hide will need to be toggled") {
             {
                 a = Config.showoverlay;
             }

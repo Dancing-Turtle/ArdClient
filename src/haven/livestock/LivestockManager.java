@@ -14,7 +14,7 @@ import javafx.scene.layout.Pane;
 import javax.xml.soap.Detail;
 import java.awt.Color;
 
-public class LivestockManager extends Window {
+public class LivestockManager extends ResizableWnd {
     private final Panel cattle, horses, sheep, pigs, goats, ResetHighlights, HighlightMales, HighlightFemales, Inspect, Slaughter, DropEntrails, DropIntestines, DropMeat, DropBones;
     private Panel current;
     public static final int COLUMN_TITLE_X = 60;
@@ -40,7 +40,7 @@ public class LivestockManager extends Window {
 
     public LivestockManager() {
 
-        super(new Coord(WINDOW_WIDTH, 600), "Livestock Manager");
+        super(Coord.z, "Livestock Manager");
         Coord pc = new Coord(20, 55);
         cattle = add(new Panel(), pc);
         horses = add(new Panel(), pc);
@@ -201,6 +201,7 @@ public class LivestockManager extends Window {
 
 
         chpanel(cattle);
+        pack();
     }
 
 
@@ -248,6 +249,19 @@ public class LivestockManager extends Window {
         }
         else
             super.wdgmsg(sender, msg, args);
+    }
+
+
+    @Override
+    public void resize(Coord sz) {
+        super.resize(sz);
+      //  this.sz = asz.sub(0);
+    }
+
+    @Override
+    protected void added() {
+        super.added();
+      //  this.sz = asz;
     }
 
     @Override
@@ -509,15 +523,15 @@ public class LivestockManager extends Window {
         if (valStr.endsWith("%"))
             valStr = valStr.substring(0, valStr.length() - 1);
         Integer val = new Integer(valStr);
-        if (name.equals("Quality:"))
-        quality = val;
-        if (name.equals("Breeding quality:"))
+        if (name.equals (Resource.getLocString(Resource.BUNDLE_LABEL, "Quality:")))
+            quality = val;
+        if (name.equals (Resource.getLocString(Resource.BUNDLE_LABEL, "Breeding quality:")))
             breedquality = val;
-        if(name.equals("Meat quality:"))
+        if (name.equals (Resource.getLocString(Resource.BUNDLE_LABEL, "Meat quality:")))
             meat = val;
-        if(name.equals("Hide quality:"))
+        if (name.equals (Resource.getLocString(Resource.BUNDLE_LABEL, "Hide quality:")))
             hide = val;
-        if(name.equals("Milk quality:"))
+        if (name.equals (Resource.getLocString(Resource.BUNDLE_LABEL, "Milk quality:")))
             milk = val;
         if(meat > 0 && quality > 0 && !combinedmeat){
             pendingAnimal.put("Meat quality2:", quality * meat / 100);

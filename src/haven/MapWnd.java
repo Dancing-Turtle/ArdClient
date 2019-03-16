@@ -74,7 +74,7 @@ public class MapWnd extends Window {
 
 
     public MapWnd(MapFile file, MapView mv, Coord sz, String title) {
-        super(sz, title, true);
+        super(sz, title,title, true);
         this.mv = mv;
         this.player = new MapLocator(mv);
         viewf = add(new Frame(Coord.z, true));

@@ -95,6 +95,11 @@ public abstract class MovableWidget extends Widget {
 	}
     }
 
+    public boolean moving() {
+        return dm != null;
+    }
+
+
     private void savePosition() {
         if(key != null) {
             final Coord2d rel = relpos();

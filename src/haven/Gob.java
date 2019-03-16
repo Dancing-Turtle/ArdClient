@@ -29,6 +29,7 @@ package haven;
 import haven.purus.BotUtils;
 import haven.purus.pbot.PBotAPI;
 import haven.resutil.BPRadSprite;
+import haven.resutil.WaterTile;
 
 import java.awt.*;
 import java.util.*;
@@ -83,7 +84,7 @@ Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
     public enum Type {
         OTHER(0), DFRAME(1), TREE(2), BUSH(3), BOULDER(4), PLAYER(5), SIEGE_MACHINE(6),  OLDTRUNK(9), GARDENPOT(10), MUSSEL(11), LOC_RESOURCE(12), FU_YE_CURIO(13),
         CLAY(14), EAGLE(15), PLANT(16), MULTISTAGE_PLANT(17), CHEESERACK(18), CUPBOARD(19), TANTUB(20), COOP(21), HUTCH(22), MOTH(23), DUNGEON(24), EYEBALL(25), DUNGKEY(26), ROAD(27), NIDBANE(28), DUNGEONDOOR(29),
-        ROADENDPOINT(30), LIVESTOCK(7), STRANGLEVINE(8), TARKILN(69), SMELTER(70),
+        ROADENDPOINT(30), LIVESTOCK(7), STRANGLEVINE(8), TARKILN(69), SMELTER(70), DOMESTICHORSE(71),
         MOB(32), SNAKE(33),BEAR(34), LYNX(35),SLIME(36), SEAL(37), TROLL(38), WALRUS(39), BAT(40), ANGLER(41),MAMMOTH(42),//anything from 33-63 will work for MOB aggro circles
         WOODEN_SUPPORT(64), STONE_SUPPORT(65), METAL_SUPPORT(66), TROUGH(67), BEEHIVE(68), WAGON(600), WALL(602), DREAMCATCHER(603), HOUSE(604);
 
@@ -311,9 +312,22 @@ Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
         return (ret);
     }
 
+    public Coord3f getc_old() {
+        Moving m = getattr(Moving.class);
+        Coord3f ret = (m != null) ? m.getc() : getrc_old();
+        DrawOffset df = getattr(DrawOffset.class);
+        if (df != null)
+            ret = ret.add(df.off);
+        return (ret);
+    }
+
     public Coord3f getrc() {
         return(glob.map.getzp(rc));
     }
+
+    public Coord3f getrc_old() {
+        return(glob.map.getzp_old(rc));
+    }//only exists because follow cam hates the new getz
 
 
     public double geta() {
@@ -463,8 +477,10 @@ Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             type = Type.TREE;
         else if (name.endsWith("oldtrunk"))
             type = Type.OLDTRUNK;
-        else if(name.contains("pig") || name.contains("sheep") || name.contains("cattle") || (name.contains("goat") && !name.contains("wild")) || name.contains("horse"))
+        else if(name.contains("pig") || name.contains("sheep") || name.contains("cattle") || (name.contains("goat") && !name.contains("wild")))
             type = Type.LIVESTOCK;
+        else if(name.contains("horse") && !name.contains("wild"))
+            type = Type.DOMESTICHORSE;
         else if (name.startsWith("gfx/terobjs/ttub"))
             type = Type.TANTUB;
         else if(name.startsWith("gfx/kritter/nidbane/nidbane"))
@@ -744,6 +760,12 @@ Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
                             rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, true)), null);
                         }
                     }
+                    else if (Config.hidehorses && type != null && type == Type.DOMESTICHORSE) {
+                        GobHitbox.BBox bbox = GobHitbox.getBBox(this);
+                        if (bbox != null && Config.showoverlay) {
+                            rl.add(new Overlay(new GobHitbox(this, bbox.a, bbox.b, true)), null);
+                        }
+                    }
                     else if (Config.hideDCatchers && type!= null && type == Type.DREAMCATCHER) {
                         GobHitbox.BBox bbox = GobHitbox.getBBox(this);
                         if (bbox != null && Config.showoverlay) {
@@ -1003,6 +1025,13 @@ Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
                 c.y = -c.y;
                 if (Config.disableelev)
                     c.z = 0;
+                if(type == Type.MOB) {
+                    try {
+                        Tiler tl = glob.map.tiler(glob.map.gettile_safe(rc.floor(MCache.tilesz)));
+                        if (tl instanceof WaterTile)
+                            c.z += 5;
+                    }catch(Exception e ){}//ignore loading throws here
+                }
                 if ((this.c == null) || !c.equals(this.c))
                     xl.update(Transform.makexlate(new Matrix4f(), this.c = c));
                 if (this.a != Gob.this.a)

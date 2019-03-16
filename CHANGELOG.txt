@@ -1,3 +1,22 @@
+1.00.97
+Switched map loading logic again to fix slowed map loads caused by an attempt to fix follow cam not finding a z axis coordinate to snap to. 
+Added total mental weight required to study desk printout.
+Readded using shift 1-5 to go through the first 5 pages of the main 1-0 hotbar. These shift 1-5 keybinds will override any set shift 1-5 keybinds.
+Added "Medlar" trees to tree list.
+Fixed minimap closing if you hit escape with it focused.
+Converted livestock manager over to a resizable window, going too narrow will hide buttons, but can make the window shorter in general now.
+Slight change to how windows save position, mostly this allows containers to not open on top of eachother making it easier to see contents.
+Switched quest helper window over to the window type that saves position and can be locked.
+Added toggle to "Control settings" to disable pick forage keybind from opening/closing gates.
+Fixed livestock manager not working for languages other than English
+Large update to translation file adding new labels/button strings for translation.
+Broke out horses from "hide animals" toggle into their own "hide horses" toggle.
+Changed proximity aggro to not target domestic horses. 
+Merged boshaw change to make certain windows "hideable." Selecting this button on the window will make the frame and background transparent unless the window has your mouseover focus. Currently the list is quest log, belt, and minimap. Accepting ideas for more windows to add this functionality to. Button looks horrible on default theme, not sure what to do about that - Belt caption doesn't have enough space.
+Added boshaw change that elevates mob types 5 points if theyre in water. Should make everything easier to pick up except foxes.
+Added treatment display for midge bites.
+~
+
 1.00.96
 Merged with Boshaw, who added locks to hotkey bars. Locked will allow you to drop things onto the bar, but not move/remove them.
 ~

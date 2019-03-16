@@ -25,7 +25,7 @@ public class MinimapWnd extends ResizableWnd {
         this.minimap = mm;
         final int spacer = 5;
 
-
+        makeHidable();
         final IButton pclaim = add(new IButton("gfx/hud/wndmap/btns/claim", "Show Personal Claims", () ->{
             if((ui.gui.map != null) && !ui.gui.map.visol(0)) {
                 DefSettings.SHOWPCLAIM.set(true);

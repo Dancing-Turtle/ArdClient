@@ -28,7 +28,7 @@ public class PickForageable implements Runnable {
         synchronized (gui.map.glob.oc) {
             for (Gob gob : gui.map.glob.oc) {
                 Resource res = null;
-                boolean gate;
+                boolean gate = false;
                 try {
                     res = gob.getres();
                 } catch (Loading l) {
@@ -36,6 +36,7 @@ public class PickForageable implements Runnable {
                 if (res != null) {
                     CheckListboxItem itm = Config.icons.get(res.basename());
                     Boolean hidden = Boolean.FALSE;
+                    if(!Config.disablegatekeybind)
                     gate = gates.contains(res.basename());
                     if (itm == null)
                         hidden = null;

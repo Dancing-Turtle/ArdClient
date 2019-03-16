@@ -176,6 +176,7 @@ public class Config {
     public static boolean showarchvector =  Utils.getprefb("showarchvector", false);
     //public static boolean showcddelta =  Utils.getprefb("showcddelta", false);
     public static boolean disabledrinkhotkey =  Utils.getprefb("disabledrinkhotkey", false);
+    public static boolean disablegatekeybind =  Utils.getprefb("disablegatekeybind", false);
     public static boolean autologout =  Utils.getprefb("autologout", false);
     public static int combatkeys =  Utils.getprefi("combatkeys", 0);
     public static boolean logcombatactions =  Utils.getprefb("logcombatactions", false);
@@ -239,6 +240,7 @@ public class Config {
     public static boolean hideCrops = Utils.getprefb("hideCrops", true);
     public static boolean hideWalls = Utils.getprefb("hideWalls", true);
     public static boolean hideanimals = Utils.getprefb("hideanimals", false);
+    public static boolean hidehorses = Utils.getprefb("hidehorses", false);
     public static boolean hideWagons = Utils.getprefb("hideWagons", false);
     public static boolean hideHouses = Utils.getprefb("hideHouses", false);
     public static boolean hideBushes = Utils.getprefb("hideBushes", true);
@@ -433,6 +435,7 @@ public class Config {
         put("persimmontree", new CheckListboxItem("Persimmon"));
         put("mayflower", new CheckListboxItem("Mayflower"));
         put("towercap", new CheckListboxItem("Towercaps"));
+        put("medlar", new CheckListboxItem("Medlar"));
     }};
 
     public final static HashMap<String, CheckListboxItem> icons = new HashMap<String, CheckListboxItem>(60) {{
@@ -785,7 +788,7 @@ public class Config {
         put("Snek!","sfx/snek");
     }};
 
-    public final static HashMap<String, String[]> cures = new HashMap<String, String[]>(20) {{
+    public final static HashMap<String, String[]> cures = new HashMap<String, String[]>(23) {{
         put("paginae/wound/antburn", new String[]{
                 "gfx/invobjs/herbs/yarrow"
         });
@@ -799,6 +802,9 @@ public class Config {
         });
         put("paginae/wound/bruise", new String[]{
                 "gfx/invobjs/leech"
+        });
+        put("paginae/wound/midgebite", new String[]{
+                "gfx/invobjs/herbs/yarrow"
         });
         put("paginae/wound/concussion", new String[]{
                 "gfx/invobjs/coldcompress",

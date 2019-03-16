@@ -222,7 +222,8 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
 	    if(Math.abs(tangl - angl) < 0.0001)
                 angl = tangl;
 
-            Coord3f cc = getcc();
+           // Coord3f cc = getcc();
+            Coord3f cc = getcc_old();
             if(Config.disableelev)
                 cc.z = 0;
             cc.y = -cc.y;
@@ -1151,6 +1152,14 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                  return (glob.map.getzp(cc));
     }
 
+    public Coord3f getcc_old() {
+        Gob pl = player();
+        if(pl != null)
+            return (pl.getc_old());
+        else
+            return (glob.map.getzp(cc));
+    }//only exists because follow cam hates the new getz
+
     public static class ClickContext extends RenderContext {
     }
 
@@ -1935,13 +1944,14 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                        /* if (gob.type == Gob.Type.PLAYER || gob.type == Gob.Type.PROXAGGRO || gob.type == Gob.Type.MAMMOTH || gob.type == Gob.Type.BAT || gob.type == Gob.Type.EAGLE
                                 || gob.type == Gob.Type.SLIME || gob.type == Gob.Type.BEAR || gob.type == Gob.Type.LYNX || gob.type == Gob.Type.SEAL
                                 || gob.type == Gob.Type.TROLL || gob.type == Gob.Type.WALRUS && !gob.isplayer()) {*/
-                       if(!gob.isplayer())
-                       if(gob.type == Gob.Type.PLAYER || (gob.getres() != null && gob.getres().name.startsWith("gfx/kritter/"))){
-                        //   System.out.println("Prox aggro 1 triggered.");
-                            double dist = gob.rc.dist(mc);
-                            if ((target == null || dist < target.rc.dist(mc)) && dist <= 5 * tilesz.x)
-                                target = gob;
-                        }
+                       if(!gob.isplayer()) {
+                           if (gob.type == Gob.Type.PLAYER || (gob.getres() != null && gob.getres().name.startsWith("gfx/kritter/") && gob.type != Gob.Type.DOMESTICHORSE)) {
+                               //   System.out.println("Prox aggro 1 triggered.");
+                               double dist = gob.rc.dist(mc);
+                               if ((target == null || dist < target.rc.dist(mc)) && dist <= 5 * tilesz.x)
+                                   target = gob;
+                           }
+                       }
                     }
                     if (target != null) {
                         wdgmsg("click", target.sc, target.rc.floor(posres), 1, 0, 0, (int) target.id, target.rc.floor(posres), 0, -1);
@@ -1972,13 +1982,14 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                       /*  if (gob.type == Gob.Type.PROXAGGRO || gob.type == Gob.Type.MAMMOTH || gob.type == Gob.Type.BAT || gob.type == Gob.Type.EAGLE
                                  || gob.type == Gob.Type.SLIME || gob.type == Gob.Type.BEAR || gob.type == Gob.Type.LYNX || gob.type == Gob.Type.SEAL
                                 || gob.type == Gob.Type.TROLL || gob.type == Gob.Type.WALRUS && !gob.isplayer()) {*/
-                      if(!gob.isplayer())
-                        if(gob.getres()!= null && gob.getres().name.startsWith("gfx/kritter/")){
-                         //   System.out.println("Prox aggro 2 triggered.");
-                            double dist = gob.rc.dist(mc);
-                            if ((target == null || dist < target.rc.dist(mc)) && dist <= 5 * tilesz.x)
-                                target = gob;
-                        }
+                      if(!gob.isplayer()) {
+                          if (gob.getres() != null && gob.getres().name.startsWith("gfx/kritter/") && gob.type != Gob.Type.DOMESTICHORSE) {
+                              //   System.out.println("Prox aggro 2 triggered.");
+                              double dist = gob.rc.dist(mc);
+                              if ((target == null || dist < target.rc.dist(mc)) && dist <= 5 * tilesz.x)
+                                  target = gob;
+                          }
+                      }
                     }
                     if (target != null) {
                         wdgmsg("click", target.sc, target.rc.floor(posres), 1, 0, 0, (int) target.id, target.rc.floor(posres), 0, -1);

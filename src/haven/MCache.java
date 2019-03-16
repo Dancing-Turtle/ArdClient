@@ -528,7 +528,6 @@ public class MCache {
     }
 
     public int getz_safe(Coord tc) {
-    if (Config.noloadscreen){
         final Optional<Grid> grid = getgridto(tc);
         if (grid.isPresent()) {
             final Grid g = grid.get();
@@ -537,10 +536,14 @@ public class MCache {
             return 0;
         }
     }
-    else {
-            Grid g = getgridt(tc);
-            return(g.getz(tc.sub(g.ul)));
-        }
+
+    public double getcz_old(double px, double py) {
+        double tw = tilesz.x, th = tilesz.y;
+        Coord ul = new Coord(Utils.floordiv(px, tw), Utils.floordiv(py, th));
+        double sx = Utils.floormod(px, tw) / tw;
+        double sy = Utils.floormod(py, th) / th;
+        return(((1.0f - sy) * (((1.0f - sx) * getz(ul)) + (sx * getz(ul.add(1, 0))))) +
+                (sy * (((1.0f - sx) * getz(ul.add(0, 1))) + (sx * getz(ul.add(1, 1))))));
     }
 
     public double getcz(double px, double py) {
@@ -556,6 +559,10 @@ public class MCache {
         return(getcz(pc.x, pc.y));
     }
 
+    public double getcz_old(Coord2d pc) {
+        return(getcz_old(pc.x, pc.y));
+    } //only exists because follow cam hates the new getz
+
     public float getcz(float px, float py) {
         return((float)getcz((double)px, (double)py));
     }
@@ -567,6 +574,10 @@ public class MCache {
     public Coord3f getzp(Coord2d pc) {
         return(new Coord3f((float)pc.x, (float)pc.y, (float)getcz(pc)));
     }
+
+    public Coord3f getzp_old(Coord2d pc) {
+        return(new Coord3f((float)pc.x, (float)pc.y, (float)getcz_old(pc)));
+    }//only exists because follow cam hates the new getz
 
 
 

@@ -211,9 +211,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         timerswnd.hide();
         add(timerswnd, new Coord(HavenPanel.w / 2 - timerswnd.sz.x / 2, 100));
 
-        livestockwnd = new LivestockManager();
-        livestockwnd.hide();
-        add(livestockwnd, new Coord(HavenPanel.w / 2 - timerswnd.sz.x / 2, 100));
+
 
         quickslots = new QuickSlotsWdg();
         if (!Config.quickslots)
@@ -248,10 +246,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             saferadius = 2;
         else if(!Config.showTroughrad && !Config.showBeehiverad)
             saferadius = 1;
-
-        this.questhelper = new QuestHelper();
-        this.questhelper.hide();
-        this.add(this.questhelper, new Coord(HavenPanel.w / 2 - this.timerswnd.sz.x / 2, 100));
 
         fixAlarms();
     }
@@ -300,7 +294,10 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         syslog = chat.add(new ChatUI.Log("System"));
         opts.c = sz.sub(opts.sz).div(2);
         pointer = add(new MapPointer());
-
+        livestockwnd = add(new LivestockManager(), new Coord(0,sz.y-200));
+        livestockwnd.hide();
+        this.questhelper = add(new QuestHelper(), new Coord(0, sz.y-200));
+        this.questhelper.hide();
     }
 
    /* public void toggleCraftList() {
@@ -1425,7 +1422,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         Config.hidegobs = !Config.hidegobs;
         Utils.setprefb("hidegobs", Config.hidegobs);
         if (map != null)
-            map.refreshGobsHidable();
+            map.refreshGobsAll();
     }
 
     public void toggleGridCentering(){
@@ -1584,7 +1581,32 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     }
 
     public boolean globtype(char key, KeyEvent ev) {
-        if (key == ':') {
+        if(ev.isShiftDown() && ev.getKeyCode() == 49) {
+            nbelt.page = 0;
+            nbelt.upd_page();
+            return true;
+        }
+        else if(ui.modshift && ev.getKeyCode() == 50) {
+            nbelt.page = 1;
+            nbelt.upd_page();
+            return true;
+        }
+        else if(ui.modshift && ev.getKeyCode() == 51) {
+            nbelt.page = 2;
+            nbelt.upd_page();
+            return true;
+        }
+        else if(ui.modshift && ev.getKeyCode() == 52) {
+            nbelt.page = 3;
+            nbelt.upd_page();
+            return true;
+        }
+        else if(ui.modshift && ev.getKeyCode() == 53) {
+            nbelt.page = 4;
+            nbelt.upd_page();
+            return true;
+        }
+        else if (key == ':') {
             entercmd();
             return true;
         } else if ((key == 27) && (map != null) && !map.hasfocus) {

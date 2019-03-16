@@ -12,11 +12,13 @@ public class QuestHelper extends Window{
     public QuestHelper.QuestList questList;
 
     public QuestHelper() {
-        super(new Coord(300, 380), "Quest Helper");
+        super(Coord.z, "Quest Helper","Quest Helper");
         new Coord(20, 55);
         this.add(new QuestHelper.PButton(80, "Refresh", this.questList), new Coord(100, 20));
         this.questList = new QuestHelper.QuestList(270, 13, this);
         this.add(this.questList, new Coord(10, 55));
+        makeHidable();
+        pack();
     }
 
     public void wdgmsg(Widget sender, String msg, Object... args) {
@@ -45,6 +47,7 @@ public class QuestHelper extends Window{
             this.questList.refresh = true;
             this.questList.quests.sort(this.questList.comp);
         }
+        presize();
     }
 
     public void close() {
