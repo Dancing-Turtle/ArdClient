@@ -49,7 +49,13 @@ public enum Action {
     AGGRO_CLOSEST(GameUI::aggroClosest,"Aggro closest player."),
     CYCLE_SPEED(GameUI::cycleSpeed,"Cycles between the run speeds."),
     SWITCH_TARGETS(GameUI::SwitchTargets,"Switches combat targets"),
-    TOGGLE_QUESTHELPER(GameUI::toggleQuestHelper,"Toggles Questhelper window");
+    TOGGLE_QUESTHELPER(GameUI::toggleQuestHelper,"Toggles Questhelper window"),
+    BELT_PAGEONE(GameUI::beltPageSwitch1,"NBelt page 1"),
+    BELT_PAGETWO(GameUI::beltPageSwitch2,"NBelt page 2"),
+    BELT_PAGETHREE(GameUI::beltPageSwitch3,"NBelt page 3"),
+    BELT_PAGEFOUR(GameUI::beltPageSwitch4,"NBelt page 4"),
+    BELT_PAGEFIVE(GameUI::beltPageSwitch5,"NBelt page 5");
+
 
     
     public final String name;

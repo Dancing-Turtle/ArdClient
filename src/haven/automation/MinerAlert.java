@@ -132,7 +132,6 @@ public class MinerAlert extends Window {
             while (gui.getwnd("Miner Alert") != null) {
                 BotUtils.sleep(5000);//sleep 5 seconds every iteration, no reason to update more than once every 5 seconds.
                 try {
-                    System.out.println("Miner alert running mute status : "+audiomute+ " terminate is : "+terminate);
                     countiron = 0;
                     countgold = 0;
                     countsilver = 0;
@@ -150,11 +149,11 @@ public class MinerAlert extends Window {
                                 if (!slimecount.contains(allGobs.get(i)))
                                     slimecount.add(allGobs.get(i));
                             }
-                        } catch (NullPointerException | Loading e) {
-                        }
+                        } catch (NullPointerException | Loading e) { }
                     }
                     countslimes = list.size();
-                    // Gob player = ((plgob < 0) ? null : glob.oc.getgob(plgob));
+                    while(player == null)
+                        BotUtils.sleep(10); //sleep if player is null, teleporting through a road?
                     Coord pltc = new Coord((int) player.getc().x / 11, (int) player.getc().y / 11);
 
                     for (int x = -44; x < 44; x++) {
@@ -255,7 +254,6 @@ public class MinerAlert extends Window {
                         if (now - lasterror > 15) {
                             BotUtils.sysMsg("Silver visible on screen!!", Color.green);
                             if (!audiomute) {
-                                System.out.println("playign silver effect mute status is : "+audiomute);
                                 Audio.play(silversfx);
                             }
                             lasterror = now;

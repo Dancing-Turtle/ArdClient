@@ -139,7 +139,7 @@ public class Window extends MovableWidget implements DTarget {
             Coord sz = (Coord)args[0];
             String cap = (args.length > 1)?(String)args[1]:null;
             boolean lg = (args.length > 2) && ((Integer)args[2] != 0);
-            if(cap == null || !cap.equals("Belt")) {
+            if(cap != null && cap.equals((Resource.getLocString(Resource.BUNDLE_WINDOW, "Cupboard")))) {
                 return (new Window(sz, cap, lg, Coord.z, Coord.z));
             } else {
                 return (new Window(sz, cap, cap, lg, Coord.z, Coord.z));
@@ -168,7 +168,7 @@ public class Window extends MovableWidget implements DTarget {
 	on = lbtn.hover;
 	off = lbtn.up;
 	origcap = cap;
-        if(origcap.equals("Belt"))
+        if(origcap.equals((Resource.getLocString(Resource.BUNDLE_WINDOW, "Belt"))))
             makeHidable();
         chcap(Resource.getLocString(Resource.BUNDLE_WINDOW, cap));
         resize2(sz);

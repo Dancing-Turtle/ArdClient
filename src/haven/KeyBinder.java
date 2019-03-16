@@ -113,7 +113,11 @@ public class KeyBinder {
 	add(KeyEvent.VK_R,CTRL,CYCLE_SPEED);
 	add(KeyEvent.VK_TAB,0,SWITCH_TARGETS);
 	add(KeyEvent.VK_Q,ALT,TOGGLE_QUESTHELPER);
-	//add(KeyEvent.VK_TAB,NONE,TARGET_CLOSEST);
+	add(KeyEvent.VK_1,ALT,BELT_PAGEONE);
+	add(KeyEvent.VK_2,ALT,BELT_PAGETWO);
+	add(KeyEvent.VK_3,ALT,BELT_PAGETHREE);
+	add(KeyEvent.VK_4,ALT,BELT_PAGEFOUR);
+	add(KeyEvent.VK_5,ALT,BELT_PAGEFIVE);
     }
     
     private static synchronized void store() {

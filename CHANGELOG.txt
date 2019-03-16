@@ -1,3 +1,13 @@
+1.00.100
+Added 5 new keybinds for belt page switching, default alt1 - alt5.
+Fixed crash issue with miner alert and roads.
+Reversed window saving logic over to only ignore saved position for "Cupboard" currently, so multiple can be opened without stacking.
+~
+
+1.00.99
+Quick commit to remove the shift 1-5 belt change, will move to keybinder.
+~
+
 1.00.98
 Changed feast table and study desk logic over to pull translated local strings, should now work for languages other than English.
 Added some more items that need translated to language file.

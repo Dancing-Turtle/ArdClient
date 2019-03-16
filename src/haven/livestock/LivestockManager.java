@@ -559,7 +559,7 @@ public class LivestockManager extends ResizableWnd {
         }
         pendingAnimal.put(name, val);
         pendingAnimal.attributeResolved();
-        System.out.println("attributes status : "+pendingAnimal.hasAllAttributes()+" size : "+pendingAnimal.size()+" resolved is "+name);
+       // System.out.println("attributes status : "+pendingAnimal.hasAllAttributes()+" size : "+pendingAnimal.size()+" resolved is "+name);
 
 
 

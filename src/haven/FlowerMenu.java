@@ -155,7 +155,6 @@ public class FlowerMenu extends Widget {
                     Thread.sleep(50);
                 }catch(InterruptedException idkheh){}
                 gui.speedget.set(2);
-                System.out.println("Horsemounter exited");
             }catch(ConcurrentModificationException e){}
         }
     }
