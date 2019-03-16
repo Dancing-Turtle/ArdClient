@@ -2,7 +2,7 @@ package haven;
 
 public class QuestWnd extends Window {
     public QuestWnd() {
-        super(Coord.z, "Quest Log", "Quest Log");
+        super(Coord.z, (Resource.getLocString(Resource.BUNDLE_WINDOW, "Quest Log")), "Quest Log");
 	makeHidable();
         hide();
     }

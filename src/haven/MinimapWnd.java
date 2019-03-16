@@ -21,7 +21,7 @@ public class MinimapWnd extends ResizableWnd {
 
 
     public MinimapWnd(final LocalMiniMap mm) {
-        super(Coord.z, "Minimap");
+        super(Coord.z, (Resource.getLocString(Resource.BUNDLE_WINDOW, "Minimap")));
         this.minimap = mm;
         final int spacer = 5;
 

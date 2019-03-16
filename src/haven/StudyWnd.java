@@ -7,7 +7,7 @@ public class StudyWnd extends GameUI.Hidewnd {
 	StudyInfo info;
 
 	StudyWnd() {
-		super(Coord.z, "Study");
+		super(Coord.z, (Resource.getLocString(Resource.BUNDLE_WINDOW, "Study")));
 	}
 
 	public void setStudy(Inventory inventory) {

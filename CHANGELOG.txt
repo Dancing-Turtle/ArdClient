@@ -1,3 +1,10 @@
+1.00.98
+Changed feast table and study desk logic over to pull translated local strings, should now work for languages other than English.
+Added some more items that need translated to language file.
+Switched windows back to pulling in translated values instead of hard coded english. 
+Please let me know what bots or features don't work because of using a language other than English so I can fix them.
+~
+
 1.00.97
 Switched map loading logic again to fix slowed map loads caused by an attempt to fix follow cam not finding a z axis coordinate to snap to. 
 Added total mental weight required to study desk printout.

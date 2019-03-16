@@ -155,7 +155,7 @@ public class Window extends MovableWidget implements DTarget {
 	on = off = null;
 	origcap = cap;
 
-	chcap(cap);
+	chcap(Resource.getLocString(Resource.BUNDLE_WINDOW, cap));
 	resize2(sz);
 	setfocustab(true);
     }
@@ -170,7 +170,7 @@ public class Window extends MovableWidget implements DTarget {
 	origcap = cap;
         if(origcap.equals("Belt"))
             makeHidable();
-	chcap(cap);
+        chcap(Resource.getLocString(Resource.BUNDLE_WINDOW, cap));
         resize2(sz);
 
         setfocustab(true);
@@ -365,7 +365,7 @@ public class Window extends MovableWidget implements DTarget {
 
 
         try {
-            if(BotUtils.istable(this)){
+            if (this.cap.text.equals (Resource.getLocString(Resource.BUNDLE_WINDOW, "Table"))){
                 add(new Button(60, "Eat All") {
                     public void click() {
                         Resource curs = ui.root.getcurs(c);
@@ -410,7 +410,7 @@ public class Window extends MovableWidget implements DTarget {
 
             }
 
-            if (cap.text.equals("Study Desk")) {
+            if (this.cap.text.equals (Resource.getLocString(Resource.BUNDLE_WINDOW, "Study Desk"))){
                 int sizeY = 285;
                 int totalLP = 0;
                 int totalAttn = 0;

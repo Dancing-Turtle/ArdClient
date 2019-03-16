@@ -382,7 +382,7 @@ public class FlaxBot extends Window {
                             if (BotUtils.getItemAtHand() != null)
                                 BotUtils.dropItem(0);
                             BotUtils.pfRightClick(barrel, 0);
-                            BotUtils.waitForWindow("Barrel");
+                            BotUtils.waitForWindow((Resource.getLocString(Resource.BUNDLE_WINDOW, "Barrel")));
                             if (BotUtils.getItemAtHand() != null) {
                                 gameui().map.wdgmsg("itemact", Coord.z, barrel.rc.floor(posres), 0, 0, (int) barrel.id,
                                         barrel.rc.floor(posres), 0, -1);
@@ -430,7 +430,7 @@ public class FlaxBot extends Window {
                                         barrel = BotUtils.findNearestBarrel(2000,blacklist);
                                         BotUtils.pfRightClick(barrel, 0);
                                         int retryclick = 0;
-                                        while(gui.getwnd("Barrel") == null){
+                                        while(gui.getwnd((Resource.getLocString(Resource.BUNDLE_WINDOW, "Barrel"))) == null){
                                             if(retryclick > 200){
                                                 retryclick = 0;
                                                 BotUtils.pfRightClick(barrel,0);
