@@ -334,6 +334,23 @@ public class PBotAPI {
 	}
 	
 	/**
+	 * Makes a stockpile from the item in the hand
+	 */
+	public static void makePile() {
+		gui.map.wdgmsg("itemact", getCenterScreenCoord(), player().rc.floor(posres), 0);
+	}
+
+	/**
+	 * Use to place something, for example, a stockpile
+	 * 11 offset = 1 tile
+	 * @param x Offset from player to place stockpile to
+	 * @param y Offset from player to place stockpile to
+	 */
+	public static void placeThing(int x, int y) {
+		gui.map.wdgmsg("place", player().rc.add(x, y).floor(posres), 0, 1, 0);
+	}
+
+	/**
 	 * Destroys the given gob
 	 * @param gob Gob to destroy
 	 */

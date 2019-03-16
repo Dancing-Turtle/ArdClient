@@ -531,6 +531,14 @@ public class MenuGrid extends Widget {
                         new Thread(new EquipWeapon(gui), "EquipWeapon").start();
                     }}
         ));
+        addSpecial(new SpecialPagina(this, "paginae::amber::equipsacks",
+                Resource.local().load("paginae/amber/equipsacks"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                        new Thread(new EquipSacks(gui), "EquipSacks").start();
+                    }}
+        ));
         addSpecial(new SpecialPagina(this, "paginae::amber::slicecheese",
                 Resource.local().load("paginae/amber/SliceCheese"),
                 (pag) -> {
@@ -1044,6 +1052,9 @@ public class MenuGrid extends Widget {
                 ui.gui.map.enol(4, 5);
             else
                 ui.gui.map.disol(4, 5);
+
+            if(Config.noquests)
+                gui.questwnd.hide();
             togglestuff = false;
         }
     }

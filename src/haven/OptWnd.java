@@ -61,6 +61,7 @@ public class OptWnd extends Window {
     public static final int VERTICAL_AUDIO_MARGIN = 5;
     public final Panel main, video, audio, display, map, general, combat, control, uis,uip, quality, flowermenus, soundalarms, hidesettings, studydesksettings, keybindsettings, chatsettings, clearboulders, clearbushes, cleartrees, clearhides;
     public Panel current;
+    public CheckBox discordcheckbox;
 
     public void chpanel(Panel p) {
         if (current != null)
@@ -2300,7 +2301,7 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
-        appender.add(new CheckBox("Hide quests panel") {
+        appender.add(new CheckBox("Hide quests panel on login") {
             {
                 a = Config.noquests;
             }
@@ -2728,17 +2729,19 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
-        appender.add(new CheckBox("Log village chat to Discord - Warning, best used if only one person is using on an alt."){
+        discordcheckbox = new CheckBox("Log village chat to Discord - Warning, best used if only one person is using on an alt."){
             {
                 a = Config.discordchat;
             }
 
             public void set(boolean val) {
-                Utils.setprefb("discordchat", val);
+                final String charname = gameui().chrid;
+                Utils.setprefb("discordchat_"+charname, val);
                 Config.discordchat = val;
                 a = val;
             }
-        });
+        };
+        appender.add(discordcheckbox);
         appender.addRow(new Label("Enter Discord channel name for village chat output."),
                 new TextEntry(150, Config.discordchannel) {
                     @Override

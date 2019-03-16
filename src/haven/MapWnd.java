@@ -57,7 +57,7 @@ public class MapWnd extends Window {
     public final MarkerList list;
     private final Locator player;
     private final Widget toolbar;
-    private final Widget zoombar;
+    public final Widget zoombar;
     private final Frame viewf, listf, fdropf;
     private final Dropbox<Pair<String, String>> fdrop;
     private TextEntry namesel;
@@ -67,6 +67,7 @@ public class MapWnd extends Window {
     private List<Marker> markers = Collections.emptyList();
     private int markerseq = -1;
     private boolean domark = false;
+    public Tex zoomtex = null;
     private final Collection<Runnable> deferred = new LinkedList<>();
     private static final Tex plx = Text.renderstroked("\u2716",  Color.red, Color.BLACK, Text.num12boldFnd).tex();
     private  Predicate<Marker> filter = (m -> true);
@@ -112,9 +113,8 @@ public class MapWnd extends Window {
         resize(sz);
     }
 
-    private class ZoomBar extends Widget {
+    public class ZoomBar extends Widget {
         private final static int btnsz = 21;
-        private Tex zoomtex = null;
         public ZoomBar() {
             super(new Coord(btnsz * 2 + 20, btnsz));
             add(new IButton("gfx/hud/worldmap/minus", "", "", "") {
@@ -211,12 +211,12 @@ public class MapWnd extends Window {
                 //Make the line first
                 g.chcolor(Color.MAGENTA);
                 final Coord cloc = xlate(ploc);
-                last = xlate(new Location(ploc.seg, ploc.tc.add(movingto.floor(tilesz).sub(pc))));
+                last = xlate(new Location(ploc.seg, ploc.tc.add(movingto.floor(tilesz).sub(pc).div(scalef()))));
                 if(last != null && cloc != null) {
                     g.dottedline(cloc, last, 2);
                     if (queue.hasNext()) {
                         while (queue.hasNext()) {
-                            final Coord next = xlate(new Location(ploc.seg, ploc.tc.add(queue.next().floor(tilesz).sub(pc))));
+                            final Coord next = xlate(new Location(ploc.seg, ploc.tc.add(queue.next().floor(tilesz).sub(pc).div(scalef()))));
                             if(next != null) {
                                 g.dottedline(last, next, 2);
                                 last = next;

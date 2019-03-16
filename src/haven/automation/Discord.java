@@ -89,7 +89,9 @@ public class Discord extends ListenerAdapter implements Runnable {
     }
 
     public static void SwitchMessageFlag(){
+       // System.out.println("switch message flag fired old : "+discordmessage);
         discordmessage = !discordmessage;
+        //System.out.println("new : "+discordmessage);
     }
 
     @Override
@@ -193,7 +195,7 @@ public class Discord extends ListenerAdapter implements Runnable {
         String msg = message.getContentDisplay();
         channelfinal = event.getChannel();
 
-        System.out.println("Channelfinal = : " + channelfinal.getName());
+       // System.out.println("Channelfinal = : " + channelfinal.getName());
 
 
         String[] SplitMessage = msg.split(" ");

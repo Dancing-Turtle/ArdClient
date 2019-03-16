@@ -698,7 +698,7 @@ public class ChatUI extends Widget {
                 for(TextChannel loop:haven.automation.Discord.channels)
                     if (loop.getName().equals(Config.discordchannel) && !Discord.discordmessage) {
                         loop.sendMessage(gui.getparent(GameUI.class).buddies.getCharName() + ": " + text).queue();
-                        System.out.println("Discord message5 : "+Discord.discordmessage);
+                       // System.out.println("Discord message5 : "+Discord.discordmessage);
                     }else
                         Discord.SwitchMessageFlag();
             }
@@ -896,16 +896,16 @@ public class ChatUI extends Widget {
                 } else {
                     Message cmsg = new NamedMessage(from, line, fromcolor(from), iw());
                     append(cmsg);
-                    System.out.println("Message Received : "+((NamedMessage) cmsg).text);
                    // if (urgency > 0)
                     notify(cmsg, 1);
                     if(Config.discordchat && this.name().equals(Config.chatalert) && Discord.jdalogin!=null && !cmsg.text().text.contains(Discord.botname)&& !Discord.discordmessage) {
-                        for (TextChannel loop : haven.automation.Discord.channels)
+                        for (TextChannel loop : haven.automation.Discord.channels) {
                             if (loop.getName().equals(Config.discordchannel)) {
                                 loop.sendMessage(name + ": " + cmsg.text().text).queue();
-                                Discord.SwitchMessageFlag();
-                                System.out.println("Discord message3 : "+Discord.discordmessage);
+                             //   Discord.SwitchMessageFlag();
+                              //  System.out.println("Discord message3 : " + Discord.discordmessage);
                             }
+                        }
                     }
                   //  notify(cmsg, urgency);
                     save(name, cmsg.text().text);

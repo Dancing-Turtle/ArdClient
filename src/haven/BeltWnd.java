@@ -459,7 +459,7 @@ public class BeltWnd extends MovableWidget {
         down.c = new Coord(x * (Inventory.invsq.sz().x + 2) + up.sz.x + 2,
                 y * (Inventory.invsq.sz().y + 2));
 	rotate.c = up.c.add(0, up.sz.y + 2);
-	lock.c = rotate.c.add(rotate.sz.x + 2, + 2);
+	lock.c = rotate.c.add(rotate.sz.x + 2, 0);
     }
 
     private void reposition() {
@@ -490,7 +490,7 @@ public class BeltWnd extends MovableWidget {
                     up.c = new Coord(n, 0);
                     down.c = new Coord(n, up.sz.y + 2);
                     rotate.c = up.c.add(up.sz.x + 2, 0);
-                    lock.c = rotate.c.add(2, rotate.sz.y + 2);
+                    lock.c = rotate.c.add(0, rotate.sz.y + 2);
                     break;
             }
         }

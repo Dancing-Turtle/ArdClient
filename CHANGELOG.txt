@@ -1,3 +1,14 @@
+1.00.101
+Fixed large map zoom indicator not updating when using mousescroll.
+Think I finally fixed large map movequeue zoom offset/drawing.
+Rewrote/optimized "EquipWeapon" script. Will now find all weapons in inventory and belt and prioritize Sword>Battleaxe>Axe. Will do nothing if a Sword/Battleaxe is already equipped, and should no longer end with something stuck on your mouse cursor. 
+Fixed hide quest panel on login toggle not working. Quest window can be reopened if hidden by selecting a quest from your character window.
+Added "EquipSacks" script that will attempt to equip up to 2 traveler sacks or bindles.
+Added a registry entry for your :hz setting, changing max foreground fps will now save between relogs.
+Log village chat to discord option is now character specific, and fixed the bug that was preventing every message from being transferred. Seems to work now. 
+~
+
+
 1.00.100
 Added 5 new keybinds for belt page switching, default alt1 - alt5.
 Fixed crash issue with miner alert and roads.

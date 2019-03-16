@@ -204,7 +204,7 @@ public class ArdDiscord extends ListenerAdapter implements Runnable {
         String msg = message.getContentDisplay();
         channelfinal = event.getChannel();
 
-        System.out.println("Channelfinal = : " + channelfinal.getName());
+       // System.out.println("Channelfinal = : " + channelfinal.getName());
 
 
         String[] SplitMessage = msg.split(" ");

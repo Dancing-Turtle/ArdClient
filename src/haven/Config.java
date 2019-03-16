@@ -196,7 +196,7 @@ public class Config {
     public static String chatalert =  Utils.getpref("chatalert", "Null");
     public static String AlertChannel =  Utils.getpref("AlertChannel", "Null");
     public static String discordchannel =  Utils.getpref("discordchannel", "Null");
-    public static boolean discordchat =  Utils.getprefb("discordchat", false);
+    public static boolean discordchat =  Utils.getprefb("", false);//invoked in gameui once you have a char name
     public static String discordbotkey =  Utils.getpref("discordbotkey", "Null");
     public static boolean highlightpots = Utils.getprefb("highlightpots", false);
     public static boolean abandonrightclick = Utils.getprefb("abandonrightclick", false);

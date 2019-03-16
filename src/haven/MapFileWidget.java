@@ -403,7 +403,7 @@ public class MapFileWidget extends Widget {
     public boolean mousedown(Coord c, int button) {
         Coord tc = null;
         if (curloc != null)
-		tc = c.sub(sz.div(2)).mul(scalef()).add(curloc.tc);
+            tc = c.sub(sz.div(2)).add(curloc.tc);
         if (tc != null) {
             DisplayMarker mark = markerat(tc);
             if ((mark != null) && clickmarker(mark, button))
@@ -413,6 +413,7 @@ public class MapFileWidget extends Widget {
             if (button == 1 && (ui.modctrl || ui.modmeta)) {
                 //Only works if we're on the same map segment as our player
                 try {
+                 //   tc = c.sub(sz.div(2)).add(curloc.tc);
                     final Location pl = resolve(new MapLocator(ui.gui.map));
                     if (curloc != null && curloc.seg == pl.seg) {
                         final Coord2d plc = new Coord2d(ui.sess.glob.oc.getgob(ui.gui.map.plgob).getc());
@@ -420,7 +421,7 @@ public class MapFileWidget extends Widget {
                         //XXX: Previous worlds had randomized north/south/east/west directions, still the case? Assuming not for now.
                         final Coord2d offset = new Coord2d(pl.tc.sub(tc));
                         //Translate this to real map units and add to current map position
-                        final Coord2d mc = plc.sub(offset.mul(MCache.tilesz));
+                        final Coord2d mc = plc.sub(offset.mul(MCache.tilesz).mul(scalef()));
                         if (ui.modmeta) {
                             ui.gui.map.queuemove(mc);
                         } else {
@@ -471,7 +472,7 @@ public class MapFileWidget extends Widget {
     public boolean mousewheel(Coord c, int amount) {
         if(amount > 0) {
             if (MapFileWidget.zoom < 4) {
-               // zoomtex = null;
+                BotUtils.gui.mapfile.zoomtex = null;
                 Coord tc = curloc.tc.mul(MapFileWidget.scalef());
                 MapFileWidget.zoom++;
                 tc = tc.div(MapFileWidget.scalef());
@@ -480,7 +481,7 @@ public class MapFileWidget extends Widget {
             }
         } else {
             if (MapFileWidget.zoom > 0) {
-               // zoomtex = null;
+                BotUtils.gui.mapfile.zoomtex = null;
                 Coord tc = curloc.tc.mul(MapFileWidget.scalef());
                 MapFileWidget.zoom--;
                 tc = tc.div(MapFileWidget.scalef());

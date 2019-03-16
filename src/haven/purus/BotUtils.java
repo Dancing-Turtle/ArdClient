@@ -67,6 +67,9 @@ public class BotUtils {
 	public static List<Coord> getFreeInvSlots(Inventory inventory) {
 		return inventory.getFreeSlots();
 	}
+	public static List<Coord> getFreeInvSlotsAlt(InventoryBelt inventory) {
+		return inventory.getFreeSlots();
+	}
 
 	// Finds nearest objects and returns closest one
 	public static Gob findObjectByNames(int radius, String... names) {
@@ -489,6 +492,11 @@ public class BotUtils {
 	public static void dropItemToInventory(Coord coord, Inventory inventory) {
 		inventory.wdgmsg("drop", coord);
 	}
+
+    // Drops item from  hand to given slot in given inventory but works on alternate belt window
+    public static void dropItemToInventory(Coord coord, InventoryBelt inventory) {
+        inventory.wdgmsg("drop", coord);
+    }
 
 	// Returns true if stockpile is full, might not work for all stockpiles
 	public static boolean stockpileIsFull(Gob gob) {

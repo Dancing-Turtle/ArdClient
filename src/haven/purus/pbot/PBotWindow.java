@@ -3,12 +3,7 @@ package haven.purus.pbot;
 import javax.script.Invocable;
 import javax.script.ScriptException;
 
-import haven.Button;
-import haven.CheckBox;
-import haven.Coord;
-import haven.Label;
-import haven.Widget;
-import haven.Window;
+import haven.*;
 
 public class PBotWindow extends Window {
 
@@ -94,7 +89,20 @@ public class PBotWindow extends Window {
 		return label;
 	}
 
-	
+	/**
+	 * Add a TextEntry box to the window
+	 * @param width Width of the box
+	 * @param initialText Initial text of the box
+	 * @param x X-Coordinate of the box
+	 * @param y Y-Coordinate of the box
+	 * @return Returns TextEntry object
+	 */
+	public TextEntry addTextEntry(int width, String initialText, int x, int y) {
+		TextEntry te = new TextEntry(width, initialText);
+		add(te, new Coord(x,y));
+		return te;
+	}
+
 	/**
 	 * Closes the window
 	 */

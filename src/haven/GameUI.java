@@ -246,7 +246,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             saferadius = 2;
         else if(!Config.showTroughrad && !Config.showBeehiverad)
             saferadius = 1;
-
         fixAlarms();
     }
 
@@ -286,6 +285,8 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             Utils.loadprefchklist("treessel_" + chrid, Config.trees);
             Utils.loadprefchklist("iconssel_" + chrid, Config.icons);
             opts.setMapSettings();
+            Config.discordchat = Utils.getprefb("discordchat_"+chrid, false);
+            opts.discordcheckbox.a = Config.discordchat;
         }
         zerg = add(new Zergwnd(), new Coord(187, 50));
         zerg.hide();

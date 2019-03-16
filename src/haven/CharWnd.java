@@ -1996,6 +1996,8 @@ public class CharWnd extends Window {
         }
 
         public void change(Quest q) {
+            if(!gameui().questwnd.visible)
+                gameui().questwnd.show();
             if((q == null) || ((CharWnd.this.quest != null) && (q.id == CharWnd.this.quest.questid())))
                 CharWnd.this.wdgmsg("qsel", (Object) null);
             else
