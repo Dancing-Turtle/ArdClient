@@ -203,6 +203,8 @@ public class Config {
     public static boolean DropEntrails = Utils.getprefb("DropEntrails", false);
     public static boolean DropIntestines = Utils.getprefb("DropIntestines", false);
     public static boolean StarveAlert = Utils.getprefb("StarveAlert", true);
+    public static boolean stackwindows = Utils.getprefb("stackwindows", false);
+    public static boolean autodrink = Utils.getprefb("autodrink", false);
     public static boolean DropMeat = Utils.getprefb("DropMeat", false);
     public static boolean DropBones = Utils.getprefb("DropBones", false);
     public static boolean bonsai = Utils.getprefb("bonsai", false);

@@ -84,7 +84,7 @@ Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
     public enum Type {
         OTHER(0), DFRAME(1), TREE(2), BUSH(3), BOULDER(4), PLAYER(5), SIEGE_MACHINE(6),  OLDTRUNK(9), GARDENPOT(10), MUSSEL(11), LOC_RESOURCE(12), FU_YE_CURIO(13),
         CLAY(14), EAGLE(15), PLANT(16), MULTISTAGE_PLANT(17), CHEESERACK(18), CUPBOARD(19), TANTUB(20), COOP(21), HUTCH(22), MOTH(23), DUNGEON(24), EYEBALL(25), DUNGKEY(26), ROAD(27), NIDBANE(28), DUNGEONDOOR(29),
-        ROADENDPOINT(30), LIVESTOCK(7), STRANGLEVINE(8), TARKILN(69), SMELTER(70), DOMESTICHORSE(71),
+        ROADENDPOINT(30), LIVESTOCK(7), STRANGLEVINE(8), TARKILN(69), SMELTER(70), DOMESTICHORSE(71), OTHERMOB(72),
         MOB(32), SNAKE(33),BEAR(34), LYNX(35),SLIME(36), SEAL(37), TROLL(38), WALRUS(39), BAT(40), ANGLER(41),MAMMOTH(42),//anything from 33-63 will work for MOB aggro circles
         WOODEN_SUPPORT(64), STONE_SUPPORT(65), METAL_SUPPORT(66), TROUGH(67), BEEHIVE(68), WAGON(600), WALL(602), DREAMCATCHER(603), HOUSE(604);
 
@@ -585,6 +585,10 @@ Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             type = Type.EYEBALL;
         else if(name.startsWith("gfx/terobjs/items/antkeynew"))
             type = Type.DUNGKEY;
+        else if(name.endsWith("kritter/moose/moose") || name.endsWith("kritter/fox/fox") || name.endsWith("kritter/cattle/aurochs") || name.endsWith("kritter/sheep/mouflon")
+                || name.endsWith("kritter/reindeer/reindeer") || name.endsWith("kritter/reddeer/reddeer") || name.endsWith("kritter/horse/horse") || name.endsWith("kritter/otter/otter") ||
+                name.endsWith("kritter/beaver/beaver"))
+            type = Type.OTHERMOB;
         else
             type = Type.OTHER;
     }
@@ -1025,7 +1029,7 @@ Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
                 c.y = -c.y;
                 if (Config.disableelev)
                     c.z = 0;
-                if(type == Type.MOB) {
+                if(type == Type.MOB || type == Type.OTHERMOB) {
                     try {
                         Tiler tl = glob.map.tiler(glob.map.gettile_safe(rc.floor(MCache.tilesz)));
                         if (tl instanceof WaterTile)

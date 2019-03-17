@@ -1038,20 +1038,6 @@ public class MenuGrid extends Widget {
                     }
                 }
             }
-            if (DefSettings.SHOWPCLAIM.get())
-                ui.gui.map.enol(0, 1);
-            else
-                ui.gui.map.disol(0,1);
-
-            if (DefSettings.SHOWVCLAIM.get())
-                ui.gui.map.enol(2, 3);
-            else
-                ui.gui.map.disol(2,3);
-
-            if (DefSettings.SHOWKCLAIM.get())
-                ui.gui.map.enol(4, 5);
-            else
-                ui.gui.map.disol(4, 5);
 
             if(Config.noquests)
                 gui.questwnd.hide();

@@ -1672,6 +1672,17 @@ public class OptWnd extends Window {
             }
         });
         appender.addRow(new Label("Auto Logout after x Minutes - 0 means never"), makeafkTimeDropdown());
+        appender.add(new CheckBox("Autodrink below 80% stamina") {
+            {
+                a = Config.autodrink;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("autodrink", val);
+                Config.autodrink = val;
+                a = val;
+            }
+        });
         appender.add(new CheckBox("Repeat Starvation Alert Warning/Sound") {
             {
                 a = Config.StarveAlert;
@@ -2237,6 +2248,17 @@ public class OptWnd extends Window {
             public void set(boolean val) {
                 Utils.setprefb("quickbelt", val);
                 Config.quickbelt = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Stack cupboard windows on top of eachother") {
+            {
+                a = Config.stackwindows;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("stackwindows", val);
+                Config.stackwindows = val;
                 a = val;
             }
         });

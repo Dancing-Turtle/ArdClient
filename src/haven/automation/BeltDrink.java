@@ -31,9 +31,8 @@ public class BeltDrink implements Runnable {
 
     public void run() {
         try {
-            int threshold = 100;
             IMeter.Meter stam = gui.getmeter("stam", 0);
-            if (stam.a > 95 || stam.a > threshold)
+            if (stam.a > 95)
                 return;
             WItem drinkable;
             List<Widget> children = new ArrayList<>();
@@ -112,7 +111,6 @@ public class BeltDrink implements Runnable {
                                     }
                                 }
                             } else {
-                                BotUtils.sysLogAppend("No water found, opening belts!", "white");
                                 WItem k = gui.getequipory().quickslots[5];
                                 if (k != null)
                                     k.item.wdgmsg("iact", Coord.z, -1);
@@ -121,8 +119,7 @@ public class BeltDrink implements Runnable {
                  //gui.error("No water found!");
                  // }
              }
-        } catch (NullPointerException q) {
-        }
+        } catch (Exception q) { }//ignore any exceptions in here, no reason to crash for this failing.
     }
         private WItem getDrinkable (Inventory inv){
             WItem drinkable = inv.getItemPartialDrink("Waterskin");

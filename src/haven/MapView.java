@@ -43,8 +43,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
-import static haven.DefSettings.DARKMODE;
-import static haven.DefSettings.NIGHTVISION;
+import static haven.DefSettings.*;
 import static haven.MCache.tilesz;
 import static haven.OCache.posres;
 
@@ -535,6 +534,16 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         this.partyHighlight = new PartyHighlight(glob.party, plgob);
         setcanfocus(true);
         markedGobs.clear();
+
+        if(SHOWPCLAIM.get()) {
+            enol(0, 1);
+        }
+        if(SHOWVCLAIM.get()) {
+            enol(2, 3);
+        }
+        if(SHOWKCLAIM.get()) {
+            enol(4, 5);
+        }
     }
 
     public boolean visol(int ol) {

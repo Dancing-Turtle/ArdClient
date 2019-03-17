@@ -80,7 +80,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public OptWnd opts;
     public Collection<DraggedItem> hand = new LinkedList<DraggedItem>();
     private Collection<DraggedItem> handSave = new LinkedList<DraggedItem>();
-    private int MinerDrinkTimer, StarvationAlertDelay;
+    private long  DrinkTimer = 0, StarvationAlertDelay = 0;
     public WItem vhand;
     public ChatUI chat;
     private ChatWnd chatwnd;
@@ -115,6 +115,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public MapPointer pointer;
     public Cal cal;
     public QuestHelper questhelper;
+    public Thread DrinkThread;
 
 
     public abstract class Belt extends Widget {
@@ -190,7 +191,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
                 return (true);
             }
         }, new Coord(10, 10));
-        buffs = ulpanel.add(new Bufflist(), new Coord(95, 65));
+        buffs = ulpanel.add(new Bufflist(), new Coord(95, 85));
         cal = umpanel.add(new Cal(), new Coord(0, 10));
         if(Config.hidecalendar)
             cal.hide();
@@ -299,6 +300,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         livestockwnd.hide();
         this.questhelper = add(new QuestHelper(), new Coord(0, sz.y-200));
         this.questhelper.hide();
+
     }
 
     public void beltPageSwitch1(){
@@ -969,24 +971,20 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 
     public void tick(double dt) {
         super.tick(dt);
-        Resource curs = ui.root.getcurs(Coord.z);
-        if (curs != null && curs.name.equals("gfx/hud/curs/mine")) {
-        MinerDrinkTimer++;
-        if(MinerDrinkTimer > 300) {
-            MinerDrinkTimer = 0;
-                IMeter.Meter stam = getmeter("stam", 0);
-                if (stam.a < 60) {
-                    Drink();
-                }
+
+        try{
+        IMeter.Meter stam = getmeter("stam", 0);
+        if(Config.autodrink && (DrinkThread == null || !DrinkThread.isAlive()) && stam.a < 80) {
+            if(System.currentTimeMillis() - DrinkTimer >= 3000) {
+                DrinkTimer = System.currentTimeMillis();
+                Drink();
             }
         }
-        try{
         int energy = getmeter("nrj", 0).a;
-        StarvationAlertDelay++;
-        if(energy < 21 && StarvationAlertDelay > 10000 && Config.StarveAlert) {
-            StarvationAlertDelay = 0;
+        if(energy < 21 && System.currentTimeMillis() - StarvationAlertDelay > 10000 && Config.StarveAlert) {
+            StarvationAlertDelay = System.currentTimeMillis();
             BotUtils.sysMsg("You are Starving!",Color.white);
-        }}catch(NullPointerException nullcatchkek){}
+        }}catch(Exception e){}//exceptions doing these two things aren't critical, ignore
         double idle = Utils.rtime() - ui.lastevent;
         if (!afk && (idle > 300)) {
             afk = true;
@@ -998,6 +996,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         } else if (afk && (idle <= 300)) {
             afk = false;
         }
+
     }
 
     private void togglebuff(String err, Resource res) {
@@ -1439,8 +1438,8 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     }
 
     public void Drink(){
-        Thread i = new Thread(new BeltDrink(this), "BeltDrink");
-        i.start();
+        DrinkThread = new Thread(new BeltDrink(this), "BeltDrink");
+        DrinkThread.start();
     }
 
 

@@ -175,7 +175,7 @@ public class EquipSacks implements Runnable {
                 wepmap.clear();
             }
         }catch(Exception e){
-            BotUtils.sysMsg("Exception occured in EquipSack script, ignored.", Color.white);
+            BotUtils.sysMsg("Exception occurred in EquipSack script, ignored.", Color.white);
             e.printStackTrace();
         }//ignore all exceptions, this script will likely be used in a combat situation and crashes are unacceptable
     }

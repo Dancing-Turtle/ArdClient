@@ -1,3 +1,11 @@
+1.00.102
+Moved buff icons down a tad so that horse energy bars don't block them.
+Added another mob type to try to elevate the other animals if they die in water. Let me know if it works/doesn't/if I forgot one.
+Added autodrink option to general settings. Really not sure how I feel about this one, off by default. Triggers at <80% stamina and should fire at most once per 3~ seconds. Open to feedback. Turn it off if it gives you issues, and given that it's a new feature I don't advise having it on during pvp and such. 
+Added toggle in UI Settings to stack cupboard windows on top of eachother instead of staggering.
+Fixed claim toggle buttons not working on the first press when you log in.
+~
+
 1.00.101
 Fixed large map zoom indicator not updating when using mousescroll.
 Think I finally fixed large map movequeue zoom offset/drawing.
