@@ -34,7 +34,7 @@ public enum Action {
  //  FILTER(gui -> gui.filter.toggle(), "Show item filter"),
     TOGGLE_GOB_INFO(GameUI::toggleTreeStage, "Display Tree/Crop Stages", "Display crop/tree growth and object health overlay."),
     TOGGLE_GOB_HITBOX(GameUI::toggleGobs, "Display hitboxes"),
-    TOGGLE_DANGER_RADIUS(GameUI::toggleDangerRadius, "Display danger radius", "Displays effective radius of animals/mine supports."),
+    TOGGLE_DANGER_RADIUS(GameUI::toggleDangerRadius, "Display mine support radius", "Displays effective radius of mine supports."),
     TOGGLE_SAFE_RADIUS(GameUI::toggleSafeRadius,"Toggles Trough/Beehive Radii","Toggles between modes of displaying Trough/Beehive radii."),
     LOCAL_SCREENSHOT(GameUI::localScreenshot,"Take and save a local screenshot."),
  //   TOGGLE_TILE_GRID(gui -> gui.map.togglegrid(), "Show tile grid"),
@@ -54,7 +54,8 @@ public enum Action {
     BELT_PAGETWO(GameUI::beltPageSwitch2,"NBelt page 2"),
     BELT_PAGETHREE(GameUI::beltPageSwitch3,"NBelt page 3"),
     BELT_PAGEFOUR(GameUI::beltPageSwitch4,"NBelt page 4"),
-    BELT_PAGEFIVE(GameUI::beltPageSwitch5,"NBelt page 5");
+    BELT_PAGEFIVE(GameUI::beltPageSwitch5,"NBelt page 5"),
+    TOGGLE_CRAFTWND(GameUI::toggleCraftDB,"Toggle Craft Database");
 
 
     

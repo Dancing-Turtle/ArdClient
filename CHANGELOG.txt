@@ -1,3 +1,8 @@
+1.00.103
+Implemented Ender's expanded craft database, alt X by default.
+Made clicks on the bottom right menugrid not click through if you click a blank spot.
+~
+
 1.00.102
 Moved buff icons down a tad so that horse energy bars don't block them.
 Added another mob type to try to elevate the other animals if they die in water. Let me know if it works/doesn't/if I forgot one.

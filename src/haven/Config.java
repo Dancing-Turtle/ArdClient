@@ -265,6 +265,7 @@ public class Config {
     public static int cRackblue = Utils.getprefi("cRackblue",255);
     public static String confid = "ArdClient";
     public static final boolean isUpdate;
+    private static String username, playername;
 
     public static int AmbientRed = Utils.getprefi("AmbientRed",200);
     public static int AmbientGreen = Utils.getprefi("AmbientGreen",200);
@@ -1193,6 +1194,21 @@ public class Config {
             }
         }
     }
+
+    public static void setUserName(String username) {
+        Config.username = username;
+        Config.playername = null;
+    }
+
+    public static void setPlayerName(String playername) {
+        Config.playername = playername;
+        Reactor.PLAYER.onNext(userpath());
+    }
+
+    public static String userpath() {
+        return String.format("%s/%s", username, playername);
+    }
+
 
     static {
         Console.setscmd("stats", (cons, args) -> dbtext = Utils.parsebool(args[1]));

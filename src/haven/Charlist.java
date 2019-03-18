@@ -138,6 +138,7 @@ public class Charlist extends Widget {
 		for(Char c : chars) {
 		    if(sender == c.plb)
 			wdgmsg("play", c.name);
+			Config.setPlayerName(c.name);
 		}
 	    }
 	} else if(sender instanceof Avaview) {

@@ -116,6 +116,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public Cal cal;
     public QuestHelper questhelper;
     public Thread DrinkThread;
+    public CraftDBWnd craftwnd = null;
 
 
     public abstract class Belt extends Widget {
@@ -328,6 +329,15 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         Config.dbtext = !Config.dbtext;
     }
 
+
+    public void toggleCraftDB() {
+        if(craftwnd == null) {
+            craftwnd = add(new CraftDBWnd());
+        } else {
+            craftwnd.close();
+        }
+    }
+
     public void toggleInventory() {
         if((invwnd != null) && invwnd.show(!invwnd.visible)) {
             invwnd.raise();
@@ -377,16 +387,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             setfocus(opts);
         }
     }
-
-
-
-  //  public void toggleCraftDB() {
-    //    if(craftwnd == null) {
-      //      craftwnd = add(new CraftDBWnd());
-       // } else {
-        //    craftwnd.close();
-      //  }
-   // }
 
     public void toggleMap() {
         if((mapfile != null) && mapfile.show(!mapfile.visible)) {
@@ -854,13 +854,19 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             if(Config.fepmeter)
             	addcmeter(new FepMeter(chrwdg.feps));
         } else if (place == "craft") {
-                if(makewnd == null) {
+            final Widget mkwdg = child;
+            if(craftwnd != null) {
+                craftwnd.setMakewindow(mkwdg);
+            }
+            else {
+                if (makewnd == null) {
                     makewnd = add(new CraftWindow(), new Coord(400, 200));
                 }
                 makewnd.add(child);
                 makewnd.pack();
                 makewnd.raise();
                 makewnd.show();
+            }
         } else if (place == "buddy") {
             zerg.ntab(buddies = (BuddyWnd) child, zerg.kin);
         } else if (place == "pol") {

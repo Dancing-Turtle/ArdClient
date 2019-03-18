@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static haven.QualityList.SingleType.Quality;
+import static haven.QualityList.SingleType.*;
 
 public class ItemData {
     private static final ItemData EMPTY = new ItemData();
@@ -87,17 +87,26 @@ public class ItemData {
     }
 
     public static Tex longtip(Pagina pagina, Session sess) {
-	List<ItemInfo> infos = pagina.info();
-	if(infos == null || infos.isEmpty()) {
-	    return ItemData.get(pagina).longtip(pagina.res(), sess);
-	}
-	return longtip(pagina.res(), infos);
+        return longtip(pagina, sess, 0, 0);
     }
 
-    public static Tex longtip(Resource res, List<ItemInfo> infos) {
+    public static Tex longtip(Pagina pagina, Session sess, int titleSize, int titleSpace) {
+	List<ItemInfo> infos = pagina.info();
+	if(infos == null || infos.isEmpty()) {
+	    return ItemData.get(pagina).longtip(pagina.res(), sess, titleSize, titleSpace);
+	}
+	return longtip(pagina.res(), infos, titleSize, titleSpace);
+    }
+
+    private static Tex longtip(Resource res, List<ItemInfo> infos, int titleSize, int titleSpace) {
 	Resource.AButton ad = res.layer(Resource.action);
 	Resource.Pagina pg = res.layer(Resource.pagina);
-	String tt = "$b{$size[20]{" + ad.name + "}}";
+	String spacing = new String(new char[titleSpace]).replace("\0", " ");
+	String tt = String.format("$b{%s%s}", spacing, ad.name);
+	if(titleSize > 0) {
+	    tt = String.format("$size[%d]{%s}", titleSize, tt);
+	}
+
 	if(pg != null) {tt += "\n\n" + pg.text;}
 
 	BufferedImage img = MenuGrid.ttfnd.render(tt, 300).img;
@@ -108,8 +117,8 @@ public class ItemData {
 	return new TexI(img);
     }
 
-    public Tex longtip(Resource res, Session sess) {
-	return longtip(res, iteminfo(sess));
+    private Tex longtip(Resource res, Session sess, int titleSize, int titleSpace) {
+	return longtip(res, iteminfo(sess), titleSize, titleSpace);
     }
     
     public List<ItemInfo> iteminfo(Session sess) {

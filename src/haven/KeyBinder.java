@@ -118,6 +118,7 @@ public class KeyBinder {
 	add(KeyEvent.VK_3,ALT,BELT_PAGETHREE);
 	add(KeyEvent.VK_4,ALT,BELT_PAGEFOUR);
 	add(KeyEvent.VK_5,ALT,BELT_PAGEFIVE);
+	add(KeyEvent.VK_X,ALT,TOGGLE_CRAFTWND);
     }
     
     private static synchronized void store() {

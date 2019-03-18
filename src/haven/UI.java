@@ -220,7 +220,7 @@ public class UI {
             if(type.contains("speedget"))
                 gui.speedget = (Speedget)wdg;
             if(type.contains("make")) {
-                System.out.println("Captured make widget of ID : "+wdg.wdgid());
+            //    System.out.println("Captured make widget of ID : "+wdg.wdgid());
                 makewnd = wdg;
             }
         }

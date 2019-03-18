@@ -14,21 +14,21 @@ public class ObservableCollection<T> implements Iterable<T> {
     }
 
     public boolean add(T item) {
-        if(base.add(item)) {
+        if (base.add(item)) {
             listeners.forEach((lst) -> lst.added(item));
             return true;
-	} else {
+        } else {
             return false;
-	}
+        }
     }
 
     public boolean remove(T item) {
-	if(base.remove(item)) {
-	    listeners.forEach((lst) -> lst.remove(item));
-	    return true;
-	} else {
-	    return false;
-	}
+        if (base.remove(item)) {
+            listeners.forEach((lst) -> lst.remove(item));
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public boolean contains(T other) {
@@ -44,5 +44,7 @@ public class ObservableCollection<T> implements Iterable<T> {
         listeners.remove(listener);
     }
 
-    public Iterator<T> iterator() { return base.iterator(); }
+    public Iterator<T> iterator() {
+        return base.iterator();
+    }
 }

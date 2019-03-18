@@ -54,7 +54,7 @@ public class MenuGrid extends Widget {
     public final Map<String, SpecialPagina> specialpag = new HashMap<>();
     public final ObservableCollection<Pagina> paginae = new ObservableCollection<>(new HashSet<>());
     private static Coord gsz = new Coord(4, 4);
-    private Pagina cur, dragging;
+    public Pagina cur, dragging;
     private Collection<PagButton> curbtns = null;
     private PagButton pressed, layout[][] = new PagButton[gsz.x][gsz.y];
     private UI.Grab grab;
@@ -280,7 +280,32 @@ public class MenuGrid extends Widget {
             return(p);
         }
     }
+    public Pagina paginafor(Resource res) {
+        if(res != null) {
+            synchronized (pmap) {
+                for (Indir<Resource> key : pmap.keySet()) {
+                    if(Objects.equals(key.get().name, res.name)) { return pmap.get(key); }
+                }
+            }
+        }
+        return null;
+    }
 
+
+    public Pagina paginafor(String name) {
+        return paginafor(Resource.remote().load(name));
+    }
+
+    public static Comparator<Pagina> sorter = new Comparator<Pagina>() {
+        public int compare(Pagina a, Pagina b) {
+            AButton aa = a.act(), ab = b.act();
+            if((aa.ad.length == 0) && (ab.ad.length > 0))
+                return(-1);
+            if((aa.ad.length > 0) && (ab.ad.length == 0))
+                return(1);
+            return(aa.name.compareTo(ab.name));
+        }
+    };
 
 
     public boolean cons(Pagina p, Collection<PagButton> buf) {
@@ -317,6 +342,51 @@ public class MenuGrid extends Widget {
                 }
                 if(parent == p)
                     buf.add(pag.button());
+                else if((parent != null) && !close.contains(parent) && !open.contains(parent))
+                    open.add(parent);
+                close.add(pag);
+            } catch(Loading e) {
+                ret = false;
+            }
+        }
+        return(ret);
+    }
+
+    public boolean cons2(Pagina p, Collection<Pagina> buf) {
+        Pagina[] cp = new Pagina[0];
+        Collection<Pagina> open, close = new HashSet<Pagina>();
+        synchronized(paginae) {
+            open = new LinkedList<Pagina>();
+            for(Pagina pag : paginae) {
+                if(pag.newp == 2) {
+                    pag.newp = 0;
+                    pag.fstart = 0;
+                }
+                open.add(pag);
+            }
+            for(Pagina pag : pmap.values()) {
+                if(pag.newp == 2) {
+                    pag.newp = 0;
+                    pag.fstart = 0;
+                }
+            }
+        }
+        boolean ret = true;
+        while(!open.isEmpty()) {
+            Iterator<Pagina> iter = open.iterator();
+            Pagina pag = iter.next();
+            iter.remove();
+            try {
+                AButton ad = pag.act();
+                if(ad == null)
+                    throw(new RuntimeException("Pagina in " + pag.res + " lacks action"));
+                Pagina parent = paginafor(ad.parent);
+                if((pag.newp != 0) && (parent != null) && (parent.newp == 0)) {
+                    parent.newp = 2;
+                    parent.fstart = (parent.fstart == 0)?pag.fstart:Math.min(parent.fstart, pag.fstart);
+                }
+                if(parent == p)
+                    buf.add(pag);
                 else if((parent != null) && !close.contains(parent) && !open.contains(parent))
                     open.add(parent);
                 close.add(pag);
@@ -790,6 +860,15 @@ public class MenuGrid extends Widget {
         return (ret);
     }
 
+    private void selectCraft(Pagina r) {
+        if(r == null){
+            return;
+        }
+        if(ui.gui.craftwnd != null){
+            ui.gui.craftwnd.select(r, true);
+        }
+    }
+
     public void draw(GOut g) {
         double now = Utils.rtime();
         for(int y = 0; y < gsz.y; y++) {
@@ -890,7 +969,8 @@ public class MenuGrid extends Widget {
             grab = ui.grabmouse(this);
             return(true);
         } else {
-            return super.mousedown(c, button);
+            return true;
+          //  return super.mousedown(c, button);
         }
     }
 
@@ -909,13 +989,19 @@ public class MenuGrid extends Widget {
     public void use(PagButton r, boolean reset) {
         Collection<PagButton> sub = new ArrayList<>();
         cons(r.pag, sub);
+        selectCraft(r.pag);
         if(sub.size() > 0) {
             this.cur = r.pag;
             curoff = 0;
-        } else {
+        }else if(r.pag == bk.pag){
+            this.cur = paginafor(this.cur.act().parent);
+            curoff = 0;
+            selectCraft(this.cur);
+        }  else{
             Resource.AButton act = r.pag.act();
-            if (act == null)
-                r.use();
+            if (act == null) {
+              r.use();
+            }
             else {
                 String[] ad = r.pag.act().ad;
                 if (ad.length > 0 && (ad[0].equals("craft") || ad[0].equals("bp"))) {

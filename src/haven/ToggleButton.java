@@ -1,59 +1,49 @@
 package haven;
 
-import java.awt.Graphics;
+import rx.functions.Action1;
+
 import java.awt.image.BufferedImage;
 
+public class ToggleButton extends IButton {
+    private final BufferedImage upf, downf, hoverf, upt, downt, hovert;
+    private boolean state = false;
+    private Action1<Boolean> action;
 
-public class ToggleButton extends SIWidget {
-    BufferedImage up, down;
-    boolean pressed;
-    UI.Grab d = null;
+    public ToggleButton(String basef, String upf, String downf, String hoverf,
+			String baset, String upt, String downt, String hovert) {
+	super(basef, upf, downf, hoverf);
+	this.upf = up;
+	this.downf = down;
+	this.hoverf = hover;
 
-    public ToggleButton(BufferedImage up, BufferedImage down) {
-        super(Utils.imgsz(up));
-        this.up = up;
-        this.down = down;
+	this.upt = Resource.loadimg(baset + upt);
+	this.downt = Resource.loadimg(baset + downt);
+	this.hovert = Resource.loadimg(baset + (hovert == null ? upt : hovert));
     }
 
-    public ToggleButton(String up, String down, boolean pressed) {
-        this(Resource.loadimg(up), Resource.loadimg(down));
-        this.pressed = pressed;
-        redraw();
+    public void action(Action1<Boolean> action) {
+	this.action = action;
     }
 
-    public void draw(BufferedImage buf) {
-        Graphics g = buf.getGraphics();
-        g.drawImage(pressed ? down : up, 0, 0, null);
-        g.dispose();
-    }
-
-    public boolean checkhit(Coord c) {
-        if (!c.isect(Coord.z, sz))
-            return false;
-        if (up.getRaster().getNumBands() < 4)
-            return true;
-        return (up.getRaster().getSample(c.x, c.y, 3) >= 128);
-    }
-
+    @Override
    public void click() {
-       wdgmsg("activate");
+	state(!state);
+	if(action != null) {
+	    action.call(state);
+	} else {
+	    super.click();
+	}
     }
 
-    public boolean mousedown(Coord c, int button) {
-        if (button != 1)
-            return false;
-        if (!checkhit(c))
-            return false;
-        d = ui.grabmouse(this);
-        pressed = !pressed;
+    public void state(boolean state) {
+	if(this.state != state) {
+	    this.state = state;
+	    up = state ? upt : upf;
+	    down = state ? downt : downf;
+	    hover = state ? hovert : hoverf;
         redraw();
-        click();
-        return true;
+	}
     }
 
-    public Object tooltip(Coord c, Widget prev) {
-        if (!checkhit(c))
-            return null;
-        return (super.tooltip(c, prev));
-    }
+    public boolean state() {return state;}
 }
