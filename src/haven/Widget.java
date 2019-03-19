@@ -341,9 +341,27 @@ public class Widget {
 	}
     }
 
+    public static class RelposError extends RuntimeException {
+        public final String spec;
+        public final int pos;
+        public final Stack<Object> stack;
+
+        public RelposError(Throwable cause, String spec, int pos, Stack<Object> stack) {
+            super(cause);
+            this.spec = spec;
+            this.pos = pos;
+            this.stack = stack;
+        }
+
+        public String getMessage() {
+            return(String.format("Unhandled exception at %s+%d, stack is %s", spec, pos, stack));
+        }
+    }
+
     public Coord relpos(String spec, Object self, Object[] args, int off) {
         int i = 0;
         Stack<Object> st = new Stack<Object>();
+        try {
         while (i < spec.length()) {
             char op = spec.charAt(i++);
             if (Character.isDigit(op)) {
@@ -436,6 +454,9 @@ public class Widget {
             } else {
                 throw (new RuntimeException("Unknown position operation: " + op));
             }
+        }
+        } catch(RuntimeException e) {
+            throw(new RelposError(e, spec, i, st));
         }
         return ((Coord) st.pop());
     }

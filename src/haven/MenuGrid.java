@@ -994,8 +994,12 @@ public class MenuGrid extends Widget {
             this.cur = r.pag;
             curoff = 0;
         }else if(r.pag == bk.pag){
-            this.cur = paginafor(this.cur.act().parent);
-            curoff = 0;
+            if((curoff - 14) >= 0)
+                curoff -= 14;
+            else {
+                this.cur = paginafor(this.cur.act().parent);
+                curoff = 0;
+            }
             selectCraft(this.cur);
         }  else{
             Resource.AButton act = r.pag.act();

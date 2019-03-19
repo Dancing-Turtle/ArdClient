@@ -304,6 +304,8 @@ public class Config {
     public static double alarmmammothvol = Utils.getprefd("alarmmammothvol", 0.32);
     public static String alarmeagle = Utils.getpref("alarmeagle", "sfx/EagleScreech");
     public static double alarmeaglevol = Utils.getprefd("alarmeaglevol", 0.32);
+    public static String alarmhorse = Utils.getpref("alarmhorse", "None");
+    public static double alarmhorsevol = Utils.getprefd("alarmhorsevol", 0.32);
     public static String alarmdoomed = Utils.getpref("alarmdoomed", "sfx/Doomed");
     public static String alarmwball = Utils.getpref("alarmwball", "sfx/WreckingBall");
     public static double alarmwballvol = Utils.getprefd("alarmwballvol", 1.0D);
@@ -354,6 +356,7 @@ public class Config {
         put("hornblende", new CheckListboxItem("Hornblende"));
         put("olivine", new CheckListboxItem("Olivine"));
         put("apatite", new CheckListboxItem("Apatite"));
+        put("korund", new CheckListboxItem("Korund"));
     }};
 
     public final static HashMap<String, CheckListboxItem> bushes = new HashMap<String, CheckListboxItem>(23) {{
@@ -701,7 +704,8 @@ public class Config {
             "olivine",
             "soapstone",
             "orthoclase",
-            "alabaster"
+            "alabaster",
+            "korund"
     ));
 
     public final static Set<String> mineablesOre = new HashSet<String>(Arrays.asList(

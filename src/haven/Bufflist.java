@@ -29,7 +29,9 @@ package haven;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class Bufflist extends Widget {
+import java.util.*;
+
+public class Bufflist extends MovableWidget {
     static final int margin = 2;
     static final int num = 5;
     public final static Resource buffswim = Resource.local().loadwait("gfx/hud/buffs/toggles/swim");
@@ -37,6 +39,9 @@ public class Bufflist extends Widget {
     public final static Resource buffcrime = Resource.local().loadwait("gfx/hud/buffs/toggles/crime");
     public final static Resource partyperm = Resource.local().loadwait("gfx/hud/buffs/toggles/partyperm");
     public final static Resource buffbrain = Resource.local().loadwait("gfx/hud/buffs/brain");
+    Bufflist() {
+        super("Bufflist");
+    }
 
     private void arrange(Widget imm) {
         int i = 0;
@@ -61,6 +66,17 @@ public class Bufflist extends Widget {
             p.a.move(p.b, coff);
             coff += off;
         }
+    }
+
+    @Override
+    protected boolean moveHit(Coord c, int btn) {
+        if(btn == 3 && ui.modmeta) {
+	    for (Widget wdg = child; wdg != null; wdg = wdg.next) {
+		if (c.isect(wdg.c, wdg.sz))
+		    return true;
+	    }
+	}
+	return false;
     }
 
     public void addchild(Widget child, Object... args) {

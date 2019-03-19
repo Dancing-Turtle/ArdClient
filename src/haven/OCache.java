@@ -621,19 +621,15 @@ public class OCache implements Iterable<Gob> {
                             DamageSprite dmgspr = gobdmgs.get(g.id);
                             if (dmgspr == null) {
                                 if(Config.logcombatactions) {
-                                    int blue = Fightsess.blue;
-                                    int red = Fightsess.red;
-                                    int myblue = Fightsess.myblue;
-                                    int myred = Fightsess.myred;
                                     KinInfo kininfo = g.getattr(KinInfo.class);
                                     if (g.isplayer())
-                                        BotUtils.sysLogAppend("I got hit for " + dmg + " Damage. I had " + myblue + " blue opening and " + myred + " red opening.", "white");
+                                        BotUtils.sysLogAppend("I got hit for " + dmg + " Damage.", "white");
                                     else if (kininfo != null)
-                                        BotUtils.sysLogAppend("Hit " + kininfo.name + " For " + dmg + " Damage. Had " + blue + " blue opening and " + red + " red opening.", "green");
+                                        BotUtils.sysLogAppend("Hit " + kininfo.name + " For " + dmg + " Damage.", "green");
                                     else if (g.getres().basename().contains("Body"))
-                                        BotUtils.sysLogAppend("Hit Unknown player For " + dmg + " Damage. Had " + blue + " blue opening and " + red + " red opening.", "green");
+                                        BotUtils.sysLogAppend("Hit Unknown player For " + dmg + " Damage.", "green");
                                     else
-                                        BotUtils.sysLogAppend("Hit " + g.getres().basename() + " For " + dmg + " Damage. Had " + blue + " blue opening and " + red + " red opening.", "green");
+                                        BotUtils.sysLogAppend("Hit " + g.getres().basename() + " For " + dmg + " Damage.", "green");
                                 }
                                 gobdmgs.put(g.id, new DamageSprite(dmg, clr == 36751, g));
                                 }

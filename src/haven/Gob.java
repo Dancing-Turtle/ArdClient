@@ -479,7 +479,7 @@ Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             type = Type.OLDTRUNK;
         else if(name.contains("pig") || name.contains("sheep") || name.contains("cattle") || (name.contains("goat") && !name.contains("wild")))
             type = Type.LIVESTOCK;
-        else if(name.contains("horse") && !name.contains("wild"))
+        else if(name.contains("horse") && !name.endsWith("kritter/horse/horse"))
             type = Type.DOMESTICHORSE;
         else if (name.startsWith("gfx/terobjs/ttub"))
             type = Type.TANTUB;
@@ -561,7 +561,7 @@ Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
         	type = Type.WAGON;
         else if (name.endsWith("/cheeserack"))
             type = Type.CHEESERACK;
-        else if(name.endsWith("/stonemansion")||name.endsWith("/logcabin")||name.endsWith("/greathall")||name.endsWith("/stonestead")||name.endsWith("/timberhouse")||name.endsWith("stonetower"))
+        else if(name.endsWith("/stonemansion")||name.endsWith("/logcabin")||name.endsWith("/greathall")||name.endsWith("/stonestead")||name.endsWith("/timberhouse")||name.endsWith("stonetower") || name.endsWith("windmill"))
         	type = Type.HOUSE;
         else if(name.endsWith("dreca"))
         	type = Type.DREAMCATCHER;

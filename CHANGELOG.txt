@@ -1,3 +1,17 @@
+1.00.104
+Switched the buffs list over to a movable widget and increased mouseover accuracy. Can now be moved by holding alt and right click and dragging.
+Fixed crash bug if you mouseover quest pointer while taking a road.
+Made inventory lock icon smaller.
+Fight session will now always have focus and draw over everything else.
+Added windmills to "hide houses" toggle.
+Added some query instructions to craft database window.
+Added "Korund" to boulder and minable stone list.
+Redesigned "off target" combat ui to make it smaller and the position more logical. 
+Stripped out some fluff from fight session, no longer attempting to calculate enemy defense weight/agility. Might re-add later when I have time to do it properly.
+Added wild horse alarm. Off by default, select an alarm to enable.
+Various loftar merges for the new sieging autism they're thinking about doing.
+~
+
 1.00.103
 Implemented Ender's expanded craft database, alt X by default.
 Made clicks on the bottom right menugrid not click through if you click a blank spot.

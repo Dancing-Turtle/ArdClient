@@ -192,7 +192,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
                 return (true);
             }
         }, new Coord(10, 10));
-        buffs = ulpanel.add(new Bufflist(), new Coord(95, 85));
         cal = umpanel.add(new Cal(), new Coord(0, 10));
         if(Config.hidecalendar)
             cal.hide();
@@ -281,6 +280,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 		public void flush() {}
         });
         Debug.log = ui.cons.out;
+        buffs = add(new Bufflist(), new Coord(95, 85));
         if (!chrid.equals("")) {
             Utils.loadprefchklist("boulderssel_" + chrid, Config.boulders);
             Utils.loadprefchklist("bushessel_" + chrid, Config.bushes);

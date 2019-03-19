@@ -43,6 +43,7 @@ import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.*;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
 import java.net.URL;
 import java.nio.*;
 import java.util.*;
@@ -874,7 +875,7 @@ public class Utils {
         }
     }
 
-    static byte[] readall(InputStream in) throws IOException {
+    public static byte[] readall(InputStream in) throws IOException {
         byte[] buf = new byte[4096];
         int off = 0;
         while (true) {

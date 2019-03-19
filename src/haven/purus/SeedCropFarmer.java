@@ -80,7 +80,7 @@ public class SeedCropFarmer extends Window implements Runnable {
 			// Check if stamina is under 30%, drink if so
 			GameUI gui = HavenPanel.lui.root.findchild(GameUI.class);
 			IMeter.Meter stam = gui.getmeter("stam", 0);
-			if (stam.a <= 30) {
+			if (stam.a <= 60) {
 				new Thread(new BeltDrink(gui), "BeltDrink").start();
 				BotUtils.sleep(5000);
 			}

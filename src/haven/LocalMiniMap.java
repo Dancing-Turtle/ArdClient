@@ -298,6 +298,12 @@ public class LocalMiniMap extends Widget {
                             this.sgobs.add(gob.id);
                             Audio.play(Resource.local().loadwait(Config.alarmdungeon), Config.alarmdungeonvol);
                         }
+                    }else if(gob.type == Gob.Type.OTHERMOB && !Config.alarmhorse.equals("None")){
+                      //  System.out.println("othermob and alarm not none");
+                        if(gob.getres().basename().contains("horse")){
+                            this.sgobs.add(gob.id);
+                            Audio.play(Resource.local().loadwait(Config.alarmhorse),Config.alarmhorsevol);
+                        }
                     }
 
                 } catch (Loading l) {}

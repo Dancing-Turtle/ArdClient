@@ -162,6 +162,33 @@ public class Buff extends Widget implements ItemInfo.ResOwner {
         }
     }
 
+    public void draw(GOut g, int size) {
+        Coord sz = new Coord(size, size);
+        Coord metSz = new Coord(size, 3);
+        g.chcolor(255, 255, 255, this.a);
+
+        try {
+            Tex img = ((this.res.get()).layer(Resource.imgc)).tex();
+            g.image(img, imgoff);
+            Tex nmeter = this.nmeter >= 0 ? this.nmeter() : this.nmeteri.get();
+            if (nmeter != null) {
+                g.aimage(nmeter, imgoff.add(sz).sub(1, 1), 1.0D, 1.0D);
+            }
+        } catch (Loading e) {}
+
+        Double ameter = this.ameter >= 0 ? (double)this.ameter / 100.0D : this.ameteri.get();
+        if (ameter != null) {
+            g.chcolor(0, 0, 0, this.a);
+            g.frect(ameteroff, metSz);
+            g.chcolor(255, 255, 255, this.a);
+            g.frect(ameteroff, new Coord((int)Math.floor(ameter * (double)metSz.x), metSz.y));
+        }
+    }
+
+
+
+
+
     private BufferedImage shorttip() {
         if (rawinfo != null)
             return (ItemInfo.shorttip(info()));
@@ -273,7 +300,11 @@ public class Buff extends Widget implements ItemInfo.ResOwner {
 
 
     public boolean mousedown(Coord c, int btn) {
+        if(!(btn == 3 && ui.modmeta)) {
         wdgmsg("cl", c.sub(imgoff), btn, ui.modflags());
         return (true);
+	} else {
+            return false;
+	}
     }
 }

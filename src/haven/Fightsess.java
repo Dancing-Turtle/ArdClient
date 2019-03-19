@@ -66,6 +66,7 @@ public class Fightsess extends Widget {
         put("paginae/atk/reeling", new Color(203, 168, 6));
     }};
     private Coord simpleOpeningSz = new Coord(32, 32);
+    private Coord smallerOpeningSz = new Coord(24, 24);
 
     public static class Action {
         public final Indir<Resource> res;
@@ -184,91 +185,21 @@ public class Fightsess extends Widget {
     private Indir<Resource> lastact1 = null, lastact2 = null;
     private Text lastacttip1 = null, lastacttip2 = null;
 
-    public void currentopeningblue() {
-                for (Buff buff : fv.current.buffs.children(Buff.class)) {
-                    if (buff.res.toString().contains("dizzy")) {
-                        oldblue = blue;
-                        blue = buff.ameter;
-                    }
-                }
-        }
-
-    public void currentopeningred(){
-        for (Buff buff : fv.current.buffs.children(Buff.class)) {
-            if (buff.res.toString().contains("cornered")) {
-                oldred = red;
-                red = buff.ameter;
-            }
-        }
-    }
-
-    public void myopeningblue() {
-        for (Buff buff : fv.buffs.children(Buff.class)) {
-            if (buff.res.toString().contains("dizzy"))
-                myblue = buff.ameter;
-        }
-    }
-
-    public void myopeningred(){
-        for (Buff buff : fv.buffs.children(Buff.class)) {
-            if (buff.res.toString().contains("cornered"))
-                myred = buff.ameter;
-        }
-    }
-    private Double checkdelta() {
-        try {
-            Double delta = 0.0;
-            Double delta2 = 0.0;
-            Double baseopener;
-            unarmedcombat = Fightview.unarmed;
-            String lastactused = Fightview.ttretain;
-            Double dblblue = (double) oldblue;
-            Double dblred = (double) oldred;
-            if (lastactused.contains("Flex")) {
-                expected = ((1 - (dblblue / 100)) * 15.0);
-                baseopener = 15.0;
-            } else if (lastactused.contains("Teeth")) {
-                expected = ((1 - (dblred / 100)) * 20.0);
-                baseopener = 20.0;
-            } else
-                return null;
-
-
-            delta = ((Math.pow(expected, 4.0) * unarmedcombat)) / (Math.pow((lastactopened - 0.5), 4.0));
-            delta2 = ((Math.pow(expected, 4.0) * unarmedcombat)) / (Math.pow((lastactopened + 0.4), 4.0));
-if(delta.intValue() > 10000)
-    return null;
-            BotUtils.gui.error("Estimated target combat weight : " + delta2.intValue() + "-" + delta.intValue());
-        }catch(NullPointerException lolnull){}
-
-        return delta;
-    }
-
 
     public void draw(GOut g) {
         updatepos();
-        currentopeningblue();
-        currentopeningred();
-        if (blue-oldblue > 1 && Config.logcombatactions) {
-            lastactopened = (double)blue - (double)oldblue;
-           delta = checkdelta();
-        }
-        if (red-oldred > 1 && Config.logcombatactions) {
-            lastactopened = (double)red - (double)oldred;
-           delta = checkdelta();
-        }
-
+        try {
+            if (parent.lchild != this) {
+                raise();
+                parent.setfocus(this);
+            }
+        }catch(Exception e){}
         double now = Utils.rtime();
-
         GameUI gui = gameui();
-        //gui.error("estimated enemy UA : "+delta);
         int gcx = gui.sz.x / 2;
-        //gui.error("blue : "+blue+" Old Blue : "+oldblue+" Difference : "+(blue-oldblue)+" LastActOpened : "+lastactopened);
         for (Buff buff : fv.buffs.children(Buff.class)) {
             Coord bc = Config.altfightui ? new Coord(gcx - buff.c.x - Buff.cframe.sz().x - 80, 180) : pcc.add(-buff.c.x - Buff.cframe.sz().x - 20, buff.c.y + pho - Buff.cframe.sz().y);
             drawOpening(g, buff, bc);
-            myopeningblue();
-            myopeningred();
         }
 
         if (fv.current != null) {
@@ -286,13 +217,17 @@ if(delta.intValue() > 10000)
                     for (int i = 0; i < fv.lsrel.size(); i++) {
                         if (fv.current != fv.lsrel.get(i)) {
                             try {
-                                Gob nottarget = ui.sess.glob.oc.getgob(fv.lsrel.get(i).gobid);
-                                pcc2 = nottarget.sc;
-                                        //.add((int) (nottarget.sczu.x - 25), (int) (nottarget.sczu.y - 100));
+                                Coord buffcoord = null;
                                 for (Buff buff : fv.lsrel.get(i).buffs.children(Buff.class)) {
-                                //   pcc2.add((int) (nottarget.sczu.x-25 + buff.c.x), (int) (nottarget.sczu.y-100));
-                                 Coord cc = pcc2.add(buff.c.x, buff.c.y + pho - Buff.cframe.sz().y);
-                                 drawOpeningofftarget(g, buff, cc);
+                                 pcc2 = this.gameui().map.glob.oc.getgob(fv.lsrel.get(i).gobid).sc;
+                               //  Coord cc = pcc2.add(buff.c.x / 32 * 24, -100);
+                                 Coord cc = this.gameui().map.glob.oc.getgob(fv.lsrel.get(i).gobid).sc.add(new Coord(this.gameui().map.glob.oc.getgob(fv.lsrel.get(i).gobid).sczu.mul(15)));
+                                 Coord finalcc = new Coord(cc.x,cc.y-60);
+                                 if (buffcoord == null)
+                                     buffcoord = finalcc;
+                                 else
+                                     finalcc = buffcoord.add(buff.c.x / 32 * 24, 0);
+                                 drawOpeningofftarget(g, buff, finalcc, 24);
                                 }
                                 int itransfer = i;
                                 Text.UText<?> oip2 = new Text.UText<Integer>(ipf2) {
@@ -313,11 +248,11 @@ if(delta.intValue() > 10000)
                                         return (fv.lsrel.get(itransfer).ip);
                                     }
                                 };
-                                g.aimage(ip2.get().tex(), pcc2.add(0, -125), 1, .5);
-                                g.aimage(oip2.get().tex(), pcc2.add(0, -150), 1, .5);
-
-
-                            } catch (NullPointerException idk) {
+                                Coord cc = this.gameui().map.glob.oc.getgob(fv.lsrel.get(i).gobid).sc.add(new Coord(this.gameui().map.glob.oc.getgob(fv.lsrel.get(i).gobid).sczu.mul(15)));
+                                Coord finalcc = new Coord(cc.x,cc.y-50);
+                                g.aimage(ip2.get().tex(), finalcc.add(-5, 0), 1, .5);
+                                g.aimage(oip2.get().tex(), finalcc.add(-5, 20), 1, .5);
+                            } catch (Exception idk) {
                             }
                         }
                     }
@@ -358,8 +293,7 @@ if(delta.intValue() > 10000)
                     g.chcolor();
                 }
             }
-        } catch (Loading l) {
-        }
+        } catch (Loading l) { }
 
         if (fv.current != null) {
             try {
@@ -473,45 +407,40 @@ if(delta.intValue() > 10000)
         }
     }
 
-    private void drawOpeningofftarget(GOut g, Buff buff, Coord bc) {
-        if (Config.combaltopenings) {
-            try {
-                Resource res = buff.res.get();
-                Color clr = openings.get(res.name);
-                if (clr == null) {
-                    buff.draw(g.reclip(bc, buff.sz));
-                    return;
-                }
-
-                if (buff.ameter >= 0) {
-                  //  g.image(buff.cframe, bc);
-                    g.chcolor(Color.BLACK);
-                    g.frect(bc.add(buff.ameteroff), buff.ametersz);
-                    g.chcolor(Color.WHITE);
-                    g.frect(bc.add(buff.ameteroff), new Coord((buff.ameter * buff.ametersz.x) / 100, buff.ametersz.y));
-                } else {
-                    g.image(buff.frame, bc);
-                }
-
-                bc.x += 3;
-                bc.y += 3;
-
-                g.chcolor(clr);
-                g.frect(bc, simpleOpeningSz);
-
-               g.chcolor(Color.WHITE);
-                if (buff.atex == null)
-                    buff.atex = Text.renderstroked(buff.ameter + "", Color.WHITE, Color.BLACK, Text.num12boldFnd).tex();
-                Tex atex = buff.atex;
-                bc.x = bc.x + simpleOpeningSz.x / 2 - atex.sz().x / 2;
-                bc.y = bc.y + simpleOpeningSz.y / 2 - atex.sz().y / 2;
-                g.image(atex, bc);
-                g.chcolor();
-            } catch (Loading l) {
+    private void drawOpeningofftarget(GOut g, Buff buff, Coord bc, int size) {
+        try {
+            Coord smalSz = new Coord(size, size);
+            Coord metSz = new Coord(size, 3);
+            Resource res = buff.res.get();
+            Color clr = openings.get(res.name);
+            if (clr == null) {
+                buff.draw(g.reclip(bc, smalSz.add(0, 10)), size);
+                return;
             }
-        } else {
-            buff.draw(g.reclip(bc, buff.sz));
-        }
+
+            if (buff.ameter >= 0) {
+                g.chcolor(Color.BLACK);
+                g.frect(bc.add(Buff.ameteroff), metSz);
+                g.chcolor(Color.WHITE);
+                g.frect(bc.add(Buff.ameteroff), new Coord(buff.ameter * metSz.x / 100, metSz.y));
+            }
+
+            bc.x += 3;
+            bc.y += 3;
+            g.chcolor(clr);
+            g.frect(bc, smalSz);
+            g.chcolor(Color.WHITE);
+            if (buff.atex == null) {
+                buff.atex = Text.renderstroked(buff.ameter + "", Color.WHITE, Color.BLACK, Text.num12boldFnd).tex();
+            }
+
+            Tex atex = buff.atex;
+            bc.x = bc.x + smalSz.x / 2 - atex.sz().x / 2;
+            bc.y = bc.y + smalSz.y / 2 - atex.sz().y / 2;
+            g.image(atex, bc);
+            g.chcolor();
+        } catch (Loading l) {}
+
     }
 
     private Widget prevtt = null;

@@ -3144,6 +3144,21 @@ public class OptWnd extends Window {
             }
         });
         appender.setVerticalMargin(0);
+        appender.addRow(new Label("Wild Horse Alarm"), makeAlarmDropdownHorse());
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (int) (Config.alarmhorsevol * 1000);
+            }
+
+            public void changed() {
+                double vol = val / 1000.0;
+                Config.alarmhorsevol = vol;
+                Utils.setprefd("alarmhorsevol", vol);
+            }
+        });
+        appender.setVerticalMargin(0);
         appender.addRow(new Label("Lynx Alarm"), makeAlarmDropdownLynx());
         appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
         appender.add(new HSlider(200, 0, 1000, 0) {
@@ -3919,6 +3934,35 @@ public class OptWnd extends Window {
                 Utils.setpref("alarmadder", item);
                 if(!item.equals("None"))
                     Audio.play(Resource.local().loadwait(item),Config.alarmaddervol);
+            }
+        };
+    }
+
+    private Dropbox<String> makeAlarmDropdownHorse() {
+        final List<String> alarms = Config.alarms.values().stream().map(x -> x.toString()).collect(Collectors.toList());
+        return new Dropbox<String>(Config.alarms.size(), alarms) {
+            {
+                super.change(Config.alarmhorse);
+            }
+            @Override
+            protected String listitem(int i) {
+                return alarms.get(i);
+            }
+            @Override
+            protected int listitems() {
+                return alarms.size();
+            }
+            @Override
+            protected void drawitem(GOut g, String item, int i) {
+                g.text(item, Coord.z);
+            }
+            @Override
+            public void change(String item) {
+                super.change(item);
+                Config.alarmhorse = item;
+                Utils.setpref("alarmhorse", item);
+                if(!item.equals("None"))
+                    Audio.play(Resource.local().loadwait(item),Config.alarmhorsevol);
             }
         };
     }
