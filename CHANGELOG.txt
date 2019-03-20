@@ -1,3 +1,8 @@
+1.00.105
+Study table total mental weight is now unique mental weight, not additive. 
+Fixed new CraftDB helper label resizing the window to fit.
+~
+
 1.00.104
 Switched the buffs list over to a movable widget and increased mouseover accuracy. Can now be moved by holding alt and right click and dragging.
 Fixed crash bug if you mouseover quest pointer while taking a road.

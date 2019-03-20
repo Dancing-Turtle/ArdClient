@@ -416,21 +416,28 @@ public class Window extends MovableWidget implements DTarget {
                 int totalLP = 0;
                 int totalAttn = 0;
                 HashMap<String, Double> studyTimes = new HashMap<String, Double>();
+                HashMap<String, Integer> AttnTotal = new HashMap<String, Integer>();
                 for (Widget wdg = this.lchild; wdg != null; wdg = wdg.prev) {
                     if (wdg instanceof Inventory) {
                         for (WItem item : ((Inventory) wdg).wmap.values()) {
                             try {
                                 Curiosity ci = ItemInfo.find(Curiosity.class, item.item.info());
                                 totalLP += ci.exp;
-                                totalAttn += ci.mw;
+                                studyTimes.put(item.item.getname(), studyTimes.get(item.item.getname()) == null ? item.item.studytime : studyTimes.get(item.item.getname()) + item.item.studytime);
+                                AttnTotal.put(item.item.getname(), AttnTotal.get(item.item.getname()) == null ? ci.mw : AttnTotal.get(item.item.getname()));
                             }catch(NullPointerException qq){}
-                            studyTimes.put(item.item.getname(), studyTimes.get(item.item.getname()) == null ? item.item.studytime : studyTimes.get(item.item.getname()) + item.item.studytime);
                         }
                     }
                 }
                 g.image(Text.labelFnd.render("Total LP: " + String.format("%,d", totalLP)).tex(), new Coord(30, 306));
-                g.image(Text.labelFnd.render("Total Attention: " + String.format("%,d", totalAttn)).tex(), new Coord(30, 293));
+
                 int y = 320;
+                List<Map.Entry<String, Integer>> lst2 = AttnTotal.entrySet().stream().sorted((e1, e2)-> e1.getValue().compareTo(e2.getValue())).collect(Collectors.toList());
+                for(Map.Entry<String, Integer> entry : lst2) {
+                  totalAttn +=entry.getValue();
+                }
+                g.image(Text.labelFnd.render("Total Attention: " + String.format("%,d", totalAttn)).tex(), new Coord(30, 293));
+                //iterates the curio list to only print out total study times for unique curios
                 List<Map.Entry<String, Double>> lst = studyTimes.entrySet().stream().sorted((e1, e2)-> e1.getValue().compareTo(e2.getValue())).collect(Collectors.toList());
                 for(Map.Entry<String, Double> entry : lst) {
                 CurioCounter.add(entry.getKey());

@@ -205,7 +205,8 @@ public class CraftDBWnd extends Window implements DTarget2, ObservableListener<M
             }
         }));*/
         addBtn_base("gfx/hud/helpbtn", "Show Filter Help", () -> ItemFilter.showHelp(ui, ItemFilter.FILTER_HELP));
-        add(new Label("To search, simply start typing your search query. Click the ? in the upper right for details on search options."), new Coord(tabStrip.sz.x,0));
+        add(new Label("To search, simply start typing your search query."), new Coord(tabStrip.sz.x,0));
+        add(new Label("Click the ? in the upper right for details on search options."), new Coord(tabStrip.sz.x,12));
         btnFavourite = add(new ToggleButton(
                 "gfx/hud/btn-star-e", "", "-d", "-h",
                 "gfx/hud/btn-star-f", "", "-d", "-h"
