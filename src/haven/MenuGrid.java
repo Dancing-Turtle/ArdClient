@@ -818,6 +818,27 @@ public class MenuGrid extends Widget {
         addSpecial(new SpecialPagina(this, "paginae::windows::lmap",
                 Resource.local().load("paginae/windows/lmap"),
                 (pag) -> ui.gui.toggleMapfile()));
+
+        addSpecial(new SpecialPagina(this, "paginae::decks::deck1",
+                Resource.local().load("paginae/decks/deck1"),
+                (pag) -> ui.fightwnd.changebutton(0)));
+
+        addSpecial(new SpecialPagina(this, "paginae::decks::deck2",
+                Resource.local().load("paginae/decks/deck2"),
+                (pag) -> ui.fightwnd.changebutton(1)));
+
+        addSpecial(new SpecialPagina(this, "paginae::decks::deck3",
+                Resource.local().load("paginae/decks/deck3"),
+                (pag) -> ui.fightwnd.changebutton(2)));
+
+        addSpecial(new SpecialPagina(this, "paginae::decks::deck4",
+                Resource.local().load("paginae/decks/deck4"),
+                (pag) -> ui.fightwnd.changebutton(3)));
+
+        addSpecial(new SpecialPagina(this, "paginae::decks::deck5",
+                Resource.local().load("paginae/decks/deck5"),
+                (pag) -> ui.fightwnd.changebutton(4)));
+
     }
 
     private void updlayout() {
@@ -1233,6 +1254,8 @@ public class MenuGrid extends Widget {
         }
         PagButton r = hotmap.get(Character.toUpperCase(k));
         if(r != null) {
+            if (Config.disablemagaicmenugrid && r.res.name.startsWith("paginae/seid/"))
+                return(false);
             use(r, true);
             return(true);
         }

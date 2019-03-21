@@ -191,7 +191,6 @@ public class Fightsess extends Widget {
         try {
             if (parent.lchild != this) {
                 raise();
-                parent.setfocus(this);
             }
         }catch(Exception e){}
         double now = Utils.rtime();

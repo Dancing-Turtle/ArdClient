@@ -61,7 +61,7 @@ public class UI {
 	public GameUI gui;
 	public Widget realmchat;
 	public Widget makewnd;
-
+    public FightWnd fightwnd;
 
     {
         lastevent = lasttick = Utils.rtime();
@@ -222,6 +222,10 @@ public class UI {
             if(type.contains("make")) {
             //    System.out.println("Captured make widget of ID : "+wdg.wdgid());
                 makewnd = wdg;
+            }
+            if(wdg instanceof FightWnd){
+                System.out.println("Captured Fightwnd widget of id : "+wdg.wdgid());
+                fightwnd = (FightWnd)wdg;
             }
         }
     }

@@ -2218,6 +2218,17 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
+        appender.add(new CheckBox("Disable menugrid magic hotkeys") {
+            {
+                a = Config.disablemagaicmenugrid;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("disablemagaicmenugrid", val);
+                Config.disablemagaicmenugrid = val;
+                a = val;
+            }
+        });
         appender.add(new CheckBox("Show quick hand slots") {
             {
                 a = Config.quickslots;
@@ -3159,6 +3170,21 @@ public class OptWnd extends Window {
             }
         });
         appender.setVerticalMargin(0);
+        appender.addRow(new Label("Moose Alarm"), makeAlarmDropdownMoose());
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (int) (Config.alarmmoosevol * 1000);
+            }
+
+            public void changed() {
+                double vol = val / 1000.0;
+                Config.alarmhorsevol = vol;
+                Utils.setprefd("alarmmoosevol", vol);
+            }
+        });
+        appender.setVerticalMargin(0);
         appender.addRow(new Label("Lynx Alarm"), makeAlarmDropdownLynx());
         appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
         appender.add(new HSlider(200, 0, 1000, 0) {
@@ -3963,6 +3989,35 @@ public class OptWnd extends Window {
                 Utils.setpref("alarmhorse", item);
                 if(!item.equals("None"))
                     Audio.play(Resource.local().loadwait(item),Config.alarmhorsevol);
+            }
+        };
+    }
+
+    private Dropbox<String> makeAlarmDropdownMoose() {
+        final List<String> alarms = Config.alarms.values().stream().map(x -> x.toString()).collect(Collectors.toList());
+        return new Dropbox<String>(Config.alarms.size(), alarms) {
+            {
+                super.change(Config.alarmmoose);
+            }
+            @Override
+            protected String listitem(int i) {
+                return alarms.get(i);
+            }
+            @Override
+            protected int listitems() {
+                return alarms.size();
+            }
+            @Override
+            protected void drawitem(GOut g, String item, int i) {
+                g.text(item, Coord.z);
+            }
+            @Override
+            public void change(String item) {
+                super.change(item);
+                Config.alarmmoose = item;
+                Utils.setpref("alarmmoose", item);
+                if(!item.equals("None"))
+                    Audio.play(Resource.local().loadwait(item),Config.alarmmoosevol);
             }
         };
     }

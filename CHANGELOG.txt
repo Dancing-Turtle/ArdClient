@@ -1,3 +1,14 @@
+1.00.106
+Partial rollback on change to fight session to remove the part that ensures it always has focus. Evidently this interferes with the chat window and other text boxes, who knew? Kept the part where it'll draw over everything else.
+Added folder with 5 buttons inside to menugrid to switch combat decks. TEST THIS IN SPARS PLEASE
+Added moose alarm/dropdown.
+Added Dewy Lady's Mantles to alarm list.
+Added separate toggle to UI settings to only disable magic menugrid hotkeys.
+Switched pclaim/vclaim/kclaim toggles over to new settings system and reverted the toggle buttons back to Amber-like.
+Hitting the X on the chat window will now minimize it to a small bar rather than closing it.
+Added "bruh" and "noperope" alarms.
+~
+
 1.00.105
 Study table total mental weight is now unique mental weight, not additive. 
 Fixed new CraftDB helper label resizing the window to fit.

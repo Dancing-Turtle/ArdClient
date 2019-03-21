@@ -26,6 +26,8 @@
 
 package haven;
 
+import haven.purus.BotUtils;
+
 import static haven.CharWnd.attrf;
 import static haven.Inventory.invsq;
 import static haven.Window.wbox;
@@ -57,7 +59,7 @@ public class FightWnd extends Widget {
     private final ImageInfoBox info;
     private Tex count;
     private final Map<Indir<Resource>, Object[]> actrawinfo = new HashMap<>();
-    private Dropbox<Pair<Text, Integer>> schoolsDropdown;
+    public Dropbox<Pair<Text, Integer>> schoolsDropdown;
 
     private static final Set<String> attacks = new HashSet<>(Arrays.asList(
             "paginae/atk/pow",
@@ -857,6 +859,7 @@ public class FightWnd extends Widget {
 
         };
 
+
         info = add(new ImageInfoBox(new Coord(223, 152)), new Coord(5, 35).add(wbox.btloff()));
         Frame.around(this, Collections.singletonList(info));
 
@@ -932,6 +935,19 @@ public class FightWnd extends Widget {
         }, 405, 277);
 
         pack();
+    }
+
+    public void changebutton(Integer index){
+        try {
+            if(!saves[index].text.equals("unused save")) {
+                schoolsDropdown.change(new Pair(saves[index], index));
+                BotUtils.sysMsg("Switched to deck : " + saves[index].text, Color.white);
+            }
+            else
+                BotUtils.sysMsg("This is not a saved deck, not switching.",Color.white);
+        }catch(Exception e ){
+            BotUtils.sysLogAppend("Exception switching combat decks, exception ignored to avoid crash.","white");
+        }
     }
 
     private static int actionsListHeight() {

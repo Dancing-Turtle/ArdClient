@@ -304,6 +304,11 @@ public class LocalMiniMap extends Widget {
                             this.sgobs.add(gob.id);
                             Audio.play(Resource.local().loadwait(Config.alarmhorse),Config.alarmhorsevol);
                         }
+                    }else if(gob.type == Gob.Type.OTHERMOB && !Config.alarmmoose.equals("None")){
+                        if(gob.getres().basename().contains("moose")){
+                            this.sgobs.add(gob.id);
+                            Audio.play(Resource.local().loadwait(Config.alarmmoose),Config.alarmmoosevol);
+                        }
                     }
 
                 } catch (Loading l) {}

@@ -19,40 +19,58 @@ public class MinimapWnd extends ResizableWnd {
     public MapWnd mapfile;
 
 
-
     public MinimapWnd(final LocalMiniMap mm) {
         super(Coord.z, (Resource.getLocString(Resource.BUNDLE_WINDOW, "Minimap")));
         this.minimap = mm;
         final int spacer = 5;
 
         makeHidable();
-        final IButton pclaim = add(new IButton("gfx/hud/wndmap/btns/claim", "Show Personal Claims", () ->{
-            if((ui.gui.map != null) && !ui.gui.map.visol(0)) {
-                DefSettings.SHOWPCLAIM.set(true);
-                ui.gui.map.enol(0, 1);
-            } else {
-                DefSettings.SHOWPCLAIM.set(false);
-                ui.gui.map.disol(0, 1);
+
+        final ToggleButton2 pclaim = add(new ToggleButton2("gfx/hud/wndmap/btns/claim", "gfx/hud/wndmap/btns/claim-d", DefSettings.SHOWPCLAIM.get()) {
+            {
+                tooltip = Text.render(Resource.getLocString(Resource.BUNDLE_LABEL, "Display personal claims"));
             }
-        }), new Coord(0, 0));
-        final IButton vclaim = add(new IButton("gfx/hud/wndmap/btns/vil", "Show Village Claims", () ->{
-            if((ui.gui.map != null) && !ui.gui.map.visol(2)) {
-                DefSettings.SHOWVCLAIM.set(true);
-                ui.gui.map.enol(2, 3);
-            } else {
-                DefSettings.SHOWVCLAIM.set(false);
-                ui.gui.map.disol(2, 3);
+
+            public void click() {
+                if ((ui.gui.map != null) && !ui.gui.map.visol(0)) {
+                    ui.gui.map.enol(0, 1);
+                    DefSettings.SHOWPCLAIM.set(true);
+                } else {
+                    ui.gui.map.disol(0, 1);
+                    DefSettings.SHOWPCLAIM.set(false);
+                }
             }
-        }), pclaim.c.add(pclaim.sz.x + spacer, 0));
-        final IButton realm = add(new IButton("gfx/hud/wndmap/btns/realm", "Show Kingdom Claims", () ->{
-            if((ui.gui.map != null) && !ui.gui.map.visol(4)) {
-                ui.gui.map.enol(4, 5);
-                DefSettings.SHOWKCLAIM.set(true);
-            } else {
-                DefSettings.SHOWKCLAIM.set(false);
-                ui.gui.map.disol(4, 5);
+        },new Coord(0,0));
+       final ToggleButton2 vclaim = add(new ToggleButton2("gfx/hud/wndmap/btns/vil", "gfx/hud/wndmap/btns/vil-d", DefSettings.SHOWVCLAIM.get()) {
+            {
+                tooltip = Text.render(Resource.getLocString(Resource.BUNDLE_LABEL, "Display village claims"));
             }
-        }), vclaim.c.add(vclaim.sz.x + spacer, 0));
+
+            public void click() {
+                if ((ui.gui.map != null) && !ui.gui.map.visol(2)) {
+                    ui.gui.map.enol(2, 3);
+                    DefSettings.SHOWVCLAIM.set(true);
+                } else {
+                    ui.gui.map.disol(2, 3);
+                    DefSettings.SHOWVCLAIM.set(false);
+                }
+            }
+        },pclaim.c.add(pclaim.sz.x+spacer,0));
+        final ToggleButton2 realm = add(new ToggleButton2("gfx/hud/wndmap/btns/realm", "gfx/hud/wndmap/btns/realm-d",    DefSettings.SHOWKCLAIM.get()) {
+            {
+                tooltip = Text.render(Resource.getLocString(Resource.BUNDLE_LABEL, "Display realms"));
+            }
+
+            public void click() {
+                if ((ui.gui.map != null) && !ui.gui.map.visol(4)) {
+                    ui.gui.map.enol(4, 5);
+                    DefSettings.SHOWKCLAIM.set(true);
+                } else {
+                    ui.gui.map.disol(4, 5);
+                    DefSettings.SHOWKCLAIM.set(false);
+                }
+            }
+        },vclaim.c.add(vclaim.sz.x+spacer,0));
         final IButton mapwnd = add(new IButton("gfx/hud/wndmap/btns/map", "Open Map", () -> gameui().toggleMap()), realm.c.add(realm.sz.x + spacer,0));
         final IButton geoloc = new IButton("gfx/hud/wndmap/btns/geoloc", "", "", "") {
             @Override

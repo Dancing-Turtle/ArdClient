@@ -184,6 +184,7 @@ public class Config {
     public static boolean autopickclay =  Utils.getprefb("autopickclay", false);
     //public static boolean studydeskalerts =  Utils.getprefb("studydeskalerts", false);
     public static boolean confirmmagic =  Utils.getprefb("confirmmagic", true);
+    public static boolean disablemagaicmenugrid =  Utils.getprefb("disablemagaicmenugrid", false);
     public static boolean altfightui =  Utils.getprefb("altfightui", false);
     public static boolean combshowkeys =  Utils.getprefb("combshowkeys", true);
     public static boolean combaltopenings =  Utils.getprefb("combaltopenings", true);
@@ -306,6 +307,8 @@ public class Config {
     public static double alarmeaglevol = Utils.getprefd("alarmeaglevol", 0.32);
     public static String alarmhorse = Utils.getpref("alarmhorse", "None");
     public static double alarmhorsevol = Utils.getprefd("alarmhorsevol", 0.32);
+    public static String alarmmoose = Utils.getpref("alarmmoose", "None");
+    public static double alarmmoosevol = Utils.getprefd("alarmmoosevol", 0.32);
     public static String alarmdoomed = Utils.getpref("alarmdoomed", "sfx/Doomed");
     public static String alarmwball = Utils.getpref("alarmwball", "sfx/WreckingBall");
     public static double alarmwballvol = Utils.getprefd("alarmwballvol", 1.0D);
@@ -608,7 +611,7 @@ public class Config {
         put("gfx/kritter/irrbloss/irrbloss", Resource.loadtex("gfx/icons/irrbloss"));
     }};
 
-    public final static HashMap<String, CheckListboxItem> alarmitems = new HashMap<String, CheckListboxItem>(51) {{
+    public final static HashMap<String, CheckListboxItem> alarmitems = new HashMap<String, CheckListboxItem>(52) {{
         put("gfx/terobjs/herbs/flotsam", new CheckListboxItem("Peculiar Flotsam"));
         put("gfx/terobjs/herbs/chimingbluebell", new CheckListboxItem("Chiming Bluebell"));
         put("gfx/terobjs/herbs/edelweiss", new CheckListboxItem("Edelweiß"));
@@ -660,6 +663,7 @@ public class Config {
         put("gfx/kritter/jellyfish/jellyfish", new CheckListboxItem("Jellyfish"));
         put("gfx/terobjs/herbs/seashell",new CheckListboxItem("Rainbowshell"));
         put("gfx/terobjs/herbs/giantpuffball", new CheckListboxItem("Giant Puff Ball"));
+        put("gfx/terobjs/herbs/ladysmantledew", new CheckListboxItem("Dewy Lady's Mantle"));
     }};
 
     public final static Set<String> locres = new HashSet<String>(Arrays.asList(
@@ -758,7 +762,7 @@ public class Config {
         put("cupboard", new CheckListboxItem("Cupboards"));
     }};
 
-    public final static HashMap<String, String> alarms = new HashMap<String,String>(33){{
+    public final static HashMap<String, String> alarms = new HashMap<String,String>(37){{
         put("None","None");
         put("Pony Alarm","sfx/alarmpony");
         put("Awwwwww Yeah","sfx/awwyeah");
@@ -793,6 +797,8 @@ public class Config {
         put("Trumpets","sfx/trumpets");
         put("No Dick!","sfx/nodick");
         put("Snek!","sfx/snek");
+        put("Noperope","sfx/noperope");
+        put("Bruh","sfx/bruh");
     }};
 
     public final static HashMap<String, String[]> cures = new HashMap<String, String[]>(23) {{
