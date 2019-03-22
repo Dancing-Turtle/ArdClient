@@ -48,8 +48,8 @@ public class ShieldChecker extends Window {
                 cbtn.hide();
                 stopbtn.show();
                 terminate = false;
-                runner = new Thread(new Runner(), "Shield Checker");
-                runner.start();
+             //   runner = new Thread(new Runner(), "Shield Checker");
+              //  runner.start();
             }
         };
         add(runbtn, new Coord(0, 120));
@@ -68,7 +68,7 @@ public class ShieldChecker extends Window {
         stopbtn.hide();
     }
 
-    private class Runner implements Runnable {
+  /* private class Runner implements Runnable {
         @Override
         public void run() {
             GameUI gui = gameui();
@@ -78,8 +78,8 @@ public class ShieldChecker extends Window {
                   BotUtils.mapInteractLeftClick(0);
                   BotUtils.sleep(2000);
                //   BotUtils.sysMsg(ui.VillageShield, Color.white);
-                  lblc.settext("V Result : "+ui.VillageShield);
-                  lblc2.settext("P Result : "+ui.PrivateShield);
+               //   lblc.settext("V Result : "+ui.VillageShield);
+                //  lblc2.settext("P Result : "+ui.PrivateShield);
                   iteration++;
                   if(Discord.jdalogin!=null && !Config.AlertChannel.equals("Null")) {
                       for (TextChannel loop : haven.automation.Discord.channels) {
@@ -131,7 +131,7 @@ public class ShieldChecker extends Window {
                   }catch(InterruptedException q){}
               }
         }
-        }
+        }*/
     @Override
     public void wdgmsg(Widget sender, String msg, Object... args) {
         if (sender == cbtn)

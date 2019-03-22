@@ -144,11 +144,11 @@ public class ActWindow extends GameUI.Hidewnd {
 	    if(pagseq != menu.pagseq) {
 		synchronized (all) {
 		    all.clear();
-		    all.addAll(
-			menu.paginae.stream()
-			    .filter(p -> category.matcher(Pagina.name(p)).matches())
-			    .collect(Collectors.toList())
-		    );
+		 //   all.addAll(
+			//menu.paginae.stream()
+			   // .filter(p -> category.matcher(Pagina.name(p)).matches())
+			  //  .collect(Collectors.toList())
+		 //   );
 
 		    pagseq = menu.pagseq;
 		    needfilter();
