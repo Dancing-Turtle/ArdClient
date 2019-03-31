@@ -37,8 +37,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import haven.Party.Member;
+import haven.sloth.gui.MovableWidget;
 
 public class Partyview extends Widget {
+    public static final String ptkey = "Partyview";
     long ign;
     Party party;
     Map<Long, Member> om = null;
@@ -59,6 +61,9 @@ public class Partyview extends Widget {
     }
 
     protected void added() {
+        if(haven.sloth.gui.MovableWidget.knownPositions.containsKey(ptkey)) {
+            setPosRel(MovableWidget.knownPositions.get(ptkey));
+        }
         party = ui.sess.glob.party;
         update();
     }

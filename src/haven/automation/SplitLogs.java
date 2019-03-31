@@ -3,7 +3,7 @@ package haven.automation;
 
 import haven.*;
 import haven.Window;
-import haven.purus.BotUtils;
+import haven.purus.pbot.PBotUtils;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -47,9 +47,9 @@ public class SplitLogs implements Runnable {
         for (int i = 0; i < trays.size(); i++) {
                 FlowerMenu.setNextSelection("Split");
                 trays.get(i).item.wdgmsg("iact", Coord.z, -1);
-                BotUtils.sleep(900);
+            PBotUtils.sleep(900);
         }
-        BotUtils.sysMsg("Done",Color.white);
+        PBotUtils.sysMsg("Done",Color.white);
     }
     private List<WItem> getTrays (Inventory inv){
         List<WItem> trays = inv.getItemsPartial("Block");

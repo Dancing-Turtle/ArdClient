@@ -1,6 +1,6 @@
 package haven;
 
-import haven.purus.BotUtils;
+
 
 public enum Action {
     TOGGLE_INVENTORY(GameUI::toggleInventory, "Inventory"),
@@ -24,17 +24,17 @@ public enum Action {
     ACT_HAND_0(GameUI::leftHand, "Left hand", "Left click on left hand slot."),
     ACT_HAND_1(GameUI::rightHand, "Right hand", "Left click on right hand slot."),
     FILTER(GameUI::toggleFilter, "Show item filter"),
-   // OPEN_QUICK_CRAFT(GameUI::toggleCraftList, "Open craft list", "Opens list of items you can craft. Start typing to narrow the list. Press Enter or double-click to select recipe."),
-   // OPEN_QUICK_BUILD(GameUI::toggleBuildList, "Open building list", "Opens list of objects you can build. Start typing to narrow the list. Press Enter or double-click to select building."),
-   // OPEN_QUICK_ACTION(GameUI::toggleActList, "Open actions list", "Opens list of actions you can perform. Start typing to narrow the list. Press Enter or double-click to perform action."),
-  //  OPEN_CRAFT_DB(GameUI::toggleCraftDB, "Open crafting DB"),
+    // OPEN_QUICK_CRAFT(GameUI::toggleCraftList, "Open craft list", "Opens list of items you can craft. Start typing to narrow the list. Press Enter or double-click to select recipe."),
+    // OPEN_QUICK_BUILD(GameUI::toggleBuildList, "Open building list", "Opens list of objects you can build. Start typing to narrow the list. Press Enter or double-click to select building."),
+    // OPEN_QUICK_ACTION(GameUI::toggleActList, "Open actions list", "Opens list of actions you can perform. Start typing to narrow the list. Press Enter or double-click to perform action."),
+    //  OPEN_CRAFT_DB(GameUI::toggleCraftDB, "Open crafting DB"),
     TOGGLE_CURSOR(GameUI::toggleHand, "Toggle cursor item", "Hide/show item on a cursor. Allows you to walk with item on cursor when hidden."),
     TOGGLE_STUDY(GameUI::toggleStudy, "Toggle study window"),
     TOGGLE_CAMERA(gui->gui.map.toggleCamera(),"Switches between camera views."),
  //  FILTER(gui -> gui.filter.toggle(), "Show item filter"),
     TOGGLE_GOB_INFO(GameUI::toggleTreeStage, "Display Tree/Crop Stages", "Display crop/tree growth and object health overlay."),
     TOGGLE_GOB_HITBOX(GameUI::toggleGobs, "Display hitboxes"),
-    TOGGLE_DANGER_RADIUS(GameUI::toggleDangerRadius, "Display mine support radius", "Displays effective radius of mine supports."),
+    TOGGLE_DANGER_RADIUS(GameUI::toggleDangerRadius, "Toggles Mine/Animal Radii", "Toggles display of mine/animal danger radii."),
     TOGGLE_SAFE_RADIUS(GameUI::toggleSafeRadius,"Toggles Trough/Beehive Radii","Toggles between modes of displaying Trough/Beehive radii."),
     LOCAL_SCREENSHOT(GameUI::localScreenshot,"Take and save a local screenshot."),
  //   TOGGLE_TILE_GRID(gui -> gui.map.togglegrid(), "Show tile grid"),
@@ -55,7 +55,8 @@ public enum Action {
     BELT_PAGETHREE(GameUI::beltPageSwitch3,"NBelt page 3"),
     BELT_PAGEFOUR(GameUI::beltPageSwitch4,"NBelt page 4"),
     BELT_PAGEFIVE(GameUI::beltPageSwitch5,"NBelt page 5"),
-    TOGGLE_CRAFTWND(GameUI::toggleCraftDB,"Toggle Craft Database");
+    TOGGLE_CRAFTWND(GameUI::toggleCraftDB,"Toggle Craft Database"),
+    TOGGLE_HIDDENGOBS(GameUI::toggleHiddenGobs,"Toggles hide on individually hidden objects.");
 
 
     

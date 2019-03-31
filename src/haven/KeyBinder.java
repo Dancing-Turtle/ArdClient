@@ -3,7 +3,6 @@ package haven;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import haven.purus.BotUtils;
 import rx.functions.Func0;
 
 import java.awt.*;
@@ -95,6 +94,7 @@ public class KeyBinder {
 	add(KeyEvent.VK_E,4,RUN_SPEED);
 	add(KeyEvent.VK_R,4,SPRINT_SPEED);
 	add(KeyEvent.VK_H,CTRL,TOGGLE_HIDEGOBS);
+	add(KeyEvent.VK_H,SHIFT,TOGGLE_HIDDENGOBS);
 	add(KeyEvent.VK_N,CTRL,TOGGLE_DAYLIGHT);
 	add(KeyEvent.VK_U,CTRL,TOGGLE_UI);
 	add(KeyEvent.VK_M,ALT,TOGGLE_STATUSOVERLAY);

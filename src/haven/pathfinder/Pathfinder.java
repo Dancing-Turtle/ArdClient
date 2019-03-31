@@ -1,22 +1,13 @@
 package haven.pathfinder;
 
 
-import static haven.OCache.posres;
+import haven.*;
 
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import haven.Coord;
-import haven.Coord2d;
-import haven.Coordf;
-import haven.Gob;
-import haven.GobHitbox;
-import haven.LinMove;
-import haven.MCache;
-import haven.MapView;
-import haven.OCache;
-import haven.Pair;
+import static haven.OCache.posres;
 
 public class Pathfinder implements Runnable {
     private OCache oc;
@@ -83,7 +74,7 @@ public class Pathfinder implements Runnable {
         long starttotal = System.nanoTime();
         haven.pathfinder.Map m = new haven.pathfinder.Map(src, dest, map);
         Gob player = mv.player();
-       // System.out.println("debug test 1");
+
         long start = System.nanoTime();
         synchronized (oc) {
             for (Gob gob : oc) {
@@ -94,11 +85,9 @@ public class Pathfinder implements Runnable {
                     continue;
                 GobHitbox.BBox box = GobHitbox.getBBox(gob);
                 if (box != null && isInsideBoundBox(gob.rc.floor(), gob.a, box, player.rc.floor())) {
-                    System.out.println("Excluding gob of type : "+gob.type+" res : "+gob.getres().basename());
                     m.excludeGob(gob);
                     continue;
                 }
-              //  System.out.println("debug test 2");
                 m.addGob(gob);
             }
         }
@@ -107,13 +96,13 @@ public class Pathfinder implements Runnable {
         // move it slightly away from it
         if (m.isOriginBlocked()) {
             Pair<Integer, Integer> freeloc = m.getFreeLocation();
-          //  System.out.println("debug test 3");
+
             if (freeloc == null) {
                 terminate = true;
                 m.dbgdump();
                 return;
             }
-         //   System.out.println("debug test 4");
+
             mc = new Coord2d(src.x + freeloc.a - Map.origin, src.y + freeloc.b - Map.origin).floor(posres);
             mv.wdgmsg("click", Coord.z, mc, 1, 0);
 
@@ -123,18 +112,17 @@ public class Pathfinder implements Runnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-         //   System.out.println("debug test 5");
+
             // need to recalculate map
             moveinterupted = true;
             m.dbgdump();
             return;
         }
-      //  System.out.println("debug test 6");
+
         // exclude any bounding boxes overlapping the destination gob
-        if (this.gob != null) {
+        if (this.gob != null)
             m.excludeGob(this.gob);
-          //  System.out.println("debug test 7 : "+this.gob.getres().basename());
-        }
+
         if (Map.DEBUG_TIMINGS)
             System.out.println("      Gobs Processing: " + (double) (System.nanoTime() - start) / 1000000.0 + " ms.");
 
@@ -143,24 +131,22 @@ public class Pathfinder implements Runnable {
             System.out.println("--------------- Total: " + (double) (System.nanoTime() - starttotal) / 1000000.0 + " ms.");
 
         m.dbgdump();
-       // System.out.println("debug test 8");
+
         Iterator<Edge> it = path.iterator();
         while (it.hasNext() && !moveinterupted && !terminate) {
-          //  System.out.println("debug test 9");
             Edge e = it.next();
 
             mc = new Coord2d(src.x + e.dest.x - Map.origin, src.y + e.dest.y - Map.origin).floor(posres);
 
             if (action != null && !it.hasNext())
                 mv.gameui().act(action);
-           // System.out.println("debug test 11");
+
             if (gob != null && !it.hasNext()) {
                 mv.wdgmsg("click", gob.sc, mc, clickb, modflags, 0, (int) gob.id, gob.rc.floor(posres), 0, meshid);
-              //  System.out.println("debug test 12");
-            }
-            else {
+                MapView.pllastcc = new Coord2d(src.x + e.dest.x - Map.origin, src.y + e.dest.y - Map.origin);
+            } else {
                 mv.wdgmsg("click", Coord.z, mc, 1, 0);
-             //   System.out.println("debug test 13");
+                MapView.pllastcc = new Coord2d(src.x + e.dest.x - Map.origin, src.y + e.dest.y - Map.origin);
             }
 
             // wait for gob to start moving

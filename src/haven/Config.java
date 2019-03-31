@@ -52,8 +52,8 @@ public class Config {
     public static boolean nopreload = false;
     public static int mainport = 1870;
     public static int authport = 1871;
+    public static boolean skybox = Utils.getprefb("skybox", true);
     public static boolean lowerterraindistance = Utils.getprefb("lowerterraindistance", false);
-    public static boolean hidesky = Utils.getprefb("hidesky", false);
     public static boolean noloadscreen = Utils.getprefb("noloadscreen", false);
     public static URL screenurl = geturl("http://game.havenandhearth.com/mt/ss");
     public static boolean hideflocomplete = Utils.getprefb("hideflocomplete", false);
@@ -66,6 +66,8 @@ public class Config {
     public static boolean chatsave = Utils.getprefb("chatsave", false);
     public static boolean chattimestamp = Utils.getprefb("chattimestamp", true);
     public static boolean flatcupboards = Utils.getprefb("flatcupboards", true);
+    public static boolean flatwalls = Utils.getprefb("flatwalls", false);
+    public static boolean flatcaves = Utils.getprefb("flatcaves", false);
     public static boolean showquality = Utils.getprefb("showquality", true);
     public static boolean showroadendpoint = Utils.getprefb("showroadendpoint", true);
     public static boolean showroadmidpoint = Utils.getprefb("showroadmidpoint", false);
@@ -94,12 +96,14 @@ public class Config {
 
     public static double sfxchipvol = Utils.getprefd("sfxchipvol", 0.9);
     public static double sfxquernvol = Utils.getprefd("sfxquernvol", 0.9);
+    public static double sfxdoorvol = Utils.getprefd("sfxdoorvol", 0.9);
     public static double sfxfirevol = Utils.getprefd("sfxfirevol", 1.0);
     public static double sfxclapvol = Utils.getprefd("sfxclapvol", 1.0);
     public static double sfxbeehivevol = Utils.getprefd("sfxbeehivevol", 1.0);
     public static double sfxchatvol = Utils.getprefd("sfxchatvol", 1.0);
     public static double sfxcauldronvol = Utils.getprefd("sfxcauldronvol", 1.0);
     public static double sfxwhistlevol = Utils.getprefd("sfxwhistlevol", 1.0);
+    public static double sfxdingvol = Utils.getprefd("sfxdingvol", 1.0);
     public static boolean showcraftcap = Utils.getprefb("showcraftcap", true);
     public static boolean showgobhp = Utils.getprefb("showgobhp", false);
     public static boolean showplantgrowstage = Utils.getprefb("showplantgrowstage", false);
@@ -120,6 +124,7 @@ public class Config {
     public static boolean showfps = Utils.getprefb("showfps", false);
     public static boolean autohearth = Utils.getprefb("autohearth", false);
     public static boolean showplayerpaths = Utils.getprefb("showplayerpaths", false);
+    public static boolean showgobpaths = Utils.getprefb("showgobpaths", true);
     public static boolean showinvonlogin = Utils.getprefb("showinvonlogin", false);
     public static boolean runonlogin = Utils.getprefb("runonlogin", false);
     public static Coord chatsz = Utils.getprefc("chatsz", new Coord(683, 111));
@@ -127,6 +132,7 @@ public class Config {
     public static boolean showdmgop = Utils.getprefb("showdmgop", true);
     public static boolean showothercombatinfo = Utils.getprefb("showothercombatinfo", true);
     public static boolean hidegobs = Utils.getprefb("hidegobs", false);
+    public static boolean hideuniquegobs = Utils.getprefb("hideuniquegobs", false);
     public static boolean qualitybg = Utils.getprefb("qualitybg", true);
     public static int qualitybgtransparency = Utils.getprefi("qualitybgtransparency", 5);
     public static boolean showwearbars = Utils.getprefb("showwearbars", true);
@@ -174,9 +180,11 @@ public class Config {
     public static boolean dungeonkeyalert =  Utils.getprefb("dungeonkeyalert", true);
     public static double sfxwhipvol = Utils.getprefd("sfxwhipvol", 0.9);
     public static boolean showarchvector =  Utils.getprefb("showarchvector", false);
+    public static boolean alertwounds =  Utils.getprefb("alertwounds", true);
     //public static boolean showcddelta =  Utils.getprefb("showcddelta", false);
     public static boolean disabledrinkhotkey =  Utils.getprefb("disabledrinkhotkey", false);
     public static boolean disablegatekeybind =  Utils.getprefb("disablegatekeybind", false);
+    public static boolean disablecartkeybind =  Utils.getprefb("disablecartkeybind", false);
     public static boolean autologout =  Utils.getprefb("autologout", false);
     public static int combatkeys =  Utils.getprefi("combatkeys", 0);
     public static boolean logcombatactions =  Utils.getprefb("logcombatactions", false);
@@ -186,6 +194,8 @@ public class Config {
     public static boolean confirmmagic =  Utils.getprefb("confirmmagic", true);
     public static boolean disablemagaicmenugrid =  Utils.getprefb("disablemagaicmenugrid", false);
     public static boolean altfightui =  Utils.getprefb("altfightui", false);
+    public static boolean forcefightfocus =  Utils.getprefb("forcefightfocus", false); //only forces focus if anything besides the chat box has focus
+    public static boolean forcefightfocusharsh =  Utils.getprefb("forcefightfocusharsh", false); //will force fightsess focus no matter what
     public static boolean combshowkeys =  Utils.getprefb("combshowkeys", true);
     public static boolean combaltopenings =  Utils.getprefb("combaltopenings", true);
     public static boolean studyhist =  Utils.getprefb("studyhist", false);
@@ -206,6 +216,7 @@ public class Config {
     public static boolean StarveAlert = Utils.getprefb("StarveAlert", true);
     public static boolean stackwindows = Utils.getprefb("stackwindows", false);
     public static boolean autodrink = Utils.getprefb("autodrink", false);
+    public static int autodrinkthreshold = Utils.getprefi("autodrinkthreshold", 80);
     public static boolean DropMeat = Utils.getprefb("DropMeat", false);
     public static boolean DropBones = Utils.getprefb("DropBones", false);
     public static boolean bonsai = Utils.getprefb("bonsai", false);
@@ -237,6 +248,8 @@ public class Config {
     public static boolean hungermeter = Utils.getprefb("hungermeter", true);
     public static boolean leechdrop = Utils.getprefb("leechdrop", false);
     public static boolean hideTrees = Utils.getprefb("hideTrees", true);
+    //hideboulders
+    public static boolean hideboulders = Utils.getprefb("hideboulders", false);
     public static boolean hideTarKilns = Utils.getprefb("hideTarKilns", true);
     public static boolean hideSmelters = Utils.getprefb("hideSmelters", true);
     public static boolean hidemoths = Utils.getprefb("hidemoths", false);
@@ -277,10 +290,11 @@ public class Config {
     public static int SpecRed = Utils.getprefi("SpecRed",255);
     public static int SpecGreen = Utils.getprefi("SpecGreen",255);
     public static int SpecBlue = Utils.getprefi("SpecBlue",255);
-
+    public static double alertsvol = Utils.getprefd("alertsvol", 0.8);
     public static boolean chatalarm = Utils.getprefb("chatalarm", true);
     public static double chatalarmvol = Utils.getprefd("chatalarmvol", 0.8);
     public static boolean timersalarm = Utils.getprefb("timersalarm", false);
+    public static boolean alarmonce = Utils.getprefb("alarmonce", false);
     public static boolean timersort = Utils.getprefb("timersort", true);
     public static double timersalarmvol = Utils.getprefd("timersalarmvol", 0.8);
     public static String alarmunknownplayer = Utils.getpref("alarmunknownplayer", "sfx/OhShitItsAGuy");
@@ -331,8 +345,8 @@ public class Config {
     public static double attackedvol = Utils.getprefd("attackedvol", 0.8);
 
     public static HashMap<String,Boolean> curioslist = null;
-
-
+    public static boolean firstrun = Utils.getprefb("firstrun",true); //only exists to see if it's the first time running the client since version 108, if so, loads default alarms.
+    public static boolean firstrunalerts = Utils.getprefb("firstrunalerts",true); //only exists to see if it's the first time running the client since version 108, if so, loads default alarms.
 
 
 
@@ -447,7 +461,7 @@ public class Config {
         put("medlar", new CheckListboxItem("Medlar"));
     }};
 
-    public final static HashMap<String, CheckListboxItem> icons = new HashMap<String, CheckListboxItem>(60) {{
+    public final static HashMap<String, CheckListboxItem> icons = new HashMap<String, CheckListboxItem>(62) {{
         put("dandelion", new CheckListboxItem("Dandelion"));
         put("chantrelle", new CheckListboxItem("Chantrelle"));
         put("blueberry", new CheckListboxItem("Blueberry"));
@@ -508,6 +522,9 @@ public class Config {
         put("monarchbutterfly", new CheckListboxItem("Monarch Butterfly"));
         put("irrbloss", new CheckListboxItem("Irrlight"));
         put("cavecentipede", new CheckListboxItem("Cave Centipede"));
+        put("mole", new CheckListboxItem("Moles"));
+        put("lorchel", new CheckListboxItem("Morels"));
+        put("frogscrown", new CheckListboxItem("Frog's Crown"));
     }};
 
     public final static HashMap<String, CheckListboxItem> flowermenus = new HashMap<String, CheckListboxItem>(33) {{
@@ -664,6 +681,98 @@ public class Config {
         put("gfx/terobjs/herbs/seashell",new CheckListboxItem("Rainbowshell"));
         put("gfx/terobjs/herbs/giantpuffball", new CheckListboxItem("Giant Puff Ball"));
         put("gfx/terobjs/herbs/ladysmantledew", new CheckListboxItem("Dewy Lady's Mantle"));
+    }};
+
+    public final static HashMap<String, String> defaultitems = new HashMap<String, String>(89) {{
+        put("gfx/terobjs/herbs/flotsam", "Peculiar Flotsam");
+        put("gfx/terobjs/herbs/chimingbluebell", "Chiming Bluebell");
+        put("gfx/terobjs/herbs/edelweiss", "Edelweiß");
+        put("gfx/terobjs/herbs/bloatedbolete","Bloated Bolete");
+        put("gfx/terobjs/herbs/glimmermoss", "Glimmermoss");
+        put("gfx/terobjs/herbs/camomile", "Camomile");
+        put("gfx/terobjs/herbs/clay-cave", "Cave Clay");
+        put("gfx/terobjs/herbs/mandrake", "Mandrake Root");
+        put("gfx/terobjs/herbs/clay-gray", "Gray Clay");
+        put("gfx/terobjs/herbs/dandelion", "Dandelion");
+        put("gfx/terobjs/herbs/chantrelle", "Chantrelle");
+        put("gfx/terobjs/herbs/blueberry", "Blueberry");
+        put("gfx/terobjs/herbs/strawberry", "Strawberry");
+        put("gfx/kritter/rat/rat", "Rat");
+        put("gfx/kritter/chicken/chicken", "Chicken");
+        put("gfx/kritter/chick/chick", "Chick");
+        put("gfx/terobjs/herbs/spindlytaproot", "Spindly Taproot");
+        put("gfx/terobjs/herbs/stingingnettle", "Stinging Nettle");
+        put("gfx/kritter/dragonfly/dragonfly", "Dragonfly");
+        put("gfx/kritter/toad/toad", "Toad");
+        put("gfx/kritter/frog/frog", "Frog");
+        put("gfx/terobjs/herbs/windweed", "Wild Windsown Weed");
+        put("gfx/terobjs/herbs/mussels", "Mussels");
+        put("gfx/kritter/mallard/mallard", "Duck");
+        put("gfx/kritter/ladybug/ladybug", "Ladybug");
+        put("gfx/kritter/silkmoth/silkmoth", "Silkmoth");
+        put("gfx/kritter/hedgehog/hedgehog", "Hedgehog");
+        put("gfx/kritter/squirrel/squirrel", "Squirrel");
+        put("gfx/kritter/rabbit/rabbit", "Rabbit");
+        put("gfx/terobjs/herbs/lingon", "Lingonberries");
+        put("gfx/kritter/grub/grub", "Grub");
+        put("gfx/terobjs/herbs/yellowfoot", "Yellowfoot");
+        put("gfx/terobjs/herbs/chives", "Chives");
+        put("gfx/terobjs/herbs/rustroot", "Rustroot");
+        put("gfx/kritter/crab/crab", "Crab");
+        put("gfx/terobjs/herbs/clover", "Clover");
+        put("gfx/terobjs/herbs/ladysmantle", "Lady's Mantle");
+        put("gfx/kritter/grasshopper/grasshopper", "Grasshopper");
+        put("gfx/kritter/irrbloss/irrbloss", "Irrlight");
+        put("gfx/kritter/opiumdragon/opiumdragon", "Opium Dragon");
+        put("gfx/terobjs/herbs/snapdragon", "Uncommon Snapdragon");
+        put("gfx/terobjs/herbs/cattail", "Cattail");
+        put("gfx/kritter/forestsnail/forestsnail", "Forest Snail");
+        put("gfx/kritter/forestlizard/forestlizard", "Forest Lizard");
+        put("gfx/terobjs/herbs/greenkelp", "Green Kelp");
+        put("gfx/terobjs/herbs/yarrow", "Yarrow");
+        put("gfx/terobjs/herbs/candleberry", "Candleberry");
+        put("gfx/terobjs/herbs/oyster", "Oysters");
+        put("gfx/kritter/jellyfish/jellyfish", "Jellyfish");
+        put("gfx/terobjs/herbs/seashell","Rainbowshell");
+        put("gfx/terobjs/herbs/giantpuffball", "Giant Puff Ball");
+        put("gfx/terobjs/herbs/ladysmantledew", "Dewy Lady's Mantle");
+        put("gfx/terobjs/saltbasin", "Salt Basin");
+        put("gfx/terobjs/abyssalchasm", "Abyssal Chasm");
+        put("gfx/terobjs/windthrow", "Wild Windthrow");
+        put("gfx/terobjs/icespire","Ice Spire");
+        put("gfx/terobjs/woodheart","Heartwood Tree");
+        put("gfx/terobjs/lilypadlotus","Lilypad Lotus");
+        put("gfx/terobjs/fairystone","Fairy Stone");
+        put("gfx/terobjs/jotunmussel","Jotun Mussel");
+        put("gfx/terobjs/guanopile","Guano Pile");
+        put("gfx/terobjs/geyser","Brimstone Geyser");
+        put("gfx/terobjs/claypit","Clay Pit");
+        put("gfx/terobjs/caveorgan","Cave Organ");
+        put("gfx/terobjs/crystalpatch","Rock Crystal");
+        put("gfx/kritter/bear/bear","Bear");
+        put("gfx/kritter/adder/adder","Snake");
+        put("gfx/terobjs/vehicle/bram","Battering Ram");
+        put("gfx/terobjs/vehicle/catapult","Catapult");
+        put("gfx/terobjs/vehicle/wreckingball","Wrecking Ball");
+        put("gfx/kritter/lynx/lynx","Lynx");
+        put("gfx/kritter/walrus/walrus","Walrus");
+        put("gfx/kritter/seal/seal","Seal");
+        put("gfx/kritter/troll/troll","Troll");
+        put("gfx/kritter/mammoth/mammoth","Mammoth");
+        put("gfx/kritter/goldeneagle/golldeneagle","Eagle");
+        put("gfx/kritter/nidbane/nidbane","Nidbane");
+        put("gfx/kritter/horse/horse","Wild Horse");
+        put("gfx/kritter/moose/moose","Moose");
+        put("gfx/terobjs/beaverdam","Beaver Dam");
+        put("gfx/terobjs/dng/antdungeon","Ant Dungeon");
+        put("gfx/terobjs/dng/batcave", "Bat Dungeon");
+        put("gfx/kritter/wolverine/wolverine","Wolverine");
+        put("gfx/kritter/badger/badger","Badger");
+        put("gfx/kritter/fox/fox","Fox");
+        put("gfx/kritter/wolf/wolf","Wolves");
+        put("gfx/kritter/mole/mole","Moles");
+        put("gfx/terobjs/herbs/lorchel","Morels");
+        put("gfx/terobjs/herbs/frogscrown","Frog's Crown");
     }};
 
     public final static Set<String> locres = new HashSet<String>(Arrays.asList(

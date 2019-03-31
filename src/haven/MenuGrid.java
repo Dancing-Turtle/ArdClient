@@ -38,6 +38,7 @@ import java.awt.event.KeyEvent;
 import java.awt.font.TextAttribute;
 import java.awt.image.BufferedImage;
 import haven.Resource.AButton;
+import haven.purus.pbot.PBotUtils;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -751,6 +752,18 @@ public class MenuGrid extends Widget {
                         }
                     }}
         ));
+        addSpecial(new SpecialPagina(this, "paginae::amber::pbotmenuold",
+                Resource.local().load("paginae/purus/PBotMenuOld"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                        if (gui.PBotScriptlistold.show(!gui.PBotScriptlistold.visible)) {
+                            gui.PBotScriptlistold.raise();
+                            gui.fitwdg(gui.PBotScriptlistold);
+                            setfocus(gui.PBotScriptlistold);
+                        }
+                    }}
+        ));
         addSpecial(new SpecialPagina(this, "paginae::windows::char",
                 Resource.local().load("paginae/windows/char"),
                 (pag) -> {
@@ -815,6 +828,23 @@ public class MenuGrid extends Widget {
                       gui.toggleStudy();
                     }}
         ));
+
+        addSpecial(new SpecialPagina(this, "paginae::windows::alerted",
+                Resource.local().load("paginae/windows/alerted"),
+                (pag) -> ui.gui.toggleAlerted()));
+        addSpecial(new SpecialPagina(this, "paginae::windows::hidden",
+                Resource.local().load("paginae/windows/hidden"),
+                (pag) -> ui.gui.toggleHidden()));
+        addSpecial(new SpecialPagina(this, "paginae::windows::deleted",
+                Resource.local().load("paginae/windows/deleted"),
+                (pag) -> ui.gui.toggleDeleted()));
+        addSpecial(new SpecialPagina(this, "paginae::windows::highlight",
+                Resource.local().load("paginae/windows/highlight"),
+                (pag) -> ui.gui.toggleHighlight()));
+        addSpecial(new SpecialPagina(this, "paginae::windows::gobspawner",
+                Resource.local().load("paginae/windows/gobspawner"),
+                (pag) -> ui.gui.toggleGobSpawner()));
+
         addSpecial(new SpecialPagina(this, "paginae::windows::lmap",
                 Resource.local().load("paginae/windows/lmap"),
                 (pag) -> ui.gui.toggleMapfile()));
@@ -1116,7 +1146,7 @@ public class MenuGrid extends Widget {
                     gui.discordconnected = true;
                 }
             }else if (gui.discordconnected)
-                BotUtils.sysMsg("Discord is already connected, you can only connect to one server at a time.",Color.white);
+                PBotUtils.sysMsg("Discord is already connected, you can only connect to one server at a time.",Color.white);
 
             if (Config.enablecrime && !GameUI.crimeon) {
                 gui.crimeautotgld = true;
@@ -1214,7 +1244,7 @@ public class MenuGrid extends Widget {
                         // this is very crappy way to do this. needs to be redone probably
                         try {
                             Resource res = pag.res.get();
-                            if (res.name.equals("ui/tt/q/quality") || res.name.equals("gfx/fx/msrad"))
+                            if (res.name.equals("ui/tt/q/quality"))
                                 continue;
                         } catch (Loading l) {
                         }

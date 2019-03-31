@@ -4,8 +4,6 @@ import haven.Button;
 import haven.*;
 import haven.Label;
 import haven.Window;
-import haven.purus.BotUtils;
-import haven.purus.pbot.PBotAPI;
 import net.dv8tion.jda.core.entities.TextChannel;
 
 import java.awt.*;

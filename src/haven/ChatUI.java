@@ -26,6 +26,9 @@
 
 package haven;
 
+import haven.sloth.gob.Mark;
+
+import java.util.*;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.datatransfer.Clipboard;
@@ -59,7 +62,7 @@ import java.util.regex.Pattern;
 
 import haven.automation.Discord;
 import net.dv8tion.jda.core.entities.TextChannel;
-
+import static haven.MCache.tilesz;
 
 public class ChatUI extends Widget {
     private static final Resource alarmsfx = Resource.local().loadwait("sfx/Ding");
@@ -1033,7 +1036,36 @@ public class ChatUI extends Widget {
                 String line = (String) args[2];
                 Color col = Color.WHITE;
 
-                synchronized (ui.sess.glob.party.memb) {
+		try {
+		    final Matcher match = Mark.CHAT_FMT_PAT.matcher(line);
+		    if(match.find()) {
+			final long gid = Long.parseLong(match.group(1));
+			final int life = Integer.parseInt(match.group(2));
+			final Gob g = ui.sess.glob.oc.getgob(gid);
+			if(g != null) {
+			    g.mark(life);
+			}
+			return;
+		    } else {
+		    	final Matcher tmatch = Mark.CHAT_TILE_FMT_PAT.matcher(line);
+		    	if(tmatch.find()) {
+			    final long gid = Long.parseLong(tmatch.group(1));
+			    final double offx = Double.parseDouble(tmatch.group(2));
+			    final double offy = Double.parseDouble(tmatch.group(3));
+			    ui.sess.glob.map.getgrido(gid).ifPresent(grid -> {
+			        final Coord2d mc = new Coord2d(grid.ul).add(offx, offy).mul(tilesz);
+				final Gob g = ui.sess.glob.oc.new ModdedGob(mc, 0);
+				g.addol(new Mark(20000));
+			    });
+			    return;
+			}
+		    }
+		} catch (Exception e) {
+		    e.printStackTrace();
+		    //Ignore any people trying to crash the client with this
+		}
+
+		synchronized(ui.sess.glob.party) {
                     Party.Member pm = ui.sess.glob.party.memb.get((long) gobid);
                     if (pm != null)
                         col = pm.col;

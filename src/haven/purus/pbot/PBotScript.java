@@ -1,19 +1,16 @@
 package haven.purus.pbot;
 
-import java.awt.Color;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import org.graalvm.polyglot.Context;
+import org.graalvm.polyglot.Source;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
+import java.awt.*;
+import java.io.File;
 
 public class PBotScript extends Thread {
-	
+
+	public Context context;
 	private File scriptFile;
 	private String name, id;
-	private ScriptEngine engine;
 
 	public PBotScript(File scriptFile, String id) {
 		this.scriptFile = scriptFile;
@@ -22,19 +19,14 @@ public class PBotScript extends Thread {
 	}
 	
 	public void run() {
-		PBotAPI.sysMsg("Starting script: " + name, Color.ORANGE);
-		ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
-		this.engine = engine;
+		PBotUtils.sysMsg("Starting script: " + name, Color.ORANGE);
+		context = Context.newBuilder("js").allowAllAccess(true).build();
 		try {
-			engine.eval("var scriptID = \"" + id+"\";");
-			engine.eval(new FileReader(scriptFile));
-		} catch (FileNotFoundException | ScriptException e) {
-			e.printStackTrace();
+			context.eval("js", "const ScriptID = '" + id + "';");
+			context.eval(Source.newBuilder("js", scriptFile).build());
+
+		} catch(Exception e) {
+			PBotError.handleException(e);
 		}
 	}
-	
-	public ScriptEngine getEngine() {
-		return engine;
-	}
-	
 }

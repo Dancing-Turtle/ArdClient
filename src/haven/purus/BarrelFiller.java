@@ -21,6 +21,8 @@ import haven.WItem;
 import haven.Widget;
 import haven.Window;
 import haven.automation.GobSelectCallback;
+import haven.purus.pbot.PBotAPI;
+import haven.purus.pbot.PBotUtils;
 
 public class BarrelFiller extends Window implements GobSelectCallback {
 
@@ -50,52 +52,52 @@ public class BarrelFiller extends Window implements GobSelectCallback {
 	Thread t = new Thread(new Runnable() {
 		public void run() {
 			main: while (true) {
-				if (BotUtils.findObjectByNames(1000, terobjs) == null
-						&& BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), invobjs).size() == 0)
+				if (PBotUtils.findObjectByNames(1000, terobjs) == null
+						&& PBotUtils.getInventoryItemsByNames(PBotAPI.gui.maininv, invobjs).size() == 0)
 					break;
-				while (BotUtils.invFreeSlots() > 0) {
+				while (PBotUtils.invFreeSlots() > 0) {
 					if (stop)
 						break main;
-					if (BotUtils.findObjectByNames(1000, terobjs) == null)
+					if (PBotUtils.findObjectByNames(1000, terobjs) == null)
 						break;
 
-					Gob g = BotUtils.findObjectByNames(1000, terobjs);
-					BotUtils.pfRightClick(g, 0);
+					Gob g = PBotUtils.findObjectByNames(1000, terobjs);
+					PBotUtils.pfRightClick(g, 0);
 					int i = 0;
-					while (BotUtils.findObjectById(g.id) != null) {
+					while (PBotUtils.findObjectById(g.id) != null) {
 						if (i == 100)
 							break;
-						BotUtils.sleep(100);
+						PBotUtils.sleep(100);
 						i++;
 					}
 				}
 
 				if (stop)
 					break main;
-				if (BotUtils.getItemAtHand() != null)
-					BotUtils.dropItem(0);
-				BotUtils.pfRightClick(barrel, 0);
-				BotUtils.waitForWindow("Barrel");
+				if (PBotUtils.getItemAtHand() != null)
+					PBotUtils.dropItem(0);
+				PBotUtils.pfRightClick(barrel, 0);
+				PBotUtils.waitForWindow("Barrel");
 
-				while (BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), invobjs).size() != 0) {
+				while (PBotUtils.getInventoryItemsByNames(PBotAPI.gui.maininv, invobjs).size() != 0) {
 					if (stop)
 						break main;
-					GItem item = BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), invobjs).get(0).item;
-					BotUtils.takeItem(item);
+					GItem item = PBotUtils.getInventoryItemsByNames(PBotAPI.gui.maininv, invobjs).get(0).item;
+					PBotUtils.takeItem(item);
 
 					gameui().map.wdgmsg("itemact", Coord.z, barrel.rc.floor(posres), 0, 0, (int) barrel.id,
 							barrel.rc.floor(posres), 0, -1);
 					int i = 0;
-					while (BotUtils.getItemAtHand() != null) {
+					while (PBotUtils.getItemAtHand() != null) {
 						if (i == 60000)
 							break main;
-						BotUtils.sleep(10);
+						PBotUtils.sleep(10);
 						i++;
 					}
 				}
 
 			}
-			BotUtils.sysMsg("Barrel Filler finished", Color.WHITE);
+			PBotUtils.sysMsg("Barrel Filler finished", Color.WHITE);
 			reqdestroy();
 		}
 	});

@@ -26,7 +26,7 @@
 
 package haven;
 
-import haven.purus.pbot.PBotAPI;
+import haven.purus.pbot.PBotUtils;
 import haven.res.ui.tt.q.qbuff.QBuff;
 
 import java.util.*;
@@ -235,7 +235,6 @@ public class Inventory extends Widget implements DTarget {
             if (wdg instanceof WItem) {
                 String wdgname = ((WItem)wdg).item.getname();
                 if (wdgname.contains(name))
-                    //BotUtils.sysMsg("found a tray", Color.WHITE);
                     return (WItem) wdg;
             }
         }
@@ -246,17 +245,13 @@ public class Inventory extends Widget implements DTarget {
             if (wdg instanceof WItem) {
                 String wdgname = ((WItem) wdg).item.getname();
                 if (wdgname.contains(name))
-                    if (!PBotAPI.canDrinkFrom((WItem) wdg))
-                       // BotUtils.sysMsg("no water in skin", Color.WHITE);
+                    if (!PBotUtils.canDrinkFrom((WItem) wdg))
                 return null;
-                if (PBotAPI.canDrinkFrom((WItem) wdg)) {
-                   // BotUtils.sysMsg("water in skin", Color.WHITE);
+                if (PBotUtils.canDrinkFrom((WItem) wdg)) {
                     return (WItem) wdg;
                 }
             }
         }
-
-       // BotUtils.sysMsg("not a waterskin", Color.WHITE);
         return null;
     }
 

@@ -1,3 +1,61 @@
+1.00.110
+Converted the new "Flat Caves" into a toggle, off by default. Can be enabled in display settings underneath flat walls. 
+~
+
+1.00.109 
+Merged fix for choppy animations on hidden gobs.
+Fixed large map not saving size setting.
+Fixed animal path toggle not working.
+Think I fixed a Movable caused crash bug when taking roads.
+Restored amber-like flowermenus by default. Can be reverted to new format in UI settings.
+Added "QuickMenus" option to ui settings, speeds up flowermenu closing after a selection is made. On by default.
+~
+
+1.00.108 
+Major Changes:
+Merged with Boshaw for the below items:
+Changed flowermenu appearance, no it's not a toggle option.
+Added custom flowermenu for objects, accessible by holding alt and right clicking.
+Added "Delete" to alt right click menu. Delete differs from hide such that deleting an object causes the game to never consider loading it, thus no minimap icon, no hitbox, no alarms, etc. This feature is specifically for things that you literally just NEVER care to ever see cluttering your screen again, such as cave moths. 
+You can manage your deleted gobs/objects through the "Game Windows" selection and "Deleted" icon. You've been warned about what delete does, don't delete shit like bears and then complain you're getting wrecked by a ghost. 
+To interact with things in the world without triggering flowermenu auto selections, hold control now.
+Added custom highlight/party highlight (only for ArdClient/Sloth Client)/hide/alarm in custom flowermenu.
+Skybox is now a video setting toggle that's off by default. No longer a memory leak, but likely still does have a negative performance impact overall. 
+Moved item lock to Shift + Control + Right click, to allow ctrl right clicks to be used to disable flowermenu auto selections.
+Added another keybind, Shift+H by default, to toggle hide on individual objects. Ctrl H is still the default to bulk hide.
+Added Carts to the list of things that the pick forage item (Q by default) will interact with if closest to you. Can be disabled in Control settings.
+Added "Gob Spawner" window that can be accessed through "Game Windows" on the menugrid, and used to spawn animals. Let me know if I left any animals out, I'll work on adding individual poses later but for now only bears trolls mammoths whales and nidbanes have some additional poses.
+
+Minor Changes:
+Added "default" list to alert/hide/highlight for easy selection.
+Shortened and flattened underground wall tiles.
+Switched a bunch of display settings over the new and improved color selector. Most color changes require a game restart to take effect.
+Added a slider to general settings to set the autodrink threshold %.
+Made ameter public to assist with getting it's value from pbot scripts.
+Enabled Loftar's "Toggle mine supports" button in menugrid under toggles, this one will work for towercaps.
+Removed right click on minimap moving unless your right click lands on a gob. 
+Added a toggle to new alerts window to only alarm once, while NOT selected the same mob/object can alarm more than once if it goes off screen and back into view again.
+Added 2 new options to "combat settings" to force fight session focus, one will only force focus if the chat box does not have focus (ie you're typing) the other will force fight session focus no matter what, meaning that keybinds will always be sent to the combat UI and also fixing the default client bug where if you reload the client in combat you might be unable to use moves.
+Added option to display settings to shorten palisade and brick wall segments, ie - flat walls. 
+Toggle chat keybind will now no longer hide chat, only restore it if it's already hidden - because MightySheep is a whiny little cunt.
+Added moles to alarm/hide list.
+Added a setting to audio settings to turn down the "door" volume when entering/exiting buildings. 
+Added volume slider to audio settings to turn down the "ding" sound from inspecting trees, and toggling most features.
+Added new toggle to general settings to alert on new wounds and the damage from them. Can be disabled, on by default.
+
+Botting changes:
+Merged all of Purus' new botting API changes, pathfinder, and auto tableware remover. 
+Depreciated PBotAPI, please use haven.purus.pbot.PBotUtils instead. There was no reason to attach the constantly updating GUI to two different botting API's. 
+Readded removed Purus "Nashorn" functionality to run side by side with the new. Two separate PBot script lists now, one for the new api and one for Nashorn scripts. To run a depreciated nashorn script, change the file extension to ".PBotOld" You will also need to change the API reference in your nashorn scripts to PBotUtils instead of PBotAPI
+The updater will now also download new scripts when added, feel free to send me your PBot scripts if you'd like them distributed and credited to yourself. 
+~
+
+1.00.107
+Moved Game Windows and Combat Decks buttons to the end of menugrid.
+Merged another loftar siege change, to make siege claims on by default.
+Reverting chat window minimize until I figure out a cleaner way to do it, if you close chat you can reopen via game windows in the menugrid.
+~
+
 1.00.106
 Partial rollback on change to fight session to remove the part that ensures it always has focus. Evidently this interferes with the chat window and other text boxes, who knew? Kept the part where it'll draw over everything else.
 Added folder with 5 buttons inside to menugrid to switch combat decks. TEST THIS IN SPARS PLEASE

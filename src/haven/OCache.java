@@ -26,7 +26,10 @@
 
 package haven;
 
-import haven.purus.BotUtils;
+
+import haven.purus.pbot.PBotUtils;
+import haven.sloth.gob.Hidden;
+import haven.sloth.gob.Range;
 
 import java.awt.*;
 import java.util.*;
@@ -89,6 +92,30 @@ public class OCache implements Iterable<Gob> {
     synchronized void changeAllGobs() {
         for(final Gob g : this) {
             changed(g);
+        }
+    }
+
+    synchronized void refreshalloverlays(){
+        for(final Gob g: this){
+            if(g.ols.size() > 0)
+              g.ols.clear();
+        }
+    }
+
+    synchronized void changeGobsWith(final Class<? extends GAttrib> cls) {
+        for(final Gob g : this) {
+            if(g.getattr(cls) != null) {
+                System.out.println("changing gobs");
+                g.delattr(Range.class);
+                g.setattr(new Range(g,g.getres().name));
+                g.changed();
+            }
+        }
+    }
+
+    public class ModdedGob extends Virtual {
+        public ModdedGob(Coord2d c, double a) {
+            super(c, a);
         }
     }
 
@@ -455,6 +482,14 @@ public class OCache implements Iterable<Gob> {
             cmpequ(gob, equ);
     }
 
+    synchronized void changeHealthGobs() {
+        for(Gob g : this) {
+            if(g.getattr(GobHealth.class) != null &&
+                    g.getattr(GobHealth.class).hp < 4)
+                changed(g);
+        }
+    }
+
     public synchronized void avatar(Gob g, List<Indir<Resource>> layers) {
         Avatar ava = g.getattr(Avatar.class);
         if (ava == null) {
@@ -623,13 +658,13 @@ public class OCache implements Iterable<Gob> {
                                 if(Config.logcombatactions) {
                                     KinInfo kininfo = g.getattr(KinInfo.class);
                                     if (g.isplayer())
-                                        BotUtils.sysLogAppend("I got hit for " + dmg + " Damage.", "white");
+                                        PBotUtils.sysLogAppend("I got hit for " + dmg + " Damage.", "white");
                                     else if (kininfo != null)
-                                        BotUtils.sysLogAppend("Hit " + kininfo.name + " For " + dmg + " Damage.", "green");
+                                        PBotUtils.sysLogAppend("Hit " + kininfo.name + " For " + dmg + " Damage.", "green");
                                     else if (g.getres().basename().contains("Body"))
-                                        BotUtils.sysLogAppend("Hit Unknown player For " + dmg + " Damage.", "green");
+                                        PBotUtils.sysLogAppend("Hit Unknown player For " + dmg + " Damage.", "green");
                                     else
-                                        BotUtils.sysLogAppend("Hit " + g.getres().basename() + " For " + dmg + " Damage.", "green");
+                                        PBotUtils.sysLogAppend("Hit " + g.getres().basename() + " For " + dmg + " Damage.", "green");
                                 }
                                 gobdmgs.put(g.id, new DamageSprite(dmg, clr == 36751, g));
                                 }
@@ -699,6 +734,67 @@ public class OCache implements Iterable<Gob> {
         if (gob != null)
             health(gob, hp);
     }
+
+    public synchronized void highlightGobs(final String gname) {
+        for(final Gob g : this) {
+            g.resname().ifPresent(name -> {
+                if(gname.equals(name)) {
+                    g.mark(-1);
+                }
+            });
+        }
+    }
+
+    public synchronized void unhighlightGobs(final String gname) {
+        for(final Gob g : this) {
+            g.resname().ifPresent(name -> {
+                if(gname.equals(name)) {
+                    g.unmark();
+                }
+            });
+        }
+    }
+
+    synchronized void hideAll(final String name) {
+        for(final Gob g : this) {
+            g.resname().ifPresent(gname -> {
+                if(gname.equals(name)) {
+                    g.setattr(new Hidden(g));
+                    changed(g);
+                }
+            });
+        }
+    }
+
+    public synchronized void unhideAll(final String name) {
+        for(final Gob g : this) {
+            g.resname().ifPresent(gname -> {
+                if(gname.equals(name)) {
+                    g.delattr(Hidden.class);
+                    changed(g);
+                }
+            });
+        }
+    }
+
+    synchronized void removeAll(final String name) {
+        //TODO: I2 iterator doesn't support remove and I should fix that later on, for now this is a two step process
+        final List<Long> rem = new ArrayList<>();
+        for(final Gob g : this) {
+            g.resname().ifPresent(gname -> {
+                if(gname.equals(name)) {
+                    g.dispose();
+                    rem.add(g.id);
+                }
+            });
+        }
+
+        for(long id : rem) {
+            remove(id);
+        }
+    }
+
+
 
     public synchronized void buddy(Gob g, String name, int group, int type) {
         if (name == null) {

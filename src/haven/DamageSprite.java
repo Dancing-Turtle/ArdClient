@@ -1,6 +1,6 @@
 package haven;
 
-import haven.purus.BotUtils;
+import haven.purus.pbot.PBotUtils;
 
 import java.awt.*;
 
@@ -46,8 +46,11 @@ public class DamageSprite extends Sprite implements PView.Render2D {
             xoff = dmgsz.x / 2;
         if (arm > 0)
             xoff += armsz.x / 2;
-
-        Coord pos = gob.sc.add((int) (gob.sczu.x * 15f - xoff), (int) (gob.sczu.y * 15f - 40));
+        Coord pos;
+        if(Config.showothercombatinfo)
+            pos = gob.sc.add((int) (gob.sczu.x * 15f - xoff), (int) (gob.sczu.y * 15f - 80));
+        else
+            pos = gob.sc.add((int) (gob.sczu.x * 15f - xoff), (int) (gob.sczu.y * 15f - 40));
 
         int armxoff = 0;
         if (dmg > 0) {
@@ -77,13 +80,13 @@ public class DamageSprite extends Sprite implements PView.Render2D {
             if(Config.logcombatactions) {
                 KinInfo kininfo = gob.getattr(KinInfo.class);
                 if (kininfo != null)
-                    BotUtils.sysLogAppend("Hit " + kininfo.name + " For " + dmg + " Damage.", "green");
+                    PBotUtils.sysLogAppend("Hit " + kininfo.name + " For " + dmg + " Damage.", "green");
                 else if (gob.isplayer())
-                    BotUtils.sysLogAppend("I got hit for " + dmg + " Damage.", "red");
+                    PBotUtils.sysLogAppend("I got hit for " + dmg + " Damage.", "red");
                 else if (gob.getres().basename().contains("Body"))
-                    BotUtils.sysLogAppend("Hit Unknown player For " + dmg + " Damage.","green");
+                    PBotUtils.sysLogAppend("Hit Unknown player For " + dmg + " Damage.","green");
                 else
-                    BotUtils.sysLogAppend("Hit " + gob.getres().basename() + " For " + dmg + " Damage.", "green");
+                    PBotUtils.sysLogAppend("Hit " + gob.getres().basename() + " For " + dmg + " Damage.", "green");
             }
             this.dmg += dmg;
             this.dmgtex = dfrn.render(this.dmg + "").tex();

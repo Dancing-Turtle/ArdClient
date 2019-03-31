@@ -26,6 +26,8 @@
 
 package haven;
 
+import java.util.Optional;
+
 public class Homing extends Moving {
     public long tgt;
     public Coord2d tc;
@@ -55,6 +57,15 @@ public class Homing extends Moving {
 
     public double getv() {
         return(v);
+    }
+
+    public Optional<Coord2d> getDest() {
+        Gob tgt = gob.glob.oc.getgob(this.tgt);
+        if(tgt != null) {
+            return Optional.of(new Coord2d(tgt.getc()));
+        } else {
+            return Optional.empty();
+        }
     }
 
     public void move(Coord2d c) {

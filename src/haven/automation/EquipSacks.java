@@ -3,7 +3,8 @@ package haven.automation;
 
 import haven.*;
 import haven.Window;
-import haven.purus.BotUtils;
+import haven.purus.pbot.PBotAPI;
+import haven.purus.pbot.PBotUtils;
 
 import java.awt.*;
 import java.util.*;
@@ -30,11 +31,11 @@ public class EquipSacks implements Runnable {
 
             if (lhand != null && rhand != null) {
                 if (lhand.name.get().contains("Sack") && rhand.name.get().contains("Sack")) {
-                    BotUtils.sysMsg("Already found traveler sacks, canceling.", Color.white);
+                    PBotUtils.sysMsg("Already found traveler sacks, canceling.", Color.white);
                     return;
                 }
                 if (lhand.name.get().contains("Bindle") && rhand.name.get().contains("Bindle")) {
-                    BotUtils.sysMsg("Already found traveler sacks, canceling.", Color.white);
+                    PBotUtils.sysMsg("Already found traveler sacks, canceling.", Color.white);
                     return;
                 }
             }
@@ -95,7 +96,7 @@ public class EquipSacks implements Runnable {
 
 
                 if (wepmap.size() == 0) {
-                    BotUtils.sysMsg("No sacks found", Color.white);
+                    PBotUtils.sysMsg("No sacks found", Color.white);
                     return;
                 }
 
@@ -147,24 +148,24 @@ public class EquipSacks implements Runnable {
                 WItem hand = gui.vhand;
                 if (hand != null) { //try to empty hand into belt
                     if (beltInv != null) {
-                        List<Coord> slots = BotUtils.getFreeInvSlots(beltInv);
+                        List<Coord> slots = PBotUtils.getFreeInvSlots(beltInv);
                         for (Coord i : slots) {
-                            BotUtils.dropItemToInventory(i, beltInv);
-                            BotUtils.sleep(10);
+                            PBotUtils.dropItemToInventory(i, beltInv);
+                            PBotUtils.sleep(10);
                         }
                     } else if (quickBeltInv != null) {
-                        List<Coord> slots = BotUtils.getFreeInvSlotsAlt(quickBeltInv);
+                        List<Coord> slots = PBotUtils.getFreeInvSlotsAlt(quickBeltInv);
                         for (Coord i : slots) {
-                            BotUtils.dropItemToInventory(i, quickBeltInv);
-                            BotUtils.sleep(10);
+                            PBotUtils.dropItemToInventory(i, quickBeltInv);
+                            PBotUtils.sleep(10);
                         }
                     }
                 }
                 if (gui.vhand != null) { //hand still not empty, dump into main inventory
-                    List<Coord> slots = BotUtils.getFreeInvSlots(BotUtils.playerInventory());
+                    List<Coord> slots = PBotUtils.getFreeInvSlots(PBotAPI.gui.maininv);
                     for (Coord i : slots) {
-                        BotUtils.dropItemToInventory(i, BotUtils.playerInventory());
-                        BotUtils.sleep(10);
+                        PBotUtils.dropItemToInventory(i, PBotAPI.gui.maininv);
+                        PBotUtils.sleep(10);
                     }
                 }
               //  System.out.println("Iteration done");
@@ -175,7 +176,7 @@ public class EquipSacks implements Runnable {
                 wepmap.clear();
             }
         }catch(Exception e){
-            BotUtils.sysMsg("Exception occurred in EquipSack script, ignored.", Color.white);
+            PBotUtils.sysMsg("Exception occurred in EquipSack script, ignored.", Color.white);
             e.printStackTrace();
         }//ignore all exceptions, this script will likely be used in a combat situation and crashes are unacceptable
     }

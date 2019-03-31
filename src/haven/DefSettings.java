@@ -1,9 +1,13 @@
 package haven;
 
 import com.google.common.flogger.FluentLogger;
+import haven.sloth.gob.*;
+import haven.sloth.io.HighlightData;
+import haven.Storage;
 //import haven.sloth.gob.*;
 //import haven.sloth.io.HighlightData;
 //import haven.sloth.io.Storage;
+import haven.Storage;
 
 import java.awt.*;
 import java.io.File;
@@ -70,14 +74,17 @@ public class DefSettings {
 	public static final IndirSetting<Color> CURIOLOW = new IndirSetting<>(global, "graphics.curiolow-color");             //[RGBA] Color of all other water color
 	public static final IndirSetting<Boolean> DARKMODE = new IndirSetting<>(global, "graphics.dark-mode");                   //[Bool] Toggle dark mode, overrides Nightvision
 	public static final IndirSetting<Boolean> QUICKMENU = new IndirSetting<>(global, "gameplay.quick-flowermenu");           //[Bool] Toggle quick flowermenu
+	public static final IndirSetting<Boolean> AMBERMENU = new IndirSetting<>(global, "gameplay.amber-flowermenu");           //[Bool] Use amber flowermenu
 	public static final IndirSetting<Boolean> BUGGEDMENU = new IndirSetting<>(global, "gameplay.bugged-flowermenu");         //[Bool] Whether not flowermenu should close on clicks outside of it
 	public static final IndirSetting<Boolean> SIMPLECROPS = new IndirSetting<>(global, "gameplay.simple-crops");             //[Bool] Toggle simple crop meshes
 	public static final IndirSetting<Boolean> SHOWCROPSTAGE = new IndirSetting<>(global, "gameplay.show-crop-stage");        //[Bool] Toggle crop stages off/on
 	public static final IndirSetting<Boolean> SHOWGOBHP = new IndirSetting<>(global, "gameplay.show-gob-hp");                //[Bool] Toggle gob hp visibility
+	public static final IndirSetting<Boolean> SHOWGOBPATH =  new IndirSetting<>(global, "gameplay.show-gob-path");            //[Bool] Toggle gob path rendering
+	public static final IndirSetting<Boolean> SHOWPLAYERPATH =  new IndirSetting<>(global, "gameplay.show-player-path");            //[Bool] Toggle player path rendering
+	public static final IndirSetting<Color> PLAYERPATHCOL = new IndirSetting<>(global, "gameplay.player-path-color");               //[RGBA] Path color for gobs, only for unknown gobs
 	public static final IndirSetting<Color> GOBPATHCOL = new IndirSetting<>(global, "gameplay.gob-path-color");               //[RGBA] Path color for gobs, only for unknown gobs
 	public static final IndirSetting<Color> VEHPATHCOL = new IndirSetting<>(global, "gameplay.vehicle-path-color");           //[RGBA] Path color for vehicle                //[Bool] Toggles Gob audio
 	public static final IndirSetting<Color> MMPATHCOL = new IndirSetting<>(global, "gameplay.minimap.path-col");              //[RGBA] Path color for minimap
-	public static final IndirSetting<Boolean> SHOWGOBPATH =  new IndirSetting<>(global, "gameplay.show-gob-path");            //[Bool] Toggle gob path rendering
 	public static final IndirSetting<Boolean> SHOWANIMALPATH =  new IndirSetting<>(global, "gameplay.show-animal-path");      //[Bool] Toggle animal path rendering
 	public static final IndirSetting<Color> ANIMALPATHCOL =  new IndirSetting<>(global, "gameplay.animal-path-color");        //[RBGA] Path color for animals
 	public static final IndirSetting<Boolean> SHOWANIMALRADIUS = new IndirSetting<>(global, "gameplay.show-animal-radius");  //[Bool] Toggle radius on dangerous animals
@@ -85,6 +92,11 @@ public class DefSettings {
 	public static final IndirSetting<Boolean> SHOWHITBOX = new IndirSetting<>(global, "gameplay.show-hitbox");               //[Bool] Toggle hitbox squares
 	public static final IndirSetting<Boolean> SHOWHIDDEN = new IndirSetting<>(global, "gameplay.show-hidden");               //[Bool] Toggle hidden squares
 	public static final IndirSetting<Color> HIDDENCOLOR = new IndirSetting<>(global, "gameplay.hidden-color");               //[RGBA] Color of hidden squares
+	public static final IndirSetting<Color> TROUGHCOLOR = new IndirSetting<>(global, "gameplay.trough-color");               //[RGBA] Color trough radii circles
+	public static final IndirSetting<Color> BEEHIVECOLOR = new IndirSetting<>(global, "gameplay.beehive-color");             //[RGBA] Color beehive radii circles
+	public static final IndirSetting<Color> ANIMALDANGERCOLOR = new IndirSetting<>(global, "gameplay.danger-color");         //[RGBA] Color of animal radii circles
+	public static final IndirSetting<Color> SUPPORTDANGERCOLOR = new IndirSetting<>(global, "gameplay.support-color");       //[RGBA] Color of mine suport radii circles
+	public static final IndirSetting<Color> CHEESERACKMISSINGCOLOR = new IndirSetting<>(global, "gameplay.cheeserack-color");//[RGBA] Color of cheese racks missing trays
 	public static final IndirSetting<Boolean> SHOWQUALITY = new IndirSetting<>(global, "gameplay.show-item-quality");        //[Bool] Toggle item quality
 	public static final IndirSetting<Boolean> SHOWWEAR = new IndirSetting<>(global, "gameplay.show-item-wear");              //[Bool] Toggle item wear bar
 	public static final IndirSetting<Boolean> SHOWCMETER = new IndirSetting<>(global, "gameplay.show-content-meter");        //[Bool] Toggle item content bar
@@ -95,6 +107,16 @@ public class DefSettings {
 	public static final IndirSetting<Integer> BADKIN = new IndirSetting<>(global, "gameplay.bad-kin-color");                 //[Int] Bad kin color, default: 2 (red)
 	public static final IndirSetting<Boolean> ALWAYSLONGTIP = new IndirSetting<>(global, "gameplay.always-show-longtip");    //[Bool] Toggle only longtips on item tooltips
 	public static final IndirSetting<Boolean> SHOWFPS = new IndirSetting<>(global, "gameplay.show-fps");                     //[Bool] Toggle FPS counter
+	public static final IndirSetting<Boolean> SHOWHOVERTOOLTIPS = new IndirSetting<>(global, "gameplay.show-hover-tooltip");  //[Bool] Toggle hover tooltips
+	public static final IndirSetting<Boolean> SHOWMMMARKERS = new IndirSetting<>(global, "gameplay.show-minimap-markers");    //[Bool] Toggle minimap icons
+	public static final IndirSetting<Boolean> SMALLMMMARKERS = new IndirSetting<>(global, "gameplay.small-minimap-markers");  //[Bool] Toggle SMALL minimap icons
+	public static final IndirSetting<Boolean> AUTOTRACK = new IndirSetting<>(global, "gameplay.auto-turn-on-tracking");       //[Bool] Toggle turning on tracking on login
+	public static final IndirSetting<Boolean> AUTOCRIME = new IndirSetting<>(global, "gameplay.auto-turn-on-crime");          //[Bool] Toggle turning on criminal acts on login
+	public static final IndirSetting<Boolean> SHOWHALO = new IndirSetting<>(global, "gameplay.show-gob-halo");                //[Bool] Toggle halo on human gobs
+	public static final IndirSetting<Boolean> SHOWHALOONHEARTH = new IndirSetting<>(global, "gameplay.show-gob-halo-hearth"); //[Bool] Toggle halo on human gobs
+	public static final IndirSetting<Boolean> WATERDROPITEMCTRL = new IndirSetting<>(global, "gameplay.drop-item-on-water-with-ctrl"); //[Bool] Toggle the need to hold ctrl to drop items while over water
+	public static final IndirSetting<Boolean> FORAGEANIMALS = new IndirSetting<>(global, "gameplay.small-animaling-foraging"); //[Bool] Consider small animals with the forage keybind
+	public static final IndirSetting<Integer> PATHFINDINGTIER = new IndirSetting<>(global, "gameplay.pathfinding-tier");	    //[Int] 0, 1, 2 = { perfect, medium, fast }
 	public static final IndirSetting<Boolean> SHOWFKBELT = new IndirSetting<>(global, "belt.fk.show");                       //[Bool] Toggle F key belt
 	public static final IndirSetting<Integer> FKBELTPAGE = new IndirSetting<>(global, "belt.fk.page");                       //[Int] Page F key belt is on
 	public static final IndirSetting<String> FKBELTSTYLE = new IndirSetting<>(global, "belt.fk.style");                      //[String] F key belt style
@@ -114,7 +136,10 @@ public class DefSettings {
 	public static final IndirSetting<Boolean> FREECAMREYAXIS = new IndirSetting<>(global, "camera.free.reverse-y-axis");     //[Bool] Reverse free cam y axis on drag or not
 	public static final IndirSetting<Boolean> FREECAMLOCKELAV = new IndirSetting<>(global, "camera.free.lock-elevation");    //[Bool] Lock freecam elevation angle
 	public static final IndirSetting<Integer> TIMERVOLUME = new IndirSetting<>(global, "audio.timer-volume");                //[Int] Timer volume
-	public static final IndirSetting<Boolean> NOGOBAUDIO = new IndirSetting<>(global, "audio.no-gob-audio");                  //[Bool] Toggles Gob audio
+	public static final IndirSetting<Boolean> NOGOBAUDIO = new IndirSetting<>(global, "audio.no-gob-audio");
+
+	//Debug
+	public static final IndirSetting<Boolean> DEBUG = new IndirSetting<>(global, "system.debug");
 
 	//Themes
 	public static final IndirSetting<String[]> THEMES = new IndirSetting<>(session, "theme.themes");
@@ -173,9 +198,9 @@ public class DefSettings {
 		SHOWMAP.ensure(true);
 		SHOWGOBS.ensure(true);
 		NIGHTVISION.ensure(false);
-		NVAMBIENTCOL.ensure(Color.WHITE);
-		NVDIFFUSECOL.ensure(Color.WHITE);
-		NVSPECCOC.ensure(Color.WHITE);
+		NVAMBIENTCOL.ensure(new Color(200,200,200));
+		NVDIFFUSECOL.ensure(new Color(200,200,200));
+		NVSPECCOC.ensure(new Color(255,255,255));
 		DEEPWATERCOL.ensure(new Color(0, 0, 0));
 		ALLWATERCOL.ensure(new Color(0, 16, 48));
 		CURIOTARGET.ensure(new Color(0,255,0));
@@ -192,16 +217,20 @@ public class DefSettings {
 		DRAWGRIDRADIUS.ensure(2);
 		DARKMODE.ensure(false);
 		//Gameplay
-		QUICKMENU.ensure(false);
+		QUICKMENU.ensure(true);
+		AMBERMENU.ensure(true);
 		BUGGEDMENU.ensure(false);
 		SIMPLECROPS.ensure(false);
 		SHOWCROPSTAGE.ensure(false);
 		AUTOHEARTH.ensure(false);
 		SMARTAIM.ensure(false);
 		SHOWGOBHP.ensure(false);
+		SHOWPLAYERPATH.ensure(false);
 		SHOWGOBPATH.ensure(false);
+		PLAYERPATHCOL.ensure(new Color(255, 255, 255, 80));
 		GOBPATHCOL.ensure(new Color(255, 0, 0, 168));
 		VEHPATHCOL.ensure(new Color(111, 255, 138, 168));
+		MMPATHCOL.ensure(Color.magenta);
 		SHOWANIMALPATH.ensure(false);
 		ANIMALPATHCOL.ensure(new Color(144, 255, 171, 146));
 		SHOWANIMALRADIUS.ensure(false);
@@ -209,6 +238,11 @@ public class DefSettings {
 		SHOWHITBOX.ensure(false);
 		SHOWHIDDEN.ensure(true);
 		HIDDENCOLOR.ensure(Color.RED);
+		TROUGHCOLOR.ensure(new Color(0,0,255,80));
+		BEEHIVECOLOR.ensure(new Color(255,255,0,80));
+		ANIMALDANGERCOLOR.ensure(new Color(255,0,0,80));
+		SUPPORTDANGERCOLOR.ensure(new Color(0,255,0,80));
+		CHEESERACKMISSINGCOLOR.ensure(Color.GREEN);
 		SHOWQUALITY.ensure(true);
 		SHOWWEAR.ensure(true);
 		SHOWCMETER.ensure(true);
@@ -219,6 +253,17 @@ public class DefSettings {
 		BADKIN.ensure(2);
 		ALWAYSLONGTIP.ensure(true);
 		SHOWFPS.ensure(true);
+		SHOWHOVERTOOLTIPS.ensure(false);
+		AUTOTRACK.ensure(true);
+		AUTOCRIME.ensure(false);
+		SMALLMMMARKERS.ensure(false);
+		SHOWMMMARKERS.ensure(true);
+		SHOWHALO.ensure(false);
+		SHOWHALOONHEARTH.ensure(false);
+		WATERDROPITEMCTRL.ensure(true);
+		FORAGEANIMALS.ensure(true);
+		PATHFINDINGTIER.ensure(1);
+		DEBUG.ensure(false);
 		//Belts
 		SHOWFKBELT.ensure(true);
 		FKBELTPAGE.ensure(0);
@@ -279,14 +324,15 @@ public class DefSettings {
 		//Piggy backing off this to init some other important settings
 		final Optional<Storage> optint = Storage.create("jdbc:sqlite:static.sqlite");
 	if(optint.isPresent()) {
-	//    Movable.init(optint.get());
-	 //   Growth.init(optint.get());
-	 //   Range.init(optint.get());
-	  //  Alerted.init(optint.get());
-	  //  Deleted.init();
-	  //  Hidden.init();
-	  //  HighlightData.init();
-	    //ItemData.init(optint.get());
+	    Movable.init(optint.get());
+			//Growth.init(optint.get());
+			//Range.init(optint.get());
+			Alerted.init(optint.get());
+			Deleted.init();
+			Hidden.init();
+			HighlightData.init();
+			//ItemData.init(optint.get());
+		//	MapData.init();
 	    //Internal lookups are no longer needed
 	    optint.get().close();
 	} else {

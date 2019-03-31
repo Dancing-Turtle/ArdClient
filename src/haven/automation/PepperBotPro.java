@@ -4,8 +4,8 @@ import haven.Button;
 import haven.*;
 import haven.Label;
 import haven.Window;
-import haven.purus.BotUtils;
 import haven.purus.pbot.PBotAPI;
+import haven.purus.pbot.PBotUtils;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -71,35 +71,35 @@ public class PepperBotPro extends Window implements GobSelectCallback {
 		add(sec4, new Coord(20, y));
 		y+=25;
 
-		if(BotUtils.findObjectByNames(100,"gfx/terobjs/quern")!=null){
-			grinder = BotUtils.findObjectByNames(100,"gfx/terobjs/quern");
+		if(PBotUtils.findObjectByNames(100,"gfx/terobjs/quern")!=null){
+			grinder = PBotUtils.findObjectByNames(100,"gfx/terobjs/quern");
 			if (!MapView.markedGobs.contains(grinder.id))
 				MapView.markedGobs.add(grinder.id);
-			BotUtils.sysLogAppend("Auto added Quern","white");
+			PBotUtils.sysLogAppend("Auto added Quern","white");
 		}
-		if(BotUtils.findObjectByNames(100,"gfx/terobjs/well")!=null){
-			water = BotUtils.findObjectByNames(100,"gfx/terobjs/well");
+		if(PBotUtils.findObjectByNames(100,"gfx/terobjs/well")!=null){
+			water = PBotUtils.findObjectByNames(100,"gfx/terobjs/well");
 			if (!MapView.markedGobs.contains(water.id))
 				MapView.markedGobs.add(water.id);
-			BotUtils.sysLogAppend("Auto added water source","white");
+			PBotUtils.sysLogAppend("Auto added water source","white");
 		}
-		if(BotUtils.findObjectByNames(100,"gfx/terobjs/cauldron")!=null){
-			cauldron = BotUtils.findObjectByNames(100,"gfx/terobjs/cauldron");
+		if(PBotUtils.findObjectByNames(100,"gfx/terobjs/cauldron")!=null){
+			cauldron = PBotUtils.findObjectByNames(100,"gfx/terobjs/cauldron");
 			if (!MapView.markedGobs.contains(cauldron.id))
 				MapView.markedGobs.add(cauldron.id);
-			BotUtils.sysLogAppend("Auto added cauldron","white");
+			PBotUtils.sysLogAppend("Auto added cauldron","white");
 		}
-		if(BotUtils.findObjectByNames(100,"gfx/terobjs/pow")!=null){
-			hfire = BotUtils.findObjectByNames(100,"gfx/terobjs/pow");
+		if(PBotUtils.findObjectByNames(100,"gfx/terobjs/pow")!=null){
+			hfire = PBotUtils.findObjectByNames(100,"gfx/terobjs/pow");
 			if (!MapView.markedGobs.contains(hfire.id))
 				MapView.markedGobs.add(hfire.id);
-			BotUtils.sysLogAppend("Auto added hearthfire","white");
+			PBotUtils.sysLogAppend("Auto added hearthfire","white");
 		}
-		if(BotUtils.findObjectByNames(100,"gfx/terobjs/barrel")!=null){
-			barrel = BotUtils.findObjectByNames(100,"gfx/terobjs/barrel");
+		if(PBotUtils.findObjectByNames(100,"gfx/terobjs/barrel")!=null){
+			barrel = PBotUtils.findObjectByNames(100,"gfx/terobjs/barrel");
 			if (!MapView.markedGobs.contains(barrel.id))
 				MapView.markedGobs.add(barrel.id);
-			BotUtils.sysLogAppend("Auto added barrel","white");
+			PBotUtils.sysLogAppend("Auto added barrel","white");
 		}
 
 
@@ -109,22 +109,22 @@ public class PepperBotPro extends Window implements GobSelectCallback {
 			allowrun = true;
 					if(hfire == null)
 					{
-						BotUtils.sysMsg("No Hearthfire Selected.",Color.white);
+						PBotUtils.sysMsg("No Hearthfire Selected.",Color.white);
 						allowrun = false;
 					}
 					if(barrel == null)
 					{
-						BotUtils.sysMsg("No barrel Selected.",Color.white);
+						PBotUtils.sysMsg("No barrel Selected.",Color.white);
 						allowrun = false;
 					}
 					if(water == null)
 					{
-						BotUtils.sysMsg("No water source Selected.",Color.white);
+						PBotUtils.sysMsg("No water source Selected.",Color.white);
 						allowrun = false;
 					}
 					if(cauldron == null)
 					{
-						BotUtils.sysMsg("No cauldron Selected.",Color.white);
+						PBotUtils.sysMsg("No cauldron Selected.",Color.white);
 						allowrun = false;
 					}
 
@@ -136,7 +136,7 @@ public class PepperBotPro extends Window implements GobSelectCallback {
 					new Thread(bf).start();
 					this.parent.destroy();
 				} else if(allowrun){
-					BotUtils.sysMsg("Area not selected!", Color.WHITE);
+					PBotUtils.sysMsg("Area not selected!", Color.WHITE);
 				}
 			}
 		};
@@ -148,7 +148,7 @@ public class PepperBotPro extends Window implements GobSelectCallback {
 				allowrun = true;
 				if(grinder == null)
 				{
-					BotUtils.sysMsg("No grinder Selected.",Color.white);
+					PBotUtils.sysMsg("No grinder Selected.",Color.white);
 					allowrun = false;
 				}
 				if (a != null && b != null && allowrun) {
@@ -157,7 +157,7 @@ public class PepperBotPro extends Window implements GobSelectCallback {
 					new Thread(bf).start();
 					this.parent.destroy();
 				} else if(allowrun){
-					BotUtils.sysMsg("Area not selected!", Color.WHITE);
+					PBotUtils.sysMsg("Area not selected!", Color.WHITE);
 				}
 			}
 		};
@@ -166,7 +166,7 @@ public class PepperBotPro extends Window implements GobSelectCallback {
 		Button areaSelBtn = new Button(140, "Select Area") {
 			@Override
 			public void click() {
-				BotUtils.sysMsg("Drag area over crops", Color.WHITE);
+				PBotUtils.sysMsg("Drag area over crops", Color.WHITE);
 				selectingarea = new Thread(new PepperBotPro.selectingarea(), "Pepper Bot");
 				selectingarea.start();
 			}
@@ -179,7 +179,7 @@ public class PepperBotPro extends Window implements GobSelectCallback {
 				section++;
 				if (section>4)
 					section = 1;
-				BotUtils.sysMsg("Section is now : "+section,Color.white);
+				PBotUtils.sysMsg("Section is now : "+section,Color.white);
 				lblc3.settext(section+"");
 			}
 		};
@@ -208,23 +208,23 @@ public class PepperBotPro extends Window implements GobSelectCallback {
 	public void gobselect(Gob gob) {
 		if (gob.getres().basename().contains("barrel")) {
 			barrel = gob;
-			BotUtils.sysMsg("Barrel selected!x : " + gob.rc.x + " y : " + gob.rc.y, Color.WHITE);
+			PBotUtils.sysMsg("Barrel selected!x : " + gob.rc.x + " y : " + gob.rc.y, Color.WHITE);
 		} else if (gob.getres().basename().contains("well") || (gob.getres().basename().contains("cistern"))) {
 			water = gob;
-			BotUtils.sysMsg("Well/Cistern selected! x : " + gob.rc.x + " y : " + gob.rc.y, Color.white);
+			PBotUtils.sysMsg("Well/Cistern selected! x : " + gob.rc.x + " y : " + gob.rc.y, Color.white);
 		} else if (gob.getres().basename().contains("pow")) {
 			hfire = gob;
-			BotUtils.sysMsg("Hearthfire selected!x : " + gob.rc.x + " y : " + gob.rc.y, Color.white);
+			PBotUtils.sysMsg("Hearthfire selected!x : " + gob.rc.x + " y : " + gob.rc.y, Color.white);
 		} else if (gob.getres().basename().contains("cauldron")) {
 			cauldron = gob;
-			BotUtils.sysMsg("Cauldron Selected!x : " + gob.rc.x + " y : " + gob.rc.y, Color.white);
+			PBotUtils.sysMsg("Cauldron Selected!x : " + gob.rc.x + " y : " + gob.rc.y, Color.white);
 		} else if (gob.getres().basename().contains("htable")){
 			htable = gob;
 			int stage = gob.getStage();
-			BotUtils.sysMsg("table selected : "+gob.rc.x + " y : "+gob.rc.y+" stage : "+stage+" overlay : "+gob.ols.size(),Color.white);
+			PBotUtils.sysMsg("table selected : "+gob.rc.x + " y : "+gob.rc.y+" stage : "+stage+" overlay : "+gob.ols.size(),Color.white);
 	} else if (gob.getres().basename().contains("quern")){
 		grinder = gob;
-		BotUtils.sysMsg("grinder selected : "+gob.rc.x + " y : "+gob.rc.y,Color.white);
+			PBotUtils.sysMsg("grinder selected : "+gob.rc.x + " y : "+gob.rc.y,Color.white);
 	}
 	}
 
@@ -233,13 +233,13 @@ public class PepperBotPro extends Window implements GobSelectCallback {
 		public void run() {
 			a = null;
 			b = null;
-			PBotAPI.selectArea();
+			PBotUtils.selectArea();
 			//gui.map.PBotAPISelect = true;
 			// while(gui.map.PBotAPISelect)
 			//BotUtils.sleep(100);
 			// BotUtils.sysMsg("Adding", Color.WHITE);
-				Coord selectedAreaA = PBotAPI.getSelectedAreaA();
-				Coord selectedAreaB = PBotAPI.getSelectedAreaB();
+				Coord selectedAreaA = PBotUtils.getSelectedAreaA();
+				Coord selectedAreaB = PBotUtils.getSelectedAreaB();
 				areaselect(selectedAreaA, selectedAreaB);
 		}
 	}
@@ -368,7 +368,7 @@ public class PepperBotPro extends Window implements GobSelectCallback {
 
 	private void registerGobSelect() {
 		synchronized (GobSelectCallback.class) {
-			BotUtils.gui.map.registerGobSelect(this);
+			PBotAPI.gui.map.registerGobSelect(this);
 		}
 	}
 
@@ -393,11 +393,11 @@ public class PepperBotPro extends Window implements GobSelectCallback {
 			tables4 = Tables(this.a,this.b);
 			sec4.settext("Crops : "+crops4.size()+" Tables : "+tables4.size());
 		}
-		BotUtils.mapInteractLeftClick(0);
+		PBotUtils.mapInteractLeftClick(0);
 		section++;
 		if (section>4)
 			section = 1;
-		BotUtils.sysMsg("Ready to input next section.",Color.white);
+		PBotUtils.sysMsg("Ready to input next section.",Color.white);
 		lblc3.settext(section+"");
 	}
 

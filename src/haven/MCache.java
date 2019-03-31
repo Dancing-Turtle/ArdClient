@@ -26,7 +26,6 @@
 
 package haven;
 
-import haven.purus.BotUtils;
 
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
@@ -331,6 +330,14 @@ public class MCache {
                 Grid ng = grids.get(gc.add(ic));
 		if(ng != null)
                     ng.ivneigh(ic.inv());
+            }
+        }
+
+        public void invalidateAll() {
+            synchronized (grids) {
+                for(final Grid g : grids.values()) {
+                    g.invalidate();
+                }
             }
         }
 

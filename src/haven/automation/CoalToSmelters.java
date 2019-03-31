@@ -6,8 +6,9 @@ import haven.*;
 import haven.Label;
 import haven.Window;
 import haven.Coord;
-import haven.purus.BotUtils;
 import haven.purus.pbot.PBotAPI;
+import haven.purus.pbot.PBotUtils;
+
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -118,7 +119,7 @@ public class CoalToSmelters extends Window implements GobSelectCallback {
             @Override
             public void click() {
                 terminaterun = false;
-                BotUtils.sysMsg("Bank 1 Cleared", Color.white);
+                PBotUtils.sysMsg("Bank 1 Cleared", Color.white);
                 list.clear();
                 stockpiles.clear();
                 activelist.clear();
@@ -152,7 +153,7 @@ public class CoalToSmelters extends Window implements GobSelectCallback {
         stopbtn = new Button(100, "Stop") {
             @Override
             public void click() {
-                BotUtils.sysMsg("Stopping", Color.white);
+                PBotUtils.sysMsg("Stopping", Color.white);
                 // terminate();
                 if (runner != null)
                     runner.interrupt();
@@ -195,7 +196,7 @@ public class CoalToSmelters extends Window implements GobSelectCallback {
             @Override
             public void click() {
                 if(autodropperon){
-                    BotUtils.sysMsg("Autodropper stopped",Color.white);
+                    PBotUtils.sysMsg("Autodropper stopped",Color.white);
                     autodropperon=false;
                     autodropper.interrupt();
                 }
@@ -203,7 +204,7 @@ public class CoalToSmelters extends Window implements GobSelectCallback {
                     autodropperon = true;
                     autodropper = new Thread(new CoalToSmelters.autodropper(),"Add Coal To Smelters");
                     autodropper.start();
-                    BotUtils.sysMsg("Autodropper started.",Color.white);
+                    PBotUtils.sysMsg("Autodropper started.",Color.white);
                 }
             }
         };
@@ -268,22 +269,22 @@ if(Config.dropsmelterstones) {
             gui = gameui();
                         while(autodropperon) {
                             try {
-                                BotUtils.waitForWindow("Ore Smelter");
+                                PBotUtils.waitForWindow("Ore Smelter");
                                 while(gui.getwnd("Ore Smelter") == null){
-                                    BotUtils.sleep(10);
+                                    PBotUtils.sleep(10);
                                     if(!autodropperon)
                                         break;
                                 }
                                 if(!autodropperon)
                                     break;
-                                BotUtils.sleep(100);
+                                PBotUtils.sleep(100);
                                 Window w = gui.getwnd("Ore Smelter");
                               //  if (w == null)
                                   // return;
                                 if (Config.dropsmelterstones) {
                                     for (Widget smelter = w.lchild; smelter != null; smelter = smelter.prev) {
                                         if (smelter instanceof Inventory) {
-                                            if (BotUtils.getInventoryContents((Inventory) smelter).size() != 0) {
+                                            if (PBotUtils.getInventoryContents((Inventory) smelter).size() != 0) {
                                                 List<WItem> stones = getstones((Inventory) smelter);
                                                 List<WItem> bars = getbars((Inventory) smelter);
                                                 List<WItem> quicksilver = getsilver((Inventory) smelter);
@@ -317,8 +318,8 @@ if(Config.dropsmelterstones) {
                                                     if (!nolbucket || !norbucket) {
                                                         WItem x = f.quickslots[nolbucket ? 7 : 6];
                                                         x.mousedown(new Coord(x.sz.x / 2, x.sz.y / 2), 1);
-                                                        while (BotUtils.getItemAtHand() == null)
-                                                            BotUtils.sleep(10);
+                                                        while (PBotUtils.getItemAtHand() == null)
+                                                            PBotUtils.sleep(10);
 
                                                         try {
                                                             Thread.sleep(100);
@@ -338,7 +339,7 @@ if(Config.dropsmelterstones) {
                                         }
                                     }
                                     while(gui.getwnd("Ore Smelter")!= null)
-                                        BotUtils.sleep(10);
+                                        PBotUtils.sleep(10);
                                 }
                             } catch (NullPointerException p) {
                                 p.printStackTrace();
@@ -351,9 +352,9 @@ if(Config.dropsmelterstones) {
             public void run() {
             try {
                 gui = gameui();
-                BotUtils.sysMsg("Ore filler started.", Color.white);
+                PBotUtils.sysMsg("Ore filler started.", Color.white);
                 if (list.size() == 0) {
-                    BotUtils.sysMsg("No Smelters selected.", Color.white);
+                    PBotUtils.sysMsg("No Smelters selected.", Color.white);
                     stopbtn.click();
                     return;
                 }
@@ -368,57 +369,57 @@ if(Config.dropsmelterstones) {
                             getore();
                         System.out.println("ore count : " + availableore);
                         System.out.println("before click");
-                        BotUtils.pfRightClick(gob, 0);
+                        PBotUtils.pfRightClick(gob, 0);
                         System.out.println("after click");
                         int unstucktimer = 0;
                         while (gui.getwnd("Ore Smelter") == null) {
-                            if (!BotUtils.isMoving())
+                            if (!PBotUtils.isMoving())
                                 unstucktimer++;
                             if (unstucktimer > 50) {
                                 System.out.println("Unstucking.");
-                                BotUtils.sysLogAppend("Moving char", "white");
+                                PBotUtils.sysLogAppend("Moving char", "white");
                                 Gob player = gui.map.player();
                                 Coord location = player.rc.floor(posres);
                                 int x = location.x + getrandom();
                                 int y = location.y + getrandom();
                                 Coord finalloc = new Coord(x, y);
                                 gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
-                                BotUtils.sleep(1000);
-                                BotUtils.pfRightClick(gob, 0);
+                                PBotUtils.sleep(1000);
+                                PBotUtils.pfRightClick(gob, 0);
                                 unstucktimer = 0;
                             }
-                            BotUtils.sleep(50);
+                            PBotUtils.sleep(50);
                         }
-                        int freeslots = BotUtils.invFreeSlots();
-                        BotUtils.sleep(500);
+                        int freeslots = PBotUtils.invFreeSlots();
+                        PBotUtils.sleep(500);
                         //  BotUtils.pfRightClick(gob, 0);
                         while (gui.getwnd("Ore Smelter") == null) {
-                            if (!BotUtils.isMoving())
+                            if (!PBotUtils.isMoving())
                                 unstucktimer++;
                             System.out.println("unstucktimer : " + unstucktimer);
                             if (unstucktimer > 50) {
                                 System.out.println("Unstucking.");
-                                BotUtils.sysLogAppend("Moving char", "white");
+                                PBotUtils.sysLogAppend("Moving char", "white");
                                 Gob player = gui.map.player();
                                 Coord location = player.rc.floor(posres);
                                 int x = location.x + getrandom();
                                 int y = location.y + getrandom();
                                 Coord finalloc = new Coord(x, y);
                                 gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
-                                BotUtils.sleep(1000);
-                                BotUtils.pfRightClick(gob, 0);
+                                PBotUtils.sleep(1000);
+                                PBotUtils.pfRightClick(gob, 0);
                                 unstucktimer = 0;
                             }
-                            BotUtils.sleep(50);
+                            PBotUtils.sleep(50);
                         }
                         for (WItem item : gui.maininv.getItemsPartial("Bloodstone", "Cassiterite", "Chalcopyrite", "Cinnabar", "Malachite",
                                 "Heavy Earth", "Iron Ochre", "Black Ore", "Galena", "Silvershrine", "Horn Silver", "Direvein", "Schrifterz", "Leaf Ore", "Meteorite"))
                             item.item.wdgmsg("transfer", Coord.z);
                         int retry = 0;
-                        while (freeslots == BotUtils.invFreeSlots()) {
+                        while (freeslots == PBotUtils.invFreeSlots()) {
                             retry++;
                             System.out.println("Waiting to transfer/retrying");
-                            BotUtils.sleep(100);
+                            PBotUtils.sleep(100);
                             if (retry > 50) {
                                 for (WItem item : gui.maininv.getItemsPartial("Bloodstone", "Cassiterite", "Chalcopyrite", "Cinnabar", "Malachite",
                                         "Heavy Earth", "Iron Ochre", "Black Ore", "Galena", "Silvershrine", "Horn Silver", "Direvein", "Schrifterz", "Leaf Ore", "Meteorite"))
@@ -426,7 +427,7 @@ if(Config.dropsmelterstones) {
                                 retry = 0;
                             }
                         }
-                        BotUtils.sleep(500);
+                        PBotUtils.sleep(500);
 
                     /*for (Widget w = BotUtils.playerInventory().child; w != null; w = w.next) {
                         if (w instanceof GItem && ((GItem) w).getname().contains(invobjs)) {
@@ -439,7 +440,7 @@ if(Config.dropsmelterstones) {
                     }
                     terminateore = true;
                 }
-                BotUtils.sysMsg("Done.", Color.white);
+                PBotUtils.sysMsg("Done.", Color.white);
                 stopbtn.click();
                 terminateore = true;
             } catch (Loading loadingerrorslol) {
@@ -456,7 +457,7 @@ if(Config.dropsmelterstones) {
                     int remaining = activelist.size() * count;
                     System.out.println("Coal needed : "+remaining);
                     while (!terminaterun) {
-                        BotUtils.sysLogAppend("Filling : " + activelist.size() + " Smelters/Ovens.", "white");
+                        PBotUtils.sysLogAppend("Filling : " + activelist.size() + " Smelters/Ovens.", "white");
                         for (Gob gob : activelist) {
 
                             int availableFuelCoal = gui.maininv.getItemPartialCount("Coal");
@@ -480,7 +481,7 @@ if(Config.dropsmelterstones) {
                                 }
                             }
                             if (coalw != null) {
-                                BotUtils.pfRightClick(gob,0);
+                                PBotUtils.pfRightClick(gob,0);
 
                                 String wndname;
                                 if(gob.getres().name.contains("smelter"))
@@ -490,21 +491,21 @@ if(Config.dropsmelterstones) {
 
                                 int unstucktimer = 0;
                                 while(gui.getwnd(wndname) == null){
-                                    if(!BotUtils.isMoving())
+                                    if(!PBotUtils.isMoving())
                                     unstucktimer++;
                                     if(unstucktimer > 250){
-                                        BotUtils.sysLogAppend("Moving char", "white");
+                                        PBotUtils.sysLogAppend("Moving char", "white");
                                         Gob player = gui.map.player();
                                         Coord location = player.rc.floor(posres);
                                         int x = location.x + getrandom();
                                         int y = location.y + getrandom();
                                         Coord finalloc = new Coord(x, y);
                                         gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
-                                        BotUtils.sleep(1000);
-                                        BotUtils.pfRightClick(gob,0);
+                                        PBotUtils.sleep(1000);
+                                        PBotUtils.pfRightClick(gob,0);
                                         unstucktimer = 0;
                                     }
-                                        BotUtils.sleep(10);
+                                    PBotUtils.sleep(10);
                                 }
 
 
@@ -552,7 +553,7 @@ if(Config.dropsmelterstones) {
                                 }
                             }
                             if (coalw2 != null) {
-                                BotUtils.pfRightClick(gob,0);
+                                PBotUtils.pfRightClick(gob,0);
                                 String wndname;
                                 if(gob.getres().name.contains("smelter"))
                                     wndname = "Ore Smelter";
@@ -561,22 +562,22 @@ if(Config.dropsmelterstones) {
 
                                 int unstucktimer = 0;
                                 while(gui.getwnd(wndname) == null){
-                                    if(!BotUtils.isMoving())
+                                    if(!PBotUtils.isMoving())
                                     unstucktimer++;
                                     if(unstucktimer > 250){
-                                        BotUtils.sysLogAppend("Moving char", "white");
+                                        PBotUtils.sysLogAppend("Moving char", "white");
                                         Gob player = gui.map.player();
                                         Coord location = player.rc.floor(posres);
                                         int x = location.x + getrandom();
                                         int y = location.y + getrandom();
                                         Coord finalloc = new Coord(x, y);
                                         gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
-                                        BotUtils.sleep(1000);
-                                        BotUtils.pfRightClick(gob,0);
+                                        PBotUtils.sleep(1000);
+                                        PBotUtils.pfRightClick(gob,0);
                                         unstucktimer = 0;
                                     }
 
-                                    BotUtils.sleep(10);
+                                    PBotUtils.sleep(10);
                                 }
 
                                 GItem coal = coalw2.item;
@@ -623,7 +624,7 @@ if(Config.dropsmelterstones) {
                             }
                         }
                         count = countretain;
-                        BotUtils.sysMsg("Done", Color.white);
+                        PBotUtils.sysMsg("Done", Color.white);
                         activelist.clear();
                         stopbtn.click();
                     }
@@ -639,7 +640,7 @@ if(Config.dropsmelterstones) {
                     for (Gob gob : torchlist) {
                         try {
                             if (list.size() == 0) {
-                                BotUtils.sysMsg("No Smelters/Ovens found", Color.white);
+                                PBotUtils.sysMsg("No Smelters/Ovens found", Color.white);
                                 stopbtn.click();
                                 return;
                             }
@@ -674,7 +675,7 @@ if(Config.dropsmelterstones) {
                                     return;
                                 }
                             }
-                            BotUtils.pfRightClick(gob, 0);
+                            PBotUtils.pfRightClick(gob, 0);
                             String wndname;
                             if (gob.getres().name.contains("smelter"))
                                 wndname = "Ore Smelter";
@@ -683,22 +684,22 @@ if(Config.dropsmelterstones) {
 
                             int unstucktimer = 0;
                             while (gui.getwnd(wndname) == null) {
-                                if(!BotUtils.isMoving())
+                                if(!PBotUtils.isMoving())
                                 unstucktimer++;
                                 if (unstucktimer > 250) {
-                                    BotUtils.sysLogAppend("Moving char", "white");
+                                    PBotUtils.sysLogAppend("Moving char", "white");
                                     Gob player = gui.map.player();
                                     Coord location = player.rc.floor(posres);
                                     int x = location.x + getrandom();
                                     int y = location.y + getrandom();
                                     Coord finalloc = new Coord(x, y);
                                     gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
-                                    BotUtils.sleep(1000);
-                                    BotUtils.pfRightClick(gob, 0);
+                                    PBotUtils.sleep(1000);
+                                    PBotUtils.pfRightClick(gob, 0);
                                     unstucktimer = 0;
                                 }
 
-                                BotUtils.sleep(10);
+                                PBotUtils.sleep(10);
                             }
 
                             gui.map.wdgmsg("itemact", Coord.z, gob.rc.floor(posres), 0, 0, (int) gob.id, gob.rc.floor(posres), 0, -1);
@@ -713,7 +714,7 @@ if(Config.dropsmelterstones) {
                         }
                         // e.wdgmsg("drop",noltorch ? 7:6);
                     }
-                    BotUtils.sysMsg("Done", Color.white);
+                    PBotUtils.sysMsg("Done", Color.white);
                     lblc.settext(list.size() + "");
                     torchlist.clear();
                     stopbtn.click();
@@ -724,17 +725,11 @@ if(Config.dropsmelterstones) {
 private class selectingarea implements Runnable {
     @Override
     public void run() {
-      //  list.clear();
-      //  stockpiles.clear();
-        BotUtils.sysMsg("Drag area over smelters/Ovens/LowQ Fuel", Color.WHITE);
-        PBotAPI.selectArea();
-        //gui.map.PBotAPISelect = true;
-        // while(gui.map.PBotAPISelect)
-        //BotUtils.sleep(100);
-        // BotUtils.sysMsg("Adding", Color.WHITE);
+        PBotUtils.sysMsg("Drag area over smelters/Ovens/LowQ Fuel", Color.WHITE);
+        PBotUtils.selectArea();
         try {
-            selectedAreaA = PBotAPI.getSelectedAreaA();
-            selectedAreaB = PBotAPI.getSelectedAreaB();
+            selectedAreaA = PBotUtils.getSelectedAreaA();
+            selectedAreaB = PBotUtils.getSelectedAreaB();
             for(Gob gob : Smelters())
                 if(!list.contains(gob))
                     list.add(gob);
@@ -750,7 +745,7 @@ private class selectingarea implements Runnable {
             lblc.settext(list.size() + "");
             biglist.clear();
         }catch(NullPointerException q){
-            BotUtils.sysMsg("Error detected, please reopen the bot and try again.",Color.white);
+            PBotUtils.sysMsg("Error detected, please reopen the bot and try again.",Color.white);
             q.printStackTrace();
         }
     }
@@ -760,22 +755,22 @@ private class selectingarea implements Runnable {
         @Override
         public void run() {
             hqstockpiles.clear();
-            BotUtils.sysMsg("Drag area over High Quality Coal", Color.WHITE);
-            PBotAPI.selectArea();
+            PBotUtils.sysMsg("Drag area over High Quality Coal", Color.WHITE);
+            PBotUtils.selectArea();
             //gui.map.PBotAPISelect = true;
             // while(gui.map.PBotAPISelect)
             //BotUtils.sleep(100);
             // BotUtils.sysMsg("Adding", Color.WHITE);
             try {
-                selectedAreaA = PBotAPI.getSelectedAreaA();
-                selectedAreaB = PBotAPI.getSelectedAreaB();
+                selectedAreaA = PBotUtils.getSelectedAreaA();
+                selectedAreaB = PBotUtils.getSelectedAreaB();
                 hqstockpiles.addAll(Stockpiles());
                 selectedAreaA = null;
                 selectedAreaA = null;
                 hqLabelStockpiles.settext(hqstockpiles.size()+"");
                 biglist.clear();
             }catch(NullPointerException q){
-                BotUtils.sysMsg("Error detected, please reopen the bot and try again.",Color.white);
+                PBotUtils.sysMsg("Error detected, please reopen the bot and try again.",Color.white);
                 q.printStackTrace();
             }
         }
@@ -784,22 +779,22 @@ private class selectingarea implements Runnable {
         @Override
         public void run() {
             orestockpiles.clear();
-            BotUtils.sysMsg("Drag area over Ore", Color.WHITE);
-            PBotAPI.selectArea();
+            PBotUtils.sysMsg("Drag area over Ore", Color.WHITE);
+            PBotUtils.selectArea();
             //gui.map.PBotAPISelect = true;
             // while(gui.map.PBotAPISelect)
             //BotUtils.sleep(100);
             // BotUtils.sysMsg("Adding", Color.WHITE);
             try {
-                selectedAreaA = PBotAPI.getSelectedAreaA();
-                selectedAreaB = PBotAPI.getSelectedAreaB();
+                selectedAreaA = PBotUtils.getSelectedAreaA();
+                selectedAreaB = PBotUtils.getSelectedAreaB();
                 orestockpiles.addAll(Stockpiles());
                 selectedAreaA = null;
                 selectedAreaA = null;
                 oreLabelStockpiles.settext(orestockpiles.size()+"");
                 biglist.clear();
             }catch(NullPointerException q){
-                BotUtils.sysMsg("Error detected, please reopen the bot and try again.",Color.white);
+                PBotUtils.sysMsg("Error detected, please reopen the bot and try again.",Color.white);
                 q.printStackTrace();
             }
         }
@@ -807,8 +802,8 @@ private class selectingarea implements Runnable {
 
         private void registerGobSelect () {
             synchronized (GobSelectCallback.class) {
-                BotUtils.sysMsg("Registering Gob", Color.white);
-                BotUtils.gui.map.registerGobSelect(this);
+                PBotUtils.sysMsg("Registering Gob", Color.white);
+                PBotAPI.gui.map.registerGobSelect(this);
             }
         }
 //    public void areaselect(Coord a, Coord b){
@@ -889,7 +884,7 @@ private void getfuel() {
                 if (glob.oc.getgob(s.id) == null)
                     continue;
             }
-            int freeslots = BotUtils.invFreeSlots();
+            int freeslots = PBotUtils.invFreeSlots();
 
 
             // navigate to the stockpile and load up on fuel
@@ -900,7 +895,7 @@ private void getfuel() {
                 return;
             }
 
-            if (BotUtils.invFreeSlots() == freeslots)
+            if (PBotUtils.invFreeSlots() == freeslots)
             {
                 Gob player = gui.map.player();
                 Coord location = player.rc.floor(posres);
@@ -908,11 +903,11 @@ private void getfuel() {
                 int y = location.y + getrandom();
                 Coord finalloc = new Coord(x, y);
                 gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
-                BotUtils.sleep(500);
+                PBotUtils.sleep(500);
             }
 
             // return if got enough fuel
-            freeslots = BotUtils.invFreeSlots();
+            freeslots = PBotUtils.invFreeSlots();
             if (freeslots == 0)
                 return;
         }
@@ -927,7 +922,7 @@ private void getfuel() {
                 }
                 if (res.name.contains("chest")){
                     chest = gob;
-                    BotUtils.sysMsg("Chest Selected",Color.white);
+                    PBotUtils.sysMsg("Chest Selected",Color.white);
                 }
             }
         }

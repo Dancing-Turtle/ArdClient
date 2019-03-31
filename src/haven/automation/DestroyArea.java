@@ -3,10 +3,11 @@ package haven.automation;
 
 import haven.*;
 import haven.Label;
-import haven.purus.BotUtils;
-import haven.purus.pbot.PBotAPI;
+
 import haven.Window;
 import haven.Button;
+import haven.purus.pbot.PBotAPI;
+import haven.purus.pbot.PBotUtils;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -68,7 +69,7 @@ public class DestroyArea extends Window implements GobSelectCallback {
         stopbtn = new haven.Button(100, "Stop") {
             @Override
             public void click() {
-                BotUtils.sysMsg("Stopping", Color.white);
+                PBotUtils.sysMsg("Stopping", Color.white);
                 this.hide();
                runner.interrupt();
                 runbtn.show();
@@ -94,14 +95,14 @@ public class DestroyArea extends Window implements GobSelectCallback {
                 int remaining = list.size();
                 for (Gob i : list) {
                     boolean destroyed = false;
-                    BotUtils.destroyGob(i);
-                    BotUtils.sleep(200);
+                    PBotUtils.destroyGob(i);
+                    PBotUtils.sleep(200);
                     while (!destroyed) {
-                        List<Gob> allgobs = PBotAPI.getGobs();
+                        List<Gob> allgobs = PBotUtils.getGobs();
                         if (!allgobs.contains(i))
                             destroyed = true;
                         else
-                            BotUtils.sleep(300);
+                            PBotUtils.sleep(300);
                     }
                 remaining --;
                     lblc3.settext(remaining+"");
@@ -115,30 +116,30 @@ public class DestroyArea extends Window implements GobSelectCallback {
         @Override
         public void run() {
 
-            BotUtils.sysMsg("Drag area over Gobs", Color.WHITE);
-            PBotAPI.selectArea();
+            PBotUtils.sysMsg("Drag area over Gobs", Color.WHITE);
+            PBotUtils.selectArea();
             list.clear();
             //gui.map.PBotAPISelect = true;
             // while(gui.map.PBotAPISelect)
             //BotUtils.sleep(100);
             // BotUtils.sysMsg("Adding", Color.WHITE);
             try {
-                selectedAreaA = PBotAPI.getSelectedAreaA();
-                selectedAreaB = PBotAPI.getSelectedAreaB();
+                selectedAreaA = PBotUtils.getSelectedAreaA();
+                selectedAreaB = PBotUtils.getSelectedAreaB();
                 list.addAll(GobList());
-            }catch(IndexOutOfBoundsException | NullPointerException idklol){BotUtils.sysMsg("Error detected, please try closing and reopening the script window.",Color.white);}
+            }catch(IndexOutOfBoundsException | NullPointerException idklol){PBotUtils.sysMsg("Error detected, please try closing and reopening the script window.",Color.white);}
             lblc2.settext(list.size() + "");
         }
     }
     private void registerGobSelect () {
         synchronized (GobSelectCallback.class) {
-            BotUtils.sysMsg("Registering Gob", Color.white);
-            BotUtils.gui.map.registerGobSelect(this);
+            PBotUtils.sysMsg("Registering Gob", Color.white);
+            PBotAPI.gui.map.registerGobSelect(this);
         }
     }
     public void gobselect (Gob gob){
         this.gobselected = gob;
-        BotUtils.sysMsg("Gob selected!",Color.white);
+        PBotUtils.sysMsg("Gob selected!",Color.white);
         lblc.settext(gob.getres().basename());
     }
     public ArrayList<Gob> GobList() {

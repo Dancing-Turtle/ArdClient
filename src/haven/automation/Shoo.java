@@ -5,7 +5,6 @@ import static haven.OCache.posres;
 
 import haven.*;
 import haven.pathfinder.Map;
-import haven.purus.BotUtils;
 
 import java.awt.*;
 
@@ -30,7 +29,7 @@ Gob animal = null;
                             res.name.startsWith("gfx/kritter/goat")))
                     {
                         Coord2d plc = gui.map.player().rc;
-                        if ((animal == null || gob.rc.dist(plc) < animal.rc.dist(plc)) && gob.knocked == false)
+                        if ((animal == null || gob.rc.dist(plc) < animal.rc.dist(plc)) && !gob.isDead())
                             animal = gob;
                     }
                 } catch (Loading l) {

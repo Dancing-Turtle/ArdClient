@@ -10,11 +10,11 @@ import haven.VertexBuf.NormalArray;
 import haven.VertexBuf.VertexArray;
 
 public class BPRadSprite extends Sprite {
-    public static GLState smatDanger = new ColState(new Color(Config.smatdangerred, Config.smatdangergreen, Config.smatdangerblue, 100));
-    public static GLState smatSupports = new ColState(new Color(Config.smatSupportsred, Config.smatSupportsgreen, Config.smatSupportsblue, 100));
-    public static Material.Colors cRackMissing = new Material.Colors(new Color(Config.cRackred, Config.cRackgreen, Config.cRackblue, 255));
-    public static final GLState smatBeehive = new ColState(new Color(233, 234, 134, 80));
-    public static final GLState smatTrough = new ColState(new Color(0, 255, 255, 80));
+    public static GLState smatDanger = new ColState(DefSettings.ANIMALDANGERCOLOR.get());
+    public static GLState smatSupports = new ColState(DefSettings.SUPPORTDANGERCOLOR.get());
+    public static Material.Colors cRackMissing = new Material.Colors(DefSettings.CHEESERACKMISSINGCOLOR.get());
+    public static  GLState smatBeehive = new ColState((DefSettings.BEEHIVECOLOR.get()));
+    public static  GLState smatTrough = new ColState(DefSettings.TROUGHCOLOR.get());
     final GLState smat;
     final VertexArray posa;
     final NormalArray nrma;

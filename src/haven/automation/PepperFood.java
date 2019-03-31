@@ -3,9 +3,8 @@ package haven.automation;
 
 import haven.*;
 import haven.Window;
-import haven.purus.BotUtils;
 import haven.WItem;
-import haven.purus.pbot.PBotAPI;
+import haven.purus.pbot.PBotUtils;
 import haven.resutil.FoodInfo;
 
 import java.awt.*;
@@ -23,12 +22,6 @@ public class PepperFood implements Runnable {
 
     @Override
     public void run() {
-           // try{
-              //  Window cupboard = gui.getwnd("Cupboard");
-               // Inventory inv = PBotAPI.getInventory(cupboard);
-               // foods = getFood(inv);
-          //  }catch(NullPointerException q){BotUtils.sysLogAppend("Cupboard Window not found.","white");}
-         //   BotUtils.sleep(500);
                 Equipory f = gui.getequipory();
                 WItem l = f.quickslots[6];
                 WItem r = f.quickslots[7];
@@ -52,8 +45,8 @@ public class PepperFood implements Runnable {
                     WItem x = f.quickslots[nolbucket ? 7 : 6];
                     x.mousedown(new Coord(x.sz.x / 2, x.sz.y / 2), 1);
                 }catch(NullPointerException lo){}
-                    while(BotUtils.getItemAtHand() == null)
-                        BotUtils.sleep(10);
+                    while(PBotUtils.getItemAtHand() == null)
+                        PBotUtils.sleep(10);
                     try {
                         Thread.sleep(100);
                     } catch (InterruptedException ie) {
@@ -76,10 +69,10 @@ public class PepperFood implements Runnable {
                     }
                     f.wdgmsg("drop", nolbucket ? 7 : 6);
                 if(nolbucket && norbucket) {
-                    BotUtils.sysMsg("No equipped Bucket Found", Color.white);
+                    PBotUtils.sysMsg("No equipped Bucket Found", Color.white);
                 }
                 else
-                BotUtils.sysMsg("Done",Color.white);
+                    PBotUtils.sysMsg("Done",Color.white);
             }
 
     private List<WItem> getFood (Inventory inv){

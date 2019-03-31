@@ -1,16 +1,9 @@
 package haven;
 
-import java.awt.Color;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.SocketException;
-import java.net.URL;
+import java.awt.*;
+import java.io.*;
+import java.net.*;
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -85,8 +78,7 @@ public class StatusWdg extends Widget {
                 HttpURLConnection conn = null;
 
                 try {
-                    //commented out while the playercounter is broken, will re-enable if it's ever fixed
-                   /* url_ = new URL("http://www.havenandhearth.com/mt/srv-mon");
+                    url_ = new URL("http://www.havenandhearth.com/mt/srv-mon");
                     conn = (HttpURLConnection)url_.openConnection();
                     InputStream is = conn.getInputStream();
                     br = new BufferedReader(new InputStreamReader(is));
@@ -109,31 +101,7 @@ public class StatusWdg extends Widget {
 
                         if (Thread.interrupted())
                             return;
-                    }*/
-                    url_ = new URL("http://www.havenandhearth.com/portal/index/status");
-                    Scanner scan = new Scanner(url_.openStream());
-                    while (scan.hasNextLine()) {
-                        String line = scan.nextLine();
-                        if (line.contains("<p>There")) {
-                            String p = line.substring(line.indexOf("<p>")+3, line.indexOf("</p>"));
-                            p = p.replace("There are ","");
-                            p = p.replace(" hearthlings playing.","");
-                            players = Text.render(String.format(Resource.getLocString(Resource.BUNDLE_LABEL, "Players: %s"), p), Color.WHITE).tex();
                         }
-
-                        // Update ping at least every 5 seconds.
-                        // This of course might take more than 5 seconds in case there were no new logins/logouts
-                        // but it's not critical.
-                        long now = System.currentTimeMillis();
-                        if (now - lastPingUpdate > 5000) {
-                            lastPingUpdate = now;
-                            updatepingtime();
-                        }
-
-                        if (Thread.interrupted())
-                            return;
-                    }
-                } catch(ArrayIndexOutOfBoundsException arrayslol){//fail silently
                 } catch (SocketException se) {
                     // don't print socket exceptions when network is unreachable to prevent console spamming on bad connections
                     if (!se.getMessage().equals("Network is unreachable"))

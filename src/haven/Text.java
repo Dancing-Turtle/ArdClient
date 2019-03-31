@@ -346,7 +346,7 @@ public class Text {
         protected String text(T value) {
             return (String.valueOf(value));
         }
-
+        protected Text render(String text) {return(fnd.render(text));}
         protected abstract T value();
 
         public Text get() {

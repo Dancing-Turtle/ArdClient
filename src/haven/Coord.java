@@ -29,6 +29,7 @@ package haven;
 import static java.lang.Math.PI;
 
 import java.util.Iterator;
+import java.util.Optional;
 
 public class Coord implements Comparable<Coord>, java.io.Serializable {
     public int x, y;
@@ -44,6 +45,10 @@ public class Coord implements Comparable<Coord>, java.io.Serializable {
     public Coord(int x, int y) {
         this.x = x;
         this.y = y;
+    }
+
+    public Coord(float x, float y) {
+        this((int)x, (int)y);
     }
 
     public Coord(Coord c) {
@@ -152,6 +157,48 @@ public class Coord implements Comparable<Coord>, java.io.Serializable {
         return ((x >= c.x) && (y >= c.y) && (x < c.x + s.x) && (y < c.y + s.y));
     }
 
+    public boolean eisect(Coord c, Coord s) {
+	return ((x >= c.x) && (y >= c.y) && (x <= c.x + s.x) && (y <= c.y + s.y));
+    }
+
+    //m2 is 0, b2 is e2.y
+    public Optional<Coord> hlsect(Coord e1, int b2) {
+	double m1 = (e1.y - y) / (double)(e1.x - x);
+	double b1 = e1.y - m1 * e1.x;
+
+	if(m1 != 0) {
+	    return Optional.of(new Coord((int)(Double.isFinite(m1) ? (b2-b1)/m1 : this.x), b2));
+	} else {
+	    return Optional.empty();
+	}
+    }
+
+    //m2 is Inf, x is e2.x
+    public Optional<Coord> vlsect(Coord e1, int x) {
+	double m = (e1.y - y) / (double)(e1.x - this.x);
+	double b = this.y - m * this.x;
+
+	if(Double.isFinite(m)) {
+	    return Optional.of(new Coord(x, (int)(m * x + b)));
+	} else {
+	    return Optional.empty();
+	}
+    }
+
+    public boolean between(Coord s, Coord e) {
+        Coord sz = new Coord(e.x - s.x, e.y - s.y);
+        Coord tl = new Coord(s);
+        if(sz.x < 0) {
+            sz.x = -sz.x;
+            tl.x = e.x;
+	}
+        if(sz.y < 0) {
+            sz.y = -sz.y;
+            tl.y = e.y;
+	}
+        return eisect(tl, sz);
+    }
+
     public String toString() {
         return ("(" + x + ", " + y + ")");
     }
@@ -173,6 +220,14 @@ public class Coord implements Comparable<Coord>, java.io.Serializable {
                 return (Math.atan((double) c.y / (double) c.x));
             }
         }
+    }
+
+    public Coord rot(float angl) {
+	final float
+		cos = (float)Math.cos(angl),
+		sin = (float)Math.sin(angl);
+	return new Coord(x*cos - y*sin,
+		x*sin + y*cos);
     }
 
     public double abs() {

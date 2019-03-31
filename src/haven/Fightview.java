@@ -26,8 +26,7 @@
 
 package haven;
 
-import haven.purus.BotUtils;
-import haven.purus.pbot.PBotAPI;
+
 
 import java.awt.Color;
 import java.util.ArrayList;

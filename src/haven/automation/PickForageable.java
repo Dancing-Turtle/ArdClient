@@ -29,6 +29,7 @@ public class PickForageable implements Runnable {
             for (Gob gob : gui.map.glob.oc) {
                 Resource res = null;
                 boolean gate = false;
+                boolean cart = false;
                 try {
                     res = gob.getres();
                 } catch (Loading l) {
@@ -38,6 +39,8 @@ public class PickForageable implements Runnable {
                     Boolean hidden = Boolean.FALSE;
                     if(!Config.disablegatekeybind)
                     gate = gates.contains(res.basename());
+                    if(!Config.disablecartkeybind)
+                    cart = res.basename().equals("cart");
                     if (itm == null)
                         hidden = null;
                     else if (itm.selected)
@@ -54,7 +57,7 @@ public class PickForageable implements Runnable {
                         }
                     } catch (NullPointerException fucknulls) { System.out.println("Null on gate open/close"); }
 
-                    if (hidden == null && res.name.startsWith("gfx/terobjs/herbs") || (hidden == Boolean.FALSE && !res.name.startsWith("gfx/terobjs/vehicle")) || gate) {
+                    if (hidden == null && res.name.startsWith("gfx/terobjs/herbs") || (hidden == Boolean.FALSE && !res.name.startsWith("gfx/terobjs/vehicle") && !cart) || gate || cart) {
                         double distFromPlayer = gob.rc.dist(gui.map.player().rc);
                         if (distFromPlayer <= 20 * 11 && (herb == null || distFromPlayer < herb.rc.dist(gui.map.player().rc)))
                             herb = gob;

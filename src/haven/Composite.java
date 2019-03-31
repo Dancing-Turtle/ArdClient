@@ -34,19 +34,24 @@ import haven.Composited.ED;
 import haven.Composited.MD;
 import haven.Skeleton.Pose;
 import haven.Skeleton.PoseMod;
+import haven.sloth.gob.Type;
+
+import static haven.Composited.ED;
+import static haven.Composited.MD;
 
 public class Composite extends Drawable {
     public final static float ipollen = 0.2f;
     public final Indir<Resource> base;
     public Composited comp;
-    public Collection<ResData> nposes = null, tposes = null;
+    public Collection<ResData> nposes = null, tposes = null, prevposes;
     public Collection<ResData> oldposes = null, oldtposes;
     public boolean nposesold, retainequ = false;
     private float tptime;
     private WrapMode tpmode;
     public int pseq;
-    private List<MD> nmod;
+    public List<MD> nmod;
     private List<ED> nequ;
+    public List<ED> lastnequ;
 
     public Composite(Gob gob, Indir<Resource> base) {
         super(gob);
@@ -60,10 +65,10 @@ public class Composite extends Drawable {
         comp = new Composited(res.layer(Skeleton.Res.class).s);
         comp.eqowner = gob;
         if (gob.type == null) {
-            gob.determineType(res.name);
+            Type.getType(res.name);
             // prevent mannequins to be recognized as players
-            if (gob.type == Gob.Type.PLAYER && gob.attr.containsKey(GobHealth.class))
-                gob.type = Gob.Type.OTHER;
+            if (gob.type == Type.HUMAN && gob.attr.containsKey(GobHealth.class))
+                gob.type = Type.UNKNOWN;
         }
     }
 
@@ -77,7 +82,7 @@ public class Composite extends Drawable {
     }
 
     private List<PoseMod> loadposes(Collection<ResData> rl, Skeleton skel, boolean old) {
-        List<PoseMod> mods = new ArrayList<PoseMod>(rl.size());
+	List<PoseMod> mods = new ArrayList<>(rl.size());
         for (ResData dat : rl) {
             PoseMod mod = skel.mkposemod(gob, dat.res.get(), dat.sdt.clone());
             if (old)
@@ -88,7 +93,7 @@ public class Composite extends Drawable {
     }
 
     private List<PoseMod> loadposes(Collection<ResData> rl, Skeleton skel, WrapMode mode) {
-        List<PoseMod> mods = new ArrayList<PoseMod>(rl.size());
+	List<PoseMod> mods = new ArrayList<>(rl.size());
         for (ResData dat : rl) {
             for (Skeleton.ResPose p : dat.res.get().layers(Skeleton.ResPose.class))
                 mods.add(p.forskel(gob, skel, (mode == null) ? p.defmode : mode));
@@ -104,6 +109,7 @@ public class Composite extends Drawable {
         }
         if (nequ != null) {
             comp.chequ(nequ);
+	    lastnequ = nequ;
             nequ = null;
         }
     }
@@ -115,21 +121,10 @@ public class Composite extends Drawable {
             try {
                 Composited.Poses np = comp.new Poses(loadposes(nposes, comp.skel, nposesold));
                 np.set(nposesold ? 0 : ipollen);
-                updequ();
-                for (ResData resdata : nposes) {
-                    Resource posres = resdata.res.get();
-                    // livestock:       */knock-*
-                    // other animals:   */knock
-                    if (posres != null && posres.name.contains("/knock")) {
-                        gob.knocked = Boolean.TRUE;
-                        break;
-                    }
-                }
-                if (gob.knocked == null)
-                    gob.knocked = Boolean.FALSE;
+                prevposes = nposes;
                 nposes = null;
-            } catch (Loading e) {
-            }
+		updequ();
+	    } catch(Loading e) {}
         } else if (tposes != null) {
             try {
                 final Composited.Poses cp = comp.poses;
@@ -178,6 +173,7 @@ public class Composite extends Drawable {
 
     public void tposes(Collection<ResData> poses, WrapMode mode, float time) {
         this.tposes = poses;
+	oldtposes = poses;
         this.tpmode = mode;
         this.tptime = time;
     }
@@ -195,7 +191,11 @@ public class Composite extends Drawable {
         nequ = equ;
     }
 
+
+    //TODO: Should inherit from `comp`, this composite could very well be static. Ex: dead animals
+    //      OCache already calls changed anytime it changes equ/poses.. so this should ONLY be dynamic
+    //      If one of the equ/poses are an animation and `Show Animations` is on
     public Object staticp() {
-	return(null);
+	return comp != null ? comp.staticp() : null;
     }
 }

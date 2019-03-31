@@ -34,6 +34,7 @@ import java.util.Map;
 import haven.MorphedMesh.Morpher;
 import haven.Skeleton.Pose;
 import haven.Skeleton.PoseMod;
+import haven.DefSettings;
 
 public class SkelSprite extends Sprite implements Gob.Overlay.CUpd, Skeleton.HasPose {
     public static final GLState
@@ -61,7 +62,7 @@ public class SkelSprite extends Sprite implements Gob.Overlay.CUpd, Skeleton.Has
         }
     };
 
-    private SkelSprite(Owner owner, Resource res, Message sdt) {
+    protected SkelSprite(Owner owner, Resource res, Message sdt) {
         super(owner, res);
         skel = res.layer(Skeleton.Res.class).s;
         pose = skel.new Pose(skel.bindpose);

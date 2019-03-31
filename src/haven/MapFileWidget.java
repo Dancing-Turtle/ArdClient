@@ -50,7 +50,8 @@ import haven.MapFile.Marker;
 import haven.MapFile.PMarker;
 import haven.MapFile.SMarker;
 import haven.MapFile.Segment;
-import haven.purus.BotUtils;
+import haven.purus.pbot.PBotAPI;
+import haven.purus.pbot.PBotUtils;
 
 public class MapFileWidget extends Widget {
     public final MapFile file;
@@ -429,7 +430,7 @@ public class MapFileWidget extends Widget {
                         }
                     }
                 } catch (Exception e) {
-                    BotUtils.sysLogAppend("Failed to resolve player location with map move", "white");
+                    PBotUtils.sysLogAppend("Failed to resolve player location with map move", "white");
                 }
                 return true;
             }
@@ -472,7 +473,7 @@ public class MapFileWidget extends Widget {
     public boolean mousewheel(Coord c, int amount) {
         if(amount > 0) {
             if (MapFileWidget.zoom < 4) {
-                BotUtils.gui.mapfile.zoomtex = null;
+                PBotAPI.gui.mapfile.zoomtex = null;
                 Coord tc = curloc.tc.mul(MapFileWidget.scalef());
                 MapFileWidget.zoom++;
                 tc = tc.div(MapFileWidget.scalef());
@@ -481,7 +482,7 @@ public class MapFileWidget extends Widget {
             }
         } else {
             if (MapFileWidget.zoom > 0) {
-                BotUtils.gui.mapfile.zoomtex = null;
+                PBotAPI.gui.mapfile.zoomtex = null;
                 Coord tc = curloc.tc.mul(MapFileWidget.scalef());
                 MapFileWidget.zoom--;
                 tc = tc.div(MapFileWidget.scalef());

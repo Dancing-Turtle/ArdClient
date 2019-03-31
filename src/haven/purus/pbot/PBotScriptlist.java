@@ -1,5 +1,7 @@
 package haven.purus.pbot;
 
+import haven.*;
+
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.ArrayList;
@@ -7,20 +9,13 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import haven.Coord;
-import haven.GOut;
-import haven.GameUI;
-import haven.Listbox;
-import haven.Loading;
-import haven.TextEntry;
-
-public class PBotScriptlist extends GameUI.Hidewnd {
+public class PBotScriptlist extends Window {
 	
 	private TextEntry search;
 	private ScriptList list;
 
 	public PBotScriptlist() {
-		super(new Coord(228, 280), "PBot Scripts");
+		super(Coord.z, "PBot New Scripts", "PBot New Scripts");
 		
 		search = new TextEntry(210, "") {
             @Override
@@ -38,6 +33,7 @@ public class PBotScriptlist extends GameUI.Hidewnd {
 		
 		list = new ScriptList(210, 10);
 		add(list, new Coord(10, 35));
+		pack();
 	}
 	
 	@Override
@@ -105,7 +101,7 @@ public class PBotScriptlist extends GameUI.Hidewnd {
 			if(!scriptDirectory.exists())
 				scriptDirectory.mkdir();
 			for(File f:scriptDirectory.listFiles()) {
-				if(f.getName().endsWith(".PBot") || f.getName().endsWith("jbot")) {
+				if(f.getName().endsWith(".PBot")) {
 					itemList.add(new PBotScriptlistItem(f.getName(), f));
 				}
 			}

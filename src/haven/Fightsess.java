@@ -26,7 +26,9 @@
 
 package haven;
 
-import haven.purus.BotUtils;
+
+import haven.purus.pbot.PBotAPI;
+import haven.purus.pbot.PBotUtils;
 
 import java.awt.*;
 import java.awt.event.InputEvent;
@@ -191,6 +193,10 @@ public class Fightsess extends Widget {
         try {
             if (parent.lchild != this) {
                 raise();
+                if(Config.forcefightfocusharsh)
+                    parent.setfocus(this);
+                else if(!PBotAPI.gui.chat.hasfocus && Config.forcefightfocus)
+                    parent.setfocus(this);
             }
         }catch(Exception e){}
         double now = Utils.rtime();

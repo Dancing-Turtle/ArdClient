@@ -3,7 +3,7 @@ package haven.automation;
 
 import haven.*;
 import haven.Window;
-import haven.purus.BotUtils;
+import haven.purus.pbot.PBotUtils;
 import haven.resutil.WaterTile;
 
 import java.awt.*;
@@ -58,14 +58,14 @@ public class SliceCheese implements Runnable {
                             timeout++;
                             if(timeout > 500)
                             {
-                                BotUtils.sysMsg("Cheese Slicer interrupted, exited.",Color.white);
+                                PBotUtils.sysMsg("Cheese Slicer interrupted, exited.",Color.white);
                                 return;
                             }
-                            BotUtils.sleep(10);
+                            PBotUtils.sleep(10);
                         }
                     }
             }
-       BotUtils.sysMsg("Done",Color.white);
+        PBotUtils.sysMsg("Done",Color.white);
     }
     private List<WItem> getTrays (Inventory inv){
         List<WItem> trays = inv.getItemsPartial("Cheese Tray");

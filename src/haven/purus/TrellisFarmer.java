@@ -4,6 +4,8 @@ import haven.Button;
 import haven.*;
 import haven.Label;
 import haven.Window;
+import haven.purus.pbot.PBotAPI;
+import haven.purus.pbot.PBotUtils;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -61,7 +63,7 @@ public class TrellisFarmer extends Window implements Runnable {
 	}
 
 	public void run() {
-		BotUtils.sysMsg("Trellis Farmer started!", Color.white);
+		PBotUtils.sysMsg("Trellis Farmer started!", Color.white);
 		if (harvest) {
 
 			// Initialise crop list
@@ -80,7 +82,7 @@ public class TrellisFarmer extends Window implements Runnable {
 				GameUI gui = HavenPanel.lui.root.findchild(GameUI.class);
 				IMeter.Meter stam = gui.getmeter("stam", 0);
 				if (stam.a <= 30) {
-					BotUtils.drink();
+					PBotUtils.drink();
 				}
 
 
@@ -91,11 +93,11 @@ public class TrellisFarmer extends Window implements Runnable {
 
 
 				// Right click the crop
-				BotUtils.doClick(g, 3, 0);
+				PBotUtils.doClick(g, 3, 0);
 
 				// Wait for harvest menu to appear
 				while (ui.root.findchild(FlowerMenu.class) == null) {
-					BotUtils.sleep(10);
+					PBotUtils.sleep(10);
 					if (stopThread)
 						return;
 				}
@@ -113,18 +115,17 @@ public class TrellisFarmer extends Window implements Runnable {
 
 				// Wait until stage has changed = harvested
 				while (true) {
-					if (BotUtils.findObjectById(g.id) == null
-							|| BotUtils.findObjectById(g.id).getStage() != stageBefore)
+					if (PBotUtils.findObjectById(g.id) == null
+							|| PBotUtils.findObjectById(g.id).getStage() != stageBefore)
 						break;
 					else
-						BotUtils.sleep(20);
+						PBotUtils.sleep(20);
 					if (stopThread)
 						return;
 				}
-				//BotUtils.dropItem(0);
 				try {
 				GItem dropitem;
-				for (Widget w = BotUtils.playerInventory().child; w != null; w = w.next) {
+				for (Widget w = PBotAPI.gui.maininv.child; w != null; w = w.next) {
 					if (w instanceof GItem && ((GItem) w).resource().name.contains("grape")) {
 						dropitem = (GItem) w;
 
@@ -133,8 +134,8 @@ public class TrellisFarmer extends Window implements Runnable {
 					}
 				}catch (Exception e) { }
 
-					if (BotUtils.invFreeSlots() < 4 && chest != null) {
-						BotUtils.pfRightClick(chest, 0);
+					if (PBotUtils.invFreeSlots() < 4 && chest != null) {
+						PBotUtils.pfRightClick(chest, 0);
 						try {
 							while (gui.getwnd("Exquisite Chest") == null) {
 								try {
@@ -144,27 +145,27 @@ public class TrellisFarmer extends Window implements Runnable {
 							}
 						} catch (NullPointerException ipo) {
 						}
-						BotUtils.waitForWindow("Exquisite Chest");
-						for (Widget w = BotUtils.playerInventory().child; w != null; w = w.next) {
+						PBotUtils.waitForWindow("Exquisite Chest");
+						for (Widget w = PBotAPI.gui.maininv.child; w != null; w = w.next) {
 							if (w instanceof GItem && ((GItem) w).res.get().name.contains("pepper")) {
 								GItem item = (GItem) w;
 								try {
 									item.wdgmsg("transfer", Coord.z);
 
 								} catch (NullPointerException qip) {
-									BotUtils.sysMsg("Null Pointer on line 142", Color.white);
+									PBotUtils.sysMsg("Null Pointer on line 142", Color.white);
 								}
 							}
 						}
-						if(BotUtils.invFreeSlots() < 20)
-							for (Widget w = BotUtils.playerInventory().child; w != null; w = w.next) {
+						if(PBotUtils.invFreeSlots() < 20)
+							for (Widget w = PBotAPI.gui.maininv.child; w != null; w = w.next) {
 								if (w instanceof GItem && ((GItem) w).res.get().name.contains("pepper")) {
 									GItem item = (GItem) w;
 									try {
 										item.wdgmsg("drop", Coord.z);
 
 									} catch (NullPointerException qip) {
-										BotUtils.sysMsg("Null Pointer on line 142", Color.white);
+										PBotUtils.sysMsg("Null Pointer on line 142", Color.white);
 									}
 								}
 							}
@@ -192,18 +193,18 @@ public class TrellisFarmer extends Window implements Runnable {
 				GameUI gui = HavenPanel.lui.root.findchild(GameUI.class);
 				IMeter.Meter stam = gui.getmeter("stam", 0);
 				if (stam.a <= 30) {
-					BotUtils.drink();
+					PBotUtils.drink();
 				}
 
 				if (stopThread)
 					return;
 
 				// Click destroy on gob
-				BotUtils.destroyGob(g);
+				PBotUtils.destroyGob(g);
 
 				// Wait until the gob is gone = destroyed
-				while (BotUtils.findObjectById(g.id) != null) {
-					BotUtils.sleep(10);
+				while (PBotUtils.findObjectById(g.id) != null) {
+					PBotUtils.sleep(10);
 					if (stopThread)
 						return;
 				}
@@ -225,8 +226,8 @@ public class TrellisFarmer extends Window implements Runnable {
 
 				// Take a seed from inventory to hand
 				GItem item = null;
-				while (BotUtils.getItemAtHand() == null) {
-					Inventory inv = BotUtils.playerInventory();
+				while (PBotUtils.getItemAtHand() == null) {
+					Inventory inv = PBotAPI.gui.maininv;
 					for (Widget w = inv.child; w != null; w = w.next) {
 						if (w instanceof GItem && seedName.contains(((GItem) w).resource().name)) {
 							item = (GItem) w;
@@ -234,19 +235,19 @@ public class TrellisFarmer extends Window implements Runnable {
 						}
 					}
 					if (item != null)
-						BotUtils.takeItem(item);
+						PBotUtils.takeItem(item);
 				}
 
 				if (stopThread)
 					return;
 
 				// Right click trellis with the seed
-				BotUtils.itemClick(g, 0);
+				PBotUtils.itemClick(g, 0);
 
 				// Wait until item is gone from hand = Planted
 				int retry = 0; // IF no success for 10 seconds skip
-				while (BotUtils.getItemAtHand() != null) {
-					BotUtils.sleep(10);
+				while (PBotUtils.getItemAtHand() != null) {
+					PBotUtils.sleep(10);
 					if (stopThread)
 						return;
 					retry++;
@@ -260,7 +261,7 @@ public class TrellisFarmer extends Window implements Runnable {
 			}
 		}
 
-		BotUtils.sysMsg("Trellis Farmer finished!", Color.white);
+		PBotUtils.sysMsg("Trellis Farmer finished!", Color.white);
 		this.destroy();
 	}
 
@@ -339,7 +340,7 @@ public class TrellisFarmer extends Window implements Runnable {
 
 	public void stop() {
 		// Stops thread
-		BotUtils.sysMsg("Trellis Farmer stopped!", Color.white);
+		PBotUtils.sysMsg("Trellis Farmer stopped!", Color.white);
 		gameui().map.wdgmsg("click", Coord.z, gameui().map.player().rc.floor(posres), 1, 0);
 		if (gameui().map.pfthread != null) {
 			gameui().map.pfthread.interrupt();

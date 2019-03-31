@@ -34,7 +34,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import haven.purus.BotUtils;
+
 import haven.res.ui.tt.Armor;
 
 public class Equipory extends Widget implements DTarget {

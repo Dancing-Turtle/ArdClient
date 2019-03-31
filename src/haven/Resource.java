@@ -1550,8 +1550,9 @@ public class Resource implements Serializable {
 		List<Layer> layers = new LinkedList<Layer>();
 		if (this.ver == -1)
 			this.ver = ver;
-		else if (ver != this.ver)
+	else if(ver != this.ver ) {
 			throw (new LoadException("Wrong res version (" + ver + " != " + this.ver + ")", this));
+	}
 		while (!in.eom()) {
 			LayerFactory<?> lc = ltypes.get(in.string());
 			int len = in.int32();

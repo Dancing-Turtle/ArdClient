@@ -2,7 +2,7 @@
 
 <project name="hafen" default="deftgt">
   <property name="name" value="ArdClient"/>
-  <property name="version" value="1.00.107"/>
+  <property name="version" value="1.00.110"/>
 
   <target name="build-env">
     <mkdir dir="build" />
@@ -38,6 +38,11 @@
     <pathelement path="lib/flogger-0.3.1.jar" />
     <pathelement path="lib/flogger-system-backend-0.3.1.jar" />
     <pathelement path="lib/sql-jdbc-3.26.0.jar" />
+    <pathelement path="lib/sentry.jar" />
+    <pathelement path="lib/graal-sdk.jar" />
+    <pathelement path="lib/graaljs.jar" />
+    <pathelement path="lib/tregex.jar" />
+    <pathelement path="lib/truffle-api.jar" />
 
       </classpath>
       <compilerarg value="-Xlint:unchecked" />
@@ -69,7 +74,8 @@
         <fileset file="changelog.txt" />
       <manifest>
 	<attribute name="Main-Class" value="haven.MainFrame" />
-	<attribute name="Class-Path" value="jogl.jar gluegen-rt.jar amber-res.jar builtin-res.jar hafen-res.jar l10n.jar HavenDiscord.jar rxjava-1.1.5.jar rxjava-1.1.5-javadoc.jar sqlite-jdbc-3.26.0.jar flogger-0.3.1.jar flogger-system-backend-0.3.1.jar" />
+	<attribute name="Class-Path" value="jogl.jar gluegen-rt.jar amber-res.jar builtin-res.jar hafen-res.jar l10n.jar HavenDiscord.jar rxjava-1.1.5.jar rxjava-1.1.5-javadoc.jar sqlite-jdbc-3.26.0.jar flogger-0.3.1.jar flogger-system-backend-0.3.1.jar
+jackson-core.jar graal-sdk.jar graaljs.jar tregex.jar truffle-api.jar" />
       </manifest>
     </jar>
     <chmod file="build/hafen.jar" perm="a+x" />

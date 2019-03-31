@@ -37,7 +37,6 @@ import java.util.Random;
 
 import haven.automation.BeltDrink;
 import haven.automation.MinerAlert;
-import haven.purus.BotUtils;
 import haven.res.ui.tt.q.qbuff.QBuff;
 
 public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owner {
@@ -327,5 +326,17 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
         if(Config.DropEntrails && this.getname().contains("Entrails") || Config.DropIntestines && this.getname().contains("Intestines")
                 || Config.DropMeat && this.getname().contains("Raw") || Config.DropBones && this.getname().contains("Bone Material"))
             this.wdgmsg("drop", Coord.z);
+    }
+    public Coord size() {
+        Indir<Resource> res = getres().indir();
+        if (res.get() != null && res.get().layer(Resource.imgc) != null) {
+            Tex tex = res.get().layer(Resource.imgc).tex();
+            if(tex == null)
+                return new Coord(1, 1);
+            else
+                return tex.sz().div(30);
+        } else {
+            return new Coord(1, 1);
+        }
     }
 }

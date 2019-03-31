@@ -7,8 +7,9 @@ import haven.*;
 import haven.Button;
 import haven.Label;
 import haven.Window;
-import haven.purus.BotUtils;
 import haven.purus.pbot.PBotAPI;
+import haven.purus.pbot.PBotUtils;
+
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -142,7 +143,7 @@ public class LightWithTorch extends Window implements GobSelectCallback {
                 } catch (InterruptedException ie) {
                 }
             }
-            BotUtils.sysMsg("Done", Color.white);
+            PBotUtils.sysMsg("Done", Color.white);
         }
     }
 
@@ -151,8 +152,8 @@ public class LightWithTorch extends Window implements GobSelectCallback {
 
     private void registerGobSelect() {
         synchronized (GobSelectCallback.class) {
-            BotUtils.sysMsg("Registering Gob", Color.white);
-            BotUtils.gui.map.registerGobSelect(this);
+            PBotUtils.sysMsg("Registering Gob", Color.white);
+            PBotAPI.gui.map.registerGobSelect(this);
         }
     }
 

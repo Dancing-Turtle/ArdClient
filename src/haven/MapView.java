@@ -30,9 +30,15 @@ import haven.GLProgram.VarID;
 import haven.automation.*;
 import haven.pathfinder.PFListener;
 import haven.pathfinder.Pathfinder;
-import haven.purus.BotUtils;
-import haven.purus.pbot.PBotAPI;
+import haven.purus.pbot.PBotUtils;
 import haven.resutil.BPRadSprite;
+import haven.sloth.gob.Alerted;
+import haven.sloth.gob.Deleted;
+import haven.sloth.gob.Hidden;
+import haven.sloth.gob.Mark;
+import haven.sloth.gob.Type;
+import haven.sloth.gui.SoundSelector;
+import haven.sloth.io.HighlightData;
 
 import javax.media.opengl.GL;
 import java.awt.*;
@@ -46,8 +52,13 @@ import java.util.*;
 import static haven.DefSettings.*;
 import static haven.MCache.tilesz;
 import static haven.OCache.posres;
+import static haven.DefSettings.NIGHTVISION;
+import static haven.DefSettings.NVAMBIENTCOL;
+import static haven.DefSettings.NVDIFFUSECOL;
+import static haven.DefSettings.NVSPECCOC;
 
 public class MapView extends PView implements DTarget, Console.Directory, PFListener {
+    public static long plgobid;
     public static boolean clickdb = false;
     public static long plgob = -1;
     public static Coord2d pllastcc;
@@ -72,11 +83,11 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     private boolean showgrid;
     private TileOutline gridol;
     private Coord lasttc = Coord.z;
-    private static final Gob.Overlay rovlsupport = new Gob.Overlay(new BPRadSprite(100.0F, 0, BPRadSprite.smatSupports));
-    private static final Gob.Overlay rovlcolumn = new Gob.Overlay(new BPRadSprite(125.0F, 0, BPRadSprite.smatSupports));
-    private static final Gob.Overlay rovlbeam = new Gob.Overlay(new BPRadSprite(150.0F, 0, BPRadSprite.smatSupports));
-    private static final Gob.Overlay rovltrough = new Gob.Overlay(new BPRadSprite(200.0F, -10.0F, BPRadSprite.smatTrough));
-    private static final Gob.Overlay rovlbeehive = new Gob.Overlay(new BPRadSprite(151.0F, -10.0F, BPRadSprite.smatBeehive));
+    public static  Gob.Overlay rovlsupport = new Gob.Overlay(new BPRadSprite(100.0F, 0, BPRadSprite.smatSupports));
+    public static  Gob.Overlay rovlcolumn = new Gob.Overlay(new BPRadSprite(125.0F, 0, BPRadSprite.smatSupports));
+    public static  Gob.Overlay rovlbeam = new Gob.Overlay(new BPRadSprite(150.0F, 0, BPRadSprite.smatSupports));
+    public static  Gob.Overlay rovltrough = new Gob.Overlay(new BPRadSprite(200.0F, -10.0F, BPRadSprite.smatTrough));
+    public static  Gob.Overlay rovlbeehive = new Gob.Overlay(new BPRadSprite(151.0F, -10.0F, BPRadSprite.smatBeehive));
     private long lastmmhittest = System.currentTimeMillis();
     private Coord lasthittestc = Coord.z;
     private GobSelectCallback gobselcb;
@@ -93,7 +104,6 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     public FlaxBot flaxbot;
     public DestroyArea destroyarea;
     public MinerAlert mineralert;
-    public CraftAllBot craftbot;
     private Thread musselPicker;
     private Thread clayPicker;
     private final PartyHighlight partyHighlight;
@@ -101,11 +111,13 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     public static final Material.Colors markedFx = new Material.Colors(new Color(21, 127, 208, 255));
     public Object[] lastItemactClickArgs;
     private static TexCube sky = new TexCube(Resource.loadimg("skycube"));
+    private static DropSky skydrop = new DropSky(sky);
     public boolean farmSelect = false;
     public boolean PBotAPISelect = false;
     private Coord2d movingto;
     private Coord2d lastrc;
     private double mspeed;
+    public haven.purus.pathfinder.Pathfinder pastaPathfinder;
     private long lastMove = System.currentTimeMillis();
     private Queue<Coord2d> movequeue = new ArrayDeque<>();
 
@@ -326,6 +338,82 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         camtypes.put("bad", FreeCam.class);
     }
 
+    public class TopDownCam extends Camera {
+        private final float pi2 = (float)(Math.PI * 2);
+        private Coord3f cc;
+        private float dist = 500.0f;
+        private final float elev = (float)Math.toRadians(90);
+        protected float field = (float)(100 * Math.sqrt(2));
+        private float tfield = field;
+        private Coord dragorig = null;
+        private float angl = 0.0f;
+        private float tangl = angl;
+        private float anglorig;
+
+        public TopDownCam() { }
+
+        public void tick2(double dt) {
+            Coord3f cc = getcc();
+            if(Config.disableelev)
+                cc.z = 0;
+            cc.y = -cc.y;
+            this.cc = cc;
+        }
+
+        public void tick(double dt) {
+            tick2(dt);
+            float aspect = ((float)sz.y) / ((float)sz.x);
+
+            //Smooth transition for angle
+            angl = angl + ((tangl - angl) * (1f - (float)Math.pow(500, -dt)));
+            while(angl > pi2) {angl -= pi2; tangl -= pi2; anglorig -= pi2;}
+            while(angl < 0)   {angl += pi2; tangl += pi2; anglorig += pi2;}
+            if(Math.abs(tangl - angl) < 0.001)
+                angl = tangl;
+
+            //Smooth transition for zoom in/out
+            field = field + ((tfield - field) * (1f - (float)Math.pow(500, -dt)));
+            if(Math.abs(tfield - field) < 0.1)
+                field = tfield;
+
+            view.update(PointedCam.compute(cc.add(camoff).add(0.0f, 0.0f, 15f), dist, elev, angl));
+            proj.update(Projection.makeortho(new Matrix4f(), -field, field, -field * aspect, field * aspect, 1, 5000));
+        }
+
+        public float angle() {
+            return(angl);
+        }
+
+        public boolean click(Coord c) {
+            anglorig = angl;
+            dragorig = c;
+            return(true);
+        }
+
+        public void drag(Coord c) {
+            tangl = anglorig + ((float)(c.x - dragorig.x) / 100.0f);
+        }
+
+        public void release() {
+            tangl = (float)(Math.floor((tangl + Math.PI/4) / (Math.PI/2)) * Math.PI/2);
+        }
+
+        private void chfield(float nf) {
+            tfield = nf;
+            tfield = Math.max(tfield, 50);
+        }
+
+        public boolean wheel(Coord c, int amount) {
+            chfield(tfield + amount * 10);
+            return(true);
+        }
+
+        public String toString() {
+            return(String.format("%f", dist));
+        }
+    }
+    static { camtypes.put("topdown", TopDownCam.class); }
+
     public class OrthoCam extends Camera {
         public boolean exact;
         protected float dist = 500.0f;
@@ -529,6 +617,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         this.glob = glob;
         this.cc = cc;
         this.plgob = plgob;
+        plgobid = plgob;
         this.gobs = new Gobs();
         this.gridol = new TileOutline(glob.map);
         this.partyHighlight = new PartyHighlight(glob.party, plgob);
@@ -715,7 +804,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     };
 
     void addgob(RenderList rl, final Gob gob) {
-        if (Config.hidegobs && Config.hideCrops && gob.type != null && (gob.type == Gob.Type.PLANT || gob.type == Gob.Type.MULTISTAGE_PLANT))
+        if (Config.hidegobs && Config.hideCrops && gob.type != null && (gob.type == Type.PLANT || gob.type == Type.MULTISTAGE_PLANT))
             return;
         GLState xf;
         try {
@@ -739,21 +828,21 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         Gob.Overlay rovl = null;
         boolean show = false;
 
-        if (gob.type == Gob.Type.WOODEN_SUPPORT) {
+        if (gob.type == Type.WOODEN_SUPPORT) {
             rovl = rovlsupport;
             show = Config.showminerad;
-        } else if (gob.type == Gob.Type.STONE_SUPPORT) {
+        } else if (gob.type == Type.STONE_SUPPORT) {
             rovl = rovlcolumn;
             show = Config.showminerad;
-        } else if (gob.type == Gob.Type.METAL_SUPPORT) {
+        } else if (gob.type == Type.METAL_SUPPORT) {
             rovl = rovlbeam;
             show = Config.showminerad;
         }
 
-        if (gob.type == Gob.Type.TROUGH) {
+        if (gob.type == Type.TROUGH) {
             rovl = rovltrough;
             show = Config.showTroughrad;
-        } else if (gob.type == Gob.Type.BEEHIVE) {
+        } else if (gob.type == Type.BEEHIVE) {
             rovl = rovlbeehive;
             show = Config.showBeehiverad;
         }
@@ -788,18 +877,23 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                 curcamera = "ortho";
             if(camera instanceof MapView.FreeCam)
                 curcamera = "bad";
+            if(camera instanceof MapView.TopDownCam)
+                curcamera = "topdown";
 
             if(curcamera.equals("follow")) {
                 cam = "ortho";
-                BotUtils.sysMsg("Switched to Ortho Cam",Color.white);
+                PBotUtils.sysMsg("Switched to Ortho Cam",Color.white);
             }
             else if(curcamera.equals("ortho")) {
                 cam = "bad";
-                BotUtils.sysMsg("Switched to Bad Cam",Color.white);
+                PBotUtils.sysMsg("Switched to Bad Cam",Color.white);
             }
             else if(curcamera.equals("bad")) {
+                cam = "topdown";
+                PBotUtils.sysMsg("Switched to Topdown Cam",Color.white);
+            }else if(curcamera.equals("topdown")){
                 cam = "follow";
-                BotUtils.sysMsg("Switched to Follow Cam",Color.white);
+                PBotUtils.sysMsg("Switched to Follow Cam",Color.white);
             }
 
            // String cam = camera instanceof MapView.OrthoCam ? "bad" : "ortho";
@@ -1056,15 +1150,15 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
             this.cc = new Coord2d(pl.getc());
         synchronized (glob) {
             if (glob.lightamb != null) {
-                Color lightamb, lightdif, lightspc;
                     final boolean darkmode = DARKMODE.get();
-                    lightamb = darkmode ? Color.BLACK : Config.daylight ? new Color(Config.AmbientRed,Config.AmbientGreen,Config.AmbientBlue) : glob.lightamb;
-                    lightdif = darkmode ? Color.BLACK : Config.daylight ? new Color(Config.DiffuseRed,Config.DiffuseGreen,Config.DiffuseBlue) : glob.lightdif;
-                    lightspc = darkmode ? Color.BLACK : Config.daylight ? new Color(Config.SpecRed,Config.SpecGreen,Config.SpecBlue) : glob.lightspc;
-                  //  lightamb = new Color(Config.AmbientRed,Config.AmbientGreen,Config.AmbientBlue);
-                   // lightdif = new Color(Config.DiffuseRed,Config.DiffuseGreen,Config.DiffuseBlue);
-                   // lightspc = new Color(Config.SpecRed,Config.SpecGreen,Config.SpecBlue);
-                DirLight light = new DirLight(lightamb, lightdif, lightspc, Coord3f.o.sadd((float) glob.lightelev, (float) glob.lightang, 1f));
+                final boolean nightvision = NIGHTVISION.get();
+                final Color lamb = darkmode ? Color.BLACK : nightvision ? NVAMBIENTCOL.get() : glob.lightamb;
+                final Color ldif = darkmode ? Color.BLACK : nightvision ? NVDIFFUSECOL.get() : glob.lightdif;
+                final Color lspc = darkmode ? Color.BLACK : nightvision ? NVSPECCOC.get() : glob.lightspc;
+
+		DirLight light = new DirLight(lamb, ldif, lspc,
+			Coord3f.o.sadd((float)glob.lightelev, (float)glob.lightang, 1f));
+
                 rl.add(light, null);
                 updsmap(rl, light);
                 amb = light;
@@ -1107,31 +1201,30 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         }
 
         // This solution is bad but currently no better avaible
-        if (!Config.hidesky) {
-            try {
-                boolean skyb = true;
+        if(!Config.skybox) {
+            boolean skyb = true;
+            if(player()!=null) {
+    	        Coord pltc = new Coord((int)player().getc().x / 11, (int)player().getc().y / 11);
+    	        for (int x = -44; x < 44; x++) {
+    	            for (int y = -44; y < 44; y++) {
+    	                int t = glob.map.gettile(pltc.sub(x, y));
+    	                Resource res = glob.map.tilesetr(t);
+    	                if (res == null)
+    	                    continue;
 
-                if (player() != null) {
-                    Coord pltc = new Coord((int) player().getc().x / 11, (int) player().getc().y / 11);
-                    for (int x = -44; x < 44; x++) {
-                        for (int y = -44; y < 44; y++) {
-                            int t = glob.map.gettile(pltc.sub(x, y));
-                            Resource res = glob.map.tilesetr(t);
-                            if (res == null)
-                                continue;
+    	                String name = res.name;
+    	                if (name.equals("gfx/tiles/mine") ||
+    	                		name.equals("gfx/tiles/boards")) {
+    	                	skyb = false;
+    	                	break;
+    	                }
 
-                            String name = res.name;
-                            if (name.equals("gfx/tiles/mine") ||
-                                    name.equals("gfx/tiles/boards")) {
-                                skyb = false;
-                                break;
-                            }
-                        }
-                    }
-                }
-                if (skyb)
-                    rl.add(new DropSky(sky), Rendered.last);
-            }catch(NullPointerException | Loading q){}
+    	            }
+    	        }
+            }
+            if(skyb) {
+                rl.add(skydrop, Rendered.last);
+            }
         }
     }
 
@@ -1155,7 +1248,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     }
 
     public Gob player() {
-	return((plgob < 0) ? null : glob.oc.getgob(plgob));
+	return((plgobid < 0) ? null : glob.oc.getgob(plgobid));
     }
 
     public Coord3f getcc() {
@@ -1775,6 +1868,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                 plgob = -1;
             else
                 plgob = (Integer) args[0];
+	    plgobid = plgob;
         } else if (msg == "flashol") {
             unflashol();
             olflash = (Integer) args[0];
@@ -1933,162 +2027,162 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         }
 
         protected void hit(Coord pc, Coord2d mc, ClickInfo inf) {
-            lastItemactClickArgs = null;
-            if (clickb == 1)
-                pllastcc = mc;
-            // reset alt so we could walk with alt+lmb while having item on the cursor
-            int modflags = ui.modflags();
-            if (gameui().vhand != null && clickb == 1)
-                modflags = modflags & ~4;
-
-            Resource curs = ui.root.getcurs(c);
-
-            if (musselPicker != null) {
-                try {
-                    musselPicker.interrupt();
-                } catch (NullPointerException e) {
+            if (clickb == 3 && ui.modmeta && !ui.modctrl) {
+                final Optional<Gob> gob = gobFromClick(inf);
+                if(gob.isPresent()) {
+                    showSpecialMenu(gob.get());
                 }
-            }
+            }else {
+                lastItemactClickArgs = null;
+                if (clickb == 1)
+                    pllastcc = mc;
+                // reset alt so we could walk with alt+lmb while having item on the cursor
+                int modflags = ui.modflags();
+                if (gameui().vhand != null && clickb == 1)
+                    modflags = modflags & ~4;
 
-            if (Config.proximityaggro && Config.proximityaggropvp && clickb == 1 && curs != null && curs.name.equals("gfx/hud/curs/atk")) {
-                Gob target = null;
-                synchronized (glob.oc) {
-                    for (Gob gob : glob.oc) {
-                       // BotUtils.sysMsg("Test : "+gob.getres().name,Color.white);
-                       /* if (gob.type == Gob.Type.PLAYER || gob.type == Gob.Type.PROXAGGRO || gob.type == Gob.Type.MAMMOTH || gob.type == Gob.Type.BAT || gob.type == Gob.Type.EAGLE
-                                || gob.type == Gob.Type.SLIME || gob.type == Gob.Type.BEAR || gob.type == Gob.Type.LYNX || gob.type == Gob.Type.SEAL
-                                || gob.type == Gob.Type.TROLL || gob.type == Gob.Type.WALRUS && !gob.isplayer()) {*/
-                       if(!gob.isplayer()) {
-                           if (gob.type == Gob.Type.PLAYER || (gob.getres() != null && gob.getres().name.startsWith("gfx/kritter/") && gob.type != Gob.Type.DOMESTICHORSE)) {
-                               //   System.out.println("Prox aggro 1 triggered.");
-                               double dist = gob.rc.dist(mc);
-                               if ((target == null || dist < target.rc.dist(mc)) && dist <= 5 * tilesz.x)
-                                   target = gob;
-                           }
-                       }
-                    }
-                    if (target != null) {
-                        wdgmsg("click", target.sc, target.rc.floor(posres), 1, 0, 0, (int) target.id, target.rc.floor(posres), 0, -1);
-                        return;
+                Resource curs = ui.root.getcurs(c);
+
+                if (musselPicker != null) {
+                    try {
+                        musselPicker.interrupt();
+                    } catch (NullPointerException e) {
                     }
                 }
 
-            } else if (Config.proximityaggropvp && !Config.proximityaggro && clickb == 1 && curs != null && curs.name.equals("gfx/hud/curs/atk")) {
-                Gob target = null;
-                synchronized (glob.oc) {
-                    for (Gob gob : glob.oc) {
-                        if (gob.type == Gob.Type.PLAYER && !gob.isplayer()) {
-                            double dist = gob.rc.dist(mc);
-                            if ((target == null || dist < target.rc.dist(mc)) && dist <= 5 * tilesz.x)
-                                target = gob;
-                        }
-                    }
-                    if (target != null) {
-                        wdgmsg("click", target.sc, target.rc.floor(posres), 1, 0, 0, (int) target.id, target.rc.floor(posres), 0, -1);
-                        return;
-                    }
-                }
-
-            } else if (Config.proximityaggro && !Config.proximityaggropvp && clickb == 1 && curs != null && curs.name.equals("gfx/hud/curs/atk")) {
-                Gob target = null;
-                synchronized (glob.oc) {
-                    for (Gob gob : glob.oc) {
-                      /*  if (gob.type == Gob.Type.PROXAGGRO || gob.type == Gob.Type.MAMMOTH || gob.type == Gob.Type.BAT || gob.type == Gob.Type.EAGLE
-                                 || gob.type == Gob.Type.SLIME || gob.type == Gob.Type.BEAR || gob.type == Gob.Type.LYNX || gob.type == Gob.Type.SEAL
-                                || gob.type == Gob.Type.TROLL || gob.type == Gob.Type.WALRUS && !gob.isplayer()) {*/
-                      if(!gob.isplayer()) {
-                          if (gob.getres() != null && gob.getres().name.startsWith("gfx/kritter/") && gob.type != Gob.Type.DOMESTICHORSE) {
-                              //   System.out.println("Prox aggro 2 triggered.");
-                              double dist = gob.rc.dist(mc);
-                              if ((target == null || dist < target.rc.dist(mc)) && dist <= 5 * tilesz.x)
-                                  target = gob;
-                          }
-                      }
-                    }
-                    if (target != null) {
-                        wdgmsg("click", target.sc, target.rc.floor(posres), 1, 0, 0, (int) target.id, target.rc.floor(posres), 0, -1);
-                        return;
-                    }
-                }
-            }
-            final Object[] gobargs = gobclickargs(inf);
-            Object[] args = {pc, mc.floor(posres), clickb, modflags};
-            args = Utils.extend(args, gobclickargs(inf));
-
-            if (inf == null) {
-                if (Config.pf && clickb == 1 && curs != null && !curs.name.equals("gfx/hud/curs/study")) {
-                    pfLeftClick(mc.floor(), null);
-                } else if (clickb == 1 && ui.modmeta && gameui().vhand == null) {
-                    //Queued movement
-                    movequeue.add(mc);
-                } else {
-                    args = Utils.extend(args, gobargs);
-                    if(clickb == 1 || gobargs.length > 0)
-                        clearmovequeue();
-                    wdgmsg("click", args);
-                }
-            } else {
-                Gob gob = inf.gob;
-                if (ui.modctrl && clickb == 3 && gob != null){
-                    if (markedGobs.contains(gob.id))
-                        markedGobs.remove(gob.id);
-                    else
-                        markedGobs.add(gob.id);
-                    glob.oc.changed(gob);
-
-                }
-                else if(ui.modctrl && clickb == 1 && gob != null && Config.shooanimals){
-                    Resource res = gob.getres();
-                    if (res != null && (res.name.startsWith("gfx/kritter/horse") ||
-                            res.name.startsWith("gfx/kritter/sheep") ||
-                            res.name.startsWith("gfx/kritter/cattle") ||
-                            res.name.startsWith("gfx/kritter/pig") ||
-                            res.name.startsWith("gfx/kritter/goat"))) {
-                        shooanimal = gob;
-                        GameUI gui = gameui();
-                        new Thread(new ShooTargeted(gui), "ShooTargeted").start();
-                    }
-                } else if (ui.modmeta && ui.modctrl && clickb == 1 && gob != null) {
-                    if (markedGobs.contains(gob.id))
-                        markedGobs.remove(gob.id);
-                    else
-                        markedGobs.add(gob.id);
-
-                    glob.oc.changed(gob);
-                } else if (ui.modmeta && clickb == 1) {
-                    if (gobselcb != null)
-                        gobselcb.gobselect(gob);
-
-                    if(gob == null && gameui().vhand == null) {
-                        System.out.println("adding to move que");
-                        //Queued movement
-                        movequeue.add(mc);
-                    }
-
-                    if (gameui().vhand == null) {   // do not highlight when walking with an item
-                        for (Widget w = gameui().chat.lchild; w != null; w = w.prev) {
-                            if (w instanceof ChatUI.MultiChat) {
-                                ChatUI.MultiChat chat = (ChatUI.MultiChat) w;
-                                if (chat.name().equals(Resource.getLocString(Resource.BUNDLE_LABEL, "Area Chat"))) {
-                                    chat.send(ChatUI.CMD_PREFIX_HLIGHT + gob.id);
-                                    break;
+                if (Config.proximityaggro && Config.proximityaggropvp && clickb == 1 && curs != null && curs.name.equals("gfx/hud/curs/atk")) {
+                    Gob target = null;
+                    synchronized (glob.oc) {
+                        for (Gob gob : glob.oc) {
+                            if (!gob.isplayer()) {
+                                if (gob.type == Type.HUMAN || gob.type == Type.ANIMAL || gob.type == Type.DANGANIMAL) {
+                                    double dist = gob.rc.dist(mc);
+                                    if ((target == null || dist < target.rc.dist(mc)) && dist <= 5 * tilesz.x)
+                                        target = gob;
                                 }
                             }
                         }
+                        if (target != null) {
+                            wdgmsg("click", target.sc, target.rc.floor(posres), 1, 0, 0, (int) target.id, target.rc.floor(posres), 0, -1);
+                            return;
+                        }
                     }
-                } else if (Config.pf && curs != null && !curs.name.equals("gfx/hud/curs/study") && gob != null) {
-                    pfRightClick(gob, (int)args[8], clickb, 0, null);
+
+                } else if (Config.proximityaggropvp && !Config.proximityaggro && clickb == 1 && curs != null && curs.name.equals("gfx/hud/curs/atk")) {
+                    Gob target = null;
+                    synchronized (glob.oc) {
+                        for (Gob gob : glob.oc) {
+                            if (gob.type == Type.HUMAN && !gob.isplayer()) {
+                                double dist = gob.rc.dist(mc);
+                                if ((target == null || dist < target.rc.dist(mc)) && dist <= 5 * tilesz.x)
+                                    target = gob;
+                            }
+                        }
+                        if (target != null) {
+                            wdgmsg("click", target.sc, target.rc.floor(posres), 1, 0, 0, (int) target.id, target.rc.floor(posres), 0, -1);
+                            return;
+                        }
+                    }
+
+                } else if (Config.proximityaggro && !Config.proximityaggropvp && clickb == 1 && curs != null && curs.name.equals("gfx/hud/curs/atk")) {
+                    Gob target = null;
+                    synchronized (glob.oc) {
+                        for (Gob gob : glob.oc) {
+                            if (!gob.isplayer()) {
+                                if (gob.type == Type.ANIMAL || gob.type == Type.DANGANIMAL) {
+                                    double dist = gob.rc.dist(mc);
+                                    if ((target == null || dist < target.rc.dist(mc)) && dist <= 5 * tilesz.x)
+                                        target = gob;
+                                }
+                            }
+                        }
+                        if (target != null) {
+                            wdgmsg("click", target.sc, target.rc.floor(posres), 1, 0, 0, (int) target.id, target.rc.floor(posres), 0, -1);
+                            return;
+                        }
+                    }
+                }
+                final Object[] gobargs = gobclickargs(inf);
+                Object[] args = {pc, mc.floor(posres), clickb, modflags};
+                args = Utils.extend(args, gobclickargs(inf));
+
+                if (inf == null) {
+                    if (Config.pf && clickb == 1 && curs != null && !curs.name.equals("gfx/hud/curs/study")) {
+                        purusPfLeftClick(mc.floor(), null);
+                    } else if (clickb == 1 && ui.modmeta && gameui().vhand == null) {
+                        //Queued movement
+                        movequeue.add(mc);
+                    } else {
+                        args = Utils.extend(args, gobargs);
+                        if (clickb == 1 || gobargs.length > 0)
+                            clearmovequeue();
+                        wdgmsg("click", args);
+                    }
                 } else {
-                    args = Utils.extend(args, gobargs);
-                    if(clickb == 1 || gobargs.length > 0)
-                        clearmovequeue();
-                    wdgmsg("click", args);
-                    if (Config.autopickmussels && (gob.getres().basename().equals("mussels") || gob.getres().basename().equals("oyster")))
-                        startMusselsPicker(gob);
-                    if(Config.autopickclay && gob.type == Gob.Type.CLAY)
-                        startClayPicker(gob);
+                    Gob gob = inf.gob;
+
+                    if (ui.modctrl && clickb == 3 && gob != null && gob.type == Type.TAMEDANIMAL){//only highlight on ctrl right clicks if we're clicking on an animal during milking
+                        if(!gob.getres().name.contains("horse")) {//cant milk horses, so dont mark, send a right click.
+                            if (markedGobs.contains(gob.id))
+                                markedGobs.remove(gob.id);
+                            else
+                                markedGobs.add(gob.id);
+                            glob.oc.changed(gob);
+                        }else{
+                            wdgmsg("click", args);
+                        }
+                    } else if (gob != null && gob.type == Type.TAMEDANIMAL && ui.modctrl && clickb == 1 && Config.shooanimals) {
+                        Resource res = gob.getres();
+                        if (res != null && (res.name.startsWith("gfx/kritter/horse") ||
+                                res.name.startsWith("gfx/kritter/sheep") ||
+                                res.name.startsWith("gfx/kritter/cattle") ||
+                                res.name.startsWith("gfx/kritter/pig") ||
+                                res.name.startsWith("gfx/kritter/goat"))) {
+                            shooanimal = gob;
+                            GameUI gui = gameui();
+                            new Thread(new ShooTargeted(gui), "ShooTargeted").start();
+                        }
+                    } else if (ui.modmeta && ui.modctrl && clickb == 1 && gob != null) {
+                        if (markedGobs.contains(gob.id))
+                            markedGobs.remove(gob.id);
+                        else
+                            markedGobs.add(gob.id);
+                        glob.oc.changed(gob);
+                    } else if (ui.modmeta && clickb == 1) {
+                        if (gobselcb != null)
+                            gobselcb.gobselect(gob);
+
+                        if (gob == null && gameui().vhand == null) {
+                            System.out.println("adding to move que");
+                            //Queued movement
+                            movequeue.add(mc);
+                        }
+
+                        if (gameui().vhand == null) {   // do not highlight when walking with an item
+                            for (Widget w = gameui().chat.lchild; w != null; w = w.prev) {
+                                if (w instanceof ChatUI.MultiChat) {
+                                    ChatUI.MultiChat chat = (ChatUI.MultiChat) w;
+                                    if (chat.name().equals(Resource.getLocString(Resource.BUNDLE_LABEL, "Area Chat"))) {
+                                        chat.send(ChatUI.CMD_PREFIX_HLIGHT + gob.id);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    } else if (Config.pf && curs != null && !curs.name.equals("gfx/hud/curs/study") && gob != null) {
+                        purusPfRightClick(gob, (int) args[8], clickb, 0, null);
+                    } else {
+                        args = Utils.extend(args, gobargs);
+                        if (clickb == 1 || gobargs.length > 0)
+                            clearmovequeue();
+                        wdgmsg("click", args);
+                        if (Config.autopickmussels && (gob.getres().basename().equals("mussels") || gob.getres().basename().equals("oyster")))
+                            startMusselsPicker(gob);
+                        if (Config.autopickclay && gob.getres().basename().equals("clay-gray"))
+                            startClayPicker(gob);
+                    }
                 }
-                }
+            }
             }
         }
 
@@ -2106,6 +2200,16 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
 
     public void unregisterAreaSelect() {
         this.areaselcb = null;
+    }
+
+    public void purusPfLeftClick(Coord mc, String action) {
+        synchronized(haven.purus.pathfinder.Pathfinder.class) {
+            if(pastaPathfinder != null && pastaPathfinder.isAlive()) {
+                pastaPathfinder.interrupt();
+            }
+            pastaPathfinder = new haven.purus.pathfinder.Pathfinder(gameui(), new Coord2d(mc), action);
+            pastaPathfinder.start();
+        }
     }
 
     public void pfLeftClick(Coord mc, String action) {
@@ -2131,6 +2235,16 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
             pf.addListener(this);
             pfthread = new Thread(pf, "Pathfinder");
             pfthread.start();
+        }
+    }
+
+    public void purusPfRightClick(Gob gob, int meshid, int clickb, int modflags, String action) {
+        synchronized(haven.purus.pathfinder.Pathfinder.class) {
+            if(pastaPathfinder != null && pastaPathfinder.isAlive()) {
+                pastaPathfinder.interrupt();
+            }
+            pastaPathfinder = new haven.purus.pathfinder.Pathfinder(gameui(), gob, clickb, modflags, meshid, action);
+            pastaPathfinder.start();
         }
     }
 
@@ -2328,7 +2442,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                     if (nodropping) {
                         // we really don't want dropping, so click is moving
                         if (Config.pf) {
-                            pfLeftClick(mc.floor(), null);
+                            purusPfLeftClick(mc.floor(), null);
                         } else {
                             wdgmsg("click", pc, mc.floor(posres), 1, 0);
                         }
@@ -2514,7 +2628,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                     wdgmsg("sel", sc, ec, modflags);
                     sc = null;
                     if(PBotAPISelect) {
-                    	PBotAPI.areaSelect(ol.getc1(), ol.getc2());
+                    	PBotUtils.areaSelect(ol.getc1(), ol.getc2());
                     	PBotAPISelect = false;
                         selection.destroy();
                         selection = null;}
@@ -2672,8 +2786,6 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
             steelrefueler.terminate();
         if(torchlight != null)
             torchlight.terminate();
-        if(craftbot != null)
-            craftbot.terminate();
         if (musselPicker != null)
             musselPicker.interrupt();
     }
@@ -2714,21 +2826,11 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         }
     }
 
-    public void refreshGobsHidable() {
-        OCache oc = glob.oc;
-        synchronized (oc) {
-            for (Gob gob : oc) {
-                if (gob.type == Gob.Type.TREE)
-                    oc.changed(gob);
-            }
-        }
-    }
-
     public void refreshGobsGrowthStages() {
         OCache oc = glob.oc;
         synchronized (oc) {
             for (Gob gob : oc) {
-                if (Gob.Type.PLANT.has(gob.type) || gob.type == Gob.Type.TREE || gob.type == Gob.Type.BUSH)
+                if (gob.type == Type.PLANT || gob.type == Type.MULTISTAGE_PLANT ||  gob.type == Type.TREE || gob.type == Type.BUSH)
                     oc.changed(gob);
             }
         }
@@ -2742,4 +2844,69 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         clayPicker = new Thread(new ClayPicker(gameui(), gob), "ClayPicker");
         clayPicker.start();
     }
+
+    private void showSpecialMenu(final Gob g) {
+        g.resname().ifPresent((name) -> {
+            final FlowerMenu modmenu = new FlowerMenu((selection) -> {
+                switch (selection) {
+                    case 0: //Mark for party
+                        g.mark(20000);
+                        for(Widget wdg = ui.gui.chat.lchild; wdg != null; wdg = wdg.prev) {
+                            if(wdg instanceof ChatUI.PartyChat) {
+                                final ChatUI.PartyChat chat = (ChatUI.PartyChat) wdg;
+                                chat.send(String.format(Mark.CHAT_FMT, g.id, 20000));
+                            }
+                        }
+                        break;
+                    case 1: //Highlight for yourself
+                        if(!HighlightData.isHighlighted(name)) {
+                            HighlightData.add(name);
+                            ui.sess.glob.oc.highlightGobs(name);
+                        } else {
+                            HighlightData.remove(name);
+                            ui.sess.glob.oc.unhighlightGobs(name);
+                        }
+                        break;
+                    case 2: //Toggle hide
+                        if(Hidden.isHidden(name)) {
+                            Hidden.remove(name);
+                            ui.sess.glob.oc.unhideAll(name);
+                        } else {
+                            Hidden.add(name);
+                            ui.sess.glob.oc.hideAll(name);
+                        }
+                        break;
+                    case 3: //Toggle Sound
+                        if(Alerted.shouldAlert(name)) {
+                            Alerted.remove(name);
+                        } else {
+                            ui.gui.add(new SoundSelector(name), ui.mc);
+                        }
+                        break;
+                    case 4: //Delete all gobs like this one
+                        Deleted.add(name);
+                        ui.sess.glob.oc.removeAll(name);
+                        break;
+                }
+            },  "Mark for party",
+                    !HighlightData.isHighlighted(name) ? "Highlight" : "Remove Highlight",
+                    Hidden.isHidden(name) ? "Unhide" : "Hide",
+                    Alerted.shouldAlert(name) ? "Remove Sound" : "Add Sound",
+                    "Delete");
+            ui.gui.add(modmenu, ui.mc);
+        });
+    }
+
+    private Optional<Gob> gobFromClick(final ClickInfo inf) {
+        if(inf == null)
+            return Optional.empty();
+        Rendered[] st = inf.array();
+        for(final Rendered g : st) {
+            if(g instanceof Gob) {
+                return Optional.of((Gob)g);
+            }
+        }
+        return Optional.empty();
+    }
+
 }

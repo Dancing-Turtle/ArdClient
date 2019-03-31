@@ -2,7 +2,8 @@ package haven.automation;
 
 
 import haven.*;
-import haven.purus.BotUtils;
+import haven.purus.pbot.PBotAPI;
+import haven.purus.pbot.PBotUtils;
 import net.dv8tion.jda.client.entities.Application;
 
 import java.awt.*;
@@ -49,18 +50,18 @@ public class FillCheeseTray implements Runnable {
             } catch (NullPointerException q) {q.printStackTrace();}
         }
         if(trays2.size() == 0){
-            BotUtils.sysMsg("No trays with space found, not running.",Color.white);
+            PBotUtils.sysMsg("No trays with space found, not running.",Color.white);
             return;
         }
-            if(BotUtils.getItemAtHand() == null) {
+            if(PBotUtils.getItemAtHand() == null) {
                 WItem curd = gui.maininv.getItemPartial("Curd");
                 try {
-                    BotUtils.takeItem(curd.item);
+                    PBotUtils.takeItem(curd.item);
                 }catch(NullPointerException q){
-                    BotUtils.sysMsg("Don't appear to have curds, stopping.",Color.white);
+                    PBotUtils.sysMsg("Don't appear to have curds, stopping.",Color.white);
                     return;
                 }
-                BotUtils.sleep(250);
+                PBotUtils.sleep(250);
             }
             System.out.println("Number of Cheese trays found is : "+trays2.size());
             for (int i = 0; i < trays2.size(); i++) {
@@ -71,13 +72,13 @@ public class FillCheeseTray implements Runnable {
                         if(gui.maininv.getItemPartial("Curd") == null)
                             break;
                         trays2.get(i).item.wdgmsg("itemact", 1);
-                        BotUtils.sleep(50);
+                        PBotUtils.sleep(50);
                     }
                 }
-                Coord slot = BotUtils.getFreeInvSlot(BotUtils.playerInventory());
-                if(BotUtils.getItemAtHand()!=null)
-                    BotUtils.dropItemToInventory(slot,BotUtils.playerInventory());
-                BotUtils.sysMsg("Done",Color.white);
+                Coord slot = PBotUtils.getFreeInvSlot(PBotAPI.gui.maininv);
+                if(PBotUtils.getItemAtHand()!=null)
+                    PBotUtils.dropItemToInventory(slot,PBotAPI.gui.maininv);
+        PBotUtils.sysMsg("Done",Color.white);
         }
         private java.util.List<WItem> getTrays (Inventory inv){
             List<WItem> trays = inv.getItemsPartial("Cheese Tray");

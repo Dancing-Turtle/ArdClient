@@ -9,8 +9,6 @@ import java.util.Map;
 import static haven.OCache.posres;
 
 import haven.*;
-import haven.purus.BotUtils;
-import haven.purus.pbot.PBotAPI;
 
 public class DetailsWdg extends Widget {
     public final static int HEIGHT = 25;
@@ -91,7 +89,7 @@ public class DetailsWdg extends Widget {
             }
             //gameui().map.wdgmsg("click", gob.sc, gob.rc.floor(posres), 3, 0, 0, (int) gob.id, gob.rc.floor(posres), 0, -1);
             if (button == 1) {
-                if(gob.knocked == Boolean.TRUE){
+                if(gob.isDead() == Boolean.TRUE){
                     delete();
                 }
                 gob.delattr(GobHighlight.class);

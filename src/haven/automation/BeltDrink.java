@@ -3,7 +3,6 @@ package haven.automation;
 
 import haven.*;
 import haven.Window;
-import haven.purus.BotUtils;
 import haven.Button;
 import haven.Coord;
 import haven.FlowerMenu;
@@ -16,7 +15,7 @@ import haven.Inventory;
 import haven.Label;
 import haven.Widget;
 import haven.Window;
-import haven.purus.pbot.PBotAPI;
+import haven.purus.pbot.PBotUtils;
 
 
 import java.awt.*;
@@ -78,9 +77,9 @@ public class BeltDrink implements Runnable {
                             }
                         }
                     }
-                    BotUtils.sleep(1000);
+                    PBotUtils.sleep(1000);
                     while (gui.prog >= 0)
-                        BotUtils.sleep(100);
+                        PBotUtils.sleep(100);
                     return;
                 }
             }
@@ -88,7 +87,7 @@ public class BeltDrink implements Runnable {
                 try {
                     WItem l = gui.getequipory().quickslots[6];
                     WItem r = gui.getequipory().quickslots[7];
-                        if (l != null && PBotAPI.canDrinkFrom(l)) {
+                        if (l != null && PBotUtils.canDrinkFrom(l)) {
                             FlowerMenu.setNextSelection("Drink");
                             l.item.wdgmsg("iact", Coord.z, -1);
                             FlowerMenu menu = gui.ui.root.findchild(FlowerMenu.class);
@@ -99,7 +98,7 @@ public class BeltDrink implements Runnable {
                                     }
                                 }
                             }
-                        }else if (r != null && PBotAPI.canDrinkFrom(r)) {
+                        }else if (r != null && PBotUtils.canDrinkFrom(r)) {
                                 FlowerMenu.setNextSelection("Drink");
                                 r.item.wdgmsg("iact", Coord.z, -1);
                                 FlowerMenu menu = gui.ui.root.findchild(FlowerMenu.class);

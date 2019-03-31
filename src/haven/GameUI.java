@@ -33,10 +33,11 @@ import static haven.Inventory.invsq;
 import haven.automation.*;
 import haven.automation.Discord;
 import haven.livestock.LivestockManager;
-import haven.purus.BotUtils;
 import haven.purus.ItemClickCallback;
 import haven.purus.pbot.PBotAPI;
 import haven.purus.pbot.PBotScriptlist;
+import haven.purus.pbot.PBotScriptlistOld;
+import haven.purus.pbot.PBotUtils;
 import haven.resutil.FoodInfo;
 import static haven.KeyBinder.*;
 import java.awt.*;
@@ -45,6 +46,11 @@ import java.awt.event.KeyEvent;
 import java.awt.image.WritableRaster;
 import java.util.List;
 import haven.MapPointer;
+import haven.sloth.gui.DeletedManager;
+import haven.sloth.gui.HiddenManager;
+import haven.sloth.gui.HighlightManager;
+import haven.sloth.gui.SoundManager;
+import haven.GobSpawner;
 
 import static haven.Inventory.invsq;
 
@@ -58,6 +64,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public MenuGrid menu;
     public MenuSearch menuSearch;
     public PBotScriptlist PBotScriptlist;
+    public PBotScriptlistOld PBotScriptlistold;
     public MapView map;
     public Fightview fv;
     private List<Widget> meters = new LinkedList<Widget>();
@@ -85,8 +92,10 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public ChatUI chat;
     private ChatWnd chatwnd;
     private int saferadius = 1;
+    private int dangerradius = 1;
     public Speedget speedget;
     public ChatUI.Channel syslog;
+    public Window hidden, deleted, alerted, highlighted, gobspawner;
     public double prog = -1;
     private boolean afk = false;
     @SuppressWarnings("unchecked")
@@ -234,10 +243,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 
 
 
-        PBotScriptlist = new PBotScriptlist();
-        add(PBotScriptlist, 300, 300);
-        PBotScriptlist.hide();
-        BotUtils.gui = this;
         PBotAPI.gui = this;
         if(Config.showTroughrad && Config.showBeehiverad)
             saferadius = 4;
@@ -301,7 +306,28 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         livestockwnd.hide();
         this.questhelper = add(new QuestHelper(), new Coord(0, sz.y-200));
         this.questhelper.hide();
+        hidden = add(new HiddenManager());
+        hidden.hide();
+	deleted = add(new DeletedManager());
+	deleted.hide();
+        alerted = add(new SoundManager());
+        alerted.hide();
+        gobspawner = add(new GobSpawner());
+        gobspawner.hide();
+        if(Config.firstrun || Config.firstrunalerts) {
+            SoundManager.loaddefaults.click();
+            Config.firstrun = false;
+            Config.firstrunalerts = false;
+            Utils.setprefb("firstrun",false);
+            Utils.setprefb("firstrunalerts",false);
+        }
+    highlighted = add(new HighlightManager());
+        highlighted.hide();
 
+        PBotScriptlist = add(new PBotScriptlist());
+        PBotScriptlist.hide();
+        PBotScriptlistold = add(new PBotScriptlistOld());
+        PBotScriptlistold.hide();
     }
 
     public void beltPageSwitch1(){
@@ -601,7 +627,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     }
     public void DiscordToggle(){
         if(Discord.jdalogin != null) {
-            BotUtils.sysMsg("Discord Disconnected",Color.white);
+            PBotUtils.sysMsg("Discord Disconnected",Color.white);
             discordconnected = false;
             Discord.jdalogin.shutdownNow();
             Discord.jdalogin = null;
@@ -785,7 +811,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             if(ResCache.global != null) {
                 MapFile file = MapFile.load(ResCache.global, mapfilename());
                 mmap.save(file);
-                mapfile = new MapWnd(mmap.save, map, new Coord(700, 500), "Map");
+                mapfile = new MapWnd(mmap.save, map, Utils.getprefc("wndsz-map",new Coord(700, 500)), "Map");
                 mapfile.hide();
                 add(mapfile, 50, 50);
                 mmapwnd.mapfile = mapfile;
@@ -975,12 +1001,13 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         }
     }
 
+    private double lastwndsave = 0;
     public void tick(double dt) {
         super.tick(dt);
-
+        double now = Utils.rtime();
         try{
         IMeter.Meter stam = getmeter("stam", 0);
-        if(Config.autodrink && (DrinkThread == null || !DrinkThread.isAlive()) && stam.a < 80) {
+        if(Config.autodrink && (DrinkThread == null || !DrinkThread.isAlive()) && stam.a < Config.autodrinkthreshold) {
             if(System.currentTimeMillis() - DrinkTimer >= 3000) {
                 DrinkTimer = System.currentTimeMillis();
                 Drink();
@@ -989,8 +1016,12 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         int energy = getmeter("nrj", 0).a;
         if(energy < 21 && System.currentTimeMillis() - StarvationAlertDelay > 10000 && Config.StarveAlert) {
             StarvationAlertDelay = System.currentTimeMillis();
-            BotUtils.sysMsg("You are Starving!",Color.white);
+            PBotUtils.sysMsg("You are Starving!",Color.white);
         }}catch(Exception e){}//exceptions doing these two things aren't critical, ignore
+        if(now - lastwndsave > 60) {
+            savewndpos();
+            lastwndsave = now;
+        }
         double idle = Utils.rtime() - ui.lastevent;
         if (!afk && (idle > 300)) {
             afk = true;
@@ -1198,12 +1229,28 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     }
 
     public void toggleGobs(){
+     //   DefSettings.SHOWHITBOX.set(!DefSettings.SHOWHITBOX.get());
         Config.showboundingboxes = !Config.showboundingboxes;
         Utils.setprefb("showboundingboxes", Config.showboundingboxes);
         if (map != null)
             map.refreshGobsAll();
     }
 
+
+    void toggleHighlight() {
+        if(highlighted != null && highlighted.show(!highlighted.visible)) {
+            highlighted.raise();
+            fitwdg(highlighted);
+            setfocus(highlighted);
+        }
+    }
+    void toggleHidden() {
+        if(hidden != null && hidden.show(!hidden.visible)) {
+            hidden.raise();
+            fitwdg(hidden);
+            setfocus(hidden);
+        }
+    }
     public void OpenChat() {
         if(chatwnd != null && chatwnd.show(!chatwnd.visible)) {
             chatwnd.raise();
@@ -1211,7 +1258,20 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             setfocus(chatwnd);
         }
     }
-
+    void toggleAlerted() {
+        if(alerted != null && alerted.show(!alerted.visible)) {
+            alerted.raise();
+            fitwdg(alerted);
+            setfocus(alerted);
+        }
+    }
+    void toggleGobSpawner() {
+        if(gobspawner != null && gobspawner.show(!gobspawner.visible)) {
+            gobspawner.raise();
+            fitwdg(gobspawner);
+            setfocus(gobspawner);
+        }
+    }
     public void toggleKin() {
         if(zerg.show(!zerg.visible)) {
             zerg.raise();
@@ -1249,7 +1309,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         if(chatwnd.visible && !chat.hasfocus) {
             setfocus(chat);
         } else if(chatwnd.visible && chat.hasfocus){
-            OpenChat();
+           // OpenChat();
             setfocus(maininv);
         } else{
             if(!chatwnd.visible){
@@ -1280,12 +1340,12 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 
     public void toggleMute(){
         if(Audio.volume > 0) {
-            BotUtils.sysMsg("Audio muted.",Color.white);
+            PBotUtils.sysMsg("Audio muted.",Color.white);
             Audio.volume = 0;
         }
         else {
             Audio.volume = Double.parseDouble(Utils.getpref("sfxvol", "1.0"));
-            BotUtils.sysMsg("Audio un-muted.",Color.white);
+            PBotUtils.sysMsg("Audio un-muted.",Color.white);
         }
     }
 
@@ -1324,8 +1384,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     }
 
     public void toggleDaylight(){
-        Config.daylight = !Config.daylight;
-        Utils.setprefb("daylight", Config.daylight);
+        DefSettings.NIGHTVISION.set(!DefSettings.NIGHTVISION.get());
     }
 
     public void toggleFilter(){
@@ -1344,28 +1403,19 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     }
 
     public void toggleDangerRadius(){
-        Config.showminerad = !Config.showminerad;
-        Utils.setprefb("showminerad", Config.showminerad);
+            Config.showminerad = !Config.showminerad;
+        PBotUtils.sysMsg("Mine support radii are now : "+Config.showminerad,Color.white);
+            Utils.setprefb("showminerad", Config.showminerad);
     }
 
     public void toggleSafeRadius(){
-
-      /*  if(Config.showTroughrad && Config.showBeehiverad)
-            saferadius = 4;
-        else if(Config.showTroughrad && Config.showBeehiverad)
-            saferadius = 3;
-        else if(Config.showTroughrad && !Config.showBeehiverad)
-            saferadius = 2;
-        else if(!Config.showTroughrad && !Config.showBeehiverad)
-            saferadius = 1;*/
-
       if(saferadius == 1){
           saferadius = 2;
           Config.showTroughrad = false;
           Config.showBeehiverad = true;
           Utils.setprefb("showTroughrad", Config.showTroughrad);
           Utils.setprefb("showBeehiverad", Config.showBeehiverad);
-          BotUtils.sysMsg("Troughs off, Beehives on.",Color.white);
+          PBotUtils.sysMsg("Troughs off, Beehives on.",Color.white);
       }
       else if(saferadius == 2){
           saferadius = 3;
@@ -1373,7 +1423,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
           Config.showBeehiverad = true;
           Utils.setprefb("showTroughrad", Config.showTroughrad);
           Utils.setprefb("showBeehiverad", Config.showBeehiverad);
-          BotUtils.sysMsg("Troughs on, Beehives on.",Color.white);
+          PBotUtils.sysMsg("Troughs on, Beehives on.",Color.white);
       }
       else if(saferadius == 3){
           saferadius = 4;
@@ -1381,7 +1431,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
           Config.showBeehiverad = false;
           Utils.setprefb("showTroughrad", Config.showTroughrad);
           Utils.setprefb("showBeehiverad", Config.showBeehiverad);
-          BotUtils.sysMsg("Troughs on, Beehives off.",Color.white);
+          PBotUtils.sysMsg("Troughs on, Beehives off.",Color.white);
       }
       else if(saferadius == 4){
           saferadius = 1;
@@ -1389,7 +1439,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
           Config.showBeehiverad = false;
           Utils.setprefb("showTroughrad", Config.showTroughrad);
           Utils.setprefb("showBeehiverad", Config.showBeehiverad);
-          BotUtils.sysMsg("Troughs off, Beehives off.",Color.white);
+          PBotUtils.sysMsg("Troughs off, Beehives off.",Color.white);
       }
 
     }
@@ -1408,11 +1458,34 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         }
     }
 
+    void toggleDeleted() {
+        if(deleted != null && deleted.show(!deleted.visible)) {
+            deleted.raise();
+            fitwdg(deleted);
+            setfocus(deleted);
+        }
+    }
+
     public void toggleHide(){
         Config.hidegobs = !Config.hidegobs;
         Utils.setprefb("hidegobs", Config.hidegobs);
         if (map != null)
             map.refreshGobsAll();
+        if(Config.hidegobs)
+            PBotUtils.sysMsg("Gobs are now hidden.",Color.white);
+        else
+            PBotUtils.sysMsg("Gobs are now NOT hidden.",Color.white);
+    }
+
+    public void toggleHiddenGobs(){
+        Config.hideuniquegobs = !Config.hideuniquegobs;
+        Utils.setprefb("hideuniquegobs", Config.hideuniquegobs);
+        if (map != null)
+            map.refreshGobsAll();
+        if(Config.hideuniquegobs)
+        PBotUtils.sysMsg("Unique gobs are now hidden.",Color.white);
+        else
+            PBotUtils.sysMsg("Unique gobs are now NOT hidden.",Color.white);
     }
 
     public void toggleGridCentering(){

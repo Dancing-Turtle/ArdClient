@@ -26,7 +26,8 @@
 
 package haven;
 
-import haven.purus.BotUtils;
+import haven.purus.pbot.PBotAPI;
+import haven.purus.pbot.PBotUtils;
 
 import java.awt.Color;
 import java.awt.Desktop;
@@ -432,7 +433,7 @@ public class LoginScreen extends Widget {
 								statusbtn.change(line.substring(line.indexOf("<h2>")+4, line.indexOf("</h2>")), Color.WHITE);
 		        				}
 	        				}
-                        GameUI gui = BotUtils.gui;
+                        GameUI gui = PBotAPI.gui;
 	        				if(gui != null) {
                                 if (gui.ui.sess.alive()) {
                                    break;

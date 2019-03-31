@@ -1,6 +1,5 @@
 package haven;
 
-import haven.purus.BotUtils;
 
 import java.awt.image.BufferedImage;
 import java.util.*;

@@ -5,7 +5,7 @@ import java.awt.Color;
 import javax.media.opengl.GL2;
 
 public class GobPath extends Sprite {
-    private static final States.ColState clrst = new States.ColState(new Color(233, 185, 110));
+    public static States.ColState clrst = new States.ColState(DefSettings.PLAYERPATHCOL.get());
 
     public GobPath(Gob gob) {
         super(gob, null);

@@ -8,9 +8,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import haven.*;
-import haven.GameUI;
-import haven.purus.BotUtils;
+import haven.Coord;
+import haven.Gob;
+import haven.GobHitbox;
+import haven.MCache;
+import haven.Pair;
+import haven.Resource;
 
 public class Map {
 
@@ -46,7 +49,7 @@ public class Map {
     private Vertex vxend;
 
     private Dbg dbg;
-    private final static boolean DEBUG = false;
+    private final static boolean DEBUG = true;
     public final static boolean DEBUG_TIMINGS = false;
 
     public Map(Coord plc, Coord endc, MCache mcache) {

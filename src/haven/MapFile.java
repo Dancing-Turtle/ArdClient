@@ -46,7 +46,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import haven.Defer.Future;
-import haven.purus.BotUtils;
 
 public class MapFile {
     public static boolean debug = false;

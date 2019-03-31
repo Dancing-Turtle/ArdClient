@@ -27,13 +27,13 @@
 package haven;
 
 import java.awt.*;
+import java.lang.ref.WeakReference;
 import java.util.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.InputEvent;
 import java.util.List;
 
-import haven.purus.BotUtils;
 
 public class UI {
     public RootWidget root;
@@ -124,6 +124,8 @@ public class UI {
         widgets.put(0, root);
         rwidgets.put(root, 0);
         this.sess = sess;
+        if(sess != null)
+            this.sess.glob.ui = new WeakReference<>(this);
     }
 
     public void setreceiver(Receiver rcvr) {

@@ -3,7 +3,7 @@ package haven.automation;
 
 import haven.*;
 import haven.Window;
-import haven.purus.BotUtils;
+import haven.purus.pbot.PBotUtils;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -21,13 +21,13 @@ public class TakeTrays implements Runnable {
         Thread t = new Thread(new OpenRacks(gui), "OpenRacks");
         t.start();
        // while (t.isAlive()) {
-            BotUtils.sleep(500);
+        PBotUtils.sleep(500);
        // }
         List<WItem> trays;
         synchronized (gui.ui.root.lchild) {
             try {
                 for (Widget q = gui.ui.root.lchild; q != null; q = q.rnext()) {
-                    if (q instanceof Inventory && q != BotUtils.playerInventory()) {
+                    if (q instanceof Inventory && q != gui.maininv) {
                         trays = (((Inventory) q).getItemsPartial("Tray"));
                         System.out.println("trays2 size : "+trays.size());
                         if (trays.size()>0) {

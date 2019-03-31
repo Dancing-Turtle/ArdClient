@@ -26,7 +26,7 @@
 
 package haven;
 
-import haven.purus.BotUtils;
+import haven.purus.pbot.PBotUtils;
 import haven.resutil.Curiosity;
 import haven.resutil.FoodInfo;
 import static haven.PUtils.blurmask2;
@@ -562,10 +562,6 @@ public class CharWnd extends Window {
 
         public void lvlup() {
             lvlt = 1.0;
-	  //  if(ui != null){
-		//ui.message(String.format("Your %s leveled up!", rnm.text), GameUI.MsgType.GOOD);
-		//BotUtils.sysMsg("Your "+rnm.text+" leveled up!", green);
-	  //  }
         }
     }
 
@@ -1986,7 +1982,7 @@ public class CharWnd extends Window {
                 abandonquest = true;
                 CharWnd.this.wdgmsg("qsel", (Object) null);
                 CharWnd.this.wdgmsg("qsel", q.id);
-                BotUtils.sysMsg("Dropping quest : "+q.title,green);
+                PBotUtils.sysMsg("Dropping quest : "+q.title,green);
                 remove(q);
             } else
             change(q);
@@ -2530,6 +2526,11 @@ public class CharWnd extends Window {
             int parentid = (len > 3) ? ((args[a + 3] == null) ? -1 : (Integer)args[a + 3]) : -1;
             Wound w = wounds.get(id);
             if(w == null) {
+                try {
+                    if(Config.alertwounds) {
+                        PBotUtils.sysMsg("New wound : " + res.get().basename() + " damage : " + qdata.hashCode(), white);
+                    }
+                }catch(Exception e){}//could get an exception here getting the resource name, ignore it.
                 wounds.add(new Wound(id, res, qdata, parentid));
             } else {
                 w.res = res;

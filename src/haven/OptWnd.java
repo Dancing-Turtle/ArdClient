@@ -28,8 +28,9 @@ package haven;
 
 
 import haven.automation.Discord;
-import haven.purus.BotUtils;
+import haven.purus.pbot.PBotUtils;
 import haven.resutil.BPRadSprite;
+import haven.sloth.gfx.HitboxMesh;
 
 import java.awt.Color;
 import java.awt.GraphicsEnvironment;
@@ -39,20 +40,18 @@ import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.cert.CollectionCertStoreParameters;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.prefs.BackingStoreException;
 import java.util.stream.Collectors;
+import haven.IndirSetting;
+import haven.sloth.gob.Movable;
+import haven.sloth.gob.Range;
 
 import static haven.DefSettings.*;
+
 
 public class OptWnd extends Window {
     public static final int VERTICAL_MARGIN = 10;
@@ -312,6 +311,17 @@ public class OptWnd extends Window {
                         a = val;
                     }
                 });
+                appender.add(new CheckBox("Show skybox (Potential Performance Impact)") {
+                    {
+                        a = Config.skybox;
+                    }
+
+                    public void set(boolean val) {
+                        Utils.setprefb("skybox", val);
+                        Config.skybox = val;
+                        a = val;
+                    }
+                });
                 appender.add(new CheckBox("Disable ALL animations") {
                     {
                         a = Config.disableAllAnimations;
@@ -406,6 +416,23 @@ public class OptWnd extends Window {
         return container;
     }
 
+    private Widget ColorPreWithLabel(final String text, final IndirSetting<Color> cl, final Consumer<Color> cb) {
+        final Widget container = new Widget();
+        final Label lbl = new Label(text);
+        final IndirColorPreview pre = new IndirColorPreview(new Coord(16, 16), cl, cb);
+        final int height = Math.max(lbl.sz.y, pre.sz.y) / 2;
+        container.add(lbl, new Coord(0, height - lbl.sz.y/2));
+        container.add(pre, new Coord(lbl.sz.x, height - pre.sz.y/2));
+        container.pack();
+        return container;
+    }
+
+
+
+
+
+
+
     public OptWnd(boolean gopts) {
         super(new Coord(620, 400), "Options", true);
 
@@ -472,7 +499,7 @@ public class OptWnd extends Window {
             main.add(new Button(200, "Disconnect Discord") {
                 public void click() {
                     if(Discord.jdalogin != null) {
-                        BotUtils.sysMsg("Discord Disconnected",Color.white);
+                        PBotUtils.sysMsg("Discord Disconnected",Color.white);
                         gameui().discordconnected = false;
                         Discord.jdalogin.shutdownNow();
                         Discord.jdalogin = null;
@@ -483,7 +510,7 @@ public class OptWnd extends Window {
                             }
                         }
                     }else
-                        BotUtils.sysMsg("Not currently connected.",Color.white);
+                        PBotUtils.sysMsg("Not currently connected.",Color.white);
                 }
             }, new Coord(210, 150));
             main.add(new Button(200, "Join Village Discord") {
@@ -494,15 +521,15 @@ public class OptWnd extends Window {
                             gameui().discordconnected = true;
                         }
                         else
-                            BotUtils.sysMsg("No Key Detected, if there is one in chat settings you might need to relog.",Color.white);
+                            PBotUtils.sysMsg("No Key Detected, if there is one in chat settings you might need to relog.",Color.white);
                     }else if(gameui().discordconnected)
-                        BotUtils.sysMsg("Already connected.",Color.white);
+                        PBotUtils.sysMsg("Already connected.",Color.white);
                 }
             }, new Coord(210, 180));
             main.add(new Button(200, "Join Ingame Discord") {
                 public void click() {
                     if(gameui().discordconnected)
-                        BotUtils.sysMsg("Already Connected.",Color.white);
+                        PBotUtils.sysMsg("Already Connected.",Color.white);
                     else {
                         new Thread(new Discord(gameui(), "ard")).start();
                         gameui().discordconnected = true;
@@ -625,6 +652,21 @@ public class OptWnd extends Window {
             }
         });
         appender.setVerticalMargin(0);
+        appender.add(new Label("Alerted gobs sound volume"));
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (int) (Config.alertsvol * 1000);
+            }
+
+            public void changed() {
+                double vol = val / 1000.0;
+                Config.alertsvol = vol;
+                Utils.setprefd("alertsvol", vol);
+            }
+        });
+        appender.setVerticalMargin(0);
         appender.add(new Label("'Chip' sound volume"));
         appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
         appender.add(new HSlider(200, 0, 1000, 0) {
@@ -637,6 +679,20 @@ public class OptWnd extends Window {
                 double vol = val / 1000.0;
                 Config.sfxchipvol = vol;
                 Utils.setprefd("sfxchipvol", vol);
+            }
+        });
+        appender.add(new Label("'Ding' sound volume"));
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (int) (Config.sfxdingvol * 1000);
+            }
+
+            public void changed() {
+                double vol = val / 1000.0;
+                Config.sfxdingvol = vol;
+                Utils.setprefd("sfxdingvol", vol);
             }
         });
         appender.setVerticalMargin(0);
@@ -652,6 +708,21 @@ public class OptWnd extends Window {
                 double vol = val / 1000.0;
                 Config.sfxquernvol = vol;
                 Utils.setprefd("sfxquernvol", vol);
+            }
+        });
+        appender.setVerticalMargin(0);
+        appender.add(new Label("Door close sound volume"));
+        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
+        appender.add(new HSlider(200, 0, 1000, 0) {
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (int) (Config.sfxdoorvol * 1000);
+            }
+
+            public void changed() {
+                double vol = val / 1000.0;
+                Config.sfxdoorvol = vol;
+                Utils.setprefd("sfxdoorvol", vol);
             }
         });
         appender.setVerticalMargin(0);
@@ -823,6 +894,28 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
+        appender.add(new CheckBox("Flatten Palisades/Bwalls") {
+            {
+                a = Config.flatwalls;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("flatwalls", val);
+                Config.flatwalls = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Flatten Cave Walls") {
+            {
+                a = Config.flatcaves;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("flatcaves", val);
+                Config.flatcaves = val;
+                a = val;
+            }
+        });
         appender.add(new CheckBox("Always display long tooltips.") {
             {
                 a = Config.longtooltips;
@@ -878,16 +971,10 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
-        appender.add(new CheckBox("Show objects health") {
-            {
-                a = Config.showgobhp;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("showgobhp", val);
-                Config.showgobhp = val;
-                a = val;
-
+        appender.add(new IndirCheckBox("Toggle halo pointers", SHOWHALO));
+        appender.add(new IndirCheckBox("Toggle halo pointers on hearthing", SHOWHALOONHEARTH));
+        appender.add(new IndirCheckBox("Show Gob HP (Small Performance hit)", SHOWGOBHP, val -> {
+            if(ui.sess != null) {
                 GameUI gui = gameui();
                 if (gui != null && gui.map != null) {
                     if (val)
@@ -896,22 +983,19 @@ public class OptWnd extends Window {
                         gui.map.removeCustomSprites(Sprite.GOB_HEALTH_ID);
                 }
             }
-        });
-        appender.add(new CheckBox("Show player's path") {
-            {
-                a = Config.showplayerpaths;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("showplayerpaths", val);
-                Config.showplayerpaths = val;
-                a = val;
-            }
-        });
-       // appender.add(new IndirCheckBox("Show Gob Paths", SHOWGOBPATH));
-       // appender.add(ColorPreWithLabel("Minimap path color: ", MMPATHCOL));
-        //appender.add(ColorPreWithLabel("Unknown gob path color: ", GOBPATHCOL));
-       // appender.add(ColorPreWithLabel("Vehicle path color: ", VEHPATHCOL));
+        }));
+        appender.add(new IndirCheckBox("Show Your Movement Path", SHOWPLAYERPATH));
+        appender.add(ColorPreWithLabel("Your path color: ", PLAYERPATHCOL, val ->{
+            GobPath.clrst = new States.ColState(val);
+        }));
+        appender.add(new IndirCheckBox("Show Other Player Paths - Kinned player's paths will be their kin color.", SHOWGOBPATH));
+        appender.add(ColorPreWithLabel("Unknown player path color: ", GOBPATHCOL, val ->{
+            Movable.unknowngobcol = new States.ColState(val);
+        }));
+        appender.add(new IndirCheckBox("Show Mob Paths", SHOWANIMALPATH));
+        appender.add(ColorPreWithLabel("Animal path color: ", ANIMALPATHCOL, val ->{
+            Movable.animalpathcol = new States.ColState(val);
+        }));
         appender.add(new CheckBox("Show wear bars") {
             {
                 a = Config.showwearbars;
@@ -920,17 +1004,6 @@ public class OptWnd extends Window {
             public void set(boolean val) {
                 Utils.setprefb("showwearbars", val);
                 Config.showwearbars = val;
-                a = val;
-            }
-        });
-        appender.add(new CheckBox("Show animal radius - Restart if changing colors") {
-            {
-                a = Config.showanimalrad;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("showanimalrad", val);
-                Config.showanimalrad = val;
                 a = val;
             }
         });
@@ -946,6 +1019,17 @@ public class OptWnd extends Window {
             }
         });
         appender.addRow(new Label("Cave-in Warning Dust Duration in Minutes"),makeCaveInDropdown());
+        appender.add(new CheckBox("Show animal radius") {
+            {
+                a = Config.showanimalrad;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showanimalrad", val);
+                Config.showanimalrad = val;
+                a = val;
+            }
+        });
         appender.add(new CheckBox("Double animal radius size.") {
             {
                 a = Config.doubleradius;
@@ -959,125 +1043,57 @@ public class OptWnd extends Window {
         });
         appender.add(ColorPreWithLabel("Deep Ocean Color: (requires relog)", DEEPWATERCOL));
         appender.add(ColorPreWithLabel("All Other Water Color: (requires relog)", ALLWATERCOL));
-        appender.add(new Label("Radius changes require game restart to apply."));
-        appender.add(new Label("Radius RGB Red Animals"));
-        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
-        appender.add(new HSlider(150, 0, 255, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = (Config.smatdangerred);
+        appender.add(ColorPreWithLabel("Beehive radius color: ", BEEHIVECOLOR, val ->{
+            BPRadSprite.smatBeehive = new States.ColState(val);
+            GameUI gui = gameui();
+            if (gui != null) {
+                if (gui.map != null) {
+                    MapView.rovlbeehive = new Gob.Overlay(new BPRadSprite(151.0F, -10.0F, BPRadSprite.smatBeehive));
+                    gui.map.glob.oc.refreshalloverlays();
+                    gui.map.glob.oc.changeAllGobs();
+                    gui.map.refreshGobsAll();
+                }
             }
-
-            public void changed() {
-                int vol = val;
-                Config.smatdangerred = vol;
-                Utils.setprefi("smatdangerred", vol);
-                BPRadSprite.smatDanger = new States.ColState(new Color(Config.smatdangerred, Config.smatdangergreen, Config.smatdangerblue, 100));
+        }));
+        appender.add(ColorPreWithLabel("Trough radius color: ", TROUGHCOLOR, val ->{
+            BPRadSprite.smatTrough = new States.ColState(val);
+            GameUI gui = gameui();
+            if (gui != null) {
+                if (gui.map != null) {
+                    MapView.rovltrough = new Gob.Overlay(new BPRadSprite(200.0F, -10.0F, BPRadSprite.smatTrough));
+                    gui.map.glob.oc.refreshalloverlays();
+                    gui.map.glob.oc.changeAllGobs();
+                    gui.map.refreshGobsAll();
+                }
             }
-        });
-
-        appender.setVerticalMargin(0);
-        appender.add(new Label("Radius RGB Green Animals"));
-        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
-        appender.add(new HSlider(150, 0, 255, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = (Config.smatdangergreen);
+        }));
+        appender.add(ColorPreWithLabel("Dangerous animal radius color: ", ANIMALDANGERCOLOR, val ->{
+            BPRadSprite.smatDanger = new States.ColState(val);
+            GameUI gui = gameui();
+            if (gui != null) {
+                if (gui.map != null) {
+                    Gob.animalradius = new Gob.Overlay(new BPRadSprite(100.0F, -10.0F, BPRadSprite.smatDanger));
+                    Gob.doubleanimalradius = new Gob.Overlay(new BPRadSprite(200.0F, -20.0F, BPRadSprite.smatDanger));
+                    gui.map.glob.oc.refreshalloverlays();
+                    gui.map.glob.oc.changeAllGobs();
+                    gui.map.refreshGobsAll();
+                }
             }
-
-            public void changed() {
-                int vol = val;
-                Config.smatdangergreen = vol;
-                Utils.setprefi("smatdangergreen", vol);
-                BPRadSprite.smatDanger = new States.ColState(new Color(Config.smatdangerred, Config.smatdangergreen, Config.smatdangerblue, 100));
+        }));
+        appender.add(ColorPreWithLabel("Mine support radius color: ", SUPPORTDANGERCOLOR, val ->{
+            BPRadSprite.smatSupports = new States.ColState(val);
+            GameUI gui = gameui();
+            if (gui != null) {
+                if (gui.map != null) {
+                    MapView.rovlsupport = new Gob.Overlay(new BPRadSprite(100.0F, 0, BPRadSprite.smatSupports));
+                    MapView.rovlcolumn = new Gob.Overlay(new BPRadSprite(125.0F, 0, BPRadSprite.smatSupports));
+                    MapView.rovlbeam = new Gob.Overlay(new BPRadSprite(150.0F, 0, BPRadSprite.smatSupports));
+                    gui.map.glob.oc.refreshalloverlays();
+                    gui.map.glob.oc.changeAllGobs();
+                    gui.map.refreshGobsAll();
+                }
             }
-        });
-
-        appender.setVerticalMargin(0);
-        appender.add(new Label("Radius RGB Blue Animals"));
-        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
-        appender.add(new HSlider(150, 0, 255, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = (Config.smatdangerblue);
-            }
-            public void changed() {
-                int vol = val;
-                Config.smatdangerblue = vol;
-                Utils.setprefi("smatdangerblue", vol);
-                BPRadSprite.smatDanger = new States.ColState(new Color(Config.smatdangerred, Config.smatdangergreen, Config.smatdangerblue, 100));
-            }
-        });
-        appender.add(new Label("Radius RGB Red Mine Supports"));
-        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
-        appender.add(new HSlider(150, 0, 255, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = (Config.smatSupportsred);
-            }
-
-            public void changed() {
-                int vol = val;
-                Config.smatSupportsred = vol;
-                Utils.setprefi("smatSupportsred", vol);
-                BPRadSprite.smatSupports = new States.ColState(new Color(Config.smatSupportsred, Config.smatSupportsgreen, Config.smatSupportsblue, 100));
-            }
-        });
-
-        appender.setVerticalMargin(0);
-        appender.add(new Label("Radius RGB Green Mine Supports"));
-        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
-        appender.add(new HSlider(150, 0, 255, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = (Config.smatSupportsgreen);
-            }
-
-            public void changed() {
-                int vol = val;
-                Config.smatSupportsgreen = vol;
-                Utils.setprefi("smatSupportsgreen", vol);
-                BPRadSprite.smatSupports = new States.ColState(new Color(Config.smatSupportsred, Config.smatSupportsgreen, Config.smatSupportsblue, 100));
-            }
-        });
-
-        appender.setVerticalMargin(0);
-        appender.add(new Label("Radius RGB Blue Mine Supports"));
-        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
-        appender.add(new HSlider(150, 0, 255, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = (Config.smatSupportsblue);
-            }
-            public void changed() {
-                int vol = val;
-                Config.smatSupportsblue = vol;
-                Utils.setprefi("smatSupportsblue", vol);
-                BPRadSprite.smatSupports = new States.ColState(new Color(Config.smatSupportsred, Config.smatSupportsgreen, Config.smatSupportsblue, 100));
-            }
-        });
-        appender.add(new CheckBox("Show aggro radius on bats, disable if you dont care if they aggro you.") {
-            {
-                a = Config.batcircle;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("batcircle", val);
-                Config.batcircle = val;
-                a = val;
-            }
-        });
-        appender.add(new CheckBox("Show aggro radius on cave slimes, disable if you dont care if they aggro you.") {
-            {
-                a = Config.slimecircle;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("slimecircle", val);
-                Config.slimecircle = val;
-                a = val;
-            }
-        });
+        }));
         appender.add(new CheckBox("Highlight empty/finished drying frames and full/empty tanning tubs. Requires restart.") {
             {
                 a = Config.showdframestatus;
@@ -1144,54 +1160,9 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
-        appender.add(new Label("Radius RGB Red Cheese Rack Missing Color"));
-        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
-        appender.add(new HSlider(150, 0, 255, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = (Config.cRackred);
-            }
-
-            public void changed() {
-                int vol = val;
-                Config.cRackred = vol;
-                Utils.setprefi("cRackred", vol);
-                BPRadSprite.cRackMissing = new Material.Colors(new Color(Config.cRackred, Config.cRackgreen, Config.cRackblue, 255));
-            }
-        });
-
-        appender.setVerticalMargin(0);
-        appender.add(new Label("Radius RGB Green Cheese Rack Missing Color"));
-        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
-        appender.add(new HSlider(150, 0, 255, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = (Config.cRackgreen);
-            }
-
-            public void changed() {
-                int vol = val;
-                Config.cRackgreen = vol;
-                Utils.setprefi("cRackgreen", vol);
-                BPRadSprite.cRackMissing = new Material.Colors(new Color(Config.cRackred, Config.cRackgreen, Config.cRackblue, 255));
-            }
-        });
-
-        appender.setVerticalMargin(0);
-        appender.add(new Label("Radius RGB Blue Cheese Rack Missing Color"));
-        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
-        appender.add(new HSlider(150, 0, 255, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = (Config.cRackblue);
-            }
-            public void changed() {
-                int vol = val;
-                Config.cRackblue = vol;
-                Utils.setprefi("cRackblue", vol);
-                BPRadSprite.cRackMissing = new Material.Colors(new Color(Config.cRackred, Config.cRackgreen, Config.cRackblue, 255));
-            }
-        });
+        appender.add(ColorPreWithLabel("Cheese rack missing color: ", CHEESERACKMISSINGCOLOR, val ->{
+            BPRadSprite.cRackMissing = new Material.Colors(CHEESERACKMISSINGCOLOR.get());
+        }));
         appender.add(new CheckBox("Highlight finished garden pots. Requires restart.") {
             {
                 a = Config.highlightpots;
@@ -1280,31 +1251,12 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
-        appender.add(new CheckBox("Hide skybox") {
-            {
-                a = Config.hidesky;
-            }
-            
-            public void set(boolean val) {
-                Utils.setprefb("hidesky", val);
-                Config.hidesky = val;
-                a = val;
-            }
-        });
-        Button OutputSettings = new Button(220, "Output Light Settings") {
+        Button OutputSettings = new Button(220, "Output Light Settings to System Tab") {
             @Override
             public void click() {
-                BotUtils.sysLogAppend("Ambient Red "+Config.AmbientRed,"white");
-                BotUtils.sysLogAppend("Ambient Green "+Config.AmbientGreen,"white");
-                BotUtils.sysLogAppend("Ambient Blue "+Config.AmbientBlue,"white");
-
-                BotUtils.sysLogAppend("Diffuse Red "+Config.DiffuseRed,"white");
-                BotUtils.sysLogAppend("Diffuse Green "+Config.DiffuseGreen,"white");
-                BotUtils.sysLogAppend("Diffuse Blue "+Config.DiffuseBlue,"white");
-
-                BotUtils.sysLogAppend("Specular Red "+Config.SpecRed,"white");
-                BotUtils.sysLogAppend("Specular Green "+Config.SpecGreen,"white");
-                BotUtils.sysLogAppend("Specular Blue "+Config.SpecBlue,"white");
+                PBotUtils.sysLogAppend("Ambient Red "+DefSettings.NVAMBIENTCOL.get().getRed() + " Green - "+DefSettings.NVAMBIENTCOL.get().getGreen()+ " Blue - "+NVAMBIENTCOL.get().getBlue(),"white");
+                PBotUtils.sysLogAppend("Diffuse Red "+DefSettings.NVDIFFUSECOL.get().getRed() + " Green - "+DefSettings.NVDIFFUSECOL.get().getGreen()+ " Blue - "+NVDIFFUSECOL.get().getBlue(),"white");
+                PBotUtils.sysLogAppend("Specular Red "+DefSettings.NVSPECCOC.get().getRed() + " Green - "+DefSettings.NVSPECCOC.get().getGreen()+ " Blue - "+NVSPECCOC.get().getBlue(),"white");
             }
         };
         appender.add(OutputSettings);
@@ -1312,104 +1264,36 @@ public class OptWnd extends Window {
         Button Preset1 = new Button(220, "Friday Evening") {
             @Override
             public void click() {
-                Config.AmbientRed = 51;
-                Utils.setprefi("AmbientRed", 51);
-                Config.AmbientGreen = 59;
-                Utils.setprefi("AmbientGreen", 59);
-                Config.AmbientBlue = 119;
-                Utils.setprefi("AmbientBlue", 119);
-
-                Config.DiffuseRed = 20;
-                Utils.setprefi("DiffuseRed", 20);
-                Config.DiffuseGreen = 28;
-                Utils.setprefi("DiffuseGreen", 28);
-                Config.DiffuseBlue = 127;
-                Utils.setprefi("DiffuseBlue", 127);
-
-                Config.SpecRed = 167;
-                Utils.setprefi("SpecRed", 167);
-                Config.SpecGreen = 117;
-                Utils.setprefi("SpecGreen", 117);
-                Config.SpecBlue = 103;
-                Utils.setprefi("SpecBlue", 103);
+                DefSettings.NVAMBIENTCOL.set(new Color(51,59,119));
+                DefSettings.NVDIFFUSECOL.set(new Color(20,28,127));
+                DefSettings.NVSPECCOC.set(new Color(167,117,103));
             }
         };
         appender.add(Preset1);
         Button Preset2 = new Button(220, "Thieving Night") {
             @Override
             public void click() {
-                Config.AmbientRed = 5;
-                Utils.setprefi("AmbientRed", 5);
-                Config.AmbientGreen = 10;
-                Utils.setprefi("AmbientGreen", 10);
-                Config.AmbientBlue = 51;
-                Utils.setprefi("AmbientBlue", 51);
-
-                Config.DiffuseRed = 0;
-                Utils.setprefi("DiffuseRed", 0);
-                Config.DiffuseGreen = 31;
-                Utils.setprefi("DiffuseGreen", 31);
-                Config.DiffuseBlue = 50;
-                Utils.setprefi("DiffuseBlue", 50);
-
-                Config.SpecRed = 138;
-                Utils.setprefi("SpecRed", 138);
-                Config.SpecGreen = 64;
-                Utils.setprefi("SpecGreen", 64);
-                Config.SpecBlue = 255;
-                Utils.setprefi("SpecBlue", 255);
+                DefSettings.NVAMBIENTCOL.set(new Color(5,10,51));
+                DefSettings.NVDIFFUSECOL.set(new Color(0,31,50));
+                DefSettings.NVSPECCOC.set(new Color(138,64,255));
             }
         };
         appender.add(Preset2);
         Button Preset3 = new Button(220, "Hunting Dusk") {
             @Override
             public void click() {
-                Config.AmbientRed = 165;
-                Utils.setprefi("AmbientRed", 165);
-                Config.AmbientGreen = 213;
-                Utils.setprefi("AmbientGreen", 213);
-                Config.AmbientBlue = 255;
-                Utils.setprefi("AmbientBlue", 255);
-
-                Config.DiffuseRed = 160;
-                Utils.setprefi("DiffuseRed", 160);
-                Config.DiffuseGreen = 193;
-                Utils.setprefi("DiffuseGreen", 193);
-                Config.DiffuseBlue = 255;
-                Utils.setprefi("DiffuseBlue", 255);
-
-                Config.SpecRed = 138;
-                Utils.setprefi("SpecRed", 138);
-                Config.SpecGreen = 64;
-                Utils.setprefi("SpecGreen", 64);
-                Config.SpecBlue = 255;
-                Utils.setprefi("SpecBlue", 255);
+                DefSettings.NVAMBIENTCOL.set(new Color(165,213,255));
+                DefSettings.NVDIFFUSECOL.set(new Color(160,193,255));
+                DefSettings.NVSPECCOC.set(new Color(138,64,255));
             }
         };
         appender.add(Preset3);
         Button Preset4 = new Button(220, "Sunny Morning") {
             @Override
             public void click() {
-                Config.AmbientRed = 211;
-                Utils.setprefi("AmbientRed", 211);
-                Config.AmbientGreen = 180;
-                Utils.setprefi("AmbientGreen", 180);
-                Config.AmbientBlue = 72;
-                Utils.setprefi("AmbientBlue", 72);
-
-                Config.DiffuseRed = 255;
-                Utils.setprefi("DiffuseRed", 255);
-                Config.DiffuseGreen = 178;
-                Utils.setprefi("DiffuseGreen", 178);
-                Config.DiffuseBlue = 169;
-                Utils.setprefi("DiffuseBlue", 169);
-
-                Config.SpecRed = 255;
-                Utils.setprefi("SpecRed", 255);
-                Config.SpecGreen = 255;
-                Utils.setprefi("SpecGreen", 255);
-                Config.SpecBlue = 255;
-                Utils.setprefi("SpecBlue", 255);
+                DefSettings.NVAMBIENTCOL.set(new Color(211,180,72));
+                DefSettings.NVDIFFUSECOL.set(new Color(255,178,169));
+                DefSettings.NVSPECCOC.set(new Color(255,255,255));
             }
         };
         appender.add(Preset4);
@@ -1417,156 +1301,16 @@ public class OptWnd extends Window {
         Button Preset5 = new Button(220, "Amber Default") {
             @Override
             public void click() {
-                Config.AmbientRed = 200;
-                Utils.setprefi("AmbientRed", 200);
-                Config.AmbientGreen = 200;
-                Utils.setprefi("AmbientGreen", 200);
-                Config.AmbientBlue = 200;
-                Utils.setprefi("AmbientBlue", 200);
-
-                Config.DiffuseRed = 200;
-                Utils.setprefi("DiffuseRed", 200);
-                Config.DiffuseGreen = 200;
-                Utils.setprefi("DiffuseGreen", 200);
-                Config.DiffuseBlue = 200;
-                Utils.setprefi("DiffuseBlue", 200);
-
-                Config.SpecRed = 255;
-                Utils.setprefi("SpecRed", 255);
-                Config.SpecGreen = 255;
-                Utils.setprefi("SpecGreen", 255);
-                Config.SpecBlue = 255;
-                Utils.setprefi("SpecBlue", 255);
+                DefSettings.NVAMBIENTCOL.set(new Color(200,200,200));
+                DefSettings.NVDIFFUSECOL.set(new Color(200,200,200));
+                DefSettings.NVSPECCOC.set(new Color(255,255,255));
             }
         };
         appender.add(Preset5);
         appender.add(new IndirCheckBox("Dark Mode (overrides custom global light)", DARKMODE));
-        appender.add(new Label("Night Vision Ambient Red"));
-        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
-        appender.add(new HSlider(150, 0, 255, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = (Config.AmbientRed);
-            }
-
-            public void changed() {
-                int vol = val;
-                Config.AmbientRed = vol;
-                Utils.setprefi("AmbientRed", vol);
-            }
-        });
-        appender.add(new Label("Night Vision Ambient Green"));
-        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
-        appender.add(new HSlider(150, 0, 255, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = (Config.AmbientGreen);
-            }
-
-            public void changed() {
-                int vol = val;
-                Config.AmbientGreen = vol;
-                Utils.setprefi("AmbientGreen", vol);
-            }
-        });
-        appender.add(new Label("Night Vision Ambient Blue"));
-        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
-        appender.add(new HSlider(150, 0, 255, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = (Config.AmbientBlue);
-            }
-
-            public void changed() {
-                int vol = val;
-                Config.AmbientBlue = vol;
-                Utils.setprefi("AmbientBlue", vol);
-            }
-        });
-        appender.add(new Label("Night Vision Diffuse Red"));
-        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
-        appender.add(new HSlider(150, 0, 255, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = (Config.DiffuseRed);
-            }
-
-            public void changed() {
-                int vol = val;
-                Config.DiffuseRed = vol;
-                Utils.setprefi("DiffuseRed", vol);
-            }
-        });
-        appender.add(new Label("Night Vision Diffuse Green"));
-        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
-        appender.add(new HSlider(150, 0, 255, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = (Config.DiffuseGreen);
-            }
-
-            public void changed() {
-                int vol = val;
-                Config.DiffuseGreen = vol;
-                Utils.setprefi("DiffuseGreen", vol);
-            }
-        });
-        appender.add(new Label("Night Vision Diffuse Blue"));
-        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
-        appender.add(new HSlider(150, 0, 255, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = (Config.DiffuseBlue);
-            }
-
-            public void changed() {
-                int vol = val;
-                Config.DiffuseBlue = vol;
-                Utils.setprefi("DiffuseBlue", vol);
-            }
-        });
-        appender.add(new Label("Night Vision Specular Red"));
-        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
-        appender.add(new HSlider(150, 0, 255, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = (Config.SpecRed);
-            }
-
-            public void changed() {
-                int vol = val;
-                Config.SpecRed = vol;
-                Utils.setprefi("SpecRed", vol);
-            }
-        });
-        appender.add(new Label("Night Vision Specular Green"));
-        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
-        appender.add(new HSlider(150, 0, 255, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = (Config.SpecGreen);
-            }
-
-            public void changed() {
-                int vol = val;
-                Config.SpecGreen = vol;
-                Utils.setprefi("SpecGreen", vol);
-            }
-        });
-        appender.add(new Label("Night Vision Specular Blue"));
-        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
-        appender.add(new HSlider(150, 0, 255, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = (Config.SpecBlue);
-            }
-
-            public void changed() {
-                int vol = val;
-                Config.SpecBlue = vol;
-                Utils.setprefi("SpecBlue", vol);
-            }
-        });
+        appender.add(ColorPreWithLabel("Ambient Color", NVAMBIENTCOL));
+        appender.add(ColorPreWithLabel("Diffuse Color", NVDIFFUSECOL));
+        appender.add(ColorPreWithLabel("Specular Color", NVSPECCOC));
 
     }
 
@@ -1638,6 +1382,17 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
+        appender.add(new CheckBox("Alert on new wounds.") {
+            {
+                a = Config.alertwounds;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("alertwounds", val);
+                Config.alertwounds = val;
+                a = val;
+            }
+        });
         appender.add(new CheckBox("Abandon quests on right click") {
             {
                 a = Config.abandonrightclick;
@@ -1672,7 +1427,7 @@ public class OptWnd extends Window {
             }
         });
         appender.addRow(new Label("Auto Logout after x Minutes - 0 means never"), makeafkTimeDropdown());
-        appender.add(new CheckBox("Autodrink below 80% stamina") {
+        appender.add(new CheckBox("Autodrink below threshold") {
             {
                 a = Config.autodrink;
             }
@@ -1681,6 +1436,30 @@ public class OptWnd extends Window {
                 Utils.setprefb("autodrink", val);
                 Config.autodrink = val;
                 a = val;
+            }
+        });
+        Label AutodrinkThreshold;
+        AutodrinkThreshold = new Label("Autodrink Threshold: "+Config.autodrinkthreshold);
+        appender.add(AutodrinkThreshold);
+        //  System.out.println("adding new sliders and stuff");
+        appender.add(new HSlider(130, 0, 100, Config.autodrinkthreshold) {
+            public void added() {
+                updateLabel();
+            }
+
+            protected void attach(UI ui) {
+                super.attach(ui);
+                val = (Config.autodrinkthreshold);
+            }
+
+            public void changed() {
+                Utils.setprefi("autodrinkthreshold", val);
+                Config.autodrinkthreshold = val;
+                updateLabel();
+            }
+
+            private void updateLabel() {
+                AutodrinkThreshold.settext(String.format("Autodrink Threshold : %d Percent", val));
             }
         });
         appender.add(new CheckBox("Repeat Starvation Alert Warning/Sound") {
@@ -1913,7 +1692,6 @@ public class OptWnd extends Window {
 
         appender.setVerticalMargin(VERTICAL_MARGIN);
         appender.setHorizontalMargin(HORIZONTAL_MARGIN);
-
         appender.add(new CheckBox("Display damage") {
             {
                 a = Config.showdmgop;
@@ -1922,6 +1700,30 @@ public class OptWnd extends Window {
             public void set(boolean val) {
                 Utils.setprefb("showdmgop", val);
                 Config.showdmgop = val;
+                a = val;
+            }
+        });
+        appender.add(new Label("Chat Exempt will force the fight session to have focus unless the chat box has focus."));
+        appender.add(new CheckBox("Force Fight Session Focus - Chat Exempt") {
+            {
+                a = Config.forcefightfocus;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("forcefightfocus", val);
+                Config.forcefightfocus = val;
+                a = val;
+            }
+        });
+        appender.add(new Label("Chat Included will force fight session to have focus at all times, this will prevent talking in combat."));
+        appender.add(new CheckBox("Force Fight Session Focus - Chat Included") {
+            {
+                a = Config.forcefightfocusharsh;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("forcefightfocusharsh", val);
+                Config.forcefightfocusharsh = val;
                 a = val;
             }
         });
@@ -2183,6 +1985,17 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
+        appender.add(new CheckBox("Disable pick forage keybind (Q by Default) picking up/dropping carts.") {
+            {
+                a = Config.disablecartkeybind;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("disablecartkeybind", val);
+                Config.disablecartkeybind = val;
+                a = val;
+            }
+        });
         appender.add(new Label("Disable Shift Right Click for :"));
         CheckListbox disableshiftclick = new CheckListbox(320, Math.min(8, Config.disableshiftclick.values().size()), 18 + Config.fontadd) {
             @Override
@@ -2251,6 +2064,8 @@ public class OptWnd extends Window {
                 }
             }
         });
+        appender.add(new IndirCheckBox("Quick flowermenu", QUICKMENU));
+        appender.add(new IndirCheckBox("Amber flowermenus", AMBERMENU));
         appender.add(new CheckBox("Alternative equipment belt window") {
             {
                 a = Config.quickbelt;
@@ -2585,18 +2400,6 @@ public class OptWnd extends Window {
     private void initstudydesksettings() {
         int x = 0;
         int y = 0, my = 0;
-
-//        appender.add(new CheckBox("Enable Study Desk Alerts") {
-//            {
-//                a = Config.studydeskalerts;
-//            }
-//
-//            public void set(boolean val) {
-//                Utils.setprefb("studydeskalerts", val);
-//                Config.studydeskalerts = val;
-//                a = val;
-//            }
-//        });
         studydesksettings.add(new Label("Choose curios to check your studydesk for:"),x, y);
         y += 15;
         final CurioList list = studydesksettings.add(new CurioList(),x,y);
@@ -2678,6 +2481,7 @@ public class OptWnd extends Window {
                         boolean ret = buf.key(ev);
                         if (text.length() > 0) {
                             Utils.setpref("chatalert", text);
+                            Config.chatalert = text;
                         }
 
                         return ret;
@@ -2829,18 +2633,8 @@ public class OptWnd extends Window {
         appender.setVerticalMargin(VERTICAL_MARGIN);
         appender.setHorizontalMargin(HORIZONTAL_MARGIN);
         
-        appender.add(new Label("Toggle hide by pressing ctrl + h"));
-        appender.add(new CheckBox("Hide Cave Moths - Standalone Option, doesn't require toggling Hide.") {
-            {
-                a = Config.hidemoths;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("hidemoths", val);
-                Config.hidemoths = val;
-                a = val;
-            }
-        });
+        appender.add(new Label("Toggle bulk hide by pressing the keybind you assign in Keybind Settings"));
+        appender.add(new Label("These hides are for all objects of this type, to hide individual ones instead please utilize the alt + right click menu."));
         appender.add(new CheckBox("Hide trees") {
             {
                 a = Config.hideTrees;
@@ -2852,25 +2646,14 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
-        appender.add(new CheckBox("Hide Tar Kilns") {
+        appender.add(new CheckBox("Hide boulders") {
             {
-                a = Config.hideTarKilns;
+                a = Config.hideboulders;
             }
 
             public void set(boolean val) {
-                Utils.setprefb("hideTarKilns", val);
-                Config.hideTarKilns = val;
-                a = val;
-            }
-        });
-        appender.add(new CheckBox("Hide Smelters") {
-            {
-                a = Config.hideSmelters;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("hideSmelters", val);
-                Config.hideSmelters = val;
+                Utils.setprefb("hideboulders", val);
+                Config.hideboulders = val;
                 a = val;
             }
         });
@@ -2885,67 +2668,6 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
-        
-        appender.add(new CheckBox("Hide walls") {
-            {
-                a = Config.hideWalls;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("hideWalls", val);
-                Config.hideWalls = val;
-                a = val;
-            }
-        });
-
-        appender.add(new CheckBox("Hide Domestic Animals (Except Horses)") {
-            {
-                a = Config.hideanimals;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("hideanimals", val);
-                Config.hideanimals = val;
-                a = val;
-            }
-        });
-
-        appender.add(new CheckBox("Hide Domestic Horses") {
-            {
-                a = Config.hidehorses;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("hidehorses", val);
-                Config.hidehorses = val;
-                a = val;
-            }
-        });
-        
-        appender.add(new CheckBox("Hide wagons") {
-            {
-                a = Config.hideWagons;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("hideWagons", val);
-                Config.hideWagons = val;
-                a = val;
-            }
-        });
-        
-        appender.add(new CheckBox("Hide houses (Also doors)") {
-            {
-                a = Config.hideHouses;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("hideHouses", val);
-                Config.hideHouses = val;
-                a = val;
-            }
-        });
-        
         appender.add(new CheckBox("Hide bushes") {
             {
                 a = Config.hideBushes;
@@ -2957,31 +2679,6 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
-        
-        appender.add(new CheckBox("Hide drying frames") {
-            {
-                a = Config.hideDFrames;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("hideDFrames", val);
-                Config.hideDFrames = val;
-                a = val;
-            }
-        });
-        
-        appender.add(new CheckBox("Hide dream catchers") {
-            {
-                a = Config.hideDCatchers;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("hideDCatchers", val);
-                Config.hideDCatchers = val;
-                a = val;
-            }
-        });
-
         appender.add(new CheckBox("Draw colored overlay for hidden objects. Hide will need to be toggled") {
             {
                 a = Config.showoverlay;
@@ -2992,64 +2689,22 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
-        
-        appender.add(new Label("Red"));
-        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
-        appender.add(new HSlider(150, 0, 255, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = (int) (Config.hidered);
-            }
-
-            public void changed() {
-            	int vol = val;
-                Config.hidered = vol;
-                Utils.setprefi("hidered", vol);
-                GobHitbox.fillclrstate = new States.ColState(new Color(Config.hidered, Config.hidegreen, Config.hideblue, 255));
-            }
-        });
-        
+        appender.add(ColorPreWithLabel("Hidden/Hitbox color: ", HIDDENCOLOR, val ->{
+            GobHitbox.fillclrstate = new States.ColState(val);
+            HitboxMesh.updateColor(new States.ColState(val));
+                    if(ui.sess != null) {
+                        ui.sess.glob.oc.changeAllGobs();
+                    }
+    }));
         appender.setVerticalMargin(0);
-        appender.add(new Label("Green"));
-        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
-        appender.add(new HSlider(150, 0, 255, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = (int) (Config.hidegreen);
-            }
-
-            public void changed() {
-            	int vol = val;
-                Config.hidegreen = vol;
-                Utils.setprefi("hidegreen", vol);
-                GobHitbox.fillclrstate = new States.ColState(new Color(Config.hidered, Config.hidegreen, Config.hideblue, 255));
-            }
-        });
-        
-        appender.setVerticalMargin(0);
-        appender.add(new Label("Blue"));
-        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
-        appender.add(new HSlider(150, 0, 255, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = (int) (Config.hideblue);
-                GobHitbox.fillclrstate = new States.ColState(new Color(Config.hidered, Config.hidegreen, Config.hideblue, 255));
-            }
-
-            public void changed() {
-            	int vol = val;
-                Config.hideblue = vol;
-                Utils.setprefi("hideblue", vol);
-                GobHitbox.fillclrstate = new States.ColState(new Color(Config.hidered, Config.hidegreen, Config.hideblue, 255));
-            }
-        });
         hidesettings.add(new PButton(200, "Back", 27, main), new Coord(210, 360));
         hidesettings.pack();
     }
 
     private void initSoundAlarms() {
         final WidgetVerticalAppender appender = new WidgetVerticalAppender(withScrollport(soundalarms, new Coord(620, 350)));
-
+        appender.add(new Label("Individual alarms are now set by alt+right clicking an object, or navigating to the alert menu and adding manually."));
+        appender.add(new Label("The alert menu can be found by navigating through the bottom right menugrid using 'Game Windows'"));
         appender.setVerticalMargin(VERTICAL_MARGIN);
         appender.setHorizontalMargin(HORIZONTAL_MARGIN);
         appender.add(new CheckBox("Ping on ant dungeon key drops.") {
@@ -3064,20 +2719,6 @@ public class OptWnd extends Window {
             }
         });
         appender.setVerticalMargin(0);
-        appender.addRow(new Label("Forageable Alarm"), makeAlarmDropdownForagable());
-        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
-        appender.add(new HSlider(200, 0, 1000, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = (int)(Config.alarmonforagablesvol * 1000);
-            }
-
-            public void changed() {
-                double vol = val / 1000.0;
-                Config.alarmonforagablesvol = vol;
-                Utils.setprefd("alarmonforagablesvol", vol);
-            }
-        });
         appender.addRow(new Label("Unknown Player Alarm"), makeAlarmDropdownUnknown());
         appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
         appender.add(new HSlider(200, 0, 1000, 0) {
@@ -3093,38 +2734,6 @@ public class OptWnd extends Window {
             }
         });
         appender.setVerticalMargin(0);
-        appender.addRow(new Label("Ant /Bat Dungeon Alarm"),makeAlarmDropdownDungeon());
-        appender.addRow(new Label("Beaver Dungeon Alarm"),makeAlarmDropdownBeaverDungeon());
-        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
-        appender.add(new HSlider(200, 0, 1000, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = (int)(Config.alarmdungeonvol * 1000);
-            }
-
-            public void changed() {
-                double vol = val / 1000.0;
-                Config.alarmdungeonvol = vol;
-                Utils.setprefd("alarmdungeonvol", vol);
-            }
-        });
-
-        appender.setVerticalMargin(0);
-        appender.addRow(new Label("Nidbane Alarm"), makeAlarmDropdownNidbane());
-        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
-        appender.add(new HSlider(200, 0, 1000, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = (int)(Config.alarmnidbanevol * 1000);
-            }
-
-            public void changed() {
-                double vol = val / 1000.0;
-                Config.alarmnidbanevol = vol;
-                Utils.setprefd("alarmnidbanevol", vol);
-            }
-        });
-        appender.setVerticalMargin(0);
         appender.addRow(new Label("Red Player Alarm"),makeAlarmDropdownRed());
         appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
         appender.add(new HSlider(200, 0, 1000, 0) {
@@ -3137,126 +2746,6 @@ public class OptWnd extends Window {
                 double vol = val / 1000.0;
                 Config.alarmredvol = vol;
                 Utils.setprefd("alarmredvol", vol);
-            }
-        });
-        appender.setVerticalMargin(0);
-        appender.addRow(new Label("Adder Alarm"), makeAlarmDropdownAdder());
-        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
-        appender.add(new HSlider(200, 0, 1000, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = (int) (Config.alarmaddervol * 1000);
-            }
-
-            public void changed() {
-                double vol = val / 1000.0;
-                Config.alarmaddervol = vol;
-                Utils.setprefd("alarmaddervol", vol);
-            }
-        });
-        appender.setVerticalMargin(0);
-        appender.addRow(new Label("Wild Horse Alarm"), makeAlarmDropdownHorse());
-        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
-        appender.add(new HSlider(200, 0, 1000, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = (int) (Config.alarmhorsevol * 1000);
-            }
-
-            public void changed() {
-                double vol = val / 1000.0;
-                Config.alarmhorsevol = vol;
-                Utils.setprefd("alarmhorsevol", vol);
-            }
-        });
-        appender.setVerticalMargin(0);
-        appender.addRow(new Label("Moose Alarm"), makeAlarmDropdownMoose());
-        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
-        appender.add(new HSlider(200, 0, 1000, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = (int) (Config.alarmmoosevol * 1000);
-            }
-
-            public void changed() {
-                double vol = val / 1000.0;
-                Config.alarmhorsevol = vol;
-                Utils.setprefd("alarmmoosevol", vol);
-            }
-        });
-        appender.setVerticalMargin(0);
-        appender.addRow(new Label("Lynx Alarm"), makeAlarmDropdownLynx());
-        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
-        appender.add(new HSlider(200, 0, 1000, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = (int) (Config.alarmlynxvol * 1000);
-            }
-
-            public void changed() {
-                double vol = val / 1000.0;
-                Config.alarmlynxvol = vol;
-                Utils.setprefd("alarmlynxvol", vol);
-            }
-        });
-        appender.setVerticalMargin(0);
-        appender.addRow(new Label("Walrus Alarm"), makeAlarmDropdownWalrus());
-        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
-        appender.add(new HSlider(200, 0, 1000, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = (int) (Config.alarmwalrusvol * 1000);
-            }
-
-            public void changed() {
-                double vol = val / 1000.0;
-                Config.alarmwalrusvol = vol;
-                Utils.setprefd("alarmwalrusvol", vol);
-            }
-        });
-        appender.setVerticalMargin(0);
-        appender.addRow(new Label("Seal Alarm"), makeAlarmDropdownSeal());
-        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
-        appender.add(new HSlider(200, 0, 1000, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = (int) (Config.alarmsealvol * 1000);
-            }
-
-            public void changed() {
-                double vol = val / 1000.0;
-                Config.alarmsealvol = vol;
-                Utils.setprefd("alarmsealvol", vol);
-            }
-        });
-        appender.setVerticalMargin(0);
-        appender.addRow(new Label("Mammoth Alarm"), makeAlarmDropdownMammoth());
-        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
-        appender.add(new HSlider(200, 0, 1000, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = (int) (Config.alarmmammothvol * 1000);
-            }
-
-            public void changed() {
-                double vol = val / 1000.0;
-                Config.alarmmammothvol = vol;
-                Utils.setprefd("alarmmammothvol", vol);
-            }
-        });
-        appender.setVerticalMargin(0);
-        appender.addRow(new Label("Eagle Alarm"), makeAlarmDropdownEagle());
-        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
-        appender.add(new HSlider(200, 0, 1000, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = (int) (Config.alarmeaglevol * 1000);
-            }
-
-            public void changed() {
-                double vol = val / 1000.0;
-                Config.alarmeaglevol = vol;
-                Utils.setprefd("alarmeaglevol", vol);
             }
         });
         appender.setVerticalMargin(0);
@@ -3299,105 +2788,13 @@ public class OptWnd extends Window {
                 Utils.setprefd("studyalarmvol", vol);
             }
         });
-        appender.addRow(new Label("Alarm on Trolls"), makeAlarmDropdownTroll());
-        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
-        appender.add(new HSlider(200, 0, 1000, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = (int) (Config.alarmtrollvol * 1000);
-            }
-
-            public void changed() {
-                double vol = val / 1000.0;
-                Config.alarmtrollvol = vol;
-                Utils.setprefd("alarmtrollvol", vol);
+        appender.add(new Button(200, "New Alerts System", false) {
+            public void click() {
+                GameUI gui = gameui();
+                if(gui != null)
+                    gui.toggleAlerted();
             }
         });
-        appender.setVerticalMargin(0);
-        appender.addRow(new Label("Catapult/Ram Alarm"), makeAlarmDropdownSiege());
-        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
-        appender.add(new HSlider(200, 0, 1000, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = (int) (Config.alarmbramvol * 1000);
-            }
-
-            public void changed() {
-                double vol = val / 1000.0;
-                Config.alarmbramvol = vol;
-                Utils.setprefd("alarmbramvol", vol);
-            }
-        });
-        appender.setVerticalMargin(0);
-        appender.addRow(new Label("Wrecking Ball Alarm"), makeAlarmDropdownWBall());
-        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
-        appender.add(new HSlider(200, 0, 1000, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = (int) (Config.alarmwballvol * 1000);
-            }
-
-            public void changed() {
-                double vol = val / 1000.0;
-                Config.alarmwballvol = vol;
-                Utils.setprefd("alarmwballvol", vol);
-            }
-        });
-        appender.setVerticalMargin(0);
-        appender.addRow(new Label("Bear Alarm"),makeAlarmDropdownBear());
-        appender.setVerticalMargin(5);
-        appender.add(new HSlider(200, 0, 1000, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                this.val = (int)(Config.alarmbearsvol * 1000.0D);
-            }
-
-            public void changed() {
-                double vol = (double)this.val / 1000.0D;
-                Config.alarmbearsvol = vol;
-                Utils.setprefd("alarmbearsvol", vol);
-            }
-        });
-        appender.setVerticalMargin(0);
-        appender.addRow(new Label("Local Resource Alarm"),makeAlarmDropdownSwag());
-        appender.setVerticalMargin(VERTICAL_AUDIO_MARGIN);
-        appender.add(new HSlider(200, 0, 1000, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = (int) (Config.alarmlocresvol * 1000);
-            }
-
-            public void changed() {
-                double vol = val / 1000.0;
-                Config.alarmlocresvol = vol;
-                Utils.setprefd("alarmlocresvol", vol);
-            }
-        });
-
-        soundalarms.add(new Label("Alarm on"), new Coord(470, 0));
-        CheckListbox itemslist = new CheckListbox(145, 18) {
-            @Override
-            protected void itemclick(CheckListboxItem itm, int button) {
-                super.itemclick(itm, button);
-                Utils.setprefchklst("alarmitems", Config.alarmitems);
-            }
-        };
-        for (CheckListboxItem itm : Config.alarmitems.values())
-            itemslist.items.add(itm);
-        soundalarms.add(itemslist, new Coord(470, 15));
-        soundalarms.add(new HSlider(145, 0, 1000, 0) {
-            protected void attach(UI ui) {
-                super.attach(ui);
-                val = (int) (Config.alarmonforagablesvol * 1000);
-            }
-
-            public void changed() {
-                double vol = val / 1000.0;
-                Config.alarmonforagablesvol = vol;
-                Utils.setprefd("alarmonforagablesvol", vol);
-            }
-        }, new Coord(470, 340));
-
         soundalarms.add(new PButton(200, "Back", 27, main), new Coord(210, 360));
         soundalarms.pack();
     }

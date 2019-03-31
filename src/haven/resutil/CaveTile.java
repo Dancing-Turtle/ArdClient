@@ -52,14 +52,20 @@ public class CaveTile extends Tiler {
 
         public Vertex[] fortile(Coord tc) {
             if (wv[cs.o(tc)] == null) {
-                Random rnd = m.grnd(tc.add(m.ul));
-                Vertex[] buf = wv[cs.o(tc)] = new Vertex[4];
-                buf[0] = ms.new Vertex(ms.fortile(tc));
-                for (int i = 1; i < buf.length; i++) {
-                    buf[i] = ms.new Vertex(buf[0].x, buf[0].y, buf[0].z + (i * h / (buf.length - 1)));
-                    buf[i].x += (rnd.nextFloat() - 0.5f) * 3.0f;
-                    buf[i].y += (rnd.nextFloat() - 0.5f) * 3.0f;
-                    buf[i].z += (rnd.nextFloat() - 0.5f) * 3.5f;
+                if(Config.flatcaves){
+                    Vertex[] buf = wv[cs.o(tc)] = new Vertex[2];
+                    buf[0] = ms.fortile(tc);
+                    buf[1] = ms.new Vertex(buf[0].x, buf[0].y, buf[0].z + 7F);
+                }else {
+                    Random rnd = m.grnd(tc.add(m.ul));
+                    Vertex[] buf = wv[cs.o(tc)] = new Vertex[4];
+                    buf[0] = ms.new Vertex(ms.fortile(tc));
+                    for (int i = 1; i < buf.length; i++) {
+                        buf[i] = ms.new Vertex(buf[0].x, buf[0].y, buf[0].z + (i * h / (buf.length - 1)));
+                        buf[i].x += (rnd.nextFloat() - 0.5f) * 3.0f;
+                        buf[i].y += (rnd.nextFloat() - 0.5f) * 3.0f;
+                        buf[i].z += (rnd.nextFloat() - 0.5f) * 3.5f;
+                    }
                 }
             }
             return (wv[cs.o(tc)]);
@@ -84,7 +90,10 @@ public class CaveTile extends Tiler {
                     ground = ts.tfac().create(id, ts);
                 }
             }
-            return(new CaveTile(id, set, wtex, ground));
+            if(Config.flatcaves)
+                 return(new CaveTile(id, wtex, ground));
+            else
+                 return(new CaveTile(id, set, wtex, ground));
         }
     }
 
@@ -93,6 +102,12 @@ public class CaveTile extends Tiler {
         this.wtex = wtex;
         this.ground = ground;
     }
+    public CaveTile(int id, Material wtex, Tiler ground) {
+        super(id);
+        this.wtex = wtex;
+        this.ground = ground;
+    }
+
 
     private static final Coord[] tces = {new Coord(0, -1), new Coord(1, 0), new Coord(0, 1), new Coord(-1, 0)};
     private static final Coord[] tccs = {new Coord(0, 0), new Coord(1, 0), new Coord(1, 1), new Coord(0, 1)};

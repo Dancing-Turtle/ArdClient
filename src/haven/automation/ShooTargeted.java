@@ -3,7 +3,7 @@ package haven.automation;
 
 import haven.*;
 import haven.Utils;
-import haven.purus.BotUtils;
+import haven.purus.pbot.PBotUtils;
 
 import static haven.OCache.posres;
 
@@ -31,7 +31,7 @@ public class ShooTargeted implements Runnable {
             return;
         FlowerMenu.setNextSelection("Shoo");
        gui.map.wdgmsg("click", animal.sc, animal.rc.floor(posres), 3, 0, 0, (int) animal.id, animal.rc.floor(posres), 0, -1);
-        BotUtils.sleep(300);
+        PBotUtils.sleep(300);
         for(CheckListboxItem itm :Config.flowermenus.values()) {
             if (itm.name.equals("Inspect")) {
                 itm.selected =inspect;

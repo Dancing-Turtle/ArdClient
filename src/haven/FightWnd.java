@@ -26,7 +26,7 @@
 
 package haven;
 
-import haven.purus.BotUtils;
+import haven.purus.pbot.PBotUtils;
 
 import static haven.CharWnd.attrf;
 import static haven.Inventory.invsq;
@@ -941,12 +941,12 @@ public class FightWnd extends Widget {
         try {
             if(!saves[index].text.equals("unused save")) {
                 schoolsDropdown.change(new Pair(saves[index], index));
-                BotUtils.sysMsg("Switched to deck : " + saves[index].text, Color.white);
+                PBotUtils.sysMsg("Switched to deck : " + saves[index].text, Color.white);
             }
             else
-                BotUtils.sysMsg("This is not a saved deck, not switching.",Color.white);
+                PBotUtils.sysMsg("This is not a saved deck, not switching.",Color.white);
         }catch(Exception e ){
-            BotUtils.sysLogAppend("Exception switching combat decks, exception ignored to avoid crash.","white");
+            PBotUtils.sysLogAppend("Exception switching combat decks, exception ignored to avoid crash.","white");
         }
     }
 

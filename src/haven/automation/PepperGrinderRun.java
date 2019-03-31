@@ -4,8 +4,7 @@ import haven.Button;
 import haven.*;
 import haven.Label;
 import haven.Window;
-import haven.purus.BotUtils;
-import haven.purus.pbot.PBotAPI;
+import haven.purus.pbot.PBotUtils;
 
 import java.awt.*;
 import java.util.*;
@@ -68,11 +67,11 @@ public class PepperGrinderRun extends Window implements Runnable {
 
 			//section = 4;
 			tables = Tables();
-			BotUtils.sysMsg("Pepper Grinder Bot started! Tables selected : "+tables.size(), Color.white);
+			PBotUtils.sysMsg("Pepper Grinder Bot started! Tables selected : "+tables.size(), Color.white);
 			GameUI gui = gameui();
 
 			gui.wdgmsg("act", "craft", "blackpepper");
-			BotUtils.waitForWindow("Crafting");
+			PBotUtils.waitForWindow("Crafting");
 
 			if (stopThread) // Checks if aborted
 				return;
@@ -84,7 +83,7 @@ public class PepperGrinderRun extends Window implements Runnable {
 				if (stam.a <= 60) {
 					lblProg.settext("Drinking");
 					new Thread(new BeltDrink(gui), "BeltDrink").start();
-					BotUtils.sleep(5000);
+					PBotUtils.sleep(5000);
 				}
 
 
@@ -140,7 +139,7 @@ public class PepperGrinderRun extends Window implements Runnable {
 		BotUtils.sleep(6000);
 	}*/
 				int finishtimeout = 0;
-				while (BotUtils.invFreeSlots() > 2 && !stopThread) {
+				while (PBotUtils.invFreeSlots() > 2 && !stopThread) {
 					if(stopThread)
 						return;
 					finishtimeout++;
@@ -171,7 +170,7 @@ public class PepperGrinderRun extends Window implements Runnable {
 					blacklist.clear();
 					//BotUtils.sleep(500);
 					//	BotUtils.sysLogAppend("Found table, clicking", "white");
-					PBotAPI.pfRightClick(htable, 0);
+					PBotUtils.pfRightClick(htable, 0);
 					try {
 						gui.map.pfthread.join();
 					} catch (InterruptedException e) {
@@ -197,9 +196,9 @@ public class PepperGrinderRun extends Window implements Runnable {
 								Coord finalloc = new Coord(x, y);
 								gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
 								retrycount = 0;
-								BotUtils.sleep(1000);
+								PBotUtils.sleep(1000);
 							}
-							PBotAPI.pfRightClick(htable, 0);
+							PBotUtils.pfRightClick(htable, 0);
 							try {
 								gui.map.pfthread.join();
 							} catch (InterruptedException e) {
@@ -211,29 +210,29 @@ public class PepperGrinderRun extends Window implements Runnable {
 								return;
 							}
 						}
-						BotUtils.sleep(10);
+						PBotUtils.sleep(10);
 					}
-					BotUtils.waitForWindow("Herbalist Table");
+					PBotUtils.waitForWindow("Herbalist Table");
 					//gui.map.wdgmsg("click", htable.sc, htable.rc.floor(posres), 3, 0, 0, (int) htable.id, htable.rc.floor(posres), 0, -1);
 					//BotUtils.sysLogAppend("Found table, clicked", "white");
 					//BotUtils.waitForWindow("Herbalist Table");
 					Window herbtable = gui.getwnd("Herbalist Table");
 					if (herbtable == null)
 						continue;
-					int freeslots = BotUtils.invFreeSlots();
+					int freeslots = PBotUtils.invFreeSlots();
 					for (Widget w = herbtable.lchild; w != null; w = w.prev) {
 						if (w instanceof Inventory) {
 							Inventory inv = (Inventory) w;
-							List<WItem> items = BotUtils.getInventoryContents(inv);
+							List<WItem> items = PBotUtils.getInventoryContents(inv);
 							for (WItem item : items) {
-								freeslots = BotUtils.invFreeSlots();
+								freeslots = PBotUtils.invFreeSlots();
 								if (freeslots > 16) {
 									System.out.println("Transferring pepper freeslots : " + freeslots);
 									item.item.wdgmsg("transfer", Coord.z);
 								} else if (freeslots > 2) {
 									System.out.println("Transferring pepper freeslots : " + freeslots);
 									item.item.wdgmsg("transfer", Coord.z);
-									BotUtils.sleep(300);
+									PBotUtils.sleep(300);
 								} else
 									break;
 							}
@@ -243,11 +242,11 @@ public class PepperGrinderRun extends Window implements Runnable {
 					//	BotUtils.sysLogAppend("Tables Size : "+tables.size(),"white");
 					htable = null;
 				}
-				if (BotUtils.invFreeSlots() <= 2) {
+				if (PBotUtils.invFreeSlots() <= 2) {
 					GItem pepperlol = gui.maininv.getItemPartial("Dried").item;
 					java.util.List<WItem> pepper = gui.maininv.getIdenticalItems((pepperlol));
 					lblProg.settext("Status - Going to Grind");
-					BotUtils.pfRightClick(grinder, 0);
+					PBotUtils.pfRightClick(grinder, 0);
 					try {
 						gui.map.pfthread.join();
 					} catch (InterruptedException e) {
@@ -258,7 +257,7 @@ public class PepperGrinderRun extends Window implements Runnable {
 					} catch (InterruptedException e) {
 						return;
 					}
-					BotUtils.sleep(6000); //sleep 6 seconds to walk to grinder
+					PBotUtils.sleep(6000); //sleep 6 seconds to walk to grinder
 					int timeout = 0;
 					int retrycount = 0;
 					while (gui.maininv.getIdenticalItems((pepperlol)).size() > 5) {
@@ -268,12 +267,12 @@ public class PepperGrinderRun extends Window implements Runnable {
 							timeout = 0;
 						}
 						while (gui.prog >= 0) {
-							BotUtils.sleep(10);
+							PBotUtils.sleep(10);
 							lblProg.settext("Status - Grinding");
 						}
-						if (PBotAPI.getStamina() > 50) {
+						if (PBotUtils.getStamina() > 50) {
 							ui.makewnd.wdgmsg("make",1);
-							BotUtils.sleep(2000);
+							PBotUtils.sleep(2000);
 							retrycount++;
 							if (retrycount > 1) {
 								lblProg.settext("Unstucking");
@@ -284,9 +283,9 @@ public class PepperGrinderRun extends Window implements Runnable {
 								Coord finalloc = new Coord(x, y);
 								gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
 								retrycount = 0;
-								BotUtils.sleep(1000);
+								PBotUtils.sleep(1000);
 
-								BotUtils.pfRightClick(grinder, 0);
+								PBotUtils.pfRightClick(grinder, 0);
 								try {
 									gui.map.pfthread.join();
 								} catch (InterruptedException e) {
@@ -301,7 +300,7 @@ public class PepperGrinderRun extends Window implements Runnable {
 						} else {
 							lblProg.settext("Status - Drinking");
 							new Thread(new BeltDrink(gui), "BeltDrink").start();
-							BotUtils.sleep(5000);
+							PBotUtils.sleep(5000);
 						}
 					}
 				//	gui.map.wdgmsg("click", hfire.sc, hfire.rc.floor(posres), 1, 0, 0, (int) hfire.id, hfire.rc.floor(posres), 0, -1);
@@ -312,7 +311,7 @@ public class PepperGrinderRun extends Window implements Runnable {
 				if(stopThread)
 					return;
 			}
-			BotUtils.sysMsg("Done",Color.white);
+			PBotUtils.sysMsg("Done",Color.white);
 			stopThread = true;
 		}
 
@@ -414,7 +413,7 @@ public class PepperGrinderRun extends Window implements Runnable {
 
 	public void stop() {
 		// Stops thread
-		BotUtils.sysMsg("Pepper Grinder Stopped!", Color.white);
+		PBotUtils.sysMsg("Pepper Grinder Stopped!", Color.white);
 		//gameui().map.wdgmsg("click", Coord.z, gameui().map.player().rc.floor(posres), 1, 0);
 		if (gameui().map.pfthread != null) {
 			gameui().map.pfthread.interrupt();

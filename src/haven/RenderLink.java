@@ -27,6 +27,7 @@
 package haven;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 public interface RenderLink {
     public Rendered make();
@@ -88,6 +89,7 @@ public interface RenderLink {
                     }
                 };
             } else if (t == 1) {
+	        mesh = null;
                 String nm = buf.string();
                 int ver = buf.uint16();
                 final Indir<Resource> amb = res.pool.load(nm, ver);
@@ -97,6 +99,7 @@ public interface RenderLink {
                     }
                 };
             } else if (t == 2) {
+		mesh = null;
                 String nm = buf.string();
                 int ver = buf.uint16();
                 final Indir<Resource> lres = res.pool.load(nm, ver);
@@ -106,7 +109,7 @@ public interface RenderLink {
 
                     public Rendered make() {
                         if (res == null) {
-                            ArrayList<Rendered> cl = new ArrayList<Rendered>();
+				ArrayList<Rendered> cl = new ArrayList<>();
                             for (FastMesh.MeshRes mr : lres.get().layers(FastMesh.MeshRes.class)) {
                                 if (((meshid >= 0) && (mr.id < 0)) || (mr.id == meshid))
                                     cl.add(mr.mat.get().apply(mr.m));
@@ -127,9 +130,18 @@ public interface RenderLink {
                     }
                 };
             } else {
+		mesh = null;
                 throw (new Resource.LoadException("Invalid renderlink type: " + t, getres()));
             }
         }
+
+	public Optional<Resource> mesh() {
+	    try {
+	        return mesh != null ? Optional.of(mesh.get()) : Optional.empty();
+	    } catch (Loading l) {
+	        return Optional.empty();
+	    }
+	}
 
         public void init() {
         }

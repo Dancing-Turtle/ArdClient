@@ -36,8 +36,8 @@ import haven.HiddenWndData;
 import haven.MovableWidget;
 import haven.Theme;
 import haven.DefSettings;
-import haven.purus.BotUtils;
-import haven.purus.pbot.PBotAPI;
+import haven.purus.pbot.PBotUtils;
+import haven.res.ui.tt.Wear;
 import haven.resutil.Curiosity;
 
 import java.awt.*;
@@ -316,7 +316,7 @@ public class Window extends MovableWidget implements DTarget {
 
 
 
-
+    private static HashMap<String, Long> recentlyTakenCutlery = new HashMap<>();
     protected void drawframe(GOut g) {
         // Study Table total LP and durations of curiosities
         Collection GetCurios = new ArrayList(); //add curios from tables to this before parsing
@@ -391,24 +391,38 @@ public class Window extends MovableWidget implements DTarget {
                                 } catch (NullPointerException q) {
                                 }
                             }
-                            BotUtils.sleep(1000);
+                            PBotUtils.sleep(1000);
                             Map idk2 = getStats();
                             idk2.forEach((k,v) ->{
                                 if((Integer)idk2.get(k) - (Integer)idk.get(k) > 0) {
                                     System.out.println("Bulk Stats gained : " + k + " value : " + ((Integer) idk2.get(k) - (Integer) idk.get(k)));
-                                    BotUtils.sysLogAppend("Bulk Stats gained : " + k + " value : " + ((Integer) idk2.get(k) - (Integer) idk.get(k)),"green");
+                                    PBotUtils.sysLogAppend("Bulk Stats gained : " + k + " value : " + ((Integer) idk2.get(k) - (Integer) idk.get(k)),"green");
                                 }
                                 else
                                     System.out.println("Old : "+idk.get(k)+" new : "+v);
                             });
                         }
                         else{
-                            BotUtils.sysMsg("Click Feast First!",Color.white);
+                            PBotUtils.sysMsg("Click Feast First!",Color.white);
                         }
 
                     }
                 }, new Coord(140, 325));
-
+                for(Widget w = this.lchild; w != null; w = w.prev) {
+                    if(w instanceof Inventory) {
+                        for(WItem item:((Inventory) w).wmap.values()) {
+                            for(ItemInfo ii:item.item.info())
+                                if(ii instanceof Wear) {
+                                    Wear wr = (Wear)ii;
+                                    if(wr.d == wr.m-1 && item.item.getres() != null && (!recentlyTakenCutlery.containsKey(item.item.getres().name) || System.currentTimeMillis() - recentlyTakenCutlery.get(item.item.getres().name) > 1000*60)) { // About to break
+                                        item.item.wdgmsg("transfer", Coord.z);
+                                        ui.gui.msg("Detected cutlery that is about to break! Taking to inventory! You may want to polish it.", Color.yellow);
+                                        recentlyTakenCutlery.put(item.item.getres().name, System.currentTimeMillis());
+                                    }
+                                }
+                        }
+                    }
+                }
             }
 
             if (this.cap.text.equals (Resource.getLocString(Resource.BUNDLE_WINDOW, "Study Desk"))){
@@ -534,9 +548,9 @@ public class Window extends MovableWidget implements DTarget {
                             Curios.add(itm);
                     Curios.removeAll(GetCurios);
                     if (!Curios.isEmpty()) {
-                        BotUtils.sysMsg("Missing Curios : " + Curios, Color.WHITE);
+                        PBotUtils.sysMsg("Missing Curios : " + Curios, Color.WHITE);
                     } else
-                        BotUtils.sysMsg("No Curios missing! GJ bro", Color.WHITE);
+                        PBotUtils.sysMsg("No Curios missing! GJ bro", Color.WHITE);
                 }
             }
         } catch(Loading l) {}

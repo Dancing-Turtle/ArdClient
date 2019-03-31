@@ -9,6 +9,8 @@ import java.util.List;
 
 import haven.*;
 import haven.automation.GobSelectCallback;
+import haven.purus.pbot.PBotAPI;
+import haven.purus.pbot.PBotUtils;
 
 public class TroughFiller extends Window implements GobSelectCallback {
 
@@ -56,7 +58,7 @@ public class TroughFiller extends Window implements GobSelectCallback {
 						}
 					System.out.println("Main loop start");
 					int timeout = 0;
-					while(BotUtils.findObjectByNames(5000,terobjs) == null) {
+					while(PBotUtils.findObjectByNames(5000,terobjs) == null) {
 						System.out.println("Waiting to detect objects");
 						timeout++;
 						if(stop) {
@@ -68,15 +70,14 @@ public class TroughFiller extends Window implements GobSelectCallback {
 							stop();
 							break;
 						}
-						BotUtils.sleep(50);
+						PBotUtils.sleep(50);
 					}
-					if (BotUtils.findObjectByNames(5000, terobjs) == null && BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), invobjs).size() == 0) {
+					if (PBotUtils.findObjectByNames(5000, terobjs) == null && PBotUtils.getInventoryItemsByNames(PBotAPI.gui.maininv, invobjs).size() == 0) {
 						System.out.println("No objects on ground or in inv, breaking.");
 						break;
 					}
-					while(BotUtils.getItemAtHand() == null){
+					while(PBotUtils.getItemAtHand() == null){
 						System.out.println("Waiting for item on cursor");
-					//while (BotUtils.invFreeSlots() > 0) {
 						if (stop) {
 							System.out.println("Stop detected, breaking.");
 							stop = true;
@@ -84,25 +85,16 @@ public class TroughFiller extends Window implements GobSelectCallback {
 						}
 
 
-						if (BotUtils.findObjectByNames(5000, terobjs) == null) {
+						if (PBotUtils.findObjectByNames(5000, terobjs) == null) {
 							System.out.println("No objects on ground, breaking.");
 							break;
 						}
 
-						Gob g = BotUtils.findObjectByNames(5000, terobjs);
+						Gob g = PBotUtils.findObjectByNames(5000, terobjs);
 						gameui().map.wdgmsg("click", g.sc, g.rc.floor(posres),3,1,0,(int)g.id,g.rc.floor(posres),0,-1);
-						BotUtils.sleep(1000);
-					//	gui.map.wdgmsg("click", cistern.sc, cistern.rc.floor(posres), 3, 0, 0, (int) cistern.id, cistern.rc.floor(posres), 0, -1);
-						//BotUtils.pfRightClick(g, 0);
-						while(BotUtils.getItemAtHand() == null & BotUtils.findObjectByNames(5000,terobjs)!=null && BotUtils.isMoving())
-							BotUtils.sleep(10);
-						/*int i = 0;
-						while (BotUtils.findObjectById(g.id) != null) {
-							if (i == 100)
-								break;
-							BotUtils.sleep(50);
-							i++;
-						}*/
+						PBotUtils.sleep(1000);
+						while(PBotUtils.getItemAtHand() == null & PBotUtils.findObjectByNames(5000,terobjs)!=null && PBotUtils.isMoving())
+							PBotUtils.sleep(10);
 					}
 
 					if (stop) {
@@ -110,77 +102,58 @@ public class TroughFiller extends Window implements GobSelectCallback {
 						return;
 					}
 
-					BotUtils.sleep(500);
+						PBotUtils.sleep(500);
 
-					if (BotUtils.getItemAtHand() != null)
-						BotUtils.dropItem(0);
+					if (PBotUtils.getItemAtHand() != null)
+						PBotUtils.dropItem(0);
 
-					BotUtils.pfRightClick(trough, 0);
+						PBotUtils.pfRightClick(trough, 0);
 					int retry = 0;
 					while(gameui().getwnd("Trough") == null && gameui().getwnd("Compost Bin") == null){
 						retry++;
 						if(retry > 500){
 							retry = 0;
-							BotUtils.sysLogAppend("Retrying trough/Compost Bin interaction","white");
-							BotUtils.dropItem(0);
-							BotUtils.pfRightClick(trough,0);
+							PBotUtils.sysLogAppend("Retrying trough/Compost Bin interaction","white");
+							PBotUtils.dropItem(0);
+							PBotUtils.pfRightClick(trough,0);
 						}
-						BotUtils.sleep(10);
+						PBotUtils.sleep(10);
 					}
-					//BotUtils.waitForWindow("Trough");
-
-				/*	while (BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), invobjs).size() != 0 && !stop) {
-						if (stop)
-							break main;
-						GItem item = BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), invobjs).get(0).item;
-						BotUtils.takeItem(item);
-
-						gameui().map.wdgmsg("itemact", Coord.z, trough.rc.floor(posres), 0, 0, (int) trough.id,
-								trough.rc.floor(posres), 0, -1);
-						int i = 0;
-						while (BotUtils.getItemAtHand() != null) {
-							if (i == 60000)
-								break main;
-							BotUtils.sleep(10);
-							i++;
-						}
-					}*/
-
-					while(BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), invobjs).size() > 0 && !stop){
+					while(PBotUtils.getInventoryItemsByNames(PBotAPI.gui.maininv, invobjs).size() > 0 && !stop){
 
 						if (stop) {
 							System.out.println("stop detected ,breaking");
 							return;
 						}
-						if(BotUtils.getItemAtHand() == null){
-							GItem item = BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), invobjs).get(0).item;
-							BotUtils.takeItem(item);
-							BotUtils.sleep(100);
+						if(PBotUtils.getItemAtHand() == null){
+							GItem item = PBotUtils.getInventoryItemsByNames(PBotAPI.gui.maininv, invobjs).get(0).item;
+							PBotUtils.takeItem(item);
+							PBotUtils.sleep(100);
 						}
-						if(BotUtils.getItemAtHand() == null){
+						if(PBotUtils.getItemAtHand() == null){
 							System.out.println("Hand null, breaking");
 							break;
 						}
-						List<WItem> list = BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(),invobjs);
+						List<WItem> list = PBotUtils.getInventoryItemsByNames(PBotAPI.gui.maininv,invobjs);
 						gameui().map.wdgmsg("itemact", Coord.z, trough.rc.floor(posres), 1, 0, (int) trough.id, trough.rc.floor(posres), 0, -1);
 						int i = 0;
-						while(BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), invobjs).size() == list.size()) {
+						while(PBotUtils.getInventoryItemsByNames(PBotAPI.gui.maininv, invobjs).size() == list.size()) {
 							if(i > 500){
 								System.out.println("Trough appears to be full, breaking.");
 								break;
 							}
-							BotUtils.sleep(10);
+							PBotUtils.sleep(10);
 							i++;
 						}
 					}
-					BotUtils.sleep(250);
-					if(BotUtils.getItemAtHand() != null)
+						PBotUtils.sleep(250);
+					if(PBotUtils.getItemAtHand() != null)
 						gameui().map.wdgmsg("itemact", Coord.z, trough.rc.floor(posres), 0, 0, (int) trough.id, trough.rc.floor(posres), 0, -1);
 				}catch(Loading | Resource.LoadException | NullPointerException idklol) {
-						BotUtils.sysLogAppend("Error captured in main thread.","white");
+						PBotUtils.sysLogAppend("Error captured in main thread.","white");
 					}
 			}
-			BotUtils.sysMsg("Trough Filler finished", Color.WHITE);
+			PBotUtils.sysMsg("Trough Filler finished", Color.WHITE);
 			stop = true;
 			stop();
 		}
@@ -206,8 +179,7 @@ public class TroughFiller extends Window implements GobSelectCallback {
 	public void stop() {
 		t.interrupt();
 		stop = true;
-		BotUtils.sysMsg("Stopping Trough Filler",Color.white);
+		PBotUtils.sysMsg("Stopping Trough Filler",Color.white);
 		this.destroy();
-	//	gameui().map.wdgmsg("click", Coord.z, new Coord((int)BotUtils.player().rc.x, (int)BotUtils.player().rc.y), 1, 0);
 	}
 }

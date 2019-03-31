@@ -145,4 +145,32 @@ public class ISBox extends Widget implements DTarget {
         }
         return Integer.MAX_VALUE;
     }
+
+    public int getUsedCapacity() {
+        if (label == null || label.text == null)
+            return Integer.MAX_VALUE;
+        int sep = label.text.indexOf('/');
+        if (sep > 0) {
+            String count = label.text.substring(0, sep);
+            try {
+                return Integer.parseInt(count);
+            } catch (NumberFormatException nfe) {
+            }
+        }
+        return Integer.MAX_VALUE;
+    }
+
+    public int getTotalCapacity() {
+        if (label == null || label.text == null)
+            return Integer.MAX_VALUE;
+        int sep = label.text.indexOf('/');
+        if (sep > 0) {
+            String capacity = label.text.substring(sep + 1);
+            try {
+                return Integer.parseInt(capacity);
+            } catch (NumberFormatException nfe) {
+            }
+        }
+        return Integer.MAX_VALUE;
+    }
 }

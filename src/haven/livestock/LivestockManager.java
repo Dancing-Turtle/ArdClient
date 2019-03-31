@@ -8,7 +8,7 @@ import haven.*;
 import haven.Label;
 import haven.Window;
 import haven.Utils;
-import haven.purus.BotUtils;
+import haven.purus.pbot.PBotUtils;
 import javafx.scene.layout.Pane;
 
 import javax.xml.soap.Detail;
@@ -346,59 +346,59 @@ public class LivestockManager extends ResizableWnd {
             if (tgt == ResetHighlights)
                 MapView.markedGobs.clear();
             else if (tgt == Inspect)
-                BotUtils.sysMsg("Not yet implemented.",Color.white);
+                PBotUtils.sysMsg("Not yet implemented.",Color.white);
             else if (tgt == Slaughter)
-                BotUtils.sysMsg("Not yet implemented.",Color.white);
+                PBotUtils.sysMsg("Not yet implemented.",Color.white);
             else if (tgt==DropEntrails){
                 if (Config.DropEntrails) {
                     Config.DropEntrails = false;
                     DropEntrailsBox.a = false;
-                    BotUtils.sysMsg("No longer dropping entrails.",Color.white);
+                    PBotUtils.sysMsg("No longer dropping entrails.",Color.white);
                 }
                 else
                     {
                     Config.DropEntrails =true;
                     DropEntrailsBox.a = true;
-                    BotUtils.sysMsg("Auto dropping Entrails.",Color.white);
+                        PBotUtils.sysMsg("Auto dropping Entrails.",Color.white);
                 }
             }
             else if (tgt==DropIntestines){
                 if (Config.DropIntestines) {
                     Config.DropIntestines = false;
-                    BotUtils.sysMsg("No longer dropping Intestines.",Color.white);
+                    PBotUtils.sysMsg("No longer dropping Intestines.",Color.white);
                     DropIntestinesBox.a = false;
                 }
                 else
                 {
                     Config.DropIntestines =true;
                     DropIntestinesBox.a = true;
-                    BotUtils.sysMsg("Auto dropping Intestines.",Color.white);
+                    PBotUtils.sysMsg("Auto dropping Intestines.",Color.white);
                 }
             }
             else if(tgt==DropMeat){
                 if (Config.DropMeat) {
                     Config.DropMeat = false;
                     DropMeatBox.a = false;
-                    BotUtils.sysMsg("No longer dropping Meat.",Color.white);
+                    PBotUtils.sysMsg("No longer dropping Meat.",Color.white);
                 }
                 else
                 {
                     Config.DropMeat =true;
                     DropMeatBox.a = true;
-                    BotUtils.sysMsg("Auto dropping Meat.",Color.white);
+                    PBotUtils.sysMsg("Auto dropping Meat.",Color.white);
                 }
             }
             else if(tgt==DropBones){
                 if (Config.DropBones) {
                     Config.DropBones = false;
                     DropBonesBox.a = false;
-                    BotUtils.sysMsg("No longer dropping Bones.",Color.white);
+                    PBotUtils.sysMsg("No longer dropping Bones.",Color.white);
                 }
                 else
                 {
                     Config.DropBones =true;
                     DropBonesBox.a = true;
-                    BotUtils.sysMsg("Auto dropping Bones.",Color.white);
+                    PBotUtils.sysMsg("Auto dropping Bones.",Color.white);
                 }
             }
             else if(tgt==HighlightFemales){

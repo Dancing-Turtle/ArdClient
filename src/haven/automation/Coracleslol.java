@@ -2,7 +2,8 @@ package haven.automation;
 
 
 import haven.*;
-import haven.purus.BotUtils;
+import haven.purus.pbot.PBotAPI;
+import haven.purus.pbot.PBotUtils;
 
 import java.awt.*;
 import java.util.List;
@@ -34,62 +35,61 @@ public class Coracleslol implements Runnable {
                 else
                     havecoracle = false;
             } else havecoracle = false;
-        } catch (NullPointerException q) {
-            BotUtils.sysMsg("Prevented null pointer crash, something went wrong finding coracle.", Color.white);
+        } catch (Exception q) {
+            PBotUtils.sysMsg("Prevented crash, something went wrong finding coracle.", Color.white);
         }
             if (coracle != null)
                 havecoracle = true;
             if (!havecoracle) {
                 try {
                     if(invcoracle)
-                    while (BotUtils.findObjectByNames(10, "gfx/terobjs/vehicle/coracle") == null)
-                        BotUtils.sleep(10);
-                    coraclegob = BotUtils.findObjectByNames(10, "gfx/terobjs/vehicle/coracle");
+                    while (PBotUtils.findObjectByNames(10, "gfx/terobjs/vehicle/coracle") == null)
+                        PBotUtils.sleep(10);
+                    coraclegob = PBotUtils.findObjectByNames(10, "gfx/terobjs/vehicle/coracle");
 
                     if (coraclegob == null) {
-                        BotUtils.sysMsg("Coracle not found.", Color.white);
+                        PBotUtils.sysMsg("Coracle not found.", Color.white);
                         return;
                     } else {
                         FlowerMenu.setNextSelection("Pick up");
-                        BotUtils.doClick(coraclegob, 3, 1);
-                        BotUtils.sleep(250);
-                        // coracle = gui.maininv.getItemPartial("Coracle");
-                        List<Coord> slots = BotUtils.getFreeInvSlots(BotUtils.playerInventory());
+                        PBotUtils.doClick(coraclegob, 3, 1);
+                        PBotUtils.sleep(250);
+                        List<Coord> slots = PBotUtils.getFreeInvSlots(PBotAPI.gui.maininv);
                         for (Coord i : slots) {
-                            BotUtils.dropItemToInventory(i, BotUtils.playerInventory());
-                            BotUtils.sleep(10);
+                            PBotUtils.dropItemToInventory(i, PBotAPI.gui.maininv);
+                            PBotUtils.sleep(10);
                         }
                     }
-                } catch (NullPointerException ip) {
-                    BotUtils.sysMsg("Prevented null pointer crash, something went wrong finding coracle to pick up.", Color.white);
+                } catch (Exception ip) {
+                    PBotUtils.sysMsg("Prevented crash, something went wrong finding coracle to pick up.", Color.white);
                 }
             } else {
                 try {
                     coracle.item.wdgmsg("drop", Coord.z);
                     if(invcoracle) {
                         while (gui.maininv.getItemPartial("Coracle") != null)
-                            BotUtils.sleep(10);
+                            PBotUtils.sleep(10);
                     }else if(equipcoracle) {
                         while (gui.getequipory().quickslots[11] != null)
-                            BotUtils.sleep(10);
+                            PBotUtils.sleep(10);
                     }else{
-                        BotUtils.sysMsg("Somehow I don't know if the coracle came from inv or equipory, breaking.",Color.white);
+                        PBotUtils.sysMsg("Somehow I don't know if the coracle came from inv or equipory, breaking.",Color.white);
                         return;
                     }
-                    while (BotUtils.findObjectByNames(10, "gfx/terobjs/vehicle/coracle") == null)
-                        BotUtils.sleep(10);
-                    Gob coraclegob = BotUtils.findObjectByNames(10, "gfx/terobjs/vehicle/coracle");
+                    while (PBotUtils.findObjectByNames(10, "gfx/terobjs/vehicle/coracle") == null)
+                        PBotUtils.sleep(10);
+                    Gob coraclegob = PBotUtils.findObjectByNames(10, "gfx/terobjs/vehicle/coracle");
                     if (coraclegob == null) {
-                        BotUtils.sysMsg("Coracle not found, breaking.", Color.white);
+                        PBotUtils.sysMsg("Coracle not found, breaking.", Color.white);
                         return;
                     } else {//Into the blue yonder!
                         FlowerMenu.setNextSelection("Into the blue yonder!");
-                        BotUtils.doClick(coraclegob, 3, 1);
+                        PBotUtils.doClick(coraclegob, 3, 1);
                         while (gui.ui.root.findchild(FlowerMenu.class) == null) {
                         }
                     }
-                } catch (NullPointerException qqq) {
-                    BotUtils.sysMsg("Prevented null pointer crash, something went wrong dropping and mounting coracle.", Color.white);
+                } catch (Exception qqq) {
+                    PBotUtils.sysMsg("Prevented crash, something went wrong dropping and mounting coracle.", Color.white);
                 }
             }
         }

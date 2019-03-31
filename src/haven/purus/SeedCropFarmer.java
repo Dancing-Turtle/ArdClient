@@ -8,6 +8,7 @@ import java.util.*;
 import haven.*;
 import haven.automation.BeltDrink;
 import haven.purus.pbot.PBotAPI;
+import haven.purus.pbot.PBotUtils;
 import haven.res.ui.tt.q.qbuff.QBuff;
 
 public class SeedCropFarmer extends Window implements Runnable {
@@ -64,7 +65,7 @@ public class SeedCropFarmer extends Window implements Runnable {
 
 	public void run() {
 		// Initialise crop list
-		BotUtils.gui.map.unregisterGobSelect();
+		PBotAPI.gui.map.unregisterGobSelect();
 		crops = Crops();
 		int totalCrops = crops.size();
 		int cropsHarvested = 0;
@@ -82,7 +83,7 @@ public class SeedCropFarmer extends Window implements Runnable {
 			IMeter.Meter stam = gui.getmeter("stam", 0);
 			if (stam.a <= 60) {
 				new Thread(new BeltDrink(gui), "BeltDrink").start();
-				BotUtils.sleep(5000);
+				PBotUtils.sleep(5000);
 			}
 
 			if (stopThread)
@@ -91,39 +92,39 @@ public class SeedCropFarmer extends Window implements Runnable {
 			// Right click the crop
 			lblProg2.settext("Harvesting");
 			try {
-				BotUtils.doClick(g, 1, 0);
+				PBotUtils.doClick(g, 1, 0);
 				//BotUtils.pfRightClick(g,0);
 			}catch(NullPointerException ii){continue;}
 		//	BotUtils.gui.map.wdgmsg("click", Coord.z, g.rc.floor(posres), 1, 0);
 			int retryharvest = 0;
 			int retrycount = 0;
-			while (BotUtils.player().rc.x != g.rc.x || BotUtils.player().rc.y != g.rc.y) {
+			while (PBotUtils.player().rc.x != g.rc.x || PBotUtils.player().rc.y != g.rc.y) {
 				lblProg2.settext("Moving to Harvest");
 				retryharvest++;
 				if(retryharvest > 300)
 				{
 					lblProg2.settext("Unstucking");
-					BotUtils.sysLogAppend("Moving char", "white");
+					PBotUtils.sysLogAppend("Moving char", "white");
 					Gob player = gui.map.player();
 					Coord location = player.rc.floor(posres);
 					int x = location.x + getrandom();
 					int y = location.y + getrandom();
 					Coord finalloc = new Coord(x, y);
 					gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
-					BotUtils.sleep(1000);
-					BotUtils.doClick(g, 1, 0);
+					PBotUtils.sleep(1000);
+					PBotUtils.doClick(g, 1, 0);
 					retryharvest = 0;
 					retrycount++;
 				}
 				if(retrycount > 5){
-					BotUtils.sysLogAppend("Tried to move to crop 3 times, skipping left click loop","white");
+					PBotUtils.sysLogAppend("Tried to move to crop 3 times, skipping left click loop","white");
 					//super stuck, fuck it skip this wait
 					break;
 				}
-				BotUtils.sleep(10);
+				PBotUtils.sleep(10);
 			}
 
-			BotUtils.pfRightClick(g, 0);
+			PBotUtils.pfRightClick(g, 0);
 
 			// Wait for harvest menu to appear and harvest the crop
 			retryharvest = 0;
@@ -131,10 +132,10 @@ public class SeedCropFarmer extends Window implements Runnable {
 				retryharvest++;
 				if(retryharvest > 500)
 				{
-					BotUtils.pfRightClick(g,0);
+					PBotUtils.pfRightClick(g,0);
 					retryharvest = 0;
 				}
-				BotUtils.sleep(10);
+				PBotUtils.sleep(10);
 			}
 
 
@@ -152,8 +153,8 @@ public class SeedCropFarmer extends Window implements Runnable {
 				}
 			}
 
-			while (BotUtils.findObjectById(g.id) != null) {
-				BotUtils.sleep(10);
+			while (PBotUtils.findObjectById(g.id) != null) {
+				PBotUtils.sleep(10);
 			}
 
 
@@ -165,23 +166,23 @@ public class SeedCropFarmer extends Window implements Runnable {
 				try {
 					lblProg2.settext("Grabbing seeds");
 					GItem item = null;
-					List<WItem> itemlist = BotUtils.getInventoryItemsByName(BotUtils.playerInventory(), "gfx/invobjs/seed-pumpkin");
+					List<WItem> itemlist = PBotUtils.getInventoryItemsByName(PBotAPI.gui.maininv, "gfx/invobjs/seed-pumpkin");
 					if(cropsHarvested == 0 ) //half second delay for the first pumpkin harvest to register to start the seed rotation.
-						BotUtils.sleep(500);
+						PBotUtils.sleep(500);
 					if (itemlist.size() > 0) {//If seeds are present in inventory, try to use them.
 						for (WItem witem : itemlist) {
-							if (BotUtils.getAmount(witem.item) > 5) {
-								while (BotUtils.getItemAtHand() == null) {
+							if (PBotUtils.getAmount(witem.item) > 5) {
+								while (PBotUtils.getItemAtHand() == null) {
 									lblProg2.settext("Grabbing seeds");
-									BotUtils.takeItem(witem.item);
+									PBotUtils.takeItem(witem.item);
 									int retrypickup = 0;
-									while (BotUtils.getItemAtHand() == null) {
+									while (PBotUtils.getItemAtHand() == null) {
 										retrypickup++;
 										if (retrypickup > 200) {
-											BotUtils.takeItem(witem.item);
+											PBotUtils.takeItem(witem.item);
 											retrypickup = 0;
 										}
-										BotUtils.sleep(10);
+										PBotUtils.sleep(10);
 									}
 								}
 							}
@@ -190,21 +191,21 @@ public class SeedCropFarmer extends Window implements Runnable {
 					else {   //Failed to pickup seeds, either from not having any or other reasons. Pick up a pumpkin and acquire seeds.
 						lblProg2.settext("Pickup Pumpkin");
 						Gob pumpkin = null;
-						while(BotUtils.findObjectByNames(10,"gfx/terobjs/items/pumpkin") == null)
-							BotUtils.sleep(10);
-						pumpkin = BotUtils.findObjectByNames(10, "gfx/terobjs/items/pumpkin");
-						BotUtils.pfRightClick(pumpkin, 0);
+						while(PBotUtils.findObjectByNames(10,"gfx/terobjs/items/pumpkin") == null)
+							PBotUtils.sleep(10);
+						pumpkin = PBotUtils.findObjectByNames(10, "gfx/terobjs/items/pumpkin");
+						PBotUtils.pfRightClick(pumpkin, 0);
 						int retrypumpkinpickup = 0;
-						while (BotUtils.getInventoryItemsByName(BotUtils.playerInventory(), "gfx/invobjs/pumpkin").size() == 0) {
+						while (PBotUtils.getInventoryItemsByName(PBotAPI.gui.maininv, "gfx/invobjs/pumpkin").size() == 0) {
 							retrypumpkinpickup++;
 							if (retrypumpkinpickup > 50) {
 								lblProg2.settext("Retry Pickup");
 								retrypumpkinpickup = 0;
-								BotUtils.pfRightClick(pumpkin, 0);
+								PBotUtils.pfRightClick(pumpkin, 0);
 							}
-							BotUtils.sleep(50);
+							PBotUtils.sleep(50);
 						}
-						List<WItem> pumpkinlist = BotUtils.getInventoryItemsByName(BotUtils.playerInventory(),"gfx/invobjs/pumpkin");
+						List<WItem> pumpkinlist = PBotUtils.getInventoryItemsByName(PBotAPI.gui.maininv,"gfx/invobjs/pumpkin");
 						WItem invpumpkin = pumpkinlist.get(0);
 						invpumpkin.item.wdgmsg("iact", Coord.z, -1);
 						FlowerMenu.setNextSelection("Slice");
@@ -218,84 +219,84 @@ public class SeedCropFarmer extends Window implements Runnable {
 								invpumpkin.item.wdgmsg("iact", Coord.z, -1);
 								FlowerMenu.setNextSelection("Slice");
 							}
-							BotUtils.sleep(50);
+							PBotUtils.sleep(50);
 						}
 						List<WItem> fleshlist = gui.maininv.getItemsPartial("Flesh");
 						for(WItem flesh : fleshlist){
 							flesh.item.wdgmsg("drop",Coord.z);
 						}
 						itemlist.clear();
-						itemlist = BotUtils.getInventoryItemsByName(BotUtils.playerInventory(), "gfx/invobjs/seed-pumpkin");
+						itemlist = PBotUtils.getInventoryItemsByName(PBotAPI.gui.maininv, "gfx/invobjs/seed-pumpkin");
 						if (itemlist.size() == 0) {//If seeds are present in inventory, try to use them.
-							BotUtils.sysMsg("Somehow don't have seeds after picking up and slicing a pumpkin, stopping", Color.white);
+							PBotUtils.sysMsg("Somehow don't have seeds after picking up and slicing a pumpkin, stopping", Color.white);
 							stop();
 							stopThread = true;
 						}
 					}
 					lblProg2.settext("Grabbing Seeds");
-					Inventory inv = BotUtils.playerInventory();
+					Inventory inv = PBotAPI.gui.maininv;
 					for (Widget w = inv.child; w != null; w = w.next) {
-						if (w instanceof GItem && ((GItem) w).resource().name.equals(seedName) && (!seedName.contains("seed") || BotUtils.getAmount((GItem) w) >= 5)) {
+						if (w instanceof GItem && ((GItem) w).resource().name.equals(seedName) && (!seedName.contains("seed") || PBotUtils.getAmount((GItem) w) >= 5)) {
 							while ((GItem) w == null) {
-								BotUtils.sleep(10);
+								PBotUtils.sleep(10);
 							}
 							item = (GItem) w;
 							break;
 						}
 					}
 					if (item != null)
-						BotUtils.takeItem(item);
-					while (BotUtils.getItemAtHand() == null)
-						BotUtils.sleep(10);
+						PBotUtils.takeItem(item);
+					while (PBotUtils.getItemAtHand() == null)
+						PBotUtils.sleep(10);
 					// Plant the seed from hand
 					int amount = 0;
 					if (seedName.contains("seed"))
-						BotUtils.getAmount(BotUtils.getItemAtHand());
+						PBotUtils.getAmount(PBotUtils.getGItemAtHand());
 					lblProg2.settext("Planting");
-					BotUtils.mapInteractClick(0);
-					while (BotUtils.findNearestStageCrop(5, 0, cropName) == null || (BotUtils.getItemAtHand() != null && (seedName.contains("seed") && amount == BotUtils.getAmount(BotUtils.getItemAtHand())))) {
-						BotUtils.sleep(10);
+					PBotUtils.mapInteractClick(0);
+					while (PBotUtils.findNearestStageCrop(5, 0, cropName) == null || (PBotUtils.getItemAtHand() != null && (seedName.contains("seed") && amount == PBotUtils.getAmount(PBotUtils.getGItemAtHand())))) {
+						PBotUtils.sleep(10);
 					}
 					lblProg2.settext("Dropping seeds to inv");
-					Coord slot = BotUtils.getFreeInvSlot(BotUtils.playerInventory());
+					Coord slot = PBotUtils.getFreeInvSlot(PBotAPI.gui.maininv);
 					if (slot != null) {
-						BotUtils.dropItemToInventory(slot, BotUtils.playerInventory());
-						while (BotUtils.getItemAtHand() != null)
-							BotUtils.sleep(50);
+						PBotUtils.dropItemToInventory(slot, PBotAPI.gui.maininv);
+						while (PBotUtils.getItemAtHand() != null)
+							PBotUtils.sleep(50);
 					}
 				}catch(NullPointerException | Loading | Sprite.ResourceException q){}
 			} else if (replant & !ispumpkin) {
 				try {
 					GItem item = null;
-					while (BotUtils.getItemAtHand() == null) {
+					while (PBotUtils.getItemAtHand() == null) {
 						lblProg2.settext("Grabbing seeds");
-						Inventory inv = BotUtils.playerInventory();
+						Inventory inv = PBotAPI.gui.maininv;
 						for (Widget w = inv.child; w != null; w = w.next) {
-							if (w instanceof GItem && ((GItem) w).resource().name.equals(seedName) && (!seedName.contains("seed") || BotUtils.getAmount((GItem) w) >= 5)) {
+							if (w instanceof GItem && ((GItem) w).resource().name.equals(seedName) && (!seedName.contains("seed") || PBotUtils.getAmount((GItem) w) >= 5)) {
 								while ((GItem) w == null) {
-									BotUtils.sleep(10);
+									PBotUtils.sleep(10);
 								}
 								item = (GItem) w;
 								break;
 							}
 						}
 						if (item != null)
-							BotUtils.takeItem(item);
+							PBotUtils.takeItem(item);
 					}
-					while (BotUtils.getItemAtHand() == null)
-						BotUtils.sleep(10);
+					while (PBotUtils.getItemAtHand() == null)
+						PBotUtils.sleep(10);
 					// Plant the seed from hand
 					int amount = 0;
 					if (seedName.contains("seed"))
-						BotUtils.getAmount(BotUtils.getItemAtHand());
+						PBotUtils.getAmount(PBotUtils.getGItemAtHand());
 					lblProg2.settext("Planting");
-					BotUtils.mapInteractClick(0);
-					while (BotUtils.findNearestStageCrop(5, 0, cropName) == null || (BotUtils.getItemAtHand() != null && (seedName.contains("seed") && amount == BotUtils.getAmount(BotUtils.getItemAtHand())))) {
-						BotUtils.sleep(10);
+					PBotUtils.mapInteractClick(0);
+					while (PBotUtils.findNearestStageCrop(5, 0, cropName) == null || (PBotUtils.getItemAtHand() != null && (seedName.contains("seed") && amount == PBotUtils.getAmount(PBotUtils.getGItemAtHand())))) {
+						PBotUtils.sleep(10);
 					}
-					BotUtils.dropItem(0);
+					PBotUtils.dropItem(0);
 					lblProg2.settext("Dropping seeds");
-					for (Widget w = BotUtils.playerInventory().child; w != null; w = w.next) {
+					for (Widget w = PBotAPI.gui.maininv.child; w != null; w = w.next) {
 						if (w instanceof GItem && ((GItem) w).resource().name.equals(seedName)) {
 							item = (GItem) w;
 							try {
@@ -307,183 +308,120 @@ public class SeedCropFarmer extends Window implements Runnable {
 				}catch(NullPointerException | Loading | Sprite.ResourceException q){}
 			} else if (replantcontainer & !ispumpkin) {
 				try {
-					while (BotUtils.getItemAtHand() == null) { // loops until successfully picked up seeds
+					while (PBotUtils.getItemAtHand() == null) { // loops until successfully picked up seeds
 						lblProg2.settext("Grabbing seeds");
 						while(gui.maininv.getItemPartial("seed") == null)
-							BotUtils.sleep(10);
+							PBotUtils.sleep(10);
 						WItem flax = gui.maininv.getItemPartial("seed");
 						GItem flax2 = flax.item;
 						java.util.List<WItem> items = gui.maininv.getIdenticalItems((flax2)); // acquires all seed stacks in inventory
 						sort(items); // sorts by quality
 						for (WItem seeds : items) {
 							GItem item = seeds.item;
-							if (BotUtils.getAmount(item) >= 5) {
-								BotUtils.takeItem(item);
+							if (PBotUtils.getAmount(item) >= 5) {
+								PBotUtils.takeItem(item);
 								break;
 							}
 						}
 					}
-						while (BotUtils.getItemAtHand() == null) // just a double verification that we have successfully picked up seeds, should account for lag
-							BotUtils.sleep(10);
+						while (PBotUtils.getItemAtHand() == null) // just a double verification that we have successfully picked up seeds, should account for lag
+							PBotUtils.sleep(10);
 
 						// Plant the seed from hand
 						int amount = 0;
 						if (seedName.contains("seed"))
-							BotUtils.getAmount(BotUtils.getItemAtHand()); // logs the seed count in your hand so it can use the count to verify it successfully planted
+							PBotUtils.getAmount(PBotUtils.getGItemAtHand()); // logs the seed count in your hand so it can use the count to verify it successfully planted
 					lblProg2.settext("Planting");
-						BotUtils.mapInteractClick(0);
-						while (BotUtils.findNearestStageCrop(5, 0, cropName) == null || (BotUtils.getItemAtHand() != null && (seedName.contains("seed") && amount == BotUtils.getAmount(BotUtils.getItemAtHand())))) {
-							BotUtils.sleep(10);
+					PBotUtils.mapInteractClick(0);
+						while (PBotUtils.findNearestStageCrop(5, 0, cropName) == null || (PBotUtils.getItemAtHand() != null && (seedName.contains("seed") && amount == PBotUtils.getAmount(PBotUtils.getGItemAtHand())))) {
+							PBotUtils.sleep(10);
 						}
 						// Merge seed from hand into inventory or put it in inventory
-							for (Widget w = BotUtils.playerInventory().child; w != null; w = w.next) {
+							for (Widget w = PBotAPI.gui.maininv.child; w != null; w = w.next) {
 								if (w instanceof GItem && ((GItem) w).resource().name.equals(seedName)) {
 									GItem item = (GItem) w;
-									if (BotUtils.getItemAtHand() != null && BotUtils.getAmount(item) < 50) {//finds other seeds in inventory with less than 50 count
+									if (PBotUtils.getItemAtHand() != null && PBotUtils.getAmount(item) < 50) {//finds other seeds in inventory with less than 50 count
 										lblProg2.settext("Merging stacks");
-										int handAmount = BotUtils.getAmount(BotUtils.getItemAtHand());
+										int handAmount = PBotUtils.getAmount(PBotUtils.getGItemAtHand());
 										try {
 											item.wdgmsg("itemact", 0);//merges
 										} catch (Exception e) {
 										}
-										while (BotUtils.getItemAtHand() != null && BotUtils.getAmount(BotUtils.getItemAtHand()) == handAmount)//waits until the count changes to account for lag
-											BotUtils.sleep(50);
+										while (PBotUtils.getItemAtHand() != null && PBotUtils.getAmount(PBotUtils.getGItemAtHand()) == handAmount)//waits until the count changes to account for lag
+											PBotUtils.sleep(50);
 									}
 								}
 							}
-						if (BotUtils.getItemAtHand() != null) {//still have seeds on cursor, dropping them in an empty inventory slot
+						if (PBotUtils.getItemAtHand() != null) {//still have seeds on cursor, dropping them in an empty inventory slot
 							lblProg2.settext("Dropping to inv");
-							Coord slot = BotUtils.getFreeInvSlot(BotUtils.playerInventory());
+							Coord slot = PBotUtils.getFreeInvSlot(PBotAPI.gui.maininv);
 							if (slot != null) {
-								BotUtils.dropItemToInventory(slot, BotUtils.playerInventory());
-								while (BotUtils.getItemAtHand() != null)
-									BotUtils.sleep(50);
+								PBotUtils.dropItemToInventory(slot, PBotAPI.gui.maininv);
+								while (PBotUtils.getItemAtHand() != null)
+									PBotUtils.sleep(50);
 							}
 						}
-						if (BotUtils.invFreeSlots() == 0) {//inv full, time to barrel
+						if (PBotUtils.invFreeSlots() == 0) {//inv full, time to barrel
 							lblProg2.settext("Barreling");
-							if (BotUtils.getItemAtHand() != null)
-								BotUtils.dropItem(0);
-							BotUtils.pfRightClick(containers.get(0), 0);
+							if (PBotUtils.getItemAtHand() != null)
+								PBotUtils.dropItem(0);
+							PBotUtils.pfRightClick(containers.get(0), 0);
 							if (containers.get(0).getres().basename().contains("barrel"))
-								BotUtils.waitForWindow("Barrel");
+								PBotUtils.waitForWindow("Barrel");
 							else
-								BotUtils.waitForWindow("Trough");
-							/*if (BotUtils.getItemAtHand() != null) {
-								gameui().map.wdgmsg("itemact", Coord.z, containers.get(0).rc.floor(posres), 0, 0, (int) containers.get(0).id,
-										containers.get(0).rc.floor(posres), 0, -1);
-								int i = 0;
-								while (BotUtils.getItemAtHand() != null) {
-									if (i == 60000)
-										break;
-									if(containers.size() == 1 && i > 250){
-										BotUtils.sysMsg("Only container in list appears to be full, stopping.",Color.white);
-										stopThread = true;
-										stop();
-										break;
-									}else if(i > 250){
-										BotUtils.sysMsg("Container appears to be full, removing.",Color.white);
-										Coord slot = BotUtils.getFreeInvSlot(BotUtils.playerInventory());
-										BotUtils.dropItemToInventory(slot,BotUtils.playerInventory());
-										BotUtils.sleep(250);
-										containers.remove(0);
-										BotUtils.pfRightClick(containers.get(0), 0);
-										if (containers.get(0).getres().basename().contains("barrel"))
-											BotUtils.waitForWindow("Barrel");
-										else
-											BotUtils.waitForWindow("Trough");
-										break;
-									}
-									BotUtils.sleep(10);
-									i++;
-								}
-							}*/
-							GItem item = BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), Arrays.asList(seedName)).get(0).item;
-							BotUtils.takeItem(item);
-							while(BotUtils.getInventoryItemsByName(BotUtils.playerInventory(),seedName).size() > 0){
-								if(BotUtils.getItemAtHand() == null){
+								PBotUtils.waitForWindow("Trough");
+							GItem item = PBotUtils.getInventoryItemsByNames(PBotAPI.gui.maininv, Arrays.asList(seedName)).get(0).item;
+							PBotUtils.takeItem(item);
+							while(PBotUtils.getInventoryItemsByName(PBotAPI.gui.maininv,seedName).size() > 0){
+								if(PBotUtils.getItemAtHand() == null){
 									System.out.println("Hand null, breaking");
 									break;
 								}
-								List<WItem> list = BotUtils.getInventoryItemsByName(BotUtils.playerInventory(),seedName);
+								List<WItem> list = PBotUtils.getInventoryItemsByName(PBotAPI.gui.maininv,seedName);
 								gameui().map.wdgmsg("itemact", Coord.z, containers.get(0).rc.floor(posres), 1, 0, (int) containers.get(0).id, containers.get(0).rc.floor(posres), 0, -1);
 								int i = 0;
-								while(BotUtils.getInventoryItemsByName(BotUtils.playerInventory(),seedName).size() == list.size()) {
+								while(PBotUtils.getInventoryItemsByName(PBotAPI.gui.maininv,seedName).size() == list.size()) {
 									if(stopThread)
 										break;
 									if(containers.size() == 1 && i > 250){
-										BotUtils.sysMsg("Only container in list appears to be full, stopping.",Color.white);
+										PBotUtils.sysMsg("Only container in list appears to be full, stopping.",Color.white);
 										stopThread = true;
 										stop();
 										break;
 									}else if(i > 250){
-										BotUtils.sysMsg("Container appears to be full, removing.",Color.white);
-										Coord slot = BotUtils.getFreeInvSlot(BotUtils.playerInventory());
-										BotUtils.dropItemToInventory(slot,BotUtils.playerInventory());
-										BotUtils.sleep(250);
+										PBotUtils.sysMsg("Container appears to be full, removing.",Color.white);
+										Coord slot = PBotUtils.getFreeInvSlot(PBotAPI.gui.maininv);
+										PBotUtils.dropItemToInventory(slot,PBotAPI.gui.maininv);
+										PBotUtils.sleep(250);
 										containers.remove(0);
-										BotUtils.pfRightClick(containers.get(0), 0);
+										PBotUtils.pfRightClick(containers.get(0), 0);
 										if (containers.get(0).getres().basename().contains("barrel"))
-											BotUtils.waitForWindow("Barrel");
+											PBotUtils.waitForWindow("Barrel");
 										else
-											BotUtils.waitForWindow("Trough");
-										item = BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), Arrays.asList(seedName)).get(0).item;
-										BotUtils.takeItem(item);
+											PBotUtils.waitForWindow("Trough");
+										item = PBotUtils.getInventoryItemsByNames(PBotAPI.gui.maininv, Arrays.asList(seedName)).get(0).item;
+										PBotUtils.takeItem(item);
 										break;
 									}
-									BotUtils.sleep(10);
+									PBotUtils.sleep(10);
 									i++;
 								}
 							}
-							BotUtils.sleep(250);
+							PBotUtils.sleep(250);
 							if(stopThread)
 								return;
-							if (BotUtils.getItemAtHand() != null) {//still have seeds on cursor, dropping them in an empty inventory slot
+							if (PBotUtils.getItemAtHand() != null) {//still have seeds on cursor, dropping them in an empty inventory slot
 								gameui().map.wdgmsg("itemact",Coord.z, containers.get(0).rc.floor(posres), 0, 0, (int) containers.get(0).id, containers.get(0).rc.floor(posres), 0, -1);
 							}
-							if (BotUtils.getItemAtHand() != null) {//still have seeds on cursor, dropping them in an empty inventory slot
+							if (PBotUtils.getItemAtHand() != null) {//still have seeds on cursor, dropping them in an empty inventory slot
 								lblProg2.settext("Dropping to inv");
-								Coord slot = BotUtils.getFreeInvSlot(BotUtils.playerInventory());
+								Coord slot = PBotUtils.getFreeInvSlot(PBotAPI.gui.maininv);
 								if (slot != null) {
-									BotUtils.dropItemToInventory(slot, BotUtils.playerInventory());
-									while (BotUtils.getItemAtHand() != null)
-										BotUtils.sleep(10);
+									PBotUtils.dropItemToInventory(slot, PBotAPI.gui.maininv);
+									while (PBotUtils.getItemAtHand() != null)
+										PBotUtils.sleep(10);
 								}
 							}
-							/*while (BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), Arrays.asList(seedName)).size() != 0) {
-								if (stopThread)
-									break;
-								GItem item = BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), Arrays.asList(seedName)).get(0).item;
-								BotUtils.takeItem(item);
-
-								gameui().map.wdgmsg("itemact", Coord.z, containers.get(0).rc.floor(posres), 0, 0, (int) containers.get(0).id,
-										containers.get(0).rc.floor(posres), 0, -1);
-								int i = 0;
-								while (BotUtils.getItemAtHand() != null) {
-									if (i == 60000)
-										break;
-									if(containers.size() == 1 && i > 250){
-										BotUtils.sysMsg("Only container in list appears to be full, stopping.",Color.white);
-										stopThread = true;
-										stop();
-										break;
-									}else if(i > 250){
-										BotUtils.sysMsg("Container appears to be full, removing.",Color.white);
-										Coord slot = BotUtils.getFreeInvSlot(BotUtils.playerInventory());
-										BotUtils.dropItemToInventory(slot,BotUtils.playerInventory());
-										BotUtils.sleep(250);
-										containers.remove(0);
-										BotUtils.pfRightClick(containers.get(0), 0);
-										if (containers.get(0).getres().basename().contains("barrel"))
-											BotUtils.waitForWindow("Barrel");
-										else
-											BotUtils.waitForWindow("Trough");
-										break;
-									}
-									BotUtils.sleep(10);
-									i++;
-								}
-							}*/
 						}
 				} catch (NullPointerException | Loading | Resource.LoadException x) { }
 			}
@@ -491,87 +429,60 @@ public class SeedCropFarmer extends Window implements Runnable {
 				try {
 					if (containeronly & !ispumpkin) { // Put items into container if inventory is full
 						GItem item;
-						if (BotUtils.invFreeSlots() == 0) {
+						if (PBotUtils.invFreeSlots() == 0) {
 							lblProg2.settext("Barreling");
-							BotUtils.pfRightClick(containers.get(0), 0);
-							BotUtils.waitForWindow("Barrel");
-							item = BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), Arrays.asList(seedName)).get(0).item;
-							BotUtils.takeItem(item);
-							while(BotUtils.getInventoryItemsByName(BotUtils.playerInventory(),seedName).size() > 0){
-								if(BotUtils.getItemAtHand() == null){
+							PBotUtils.pfRightClick(containers.get(0), 0);
+							PBotUtils.waitForWindow("Barrel");
+							item = PBotUtils.getInventoryItemsByNames(PBotAPI.gui.maininv, Arrays.asList(seedName)).get(0).item;
+							PBotUtils.takeItem(item);
+							while(PBotUtils.getInventoryItemsByName(PBotAPI.gui.maininv,seedName).size() > 0){
+								if(PBotUtils.getItemAtHand() == null){
 									System.out.println("Hand null, breaking");
 									break;
 								}
-								List<WItem> list = BotUtils.getInventoryItemsByName(BotUtils.playerInventory(),seedName);
+								List<WItem> list = PBotUtils.getInventoryItemsByName(PBotAPI.gui.maininv,seedName);
 								gameui().map.wdgmsg("itemact", Coord.z, containers.get(0).rc.floor(posres), 1, 0, (int) containers.get(0).id, containers.get(0).rc.floor(posres), 0, -1);
-								while(BotUtils.getInventoryItemsByName(BotUtils.playerInventory(),seedName).size() == list.size()) {
+								while(PBotUtils.getInventoryItemsByName(PBotAPI.gui.maininv,seedName).size() == list.size()) {
 									int i = 0;
-									while (BotUtils.getInventoryItemsByName(BotUtils.playerInventory(), seedName).size() == list.size()) {
+									while (PBotUtils.getInventoryItemsByName(PBotAPI.gui.maininv, seedName).size() == list.size()) {
 										if (containers.size() == 1 && i > 250) {
-											BotUtils.sysMsg("Only container in list appears to be full, stopping.", Color.white);
+											PBotUtils.sysMsg("Only container in list appears to be full, stopping.", Color.white);
 											stopThread = true;
 											stop();
 											break;
 										} else if (i > 250) {
-											BotUtils.sysMsg("Container appears to be full, removing.", Color.white);
-											Coord slot = BotUtils.getFreeInvSlot(BotUtils.playerInventory());
-											BotUtils.dropItemToInventory(slot, BotUtils.playerInventory());
-											BotUtils.sleep(250);
+											PBotUtils.sysMsg("Container appears to be full, removing.", Color.white);
+											Coord slot = PBotUtils.getFreeInvSlot(PBotAPI.gui.maininv);
+											PBotUtils.dropItemToInventory(slot, PBotAPI.gui.maininv);
+											PBotUtils.sleep(250);
 											containers.remove(0);
-											BotUtils.pfRightClick(containers.get(0), 0);
+											PBotUtils.pfRightClick(containers.get(0), 0);
 											if (containers.get(0).getres().basename().contains("barrel"))
-												BotUtils.waitForWindow("Barrel");
+												PBotUtils.waitForWindow("Barrel");
 											else
-												BotUtils.waitForWindow("Trough");
-											item = BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), Arrays.asList(seedName)).get(0).item;
-											BotUtils.takeItem(item);
+												PBotUtils.waitForWindow("Trough");
+											item = PBotUtils.getInventoryItemsByNames(PBotAPI.gui.maininv, Arrays.asList(seedName)).get(0).item;
+											PBotUtils.takeItem(item);
 											break;
 										}
-										BotUtils.sleep(10);
+										PBotUtils.sleep(10);
 										i++;
 									}
 								}
 							}
-							BotUtils.sleep(250);
-							if (BotUtils.getItemAtHand() != null) {//still have seeds on cursor, dropping them in an empty inventory slot
+							PBotUtils.sleep(250);
+							if (PBotUtils.getItemAtHand() != null) {//still have seeds on cursor, dropping them in an empty inventory slot
 								gameui().map.wdgmsg("itemact",Coord.z, containers.get(0).rc.floor(posres), 0, 0, (int) containers.get(0).id, containers.get(0).rc.floor(posres), 0, -1);
 							}
-							if (BotUtils.getItemAtHand() != null) {//still have seeds on cursor, dropping them in an empty inventory slot
+							if (PBotUtils.getItemAtHand() != null) {//still have seeds on cursor, dropping them in an empty inventory slot
 								lblProg2.settext("Dropping to inv");
-								Coord slot = BotUtils.getFreeInvSlot(BotUtils.playerInventory());
+								Coord slot = PBotUtils.getFreeInvSlot(PBotAPI.gui.maininv);
 								if (slot != null) {
-									BotUtils.dropItemToInventory(slot, BotUtils.playerInventory());
-									while (BotUtils.getItemAtHand() != null)
-										BotUtils.sleep(10);
+									PBotUtils.dropItemToInventory(slot, PBotAPI.gui.maininv);
+									while (PBotUtils.getItemAtHand() != null)
+										PBotUtils.sleep(10);
 								}
 							}
-							/*if (BotUtils.getItemAtHand() != null) {
-								gameui().map.wdgmsg("itemact", Coord.z, containers.get(0).rc.floor(posres), 0, 0, (int) containers.get(0).id,
-										containers.get(0).rc.floor(posres), 0, -1);
-								int i = 0;
-								while (BotUtils.getItemAtHand() != null) {
-									if (i == 60000)
-										break;
-									BotUtils.sleep(10);
-									i++;
-								}
-							}*/
-							/*while (BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), Arrays.asList(seedName)).size() != 0) {
-								if (stopThread)
-									break;
-								item = BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), Arrays.asList(seedName)).get(0).item;
-								BotUtils.takeItem(item);
-
-								gameui().map.wdgmsg("itemact", Coord.z, containers.get(0).rc.floor(posres), 0, 0, (int) containers.get(0).id,
-										containers.get(0).rc.floor(posres), 0, -1);
-								int i = 0;
-								while (BotUtils.getItemAtHand() != null) {
-									if (i == 60000)
-										break;
-									BotUtils.sleep(10);
-									i++;
-								}
-							}*/
 						}
 					}
 						} catch(NullPointerException | Loading | Resource.LoadException p){
@@ -582,32 +493,32 @@ public class SeedCropFarmer extends Window implements Runnable {
 		}
 		if(replantcontainer) {
 			lblProg2.settext("Barreling");
-			if (BotUtils.getItemAtHand() != null)
-				BotUtils.dropItem(0);
-			BotUtils.pfRightClick(containers.get(0), 0);
+			if (PBotUtils.getItemAtHand() != null)
+				PBotUtils.dropItem(0);
+			PBotUtils.pfRightClick(containers.get(0), 0);
 			if(containers.get(0).getres().basename().contains("barrel"))
-			BotUtils.waitForWindow("Barrel");
+				PBotUtils.waitForWindow("Barrel");
 			else
-				BotUtils.waitForWindow("Trough");
+				PBotUtils.waitForWindow("Trough");
 	
-			while (BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), Arrays.asList(seedName)).size() != 0) {
+			while (PBotUtils.getInventoryItemsByNames(PBotAPI.gui.maininv, Arrays.asList(seedName)).size() != 0) {
 				if (stopThread)
 					break;
-				GItem item = BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), Arrays.asList(seedName)).get(0).item;
-				BotUtils.takeItem(item);
+				GItem item = PBotUtils.getInventoryItemsByNames(PBotAPI.gui.maininv, Arrays.asList(seedName)).get(0).item;
+				PBotUtils.takeItem(item);
 	
 				gameui().map.wdgmsg("itemact", Coord.z, containers.get(0).rc.floor(posres), 0, 0, (int) containers.get(0).id,
 						containers.get(0).rc.floor(posres), 0, -1);
 				int i = 0;
-				while (BotUtils.getItemAtHand() != null) {
+				while (PBotUtils.getItemAtHand() != null) {
 					if (i == 60000)
 						break;
-					BotUtils.sleep(10);
+					PBotUtils.sleep(10);
 					i++;
 				}
 			}
 		}
-		BotUtils.sysMsg(cropName.substring(cropName.lastIndexOf("/") + 1).substring(0, 1).toUpperCase()
+		PBotUtils.sysMsg(cropName.substring(cropName.lastIndexOf("/") + 1).substring(0, 1).toUpperCase()
 						+ cropName.substring(cropName.lastIndexOf("/") + 1).substring(1)
 						+ " Farmer finished!", Color.white);
 		this.destroy();
@@ -677,7 +588,7 @@ public class SeedCropFarmer extends Window implements Runnable {
 
 	public void stop() {
 		// Stops thread
-		BotUtils.sysMsg(cropName.substring(cropName.lastIndexOf("/") + 1).substring(0, 1).toUpperCase()
+		PBotUtils.sysMsg(cropName.substring(cropName.lastIndexOf("/") + 1).substring(0, 1).toUpperCase()
 						+ cropName.substring(cropName.lastIndexOf("/") + 1).substring(1)
 						+ " Farmer stopped!", Color.white);
 		gameui().map.wdgmsg("click", Coord.z, gameui().map.player().rc.floor(posres), 1, 0);

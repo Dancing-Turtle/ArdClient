@@ -1,6 +1,6 @@
 package haven;
 
-import haven.purus.BotUtils;
+import haven.purus.pbot.PBotUtils;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -185,7 +185,7 @@ public class GildingWnd extends Window {
 	    boolean isRing = target.name.get().contains("Ring");
 	    boolean isGem = gild.item.resname().contains("gems/gemstone");
 	    if(isRing && !isGem) {
-			BotUtils.sysMsg("Only gems can be gilded onto rings!",Color.white);
+			PBotUtils.sysMsg("Only gems can be gilded onto rings!",Color.white);
 		result = false;
 	    } else {
 		result = true;

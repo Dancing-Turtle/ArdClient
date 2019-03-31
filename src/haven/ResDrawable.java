@@ -49,10 +49,7 @@ public class ResDrawable extends Drawable {
     public void init() {
         if (spr != null)
             return;
-        Resource res = this.res.get();
-        spr = Sprite.create(gob, res, sdt.clone());
-        if (gob.type == null)
-            gob.determineType(res.name);
+	spr = Sprite.create(gob, res.get(), sdt.clone());
     }
 
     public void setup(RenderList rl) {
@@ -62,6 +59,14 @@ public class ResDrawable extends Drawable {
             return;
         }
         rl.add(spr, null);
+    }
+
+    public int sdtnum() {
+	if(sdt != null) {
+	    Message csdt = sdt.clone();
+	    return csdt.eom() ? 0xffff000 : Sprite.decnum(csdt);
+	}
+	return 0;
     }
 
     public void ctick(int dt) {

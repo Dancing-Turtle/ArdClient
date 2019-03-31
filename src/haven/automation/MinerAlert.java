@@ -6,8 +6,7 @@ import haven.*;
 import haven.Label;
 import haven.Utils;
 import haven.Window;
-import haven.purus.BotUtils;
-import haven.purus.pbot.PBotAPI;
+import haven.purus.pbot.PBotUtils;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -117,7 +116,7 @@ public class MinerAlert extends Window {
             @Override
             public void click() {
                 audiomute = !audiomute;
-                BotUtils.sysMsg("Mute status : "+audiomute,Color.white);
+                PBotUtils.sysMsg("Mute status : "+audiomute,Color.white);
             }
         };
         add(mutebtn, new Coord(35, yvalue+=20));
@@ -130,21 +129,21 @@ public class MinerAlert extends Window {
         @Override
         public void run() {
             while (gui.getwnd("Miner Alert") != null) {
-                BotUtils.sleep(5000);//sleep 5 seconds every iteration, no reason to update more than once every 5 seconds.
+                PBotUtils.sleep(5000);//sleep 5 seconds every iteration, no reason to update more than once every 5 seconds.
                 try {
                     countiron = 0;
                     countgold = 0;
                     countsilver = 0;
                     Glob g = gui.map.glob;
                     Gob player = gui.map.player();
-                    List<Gob> allGobs = PBotAPI.getGobs();
+                    List<Gob> allGobs = PBotUtils.getGobs();
                     List<Gob> list = new ArrayList<>();
 
 
                     for (int i = 0; i < allGobs.size(); i++) {
                         try {
                             Resource res = allGobs.get(i).getres();
-                            if (allGobs.get(i).getres().name.endsWith("greenooze") && !allGobs.get(i).knocked) {
+                            if (allGobs.get(i).getres().name.endsWith("greenooze") && !allGobs.get(i).isDead()) {
                                 list.add(allGobs.get(i));
                                 if (!slimecount.contains(allGobs.get(i)))
                                     slimecount.add(allGobs.get(i));
@@ -153,7 +152,7 @@ public class MinerAlert extends Window {
                     }
                     countslimes = list.size();
                     while(player == null)
-                        BotUtils.sleep(10); //sleep if player is null, teleporting through a road?
+                        PBotUtils.sleep(10); //sleep if player is null, teleporting through a road?
                     Coord pltc = new Coord((int) player.getc().x / 11, (int) player.getc().y / 11);
 
                     for (int x = -44; x < 44; x++) {
@@ -237,7 +236,7 @@ public class MinerAlert extends Window {
                         double now = Utils.rtime();
                         if (now - lasterror > 45) {
                             lasterror = now;
-                            BotUtils.sysMsg("Gold Visible on screen!!", Color.green);
+                            PBotUtils.sysMsg("Gold Visible on screen!!", Color.green);
                             if (!audiomute)
                                 Audio.play(goldsfx);
                         }
@@ -245,14 +244,14 @@ public class MinerAlert extends Window {
                     if (countcinnabar > 0) {
                         double now = Utils.rtime();
                         if (now - lasterror > 45) {
-                            BotUtils.sysMsg("Cinnabar visible on screen!!", Color.green);
+                            PBotUtils.sysMsg("Cinnabar visible on screen!!", Color.green);
                             lasterror = now;
                         }
                     }
                     if (countsilver > 0) {
                         double now = Utils.rtime();
                         if (now - lasterror > 15) {
-                            BotUtils.sysMsg("Silver visible on screen!!", Color.green);
+                            PBotUtils.sysMsg("Silver visible on screen!!", Color.green);
                             if (!audiomute) {
                                 Audio.play(silversfx);
                             }
@@ -262,7 +261,7 @@ public class MinerAlert extends Window {
                     if (countslimes > 0) {
                         double now = Utils.rtime();
                         if (now - lasterror > 15) {
-                            BotUtils.sysLogAppend("Slime number spawned : " + list.size(), "white");
+                            PBotUtils.sysLogAppend("Slime number spawned : " + list.size(), "white");
                             lasterror = now;
                         }
                     }

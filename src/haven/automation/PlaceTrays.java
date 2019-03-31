@@ -3,7 +3,7 @@ package haven.automation;
 
 import haven.*;
 import haven.Window;
-import haven.purus.BotUtils;
+import haven.purus.pbot.PBotUtils;
 
 import java.awt.*;
 import java.util.List;
@@ -21,7 +21,7 @@ public class PlaceTrays implements Runnable {
         Thread t = new Thread(new OpenRacks(gui), "OpenRacks");
         t.start();
         while (t.isAlive()) {
-            BotUtils.sleep(10);
+            PBotUtils.sleep(10);
         }
 
         WItem trays = null;
