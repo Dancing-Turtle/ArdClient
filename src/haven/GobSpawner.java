@@ -114,7 +114,7 @@ public class GobSpawner extends Window {
     public final static HashMap<String, String> defaultitems = new HashMap<String, String>(35) {{
         put("gfx/kritter/rat/rat", "Rat");
         put("gfx/kritter/chicken/chicken", "Chicken");
-        put("gfx/kritter/chick/chick", "Chick");
+        put("gfx/kritter/chicken/chick", "Chick");
         put("gfx/kritter/dragonfly/dragonfly", "Dragonfly");
         put("gfx/kritter/toad/toad", "Toad");
         put("gfx/kritter/frog/frog", "Frog");

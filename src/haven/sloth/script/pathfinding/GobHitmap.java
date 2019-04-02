@@ -84,7 +84,7 @@ public class GobHitmap {
 
     public synchronized List<Coord> add(final Gob g) {
         final UI ui = g.glob.ui.get();
-        if(ui != null && g.id != ui.gui.map.plgobid) {
+        if(ui != null && g.id != ui.gui.map.plgob) {
 	    return fill(g);
 	} else {
             return null;

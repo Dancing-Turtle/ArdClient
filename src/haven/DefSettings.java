@@ -74,6 +74,7 @@ public class DefSettings {
 	public static final IndirSetting<Color> CURIOLOW = new IndirSetting<>(global, "graphics.curiolow-color");             //[RGBA] Color of all other water color
 	public static final IndirSetting<Boolean> DARKMODE = new IndirSetting<>(global, "graphics.dark-mode");                   //[Bool] Toggle dark mode, overrides Nightvision
 	public static final IndirSetting<Boolean> QUICKMENU = new IndirSetting<>(global, "gameplay.quick-flowermenu");           //[Bool] Toggle quick flowermenu
+	public static final IndirSetting<Boolean> QUICKERMENU = new IndirSetting<>(global, "gameplay.quicker-flowermenu");           //[Bool] Toggle quick-er flowermenu will autoselect items if so selected without even popping up flowermenu
 	public static final IndirSetting<Boolean> AMBERMENU = new IndirSetting<>(global, "gameplay.amber-flowermenu");           //[Bool] Use amber flowermenu
 	public static final IndirSetting<Boolean> BUGGEDMENU = new IndirSetting<>(global, "gameplay.bugged-flowermenu");         //[Bool] Whether not flowermenu should close on clicks outside of it
 	public static final IndirSetting<Boolean> SIMPLECROPS = new IndirSetting<>(global, "gameplay.simple-crops");             //[Bool] Toggle simple crop meshes
@@ -217,7 +218,8 @@ public class DefSettings {
 		DRAWGRIDRADIUS.ensure(2);
 		DARKMODE.ensure(false);
 		//Gameplay
-		QUICKMENU.ensure(true);
+		QUICKMENU.ensure(false);
+		QUICKERMENU.ensure(false);
 		AMBERMENU.ensure(true);
 		BUGGEDMENU.ensure(false);
 		SIMPLECROPS.ensure(false);

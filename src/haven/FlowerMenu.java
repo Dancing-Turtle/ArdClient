@@ -36,6 +36,7 @@ import haven.DefSettings;
 import haven.purus.pbot.PBotUtils;
 
 import static haven.DefSettings.AMBERMENU;
+import static haven.DefSettings.QUICKERMENU;
 import static java.lang.Math.PI;
 import haven.DefSettings;
 
@@ -80,8 +81,6 @@ public class FlowerMenu extends Widget {
         public Petal(String name) {
             super(Coord.z);
             this.name = name;
-            //depreciated
-            // text = ptf.render(Resource.getLocString(Resource.BUNDLE_FLOWER, name), name.startsWith("Travel ") ? Color.GREEN : Color.YELLOW);
             text = ptf.render(Resource.getLocString(Resource.BUNDLE_FLOWER, name), Color.YELLOW);
             resize(text.sz().x + 25, ph);
         }
@@ -210,10 +209,11 @@ public class FlowerMenu extends Widget {
                             p.move(p.ta, p.rad * (1 - (s / 0.3)));
                         }
                     } else {
-                        if (s > 0.3)
+                        p.destroy();
+                      /*  if (s > 0.3)
                             p.a = 0;
                         else
-                            p.a = 1 - (s / 0.3);
+                            p.a = 1 - (s / 0.3);*/
                     }
                 }
             } else {
@@ -229,13 +229,14 @@ public class FlowerMenu extends Widget {
                             p.move(p.ta, p.tr * (1 - a));
                         }
                     } else {
-                        if (s > 0.3) {
+                        p.destroy();
+                      /*  if (s > 0.3) {
                             p.a = 0;
                         } else {
                             double a = s / 0.3;
                             a = Utils.clip((a - (off * i)) * (1.0 / ival), 0, 1);
                             p.a = 1 - a;
-                        }
+                        }*/
                     }
                 }
             }
@@ -345,14 +346,17 @@ public class FlowerMenu extends Widget {
             super(Coord.z);
             this.callback = callback;
             opts = new Petal[options.length];
+
             for (int i = 0; i < options.length; i++) {
-                if (AMBERMENU.get())
+                if (AMBERMENU.get()) {
                     add(opts[i] = new Petal(options[i]));
-                else
+                }
+                else {
                     add(opts[i] = new CustomPetal(options[i]));
-                opts[i].num = i;
-                if (options[i].equals("Study") || options[i].equals("Turn"))    // eatable curios & spitroasting
-                    ignoreAutoSetting = true;
+                }
+                    opts[i].num = i;
+                    if (options[i].equals("Study") || options[i].equals("Turn"))    // eatable curios & spitroasting
+                        ignoreAutoSetting = true;
             }
         }
 
@@ -366,7 +370,8 @@ public class FlowerMenu extends Widget {
             mg = ui.grabmouse(this);
             kg = ui.grabkeys(this);
             organize(opts);
-            new Opening();
+            if(AMBERMENU.get())
+                  new Opening();
         }
 
         public boolean mousedown(Coord c, int button) {
@@ -393,20 +398,30 @@ public class FlowerMenu extends Widget {
         }
 
         public void binded() {
-            int jack = ui.modflags();
-
-            if (DefSettings.QUICKMENU.get() && jack < opts.length && opts.length <= 2) {
-                if (opts[0].name.equals("Empty")) {
-                    if (opts.length == 1) return; //don't jackui a single empty
-                    //switch options for containers
-                    jack = jack == 1 ? 0 : 1;
+        try {
+            int selindex = 0;
+            boolean drinkoverride = false;
+            CheckListboxItem itm = null;
+            for (int i = 0; i < opts.length; i++) {
+                System.out.println(opts[i].name + " " + nextAutoSel);
+                if (opts[i].name.equals("Drink") && nextAutoSel != null && nextAutoSel.equals("Drink")) {
+                    selindex = i;
+                    drinkoverride = true;
+                    nextAutoSel = null;
+                    break;
                 }
-                wdgmsg("cl", jack, 0);
-                hide();
-            } else if (DefSettings.QUICKMENU.get() && jack < opts.length && opts[1].name.equals("Sip")) {
-                wdgmsg("cl", jack, 0);
+                itm = Config.flowermenus.get(opts[i].name);
+                if (itm != null && itm.selected) {
+                    selindex = i;
+                    break;
+                }
+            }
+            if ((DefSettings.QUICKERMENU.get() && !ui.modctrl && itm != null && itm.selected && !ignoreAutoSetting) || drinkoverride) {
+                PBotUtils.sysLogAppend("Autoselected : "+opts[selindex].name,"green");
+                wdgmsg("cl", selindex, 0);
                 hide();
             }
+        }catch(Exception e){}//new functionality, dont crash no matter what.
         }
 
         public void draw(GOut g) {

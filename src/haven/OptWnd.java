@@ -2064,7 +2064,7 @@ public class OptWnd extends Window {
                 }
             }
         });
-        appender.add(new IndirCheckBox("Quick flowermenu", QUICKMENU));
+        appender.add(new IndirCheckBox("Quick flowermenu - If flowermenu has an autoselect option, will not even create the flowermenu.", QUICKERMENU));
         appender.add(new IndirCheckBox("Amber flowermenus", AMBERMENU));
         appender.add(new CheckBox("Alternative equipment belt window") {
             {

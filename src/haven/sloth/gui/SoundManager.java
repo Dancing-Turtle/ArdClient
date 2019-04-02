@@ -228,6 +228,21 @@ public class SoundManager extends Window implements ObservableMapListener<String
 				Alerted.add("gfx/terobjs/dng/batcave",sound,.8);
 			else if(sound.name.contains("thankyourick"))//ant dungeon
 				Alerted.add("gfx/terobjs/dng/antdungeon",sound,.8);
+			else if(sound.name.contains("Swag")){
+				Alerted.add("gfx/terobjs/saltbasin",sound,.8);
+				Alerted.add("gfx/terobjs/abyssalchasm",sound,.8);
+				Alerted.add("gfx/terobjs/windthrow",sound,.8);
+				Alerted.add("gfx/terobjs/icespire",sound,.8);
+				Alerted.add("gfx/terobjs/woodheart",sound,.8);
+				Alerted.add("gfx/terobjs/lilypadlotus",sound,.8);
+				Alerted.add("gfx/terobjs/fairystone",sound,.8);
+				Alerted.add("gfx/terobjs/jotunmussel",sound,.8);
+				Alerted.add("gfx/terobjs/guanopile",sound,.8);
+				Alerted.add("gfx/terobjs/geyser",sound,.8);
+				Alerted.add("gfx/terobjs/claypit",sound,.8);
+				Alerted.add("gfx/terobjs/caveorgan",sound,.8);
+				Alerted.add("gfx/terobjs/crystalpatch",sound,.8);
+			}
 		}
 	}
 }

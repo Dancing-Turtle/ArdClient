@@ -184,7 +184,7 @@ public class Config {
     //public static boolean showcddelta =  Utils.getprefb("showcddelta", false);
     public static boolean disabledrinkhotkey =  Utils.getprefb("disabledrinkhotkey", false);
     public static boolean disablegatekeybind =  Utils.getprefb("disablegatekeybind", false);
-    public static boolean disablecartkeybind =  Utils.getprefb("disablecartkeybind", false);
+    public static boolean disablecartkeybind =  Utils.getprefb("disablecartkeybind", true);
     public static boolean autologout =  Utils.getprefb("autologout", false);
     public static int combatkeys =  Utils.getprefi("combatkeys", 0);
     public static boolean logcombatactions =  Utils.getprefb("logcombatactions", false);
@@ -562,6 +562,7 @@ public class Config {
         put("Collect coal", new CheckListboxItem("Collect Coal",Resource.BUNDLE_FLOWER));
         put("Pick leaf", new CheckListboxItem("Pick Leaf",Resource.BUNDLE_FLOWER));
         put("Ride", new CheckListboxItem("Ride",Resource.BUNDLE_FLOWER));
+        put("Scale", new CheckListboxItem("Scale",Resource.BUNDLE_FLOWER));
     }};
 
 
@@ -644,7 +645,7 @@ public class Config {
         put("gfx/terobjs/herbs/strawberry", new CheckListboxItem("Strawberry"));
         put("gfx/kritter/rat/rat", new CheckListboxItem("Rat"));
         put("gfx/kritter/chicken/chicken", new CheckListboxItem("Chicken"));
-        put("gfx/kritter/chick/chick", new CheckListboxItem("Chick"));
+        put("gfx/kritter/chicken/chick", new CheckListboxItem("Chick"));
         put("gfx/terobjs/herbs/spindlytaproot", new CheckListboxItem("Spindly Taproot"));
         put("gfx/terobjs/herbs/stingingnettle", new CheckListboxItem("Stinging Nettle"));
         put("gfx/kritter/dragonfly/dragonfly", new CheckListboxItem("Dragonfly"));
@@ -699,7 +700,7 @@ public class Config {
         put("gfx/terobjs/herbs/strawberry", "Strawberry");
         put("gfx/kritter/rat/rat", "Rat");
         put("gfx/kritter/chicken/chicken", "Chicken");
-        put("gfx/kritter/chick/chick", "Chick");
+        put("gfx/kritter/chicken/chick", "Chick");
         put("gfx/terobjs/herbs/spindlytaproot", "Spindly Taproot");
         put("gfx/terobjs/herbs/stingingnettle", "Stinging Nettle");
         put("gfx/kritter/dragonfly/dragonfly", "Dragonfly");
@@ -853,6 +854,7 @@ public class Config {
         put("gfx/terobjs/stockpile-trash", new CheckListboxItem("Full trash stockpiles"));
         put("/idle", new CheckListboxItem("Idle animals"));
         put("gfx/terobjs/steelcrucible", new CheckListboxItem("Steel Crucible"));
+        put("gfx/terobjs/cauldron", new CheckListboxItem("Cauldrons"));
         put("gfx/terobjs/villageidol", new CheckListboxItem("Village Idol"));
         put("gfx/terobjs/tarkiln",new CheckListboxItem("Tar Kilns"));
         put("gfx/terobjs/oven",new CheckListboxItem("Ovens"));

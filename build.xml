@@ -2,7 +2,7 @@
 
 <project name="hafen" default="deftgt">
   <property name="name" value="ArdClient"/>
-  <property name="version" value="1.00.110"/>
+  <property name="version" value="1.00.112"/>
 
   <target name="build-env">
     <mkdir dir="build" />
@@ -152,7 +152,7 @@ jackson-core.jar graal-sdk.jar graaljs.jar tregex.jar truffle-api.jar" />
             <fileset dir="build/classes" includes="changelog.txt" />
         </copy>
         <zip destfile="D:\GithubFolder\Ardenneslol.github.io\Hafen\ArdClient.rar" update="true">
-            <fileset dir="build" includes="*.jar,grid_ids.txt, *.bat, changelog.txt" excludes="chatlog.txt, *.log, *.dat"/>
+            <fileset dir="build" includes="*.jar,grid_ids.txt, *.bat, changelog.txt, static.sqlite" excludes="chatlog.txt, *.log, *.dat"/>
         </zip>
         <copy todir="D:\GithubFolder\Ardenneslol.github.io\Hafen">
             <fileset dir="build" includes="amber-res.jar, hafen.jar, l10n.jar" />

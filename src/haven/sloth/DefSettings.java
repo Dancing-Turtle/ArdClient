@@ -6,7 +6,7 @@ import haven.BeltWnd;
 import haven.sloth.io.HighlightData;
 import haven.sloth.io.ItemData;
 import haven.sloth.io.MapData;
-import haven.sloth.io.Storage;
+import haven.Storage;
 
 import java.awt.*;
 import java.io.File;
@@ -309,14 +309,14 @@ public class DefSettings {
 		final Optional<Storage> optint = Storage.create("jdbc:sqlite:static.sqlite");
 		if(optint.isPresent()) {
 			Movable.init(optint.get());
-			Growth.init(optint.get());
-			Range.init(optint.get());
+		//	Growth.init(optint.get());
+		//	Range.init(optint.get());
 			Alerted.init(optint.get());
 			Deleted.init();
 			Hidden.init();
-			HighlightData.init();
-			ItemData.init(optint.get());
-			MapData.init();
+		//	HighlightData.init();
+			//ItemData.init(optint.get());
+		//	MapData.init();
 			//Internal lookups are no longer needed
 			optint.get().close();
 		} else {

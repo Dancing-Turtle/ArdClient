@@ -511,7 +511,7 @@ public class PBotUtils {
 					if (dist < min) {
 						boolean matches = false;
 						for (String name : names) {
-							if (true) {
+							if (gob.getres().basename().contains(name)) {
 								if (gob.getStage() == stage) {
 									matches = true;
 									break;
@@ -525,7 +525,7 @@ public class PBotUtils {
 					}
 				}
 			}
-		}catch(NullPointerException q){}
+		}catch(Exception q){}
 		return nearest;
 	}
 	// Finds the nearest crop with a name and stage
@@ -554,7 +554,7 @@ public class PBotUtils {
 					}
 				}
 			}
-		}catch(NullPointerException q){}
+		}catch(Exception q){q.printStackTrace();}
 		return nearest;
 	}
 	public static Gob findNearestGob(int radius, java.util.List<Gob> blacklist, String... names) {
@@ -582,7 +582,7 @@ public class PBotUtils {
 					}
 				}
 			}
-		}catch(NullPointerException q){}
+		}catch(Exception q){q.printStackTrace();}
 		return nearest;
 	}
 
@@ -609,7 +609,7 @@ public class PBotUtils {
 					}
 				}
 			}
-		}catch(NullPointerException q){}
+		}catch(Exception q){q.printStackTrace();}
 		return nearest;
 	}
 
@@ -1000,6 +1000,53 @@ public class PBotUtils {
 			}
 		}
 		return witems;
+	}
+
+	//same as above for returns a list of all WItems from all inventories seen on screen
+	public static List<WItem> getallInventoryContents() {
+		java.util.List<WItem> witems = new ArrayList<WItem>();
+		synchronized (gui.ui.root.lchild) {
+			try {
+				for (Widget q = gui.ui.root.lchild; q != null; q = q.rnext()) {
+					if (q instanceof Inventory) {
+						witems.addAll(getInventoryContents((Inventory) q));
+					}
+				}
+			} catch (Exception e) { }
+		}
+		return witems;
+	}
+
+	//same as above for returns a list of all WItems from all inventories seen on screen
+	public static List<WItem> getallInventoryContentsbyString(String witem) {
+		java.util.List<WItem> witems = new ArrayList<WItem>();
+		List<WItem> finallist = new ArrayList<>();
+		synchronized (gui.ui.root.lchild) {
+			try {
+				for (Widget q = gui.ui.root.lchild; q != null; q = q.rnext()) {
+					if (q instanceof Inventory) {
+						witems.addAll(getInventoryContents((Inventory) q));
+					}
+				}
+			} catch (Exception e) {}
+		}
+		for(WItem item: witems){
+			if (item.item.getname().contains(witem))
+				finallist.add(item);
+		}
+		return finallist;
+	}
+
+	public static List<WItem> getPlayerInvContentsPartial(String witem){
+		List<WItem> witems = new ArrayList<>();
+		List<WItem> finallist = new ArrayList<>();
+		witems.addAll(getInventoryContents(gui.maininv));
+		for(WItem item:witems) {
+			if (item.item.getname().contains(witem)) {
+				finallist.add(item);
+			}
+		}
+		return finallist;
 	}
 
 	/**

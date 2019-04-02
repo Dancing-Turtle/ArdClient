@@ -1,3 +1,11 @@
+1.00.111
+Added local resource nodes to load default alerts button - also removed wild horses.
+Fixed a different but similar issue ignoring personal player paths. 
+Fixed skybox toggle logic being backward.
+Fixed gobspawner using the wrong res for "Chicks" causing a crash.
+Added another null check in that should prevent the player paths causing crashes on roads. 
+~
+
 1.00.110
 Converted the new "Flat Caves" into a toggle, off by default. Can be enabled in display settings underneath flat walls. 
 ~

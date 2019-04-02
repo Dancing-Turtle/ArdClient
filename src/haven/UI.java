@@ -140,6 +140,7 @@ public class UI {
             readytodrop = true;
             CharWnd.abandonquest = false;
         }
+        w.binded();
     }
 
     public void drawafter(AfterDraw ad) {

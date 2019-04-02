@@ -1201,7 +1201,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         }
 
         // This solution is bad but currently no better avaible
-        if(!Config.skybox) {
+        if(Config.skybox) {
             boolean skyb = true;
             if(player()!=null) {
     	        Coord pltc = new Coord((int)player().getc().x / 11, (int)player().getc().y / 11);
@@ -1248,7 +1248,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     }
 
     public Gob player() {
-	return((plgobid < 0) ? null : glob.oc.getgob(plgobid));
+	return((plgob < 0) ? null : glob.oc.getgob(plgob));
     }
 
     public Coord3f getcc() {

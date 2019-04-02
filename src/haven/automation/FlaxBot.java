@@ -89,7 +89,6 @@ public class FlaxBot extends Window {
                     while (g == null) {
                         lblProg2.settext("Found Flax");
                         g = PBotUtils.findNearestStageCropPartial(5000, 3, "flax");
-
                     }
 
                     PBotUtils.doClick(g, 1, 0);
