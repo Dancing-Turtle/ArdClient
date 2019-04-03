@@ -29,9 +29,7 @@ package haven;
 
 import haven.purus.pbot.PBotUtils;
 import haven.sloth.gob.Hidden;
-import haven.sloth.gob.Range;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 
@@ -99,17 +97,6 @@ public class OCache implements Iterable<Gob> {
         for(final Gob g: this){
             if(g.ols.size() > 0)
               g.ols.clear();
-        }
-    }
-
-    synchronized void changeGobsWith(final Class<? extends GAttrib> cls) {
-        for(final Gob g : this) {
-            if(g.getattr(cls) != null) {
-                System.out.println("changing gobs");
-                g.delattr(Range.class);
-                g.setattr(new Range(g,g.getres().name));
-                g.changed();
-            }
         }
     }
 

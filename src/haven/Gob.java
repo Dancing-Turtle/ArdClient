@@ -30,10 +30,8 @@ import haven.resutil.BPRadSprite;
 import haven.resutil.WaterTile;
 import haven.sloth.gfx.HitboxMesh;
 import haven.sloth.gob.*;
-import haven.DefSettings;
 import haven.sloth.gob.Type;
 import haven.sloth.io.HighlightData;
-import haven.sloth.io.MarkerData;
 //import haven.sloth.script.pathfinding.Hitbox;
 //import haven.sloth.script.pathfinding.GobHitmap;
 //import haven.sloth.script.pathfinding.Hitbox;
@@ -321,15 +319,10 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
                     type = Type.TREE;
                 //Check for any special attributes we should attach
                 Alerted.checkAlert(name, this);
-	//	if (Growth.isGrowth(name)) {
-		//    setattr(new Growth(this));
-		//}
+
                 if (Movable.isMovable(name)) {
                     setattr(new Movable(this));
                 }
-		//if (Range.hasRange(name) && (type != Type.ANIMAL || !isDead())) {
-		//    setattr(new Range(this, name));
-	//	}
                 if (Hidden.isHidden(name)) {
                     setattr(new Hidden(this));
                 }
@@ -339,8 +332,6 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
 		if(type == Type.HUMAN) {
                     setattr(new Halo(this));
                 }
-
-               // MarkerData.marker(name).ifPresent(mark -> ui.gui.mapfile.markobj(mark, rc));
 
 	/*	res().ifPresent((res) -> { //should always be present once name is discovered
 		    final Hitbox hitbox = Hitbox.hbfor(this, true);
@@ -891,8 +882,6 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             Drawable d = getattr(Drawable.class);
             try {
                 if (d != null) {
-                    if(getres().basename().contains("windmill"))
-                        System.out.println(getattr(ResDrawable.class).spr);
                     if (Config.hidegobs && type == Type.TREE && Config.hideTrees) {
                             GobHitbox.BBox bbox = GobHitbox.getBBox(this);
                             if (bbox != null && Config.showoverlay) {

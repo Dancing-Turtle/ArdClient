@@ -39,16 +39,14 @@ import java.io.*;
 import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.security.cert.CollectionCertStoreParameters;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.prefs.BackingStoreException;
 import java.util.stream.Collectors;
-import haven.IndirSetting;
+
 import haven.sloth.gob.Movable;
-import haven.sloth.gob.Range;
 
 import static haven.DefSettings.*;
 
