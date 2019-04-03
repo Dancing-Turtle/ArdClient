@@ -1,7 +1,7 @@
 package haven.sloth.gui;
 
 import haven.*;
-import haven.sloth.Theme;
+import haven.Theme;
 
 import java.awt.*;
 

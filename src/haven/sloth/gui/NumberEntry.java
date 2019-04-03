@@ -3,7 +3,7 @@ import haven.Coord;
 import haven.IButton;
 import haven.TextEntry;
 import haven.Widget;
-import haven.sloth.Theme;
+import haven.Theme;
 
 import java.util.function.Consumer;
 

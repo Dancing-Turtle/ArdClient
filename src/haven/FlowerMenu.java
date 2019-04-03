@@ -414,6 +414,7 @@ public class FlowerMenu extends Widget {
                 if ((itm != null && itm.selected) || nextAutoSel.equals(opts[i].name)) {
                     menuoverride = true;
                     selindex = i;
+                    nextAutoSel = null;
                     break;
                 }
             }

@@ -1,7 +1,7 @@
 package haven.sloth.gui;
 
 import haven.*;
-import haven.sloth.io.Storage;
+import haven.Storage;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

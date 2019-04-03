@@ -4,7 +4,7 @@ import haven.Coord;
 import haven.Coord2d;
 import haven.UI;
 import haven.Widget;
-import haven.sloth.io.Storage;
+import haven.Storage;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
