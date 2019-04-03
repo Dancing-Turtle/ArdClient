@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.HashSet;
+import haven.Storage;
 
 public class HighlightData {
     private static ObservableCollection<String> highlighted = new ObservableCollection<>(new HashSet<>());
