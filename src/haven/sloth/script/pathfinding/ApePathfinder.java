@@ -2,7 +2,7 @@ package haven.sloth.script.pathfinding;
 
 import com.google.common.flogger.FluentLogger;
 import haven.*;
-import haven.sloth.DefSettings;
+import haven.DefSettings;
 import haven.sloth.gob.HeldBy;
 
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ import java.util.PriorityQueue;
 
 
 public class ApePathfinder {
-    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
+  /*  private static final FluentLogger logger = FluentLogger.forEnclosingClass();
     private static final Coord[][] dirs = new Coord[4][];
     private static Hitbox plhb;
     static {
@@ -96,13 +96,13 @@ public class ApePathfinder {
 	}
     }
 
-    /**
+    *//**
      * Did we hit a bad spot at this coordinate?
      * Good spots are null or PLAYER
      *
      * This is two checks
      * Are we on a bad tile and is our gob hitbox overlapping another
-     */
+     *//*
     private boolean hitGob(final Coord mc) {
 	final Coord c = mc.add(plhb.offset());
 	final Coord br = c.add(plhb.size());
@@ -115,11 +115,11 @@ public class ApePathfinder {
 	return false;
     }
 
-    /**
+    *//**
      * In this case water tiles are safe, everything else = no no
      *
      * TODO: plhb is problem slightly too big for this since tiles will let you usually overlap a bit
-     */
+     *//*
     private boolean hitOnBoat(final Coord mc) {
 	final Coord c = mc.add(plhb.offset());
 	final Coord br = c.add(plhb.size());
@@ -134,12 +134,12 @@ public class ApePathfinder {
 	return false;
     }
 
-    /**
+    *//**
      * In this case everything is safe except for water and cave walls and ridges
      *
      * TODO: plhb is problem slightly too big for this since tiles will let you usually overlap a bit
      *       Especially the case in caves, not so much with ridges...
-     */
+     *//*
     private boolean hitOnLand(final Coord mc) {
 	final Coord c = mc.add(plhb.offset());
 	final Coord br = c.add(plhb.size());
@@ -194,10 +194,10 @@ public class ApePathfinder {
     }
 
 
-    /**
+    *//**
      * Reduce the nodes we have into lines the end points will be our clicks
      * to walk the path
-     */
+     *//*
     private ArrayList<Move> advreduce(List<Coord> lines, final HitFun hit) {
 	final ArrayList<Move> blines = new ArrayList<>(lines.size());
 	Coord cur, next;
@@ -265,7 +265,7 @@ public class ApePathfinder {
     public ArrayList<Move> path(Coord goal, boolean allowbest) {
 	Path path;
 	final HitFun hit = !boating ? this::hitOnLand : this::hitOnBoat;
-	switch(DefSettings.PATHFINDINGTIER.get()) {
+	switch(haven.DefSettings.PATHFINDINGTIER.get()) {
 	    case 1:
 		Path ret = findpath(start, goal, allowbest, 0, hit);
 		if(ret != null) {
@@ -300,5 +300,5 @@ public class ApePathfinder {
 		break;
 	}
 	return null;
-    }
+    }*/
 }

@@ -608,7 +608,7 @@ public class Config {
         put("Easter Egg", new CheckListboxItem("Easter Egg"));
     }};
 
-    public final static Map<String, Tex> additonalicons = new HashMap<String, Tex>(17) {{
+    public final static Map<String, Tex> additonalicons = new HashMap<String, Tex>(18) {{
         put("gfx/terobjs/vehicle/bram", Resource.loadtex("gfx/icons/bram"));
         put("gfx/kritter/toad/toad", Resource.loadtex("gfx/icons/toad"));
         put("gfx/terobjs/vehicle/rowboat", Resource.loadtex("gfx/icons/rowboat"));
@@ -627,6 +627,7 @@ public class Config {
         put("gfx/terobjs/vehicle/wreckingball", Resource.loadtex("gfx/icons/wball"));
         put("gfx/kritter/nidbane/nidbane", Resource.loadtex("gfx/icons/spooky"));
         put("gfx/kritter/irrbloss/irrbloss", Resource.loadtex("gfx/icons/irrbloss"));
+        put("gfx/kritter/opiumdragon/opiumdragon", Resource.loadtex("gfx/icons/opiumdragon"));
     }};
 
     public final static HashMap<String, CheckListboxItem> alarmitems = new HashMap<String, CheckListboxItem>(52) {{
@@ -848,7 +849,7 @@ public class Config {
             "strangecrystal"
     ));
 
-    public final static HashMap<String, CheckListboxItem> disableanim = new HashMap<String, CheckListboxItem>(6) {{
+    public final static HashMap<String, CheckListboxItem> disableanim = new HashMap<String, CheckListboxItem>(13) {{
         put("gfx/terobjs/beehive", new CheckListboxItem("Beehives"));
         put("gfx/terobjs/pow", new CheckListboxItem("Fires"));
         put("gfx/terobjs/stockpile-trash", new CheckListboxItem("Full trash stockpiles"));
@@ -861,6 +862,7 @@ public class Config {
         put("gfx/terobjs/smelter",new CheckListboxItem("Smelters"));
         put("gfx/terobjs/arch/visflag", new CheckListboxItem("Visitor Flags"));
         put("gfx/terobjs/flagpole", new CheckListboxItem("Flag Poles"));
+        put("gfx/terobjs/arch/windmill", new CheckListboxItem("Windmills"));
     }};
 
     public final static HashMap<String, CheckListboxItem> disableshiftclick = new HashMap<String, CheckListboxItem>(7){{

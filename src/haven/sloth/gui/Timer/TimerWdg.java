@@ -2,7 +2,7 @@ package haven.sloth.gui.Timer;
 
 
 import haven.*;
-import haven.sloth.DefSettings;
+import haven.DefSettings;
 import haven.sloth.io.TimerData;
 import haven.sloth.util.ObservableListener;
 
@@ -34,7 +34,7 @@ public class TimerWdg extends Widget implements ObservableListener<TimerData.Tim
 	    elapsed = (time.duration - ((long)ui.sess.glob.globtime() - inst.start))/3;
 	    if(elapsed <= 0) {
 	        ui.gui.add(new TimerDoneWindow(time.name), new Coord(50, 50));
-		Audio.play(timersfx, DefSettings.TIMERVOLUME.get()/1000f);
+		Audio.play(timersfx, haven.DefSettings.TIMERVOLUME.get()/1000f);
 		time.finish(inst);
 	    }
             super.tick(dt);

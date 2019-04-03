@@ -48,7 +48,6 @@ public class Range extends GAttrib implements Rendered {
 					else
 						rads.put(tiles, new BPRadSprite(100.0F, -10F,new States.ColState(DefSettings.ANIMALDANGERCOLOR.get())));
 					rangemap.put(name, rads.get(tiles));
-					//    public static GLState smatDanger = new ColState(DefSettings.ANIMALDANGERCOLOR.get());
 				}
 				}
 			}

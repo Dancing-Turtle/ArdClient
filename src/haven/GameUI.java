@@ -1229,7 +1229,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     }
 
     public void toggleGobs(){
-     //   DefSettings.SHOWHITBOX.set(!DefSettings.SHOWHITBOX.get());
         Config.showboundingboxes = !Config.showboundingboxes;
         Utils.setprefb("showboundingboxes", Config.showboundingboxes);
         if (map != null)

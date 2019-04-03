@@ -1,3 +1,13 @@
+1.00.112
+Fixed the non-selected flowermenu options not disappearing immediately. 
+Added cauldrons to the "do not shift right click" menu as an option.
+Sped up block chopper, will speed up the rest of the "spam right click" xtensions over time.
+Rewrote some flowermenu logic, "Quick Menus" under UI settings will now cause autoselect options to not even open a flower menu. Functionality wise, this changes next to nothing over basic amber functionality because if you had an autoselect and the action was instant, you still had no way to stop it. Auto selections via this method will output what they autoselected to the "System" log as an FYI. This is obviously turned off by default.
+As a result of the above change, using the drink hotkey will no longer pop up a flower menu at all. 
+Switched the default value of the pick foragable keybind picking up/dropping carts to false. Can be enabled in control settings if so desired.
+Fixed dismount xtension still using old gob.knocked function. 
+~
+
 1.00.111
 Added local resource nodes to load default alerts button - also removed wild horses.
 Fixed a different but similar issue ignoring personal player paths. 

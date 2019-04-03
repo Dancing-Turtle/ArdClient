@@ -2,7 +2,7 @@ package haven.sloth.script.pathfinding;
 
 import haven.Coord;
 import haven.UI;
-import haven.sloth.DefSettings;
+import haven.DefSettings;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -143,7 +143,7 @@ public class APathfinder extends Pathfinder {
     }
 
     public ArrayList<Move> path(final Coord start, final Coord goal, final boolean allowbest) {
-	if (!DefSettings.DEBUG.get()) {
+	if (!haven.DefSettings.DEBUG.get()) {
 	    return advreduce(findpath(start, goal, allowbest, 0));
 	} else {
 	    debugpath(start, goal, 0);

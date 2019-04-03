@@ -400,23 +400,24 @@ public class FlowerMenu extends Widget {
         public void binded() {
         try {
             int selindex = 0;
-            boolean drinkoverride = false;
+            boolean menuoverride = false;
             CheckListboxItem itm = null;
             for (int i = 0; i < opts.length; i++) {
                 System.out.println(opts[i].name + " " + nextAutoSel);
                 if (opts[i].name.equals("Drink") && nextAutoSel != null && nextAutoSel.equals("Drink")) {
                     selindex = i;
-                    drinkoverride = true;
+                    menuoverride = true;
                     nextAutoSel = null;
                     break;
                 }
                 itm = Config.flowermenus.get(opts[i].name);
-                if (itm != null && itm.selected) {
+                if ((itm != null && itm.selected) || nextAutoSel.equals(opts[i].name)) {
+                    menuoverride = true;
                     selindex = i;
                     break;
                 }
             }
-            if ((DefSettings.QUICKERMENU.get() && !ui.modctrl && itm != null && itm.selected && !ignoreAutoSetting) || drinkoverride) {
+            if ((DefSettings.QUICKERMENU.get() && !ui.modctrl && itm != null && itm.selected && !ignoreAutoSetting) || menuoverride) {
                 PBotUtils.sysLogAppend("Autoselected : "+opts[selindex].name,"green");
                 wdgmsg("cl", selindex, 0);
                 hide();

@@ -1,7 +1,5 @@
 package haven;
 
-//import haven.sloth.DefSettings;
-
 import java.util.function.Consumer;
 
 public class IndirHSlider extends Widget {

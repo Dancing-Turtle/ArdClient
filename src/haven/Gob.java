@@ -891,6 +891,8 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             Drawable d = getattr(Drawable.class);
             try {
                 if (d != null) {
+                    if(getres().basename().contains("windmill"))
+                        System.out.println(getattr(ResDrawable.class).spr);
                     if (Config.hidegobs && type == Type.TREE && Config.hideTrees) {
                             GobHitbox.BBox bbox = GobHitbox.getBBox(this);
                             if (bbox != null && Config.showoverlay) {

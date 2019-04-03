@@ -2,7 +2,7 @@ package haven.sloth.script.pathfinding;
 
 import haven.Coord;
 import haven.UI;
-import haven.sloth.DefSettings;
+import haven.DefSettings;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

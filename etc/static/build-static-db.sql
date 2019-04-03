@@ -179,6 +179,8 @@ INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/bushes/raspberr
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/bushes/caprifole', (SELECT type_id FROM type WHERE name_key = 'BUSH'));
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/bushes/redcurrant', (SELECT type_id FROM type WHERE name_key = 'BUSH'));
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/bushes/gorse', (SELECT type_id FROM type WHERE name_key = 'BUSH'));
+INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/bushes/poppycaps', (SELECT type_id FROM type WHERE name_key = 'BUSH'));
+INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/bushes/ghostpipe', (SELECT type_id FROM type WHERE name_key = 'BUSH'));
 --Boulders have 0 - 4 stages
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/bumlings/alabster0', (SELECT type_id FROM type WHERE name_key = 'BOULDER'));
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/bumlings/alabster1', (SELECT type_id FROM type WHERE name_key = 'BOULDER'));

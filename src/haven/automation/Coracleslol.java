@@ -35,16 +35,14 @@ public class Coracleslol implements Runnable {
                 else
                     havecoracle = false;
             } else havecoracle = false;
-        } catch (Exception q) {
-            PBotUtils.sysMsg("Prevented crash, something went wrong finding coracle.", Color.white);
-        }
+
             if (coracle != null)
                 havecoracle = true;
             if (!havecoracle) {
-                try {
                     if(invcoracle)
                     while (PBotUtils.findObjectByNames(10, "gfx/terobjs/vehicle/coracle") == null)
                         PBotUtils.sleep(10);
+
                     coraclegob = PBotUtils.findObjectByNames(10, "gfx/terobjs/vehicle/coracle");
 
                     if (coraclegob == null) {
@@ -60,11 +58,7 @@ public class Coracleslol implements Runnable {
                             PBotUtils.sleep(10);
                         }
                     }
-                } catch (Exception ip) {
-                    PBotUtils.sysMsg("Prevented crash, something went wrong finding coracle to pick up.", Color.white);
-                }
             } else {
-                try {
                     coracle.item.wdgmsg("drop", Coord.z);
                     if(invcoracle) {
                         while (gui.maininv.getItemPartial("Coracle") != null)
@@ -88,10 +82,10 @@ public class Coracleslol implements Runnable {
                         while (gui.ui.root.findchild(FlowerMenu.class) == null) {
                         }
                     }
-                } catch (Exception qqq) {
-                    PBotUtils.sysMsg("Prevented crash, something went wrong dropping and mounting coracle.", Color.white);
                 }
-            }
+            }catch (NullPointerException | Resource.Loading qqq) {
+            PBotUtils.sysMsg("Prevented crash, something went wrong dropping and mounting coracle.", Color.white);
+        }
         }
     }
 

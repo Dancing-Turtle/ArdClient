@@ -26,7 +26,7 @@ public class Dismount implements Runnable {
                     Resource res = gob.getres();
                     if (res != null && (res.name.startsWith("gfx/kritter/horse"))) {
                         Coord2d plc = gui.map.player().rc;
-                        if ((animal == null || gob.rc.dist(plc) < animal.rc.dist(plc)) && gob.knocked == false)
+                        if ((animal == null || gob.rc.dist(plc) < animal.rc.dist(plc)) && !gob.isDead())
                             animal = gob;
                     }
                 } catch (Loading l) {
