@@ -1,3 +1,11 @@
+1.00.116
+Fixed gob hp toggle adjusting the wrong saved value.
+~
+
+1.00.115
+One more fix for farmer and a fix for flaxbot. 
+~
+
 1.00.114
 Fixed farmer, still seems to be doing something weird when planting - will look into it.
 ~

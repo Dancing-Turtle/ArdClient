@@ -1,0 +1,118 @@
+// Used to make cloth from flax
+// Best way to prevent synchronization issues between client and server is to keep the state of what player should be doing next, what items should be in inventory, etc. client side, and then wait until the state told by server changes to this state
+// Made by Purus Cor to demonstrate usage of PBot API
+// For more information about API, join Purus Pasta discord
+// To suggest features into API, suggest them in discord
+const PBotUtils = Java.type('haven.purus.pbot.PBotUtils');
+const PBotGobAPI = Java.type('haven.purus.pbot.PBotGobAPI');
+const PBotWindowAPI = Java.type('haven.purus.pbot.PBotWindowAPI');
+const window = PBotUtils.PBotWindow("Cloth Maker", 200, 200, ScriptID);
+const clothStockpiles = [];
+const flaxStockpiles = [];
+let loomGob, clothMade = 0;
+
+window.addButton("clothBtn", "Add cloth stockpiles", 180, 10, 10);
+window.addButton("flaxBtn", "Add flax stockpiles", 180, 10, 40);
+window.addButton("loomBtn", "Choose a loom", 180, 10, 70);
+window.addButton("startBtn", "Start", 180, 10, 100);
+
+const clothBtn = () => {
+	PBotUtils.selectArea();
+	const gobs = PBotUtils.gobsInArea(PBotUtils.getSelectedAreaA(), PBotUtils.getSelectedAreaB());
+	for(let i=0; i<gobs.size(); i++) {
+		if(gobs[i].getResname() === 'gfx/terobjs/stockpile-cloth')
+			clothStockpiles.push(gobs[i]);
+	}
+	PBotUtils.sysMsg("Cloth stockpiles currently chosen: " + clothStockpiles.length);
+};
+
+const flaxBtn = () => {
+	PBotUtils.selectArea();
+	const gobs = PBotUtils.gobsInArea(PBotUtils.getSelectedAreaA(), PBotUtils.getSelectedAreaB());
+	for(let i=0; i<gobs.size(); i++) {
+		if(gobs[i].getResname() === 'gfx/terobjs/stockpile-flaxfibre')
+			flaxStockpiles.push(gobs[i]);
+	}
+	PBotUtils.sysMsg("Flax stockpiles currently chosen: " + clothStockpiles.length);
+};
+
+const loomBtn = () => {
+	PBotUtils.sysMsg("Please alt+click a loom!");
+	const selectedGob = PBotGobAPI.selectGob();
+	if(selectedGob.getResname() === 'gfx/terobjs/loom') {
+		PBotUtils.sysMsg("Loom selected!");
+		loomGob = selectedGob;
+	} else {
+		PBotUtils.sysMsg("Selected gob was not a loom!");
+	}
+};
+
+const startBtn = () => {
+	PBotUtils.sysMsg("Starting the clothmaker bot...");
+	if(!loomGob) {
+		PBotUtils.sysMsg("Loom not selected! Cancelling...");
+		return;
+	}
+	let stop = false;
+	while(!stop) {
+		const playerInv = PBotUtils.playerInventory();
+		if(flaxStockpiles.length === 0) {
+			PBotUtils.sysMsg("Ran out of flax stockpiles!");
+			break;
+		}
+		let flaxInInv = PBotUtils.playerInventory().getInventoryItemsByNames(['Flax Fibres']).size();
+		while(PBotUtils.playerInventory().freeSlotsInv() > 0) {
+			if(flaxStockpiles.length === 0) {
+				// Out of flax stockpiles
+				break;
+			}
+			PBotUtils.pfRightClick(flaxStockpiles[0], 0);
+			PBotWindowAPI.waitForWindow("Stockpile");
+			const slots = PBotUtils.playerInventory().freeSlotsInv();
+			const flax = PBotWindowAPI.getStockpileUsedCapacity();
+			if(flax <= slots)
+				flaxStockpiles.shift();
+			PBotWindowAPI.takeItemsFromStockpile(Math.min(slots, flax));
+			flaxInInv += Math.min(slots, flax);
+			while(PBotUtils.playerInventory().freeSlotsInv() != Math.max(0, slots-flax)) {
+				PBotUtils.sleep(25);
+			}
+		}
+		if(Math.floor(flaxInInv/5) == 0) {
+			break;
+		}
+		PBotUtils.pfRightClick(loomGob, 0);
+		while(!PBotGobAPI.player().getPoses().contains('gfx/borka/loomsit'))
+			PBotUtils.sleep(25);
+		if(!PBotUtils.drink()) {
+			PBotUtils.sysMsg("Ran out of water!");
+			return;
+		}
+		let clothInInv = Math.floor(flaxInInv/5);
+		PBotUtils.craftItem("linencloth", 1);
+		while(PBotUtils.playerInventory().getInventoryItemsByNames(['Linen Cloth']).size() != clothInInv)
+			PBotUtils.sleep(1);
+		clothMade += clothInInv;
+		while(clothInInv > 0) {
+			if(clothStockpiles.length == 0) {
+				stop = true;
+				PBotUtils.sysMsg("Ran out of free cloth stockpiles!");
+				break;
+			}
+			PBotUtils.pfRightClick(clothStockpiles[0], 0);
+			PBotWindowAPI.waitForWindow("Stockpile");
+			const slots = PBotUtils.playerInventory().freeSlotsInv();
+			const used = PBotWindowAPI.getStockpileUsedCapacity();
+			const count = Math.min(clothInInv, slots-used);
+			PBotWindowAPI.putItemFromInventoryToStockpile(count);
+			if(count + used === slots)
+				clothStockpiles.shift();
+			clothInInv -= count;
+			while(PBotUtils.playerInventory().getInventoryItemsByNames(['Linen Cloth']).size() != clothInInv) {
+				PBotUtils.sleep(25);
+			}
+		}
+	}
+	PBotUtils.sysMsg("Cloth maker bot finished! Made " + clothMade + " cloth in total!");
+
+};

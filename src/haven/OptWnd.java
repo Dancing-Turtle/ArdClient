@@ -971,8 +971,16 @@ public class OptWnd extends Window {
         });
         appender.add(new IndirCheckBox("Toggle halo pointers", SHOWHALO));
         appender.add(new IndirCheckBox("Toggle halo pointers on hearthing", SHOWHALOONHEARTH));
-        appender.add(new IndirCheckBox("Show Gob HP (Small Performance hit)", SHOWGOBHP, val -> {
-            if(ui.sess != null) {
+        appender.add(new CheckBox("Show objects health - Useful for mine supports/boats") {
+            {
+                a = Config.showgobhp;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showgobhp", val);
+                Config.showgobhp = val;
+                a = val;
+
                 GameUI gui = gameui();
                 if (gui != null && gui.map != null) {
                     if (val)
@@ -981,7 +989,7 @@ public class OptWnd extends Window {
                         gui.map.removeCustomSprites(Sprite.GOB_HEALTH_ID);
                 }
             }
-        }));
+        });
         appender.add(new IndirCheckBox("Show Your Movement Path", SHOWPLAYERPATH));
         appender.add(ColorPreWithLabel("Your path color: ", PLAYERPATHCOL, val ->{
             GobPath.clrst = new States.ColState(val);
@@ -2693,6 +2701,20 @@ public class OptWnd extends Window {
                         ui.sess.glob.oc.changeAllGobs();
                     }
     }));
+        appender.add(new Button(200, "New Hidden System", false) {
+            public void click() {
+                GameUI gui = gameui();
+                if(gui != null)
+                    gui.toggleHidden();
+            }
+        });
+        appender.add(new Button(200, "New Deleted System", false) {
+            public void click() {
+                GameUI gui = gameui();
+                if(gui != null)
+                    gui.toggleDeleted();
+            }
+        });
         appender.setVerticalMargin(0);
         hidesettings.add(new PButton(200, "Back", 27, main), new Coord(210, 360));
         hidesettings.pack();

@@ -2,7 +2,7 @@
 
 <project name="hafen" default="deftgt">
   <property name="name" value="ArdClient"/>
-  <property name="version" value="1.00.114"/>
+  <property name="version" value="1.00.116"/>
 
   <target name="build-env">
     <mkdir dir="build" />
@@ -186,16 +186,52 @@ jackson-core.jar graal-sdk.jar graaljs.jar tregex.jar truffle-api.jar" />
         <fileset dir="custom-res/"/>
     </copy>
   </target>
-  
-  <target name="profile" depends="jars">
-    <nbprofiledirect>
-    </nbprofiledirect>
-      <java fork="true" jar="build/hafen.jar">
-        <jvmarg value="${profiler.info.jvmargs.agent}" />
-        <sysproperty key="haven.dbtext" value="on" />
-        <sysproperty key="haven.defserv" value="sh.seatribe.se" />
-        <sysproperty key="haven.resdir" value="/home/fredrik/src/hafen/res" />
-      </java>
-  </target>
+
+    <target name="prep-update">
+        <copy todir="update">
+            <fileset dir="lib">
+                <include name="amber-res.jar" />
+                <include name="graaljs.jar" />
+                <include name="graal-sdk.jar" />
+                <include name="HavenDiscord.jar" />
+                <include name="jackson-core.jar" />
+                <include name="l10n.jar" />
+                <include name="rxjava-1.1.5.jar" />
+                <include name="rxjava-1.1.5-javadoc.jar" />
+                <include name="tregex.jar" />
+                <include name="truffle-api.jar" />
+                <include name="jogl-all.jar" />
+                <include name="gluegen-rt.jar" />
+                <include name="hafen-res.jar" />
+                <include name="builtin-res.jar" />
+                <include name="flogger-0.3.1.jar" />
+                <include name="flogger-system-backend-0.3.1.jar" />
+                <include name="sqlite-jdbc-3.26.0.jar"/>
+                <include name="bcprov-jdk15on-160.jar"/>
+                <include name="abcl.jar"/>
+                <include name="abcl-contrib.jar"/>
+            </fileset>
+            <fileset dir="lib/jogl-natives" />
+            <fileset dir="build">
+                <include name="hafen.jar"/>
+                <include name="logging.properties"/>
+            </fileset>
+        </copy>
+        <copy todir="update/scripts">
+            <fileset dir="build/scripts/" includes="**"/>
+        </copy>
+    </target>
+
+    <target name="update" depends="prep-update">
+        <exec executable="git" outputproperty="gitrev" failifexecutionfails="false">
+            <arg line="rev-parse HEAD" />
+        </exec>
+        <java jar="update/hafen-updater.jar" fork="true">
+            <arg value="hash"/>
+            <arg value="update/"/>
+            <arg value="${gitrev}"/>
+        </java>
+        <move file="ver" todir="update"/>
+    </target>
 
 </project>

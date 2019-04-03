@@ -246,7 +246,7 @@ public class FlaxBot extends Window {
                             }
                             if (PBotUtils.getAmount(item) >= 5) {
                                 lblProg2.settext("Picking Up Seeds");
-                                PBotUtils.sysLogAppend("" + item.quality().q, "white");
+                            //    PBotUtils.sysLogAppend("" + item.quality().q, "white");
                                 PBotUtils.takeItem(item);
                                 break;
                             }
@@ -454,7 +454,7 @@ public class FlaxBot extends Window {
                     g = null;
                     cropsHarvested++;
                     lblProg.settext(cropsHarvested + " Units Harvested");
-                }catch(Loading | Sprite.ResourceException | NullPointerException e){}
+                }catch(Loading | Sprite.ResourceException | NullPointerException e){e.printStackTrace();}
             }
         }
     }

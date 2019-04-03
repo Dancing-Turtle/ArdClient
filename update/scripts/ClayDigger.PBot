@@ -1,0 +1,107 @@
+// A clay differ bot, digs ball-clay from the seleceted area and puts it in the clay stockpiles in the selected area
+// Made by Purus Cor to demonstrate usage of PBot API
+// For more information about API, join Purus Pasta discord
+// To suggest features into API, suggest them in discord
+const PBotUtils = Java.type("haven.purus.pbot.PBotUtils");
+const PBotCharacterAPI = Java.type("haven.purus.pbot.PBotCharacterAPI");
+const PBotGobAPI = Java.type("haven.purus.pbot.PBotGobAPI");
+const PBotWindowAPI = Java.type("haven.purus.pbot.PBotWindowAPI");
+const window = PBotUtils.PBotWindow("Clay Digger", 50, 110, ScriptID);
+const startBtn = window.addButton("startBtnCb", "Start", 100, 5, 5);
+
+startBtn.changeColor(255, 200, 255);
+
+const startBtnCb = () => {
+	let clayDug = 0;
+	startBtn.destroy();
+	PBotUtils.sysMsg("First, select area to dig ball clay from!");
+	PBotUtils.selectArea();
+	const aCoordDig = PBotUtils.getSelectedAreaA();
+	const bCoordDig = PBotUtils.getSelectedAreaB();
+	let clayTiles = [];
+	const maxX = Math.max(aCoordDig.x, bCoordDig.x);
+	const minX = Math.min(aCoordDig.x, bCoordDig.x);
+	const maxY = Math.max(aCoordDig.y, bCoordDig.y);
+	const minY = Math.min(aCoordDig.y, bCoordDig.y);
+	console.log(maxX + " ja " + minX + " JA " + maxY + " ja " + minY);
+	for(let i=minY; i<maxY; i += 11) {
+		for(let j=minX; j<maxX; j += 11) {
+			// Add shallow water tiles into the claytile list
+			if(PBotUtils.tileResnameAt(j, i) === "gfx/tiles/water" || PBotUtils.tileResnameAt(j, i) === "gfx/tiles/owater") {
+				clayTiles.push({x: j, y: i});
+			}
+		}
+	}
+	PBotUtils.sysMsg("Second, select area with stockpiles!");
+	PBotUtils.selectArea();
+	let stockpiles = [];
+	const gobs = PBotUtils.gobsInArea(PBotUtils.getSelectedAreaA(), PBotUtils.getSelectedAreaB());
+	for(let i=0; i<gobs.size(); i++) {
+		if(gobs[i].getResname() === 'gfx/terobjs/stockpile-clay')
+			stockpiles.push(gobs[i]);
+	}
+
+	let stop = false;
+	PBotUtils.sysMsg("Close window to stop bot.");
+	while(PBotUtils.getWindow("Clay Digger") != null && !stop) {
+		// Dig until inventory full or out of claytiles
+		if(clayTiles.length === 0) {
+			PBotUtils.sysMsg("Out of tiles to dig clay from!");
+			stop = true;
+			break;
+		}
+		while(clayTiles.length > 0 && PBotUtils.playerInventory().freeSlotsInv() > 1) {
+			if(PBotUtils.getWindow("Clay Digger") == null){
+				PBotUtils.sysMsg("Window closed, exiting.");
+				stop = true;
+				break;
+			}
+			if(PBotCharacterAPI.getStamina() < 70)
+				PBotUtils.drink();
+			PBotUtils.pfLeftClick(clayTiles[0].x, clayTiles[0].y);
+			PBotCharacterAPI.doAct("dig");
+			PBotUtils.mapClick(clayTiles[0].x, clayTiles[0].y, 1, 0);
+			PBotCharacterAPI.cancelAct();
+			let retry = 0;
+			let noclay = true;
+			while(retry++ < 1000) {
+				if(PBotUtils.getHourglass() >= 0) {
+					PBotUtils.waitForHourglass();
+					noclay = false;
+				}
+				PBotUtils.sleep(1);
+			}
+			if(noclay) {
+				clayTiles.shift();
+			}
+		}
+		if(stop)
+			break;
+		PBotUtils.sleep(100); // Wait a moment for all the clay to appear into the inventory
+		let clayInInv = PBotUtils.playerInventory().getInventoryItemsByNames(["Ball Clay"]).size();
+		console.log(clayInInv);
+		// Put clay in stockpiles or out of stockpiles
+		while(clayInInv > 0) {
+			if(stockpiles.length == 0) {
+				stop = true;
+				PBotUtils.sysMsg("Ran out of free clay stockpiles!");
+				break;
+			}
+			console.log(stockpiles[0]);
+			PBotUtils.pfRightClick(stockpiles[0], 0);
+			PBotWindowAPI.waitForWindow("Stockpile");
+			const slots = PBotWindowAPI.getStockpileTotalCapacity();
+			const used = PBotWindowAPI.getStockpileUsedCapacity();
+			const count = Math.min(clayInInv, slots-used);
+			PBotWindowAPI.putItemFromInventoryToStockpile(count);
+			clayDug += count;
+			if(count + used === slots)
+				stockpiles.shift();
+			clayInInv -= count;
+			while(PBotUtils.playerInventory().getInventoryItemsByNames(["Ball Clay"]).size() != clayInInv) {
+				PBotUtils.sleep(25);
+			}
+		}
+	}
+	PBotUtils.sysMsg("Finished! Total clay dug: " + clayDug);
+};
