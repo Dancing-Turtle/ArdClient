@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import haven.Storage;
 
 public class ItemData {
     public enum ContainerType {
