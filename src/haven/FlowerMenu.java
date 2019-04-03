@@ -370,8 +370,7 @@ public class FlowerMenu extends Widget {
             mg = ui.grabmouse(this);
             kg = ui.grabkeys(this);
             organize(opts);
-            if(AMBERMENU.get())
-                  new Opening();
+            new Opening();
         }
 
         public boolean mousedown(Coord c, int button) {
@@ -397,7 +396,7 @@ public class FlowerMenu extends Widget {
             }
         }
 
-        public void binded() {
+    /*    public void binded() {
         try {
             int selindex = 0;
             boolean menuoverride = false;
@@ -411,8 +410,7 @@ public class FlowerMenu extends Widget {
                     break;
                 }
                 itm = Config.flowermenus.get(opts[i].name);
-                if ((itm != null && itm.selected) || nextAutoSel.equals(opts[i].name)) {
-                    menuoverride = true;
+                if (itm != null && itm.selected) {
                     selindex = i;
                     nextAutoSel = null;
                     break;
@@ -423,8 +421,7 @@ public class FlowerMenu extends Widget {
                 wdgmsg("cl", selindex, 0);
                 hide();
             }
-        }catch(Exception e){}//new functionality, dont crash no matter what.
-        }
+        }catch(Exception e){}//new functionality, dont crash no matter what. }*/
 
         public void draw(GOut g) {
             super.draw(g, false);
