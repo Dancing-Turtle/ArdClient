@@ -1,0 +1,58 @@
+// Digs a cellar
+// Made by Purus Cor to demonstrate usage of PBot API
+// For more information about API, join Purus Pasta discord
+// To suggest features into API, suggest them in discord
+const PBotUtils = Java.type('haven.purus.pbot.PBotUtils');
+const PBotCharacterAPI = Java.type('haven.purus.pbot.PBotCharacterAPI');
+const PBotGobAPI = Java.type('haven.purus.pbot.PBotGobAPI');
+const window = PBotUtils.PBotWindow("Cellar Digger", 70, 275, ScriptID);
+window.addLabel("Stand at position where bot drops the stones!", 10, 10);
+const btn = window.addButton("btnClick", "Start", 180, 10, 30);
+
+const btnClick = () => {
+	const cellar = PBotGobAPI.findGobByNames(1000, ["gfx/terobjs/arch/cellardoor"]);
+	window.closeWindow();
+	if(cellar == null) {
+		PBotUtils.sysMsg("Couldn't find a cellar door!");
+		return;
+	}
+	PBotUtils.sysMsg("Starting to dig the cellar!");
+	const boulderPos = PBotGobAPI.player().getRcCoords().floor();
+	let stop = false;
+	while(PBotUtils.getWindow("Cellar Digger") != null && !stop) {
+		if(PBotCharacterAPI.getStamina() < 80)
+			PBotUtils.drink();
+		cellar.doClick(3, 0);
+		while(PBotUtils.getHourglass() == -1) {
+			if(PBotGobAPI.findGobByNames(1000, ["gfx/terobjs/arch/cellardoor"]) == null) {
+				stop = true;
+				break;
+			}
+			PBotUtils.sleep(25);
+		}
+		if(stop)
+			break;
+		PBotUtils.waitForHourglass();
+		PBotUtils.mapClick(boulderPos.x, boulderPos.y, 3, 0);
+		// wait for player to start moving, then for player to stop
+		while(!PBotGobAPI.player().isMoving())
+			PBotUtils.sleep(25);
+		while(PBotGobAPI.player().isMoving())
+			PBotUtils.sleep(25);
+		
+		let boulder;
+		while(true) {
+			boulder = PBotGobAPI.findGobByNames(1000, ["bumling"]);
+			if(boulder != null && !PBotGobAPI.player().getRcCoords().equals(boulder.getRcCoords()))
+				break;
+			PBotUtils.sleep(25);
+		}
+		boulder.doClick(3, 0);
+		PBotUtils.waitForFlowerMenu();
+		PBotUtils.choosePetal("Chip stone");
+		PBotUtils.waitForHourglass();
+		PBotUtils.dropItemFromHand(0);
+	}
+	PBotUtils.sysMsg("Finished digging the cellar!");
+};
+

@@ -1,0 +1,62 @@
+// A carrot farming bot, made to demonstrate usage and capabilities of the Purus Pasta PBot Botting API
+// Made by Purus Cor to demonstrate usage of PBot API
+// For more information about API, join Purus Pasta discord
+// To suggest features into API, suggest them in discord
+console.log("Hello World!");
+
+const PBotUtils = Java.type("haven.purus.pbot.PBotUtils");
+const PBotCharacterAPI = Java.type("haven.purus.pbot.PBotCharacterAPI");
+const PBotGobAPI = Java.type("haven.purus.pbot.PBotGobAPI");
+const window = PBotUtils.PBotWindow("Flax Farmer", 200, 200, ScriptID);
+const startBtn = window.addButton("startFarmingBtn", "Start farming", 100, 25, 25);
+
+const seedName = "gfx/invobjs/seed-carrot";
+const cropStage = 3;
+const cropName = "gfx/terobjs/plants/carrot"
+
+startBtn.changeColor(255, 200, 255);
+
+const startFarmingBtn = () => {
+	PBotUtils.sysMsg("Starting flax farming bot!", 255, 255, 255);
+	PBotUtils.selectArea();
+	const aCoord = PBotUtils.getSelectedAreaA();
+	const bCoord = PBotUtils.getSelectedAreaB();
+	console.log("Hello World!");
+	const areaGobs = PBotUtils.gobsInArea(aCoord, bCoord);
+	const areaCrops = [];
+	for(let i=0; i<areaGobs.size(); i++)
+		if(areaGobs[i].getResname() === cropName && areaGobs[i].getCropStage() === cropStage)
+			areaCrops.push(areaGobs[i]);
+	for(let i=0; i<areaCrops.length; i++) {
+		// Harvest
+		if(PBotCharacterAPI.getStamina() <= 60)
+			PBotUtils.drink();
+		PBotUtils.pfRightClick(areaCrops[i], 0);
+		PBotUtils.waitForFlowerMenu();
+		PBotUtils.choosePetal("Harvest");
+		while(PBotGobAPI.findGobById(areaCrops[i].getGobId()) != null) {
+			PBotUtils.sleep(30);
+		}
+		// Replant
+		let inventoryItems = PBotUtils.playerInventory().getInventoryItemsByResnames([seedName]);
+		while(inventoryItems.size() == 0) {
+			PBotUtils.sleep(25);
+			inventoryItems = PBotUtils.playerInventory().getInventoryItemsByResnames([seedName]);
+		}
+		let planted = false;
+		for(let j=0; j<inventoryItems.size(); j++) {
+			if(planted || inventoryItems[j].getAmount() >= 5) {
+				inventoryItems[j].takeItem();
+				PBotUtils.mapInteractClick();
+				while(PBotGobAPI.findGobByNames(1, [cropName]) == null) {
+					PBotUtils.sleep(25);
+				}
+				PBotUtils.dropItemFromHand(0);
+				planted = true;
+			} else {
+				inventoryItems[j].dropItemFromInventory();
+			}
+		}
+	}
+};
+	

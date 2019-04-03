@@ -1,0 +1,69 @@
+// Fills troughs with crops
+// Made by Purus Cor to demonstrate usage of PBot API
+// For more information about API, join Purus Pasta discord
+// To suggest features into API, suggest them in discord
+const PBotUtils = Java.type('haven.purus.pbot.PBotUtils');
+const PBotGobAPI = Java.type('haven.purus.pbot.PBotGobAPI');
+const PBotWindowAPI = Java.type('haven.purus.pbot.PBotWindowAPI');
+
+const fodderItems = ['Carrot', 'Beetroot', 'Beetroot Leaves'];
+const fodderGobs = ['gfx/terobjs/items/carrot', 'gfx/terobjs/items/beetleaves', 'gfx/terobjs/items/beet'];
+
+const window = PBotUtils.PBotWindow("Trough filler", 30, 160, ScriptID);
+const label = window.addLabel("Alt+Click a trough to start", 10, 10);
+let troughGob, stop = false;
+
+const main = () => {
+	troughGob = PBotGobAPI.selectGob();
+	label.setText("Filling...");
+	if(troughGob.getResname() != 'gfx/terobjs/trough') {
+		PBotUtils.sysMsg("Selected gob was not a trough!");
+		window.closeWindow();
+		return;
+	}
+	while(!stop) {
+		let gob = PBotGobAPI.findGobByNames(1000, fodderGobs);
+		if(gob == null) {
+			stop = true; 
+			break;
+		}
+		let freeSpace = PBotUtils.playerInventory().freeSlotsInv();
+		do {
+			if(freeSpace === 0)
+				break;
+			PBotUtils.pfRightClick(gob, 0);
+			while(PBotUtils.playerInventory().freeSlotsInv() === freeSpace || PBotGobAPI.findGobById(gob.getGobId()) != null)
+				PBotUtils.sleep(25);
+			freeSpace--;
+			gob = PBotGobAPI.findGobByNames(1000, fodderGobs);
+		} while(gob != null);
+		PBotUtils.pfRightClick(troughGob, 0);
+		PBotWindowAPI.waitForWindow("Trough");
+		let fodder = PBotUtils.playerInventory().getInventoryItemsByNames(fodderItems);
+		for(let i=0; i<fodder.length; i++) {
+			const amount = PBotWindowAPI.getAmount(PBotWindowAPI.getWindow("Trough"));
+			if(amount === 100) {
+				PBotUtils.sysMsg("Trough full!!");
+				stop = true;
+				break;
+			} else if(100-amount-1 > Math.ceil(fodder.size()/20)) { // If trough can easily fit all of the fodder, itemclick them quickly
+				fodder[i].takeItem();
+				troughGob.itemClickAll();
+				PBotWindowAPI.waitForWindowClose("Trough");
+				while(PBotUtils.getItemAtHand() != null || PBotUtils.playerInventory().getInventoryItemsByNames(fodderItems).size() > 0)
+					PBotUtils.sleep(25);
+				break;
+			} else { // If not, item click one by one and check if trough is full
+				fodder[i].takeItem();
+				troughGob.itemClick(0);
+				PBotWindowAPI.waitForWindowClose("Trough");
+				while(PBotUtils.getItemAtHand() != null)
+					PBotUtils.sleep(25);
+				troughGob.doClick(3, 0);
+				PBotWindowAPI.waitForWindow("Trough");
+			}
+		}
+	}
+	PBotUtils.sysMsg("Trough filler finished!");
+};
+main();
