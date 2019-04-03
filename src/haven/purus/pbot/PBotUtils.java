@@ -77,9 +77,9 @@ public class PBotUtils {
 	/**
 	 * Use item in hand to ground below player, for example, to plant carrot
 	 */
-	public static void mapInteractClick() {
+/*	public static void mapInteractClick() {
 		gui.map.wdgmsg("itemact", PBotUtils.getCenterScreenCoord(), PBotGobAPI.player().getRcCoords().floor(posres), 3, gui.ui.modflags());
-	}
+	}*/
 
 
 	/**
@@ -511,36 +511,7 @@ public class PBotUtils {
 					if (dist < min) {
 						boolean matches = false;
 						for (String name : names) {
-							if (gob.getres().basename().contains(name)) {
-								if (gob.getStage() == stage) {
-									matches = true;
-									break;
-								}
-							}
-						}
-						if (matches) {
-							min = dist;
-							nearest = gob;
-						}
-					}
-				}
-			}
-		}catch(Exception q){}
-		return nearest;
-	}
-	// Finds the nearest crop with a name and stage
-	public static Gob findNearestStageCropPartial(int radius, int stage, String... names) {
-		Coord2d plc = player().rc;
-		double min = radius;
-		Gob nearest = null;
-		try {
-			synchronized (gui.ui.sess.glob.oc) {
-				for (Gob gob : gui.ui.sess.glob.oc) {
-					double dist = gob.rc.dist(plc);
-					if (dist < min) {
-						boolean matches = false;
-						for (String name : names) {
-							if (gob.getres().basename().contains(name)) {
+							if (gob.getres() != null && gob.getres().name.contains(name)) {
 								if (gob.getStage() == stage) {
 									matches = true;
 									break;
@@ -568,38 +539,11 @@ public class PBotUtils {
 					if (dist < min) {
 						boolean matches = false;
 						for (String name : names) {
-							if (gob.getres().basename().contains(name)) {
+							if (gob.getres() != null && gob.getres().basename().contains(name)) {
 								if (!blacklist.contains(gob)) {
 									matches = true;
 									break;
 								}
-							}
-						}
-						if (matches) {
-							min = dist;
-							nearest = gob;
-						}
-					}
-				}
-			}
-		}catch(Exception q){q.printStackTrace();}
-		return nearest;
-	}
-
-	public static Gob findNearestGob2(int radius, String... names) {
-		Coord2d plc = player().rc;
-		double min = radius;
-		Gob nearest = null;
-		try {
-			synchronized (gui.ui.sess.glob.oc) {
-				for (Gob gob : gui.ui.sess.glob.oc) {
-					double dist = gob.rc.dist(plc);
-					if (dist < min) {
-						boolean matches = false;
-						for (String name : names) {
-							if (gob.getres().basename().contains(name)) {
-								matches = true;
-								break;
 							}
 						}
 						if (matches) {
@@ -624,7 +568,7 @@ public class PBotUtils {
 	}
 
 	// Use item in hand to ground below player, for example, plant carrot
-	public static void mapInteractClick(int mod) {
+	public static void mapInteractClick() {
 		gui.map.wdgmsg("itemact", getCenterScreenCoord(), player().rc.floor(posres), 3, gui.ui.modflags());
 	}
 

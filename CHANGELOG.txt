@@ -1,9 +1,13 @@
+1.00.114
+Fixed farmer, still seems to be doing something weird when planting - will look into it.
+~
+
 1.00.113
 Removed a large portion of the change log from +50 versions ago to decrease file size.
 Fixed poppycaps and ghost pipes not showing growth stages.
 Fixed coracle script again. 
 Added opium dragon minimap icon, it's large like irrlights to get your attention.
-Getting rid of "quick menus" doesnt seem to actually speed anything up in testing. 
+Getting rid of "quick menus" - doesnt seem to actually speed anything up in testing. 
 ~
 
 1.00.112

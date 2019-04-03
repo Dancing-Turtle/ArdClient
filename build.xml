@@ -2,10 +2,11 @@
 
 <project name="hafen" default="deftgt">
   <property name="name" value="ArdClient"/>
-  <property name="version" value="1.00.113"/>
+  <property name="version" value="1.00.114"/>
 
   <target name="build-env">
     <mkdir dir="build" />
+      <mkdir dir="build/lib" />
     <mkdir dir="build/classes" />
     <available property="has-res-jar" file="build/hafen-res.jar" />
     <available property="has-buildinfo" file="build/classes/buildinfo" />

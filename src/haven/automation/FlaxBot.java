@@ -82,13 +82,13 @@ public class FlaxBot extends Window {
                     if (stopThread)
                         stop();
 
-                    while (PBotUtils.findNearestStageCropPartial(5000, 3, "flax") == null) {
+                    while (PBotUtils.findNearestStageCrop(5000, 3, "gfx/terobjs/plants/flax") == null) {
                         lblProg2.settext("No Flax");
                         PBotUtils.sleep(200);
                     }
                     while (g == null) {
                         lblProg2.settext("Found Flax");
-                        g = PBotUtils.findNearestStageCropPartial(5000, 3, "flax");
+                        g = PBotUtils.findNearestStageCrop(5000, 3, "gfx/terobjs/plants/flax");
                     }
 
                     PBotUtils.doClick(g, 1, 0);
@@ -123,9 +123,9 @@ public class FlaxBot extends Window {
                     } catch (NullPointerException qq) {
                         PBotUtils.sysLogAppend("Flax I found is now null, weird. Retrying.", "white");
                         g = null;
-                        while (PBotUtils.findNearestStageCropPartial(5000, 3, "flax") == null)
+                        while (PBotUtils.findNearestStageCrop(5000, 3, "gfx/terobjs/plants/flax") == null)
                             PBotUtils.sleep(10);
-                        g = PBotUtils.findNearestStageCropPartial(5000, 3, "flax");
+                        g = PBotUtils.findNearestStageCrop(5000, 3, "gfx/terobjs/plants/flax");
                         PBotUtils.pfRightClick(g, 0);
                     }
 
@@ -164,9 +164,9 @@ public class FlaxBot extends Window {
                             } catch (NullPointerException qq) {
                                 PBotUtils.sysLogAppend("Flax I found is now null, weird. Retrying.", "white");
                                 g = null;
-                                while (PBotUtils.findNearestStageCropPartial(5000, 3, "flax") == null)
+                                while (PBotUtils.findNearestStageCrop(5000, 3, "gfx/terobjs/plants/flax") == null)
                                     PBotUtils.sleep(10);
-                                g = PBotUtils.findNearestStageCropPartial(5000, 3, "flax");
+                                g = PBotUtils.findNearestStageCrop(5000, 3, "gfx/terobjs/plants/flax");
                                 PBotUtils.doClick(g,3,0);
                             }
                             retryharvest = 0;
@@ -217,9 +217,9 @@ public class FlaxBot extends Window {
                             } catch (NullPointerException qq) {
                                 PBotUtils.sysLogAppend("Flax I found is now null, weird. Retrying.", "white");
                                 g = null;
-                                while (PBotUtils.findNearestStageCropPartial(5000, 3, "flax") == null)
+                                while (PBotUtils.findNearestStageCrop(5000, 3, "gfx/terobjs/plants/flax") == null)
                                     PBotUtils.sleep(10);
-                                g = PBotUtils.findNearestStageCropPartial(5000, 3, "flax");
+                                g = PBotUtils.findNearestStageCrop(5000, 3, "gfx/terobjs/plants/flax");
                                 PBotUtils.doClick(g,3,0);
                             }
                             retryharvest = 0;
@@ -276,15 +276,16 @@ public class FlaxBot extends Window {
                         if (seedname.contains("seed"))
                             amount = PBotUtils.getAmount(PBotUtils.getGItemAtHand());
                         lblProg2.settext("Planting");
-                        PBotUtils.mapInteractClick(0);
-
+                       // PBotUtils.mapInteractClick();
+                        gui.map.wdgmsg("itemact", Coord.z, PBotUtils.player().rc.floor(posres), 0, 0, (int) PBotUtils.player().id, PBotUtils.player().rc.floor(posres), 0, -1);
                         retrycount = 0;
-                        while (PBotUtils.findNearestStageCropPartial(5, 0, "flax") == null || (PBotUtils.getItemAtHand() != null
+                        while (PBotUtils.findNearestStageCrop(5, 0, "gfx/terobjs/plants/flax") == null || (PBotUtils.getItemAtHand() != null
                                 && amount == PBotUtils.getAmount(PBotUtils.getGItemAtHand()))) {
                             retryharvest++;
                             if (retryharvest > 500) {
                                 lblProg2.settext("Retry Planting");
-                                PBotUtils.mapInteractClick(0);
+                              //  PBotUtils.mapInteractClick();
+                                gui.map.wdgmsg("itemact", Coord.z, PBotUtils.player().rc.floor(posres), 0, 0, (int) PBotUtils.player().id, PBotUtils.player().rc.floor(posres), 0, -1);
                                 retryharvest = 0;
                                 retrycount++;
                             }
@@ -309,7 +310,8 @@ public class FlaxBot extends Window {
                                         break;
                                     }
                                 }
-                                PBotUtils.mapInteractClick(0);
+                              //  PBotUtils.mapInteractClick();
+                                gui.map.wdgmsg("itemact", Coord.z, PBotUtils.player().rc.floor(posres), 0, 0, (int) PBotUtils.player().id, PBotUtils.player().rc.floor(posres), 0, -1);
                             }
                             lblProg2.settext("Waiting for Planting Complete");
                             PBotUtils.sleep(10);

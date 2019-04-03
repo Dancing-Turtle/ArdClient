@@ -82,6 +82,7 @@ public class SeedCropFarmer extends Window implements Runnable {
 			GameUI gui = HavenPanel.lui.root.findchild(GameUI.class);
 			IMeter.Meter stam = gui.getmeter("stam", 0);
 			if (stam.a <= 60) {
+				lblProg2.settext("Drinking");
 				new Thread(new BeltDrink(gui), "BeltDrink").start();
 				PBotUtils.sleep(5000);
 			}
@@ -253,7 +254,8 @@ public class SeedCropFarmer extends Window implements Runnable {
 					if (seedName.contains("seed"))
 						PBotUtils.getAmount(PBotUtils.getGItemAtHand());
 					lblProg2.settext("Planting");
-					PBotUtils.mapInteractClick(0);
+					//PBotUtils.mapInteractClick();
+					gui.map.wdgmsg("itemact", Coord.z, PBotUtils.player().rc.floor(posres), 0, 0, (int) PBotUtils.player().id, PBotUtils.player().rc.floor(posres), 0, -1);
 					while (PBotUtils.findNearestStageCrop(5, 0, cropName) == null || (PBotUtils.getItemAtHand() != null && (seedName.contains("seed") && amount == PBotUtils.getAmount(PBotUtils.getGItemAtHand())))) {
 						PBotUtils.sleep(10);
 					}
@@ -280,8 +282,10 @@ public class SeedCropFarmer extends Window implements Runnable {
 								break;
 							}
 						}
-						if (item != null)
+						if (item != null) {
+							System.out.println("picking up item to plant");
 							PBotUtils.takeItem(item);
+						}
 					}
 					while (PBotUtils.getItemAtHand() == null)
 						PBotUtils.sleep(10);
@@ -290,7 +294,8 @@ public class SeedCropFarmer extends Window implements Runnable {
 					if (seedName.contains("seed"))
 						PBotUtils.getAmount(PBotUtils.getGItemAtHand());
 					lblProg2.settext("Planting");
-					PBotUtils.mapInteractClick(0);
+					//PBotUtils.mapInteractClick();
+					gui.map.wdgmsg("itemact", Coord.z, PBotUtils.player().rc.floor(posres), 0, 0, (int) PBotUtils.player().id, PBotUtils.player().rc.floor(posres), 0, -1);
 					while (PBotUtils.findNearestStageCrop(5, 0, cropName) == null || (PBotUtils.getItemAtHand() != null && (seedName.contains("seed") && amount == PBotUtils.getAmount(PBotUtils.getGItemAtHand())))) {
 						PBotUtils.sleep(10);
 					}
@@ -332,7 +337,8 @@ public class SeedCropFarmer extends Window implements Runnable {
 						if (seedName.contains("seed"))
 							PBotUtils.getAmount(PBotUtils.getGItemAtHand()); // logs the seed count in your hand so it can use the count to verify it successfully planted
 					lblProg2.settext("Planting");
-					PBotUtils.mapInteractClick(0);
+				//PBotUtils.mapInteractClick();
+					gui.map.wdgmsg("itemact", Coord.z, PBotUtils.player().rc.floor(posres), 0, 0, (int) PBotUtils.player().id, PBotUtils.player().rc.floor(posres), 0, -1);
 						while (PBotUtils.findNearestStageCrop(5, 0, cropName) == null || (PBotUtils.getItemAtHand() != null && (seedName.contains("seed") && amount == PBotUtils.getAmount(PBotUtils.getGItemAtHand())))) {
 							PBotUtils.sleep(10);
 						}
