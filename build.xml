@@ -58,6 +58,8 @@
     <copy todir="build/classes/haven" file="etc/res-bgload" />
     <copy todir="build/classes/haven" file="etc/icon.png" />
     <copy todir="build" file="etc/grid_ids.txt" />
+      <copy todir="build" file="CHANGELOG.txt" />
+      <copy todir="build" file="lib/static.sqlite" />
   </target>
 
   <target name="lib-classes" depends="build-env" unless="unpacked-lib">
