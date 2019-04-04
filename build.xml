@@ -215,6 +215,8 @@ jackson-core.jar graal-sdk.jar graaljs.jar tregex.jar truffle-api.jar" />
                 <include name="hafen.jar"/>
                 <include name="l10n.jar"/>
                 <include name="logging.properties"/>
+                <include name="static.sqlite"/>
+                <include name="grid_ids.txt"/>
             </fileset>
         </copy>
         <copy todir="update/scripts">
