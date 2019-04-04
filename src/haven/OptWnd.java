@@ -1410,7 +1410,7 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
-        appender.add(new CheckBox("Auto hearth") {
+        appender.add(new CheckBox("Auto hearth on unknown/red players") {
             {
                 a = Config.autohearth;
             }
