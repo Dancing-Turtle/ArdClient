@@ -229,6 +229,9 @@ jackson-core.jar graal-sdk.jar graaljs.jar tregex.jar truffle-api.jar" />
                 <include name="static.sqlite"/>
                 <include name="grid_ids.txt"/>
             </fileset>
+            <fileset dir="build/classes">
+                <include name="changelog.txt" />
+            </fileset>
         </copy>
         <copy todir="update/scripts">
             <fileset dir="build/scripts/" includes="**"/>

@@ -1,0 +1,350 @@
+1.00.117
+Fixed flowermenus intercepting mouse clicks while closing.
+Deleted outdated Gemstone class.
+Fixed typo causing alabaster to not be flagged on minimap.
+Fixed a few PBot scripts and switched the drink function to PBot default. PBotUtils.Drink(true)/PBotUtils.Drink(false) now to utilize. 
+~
+
+1.00.116
+Fixed gob hp toggle adjusting the wrong saved value.
+~
+
+1.00.115
+One more fix for farmer and a fix for flaxbot. 
+~
+
+1.00.114
+Fixed farmer, still seems to be doing something weird when planting - will look into it.
+~
+
+1.00.113
+Removed a large portion of the change log from +50 versions ago to decrease file size.
+Fixed poppycaps and ghost pipes not showing growth stages.
+Fixed coracle script again. 
+Added opium dragon minimap icon, it's large like irrlights to get your attention.
+Getting rid of "quick menus" - doesnt seem to actually speed anything up in testing. 
+~
+
+1.00.112
+Fixed the non-selected flowermenu options not disappearing immediately. 
+Added cauldrons to the "do not shift right click" menu as an option.
+Sped up block chopper, will speed up the rest of the "spam right click" xtensions over time.
+Rewrote some flowermenu logic, "Quick Menus" under UI settings will now cause autoselect options to not even open a flower menu. Functionality wise, this changes next to nothing over basic amber functionality because if you had an autoselect and the action was instant, you still had no way to stop it. Auto selections via this method will output what they autoselected to the "System" log as an FYI. This is obviously turned off by default.
+As a result of the above change, using the drink hotkey will no longer pop up a flower menu at all. 
+Switched the default value of the pick foragable keybind picking up/dropping carts to false. Can be enabled in control settings if so desired.
+Fixed dismount xtension still using old gob.knocked function. 
+~
+
+1.00.111
+Added local resource nodes to load default alerts button - also removed wild horses.
+Fixed a different but similar issue ignoring personal player paths. 
+Fixed skybox toggle logic being backward.
+Fixed gobspawner using the wrong res for "Chicks" causing a crash.
+Added another null check in that should prevent the player paths causing crashes on roads. 
+~
+
+1.00.110
+Converted the new "Flat Caves" into a toggle, off by default. Can be enabled in display settings underneath flat walls. 
+~
+
+1.00.109 
+Merged fix for choppy animations on hidden gobs.
+Fixed large map not saving size setting.
+Fixed animal path toggle not working.
+Think I fixed a Movable caused crash bug when taking roads.
+Restored amber-like flowermenus by default. Can be reverted to new format in UI settings.
+Added "QuickMenus" option to ui settings, speeds up flowermenu closing after a selection is made. On by default.
+~
+
+1.00.108 
+Major Changes:
+Merged with Boshaw for the below items:
+Changed flowermenu appearance, no it's not a toggle option.
+Added custom flowermenu for objects, accessible by holding alt and right clicking.
+Added "Delete" to alt right click menu. Delete differs from hide such that deleting an object causes the game to never consider loading it, thus no minimap icon, no hitbox, no alarms, etc. This feature is specifically for things that you literally just NEVER care to ever see cluttering your screen again, such as cave moths. 
+You can manage your deleted gobs/objects through the "Game Windows" selection and "Deleted" icon. You've been warned about what delete does, don't delete shit like bears and then complain you're getting wrecked by a ghost. 
+To interact with things in the world without triggering flowermenu auto selections, hold control now.
+Added custom highlight/party highlight (only for ArdClient/Sloth Client)/hide/alarm in custom flowermenu.
+Skybox is now a video setting toggle that's off by default. No longer a memory leak, but likely still does have a negative performance impact overall. 
+Moved item lock to Shift + Control + Right click, to allow ctrl right clicks to be used to disable flowermenu auto selections.
+Added another keybind, Shift+H by default, to toggle hide on individual objects. Ctrl H is still the default to bulk hide.
+Added Carts to the list of things that the pick forage item (Q by default) will interact with if closest to you. Can be disabled in Control settings.
+Added "Gob Spawner" window that can be accessed through "Game Windows" on the menugrid, and used to spawn animals. Let me know if I left any animals out, I'll work on adding individual poses later but for now only bears trolls mammoths whales and nidbanes have some additional poses.
+
+Minor Changes:
+Added "default" list to alert/hide/highlight for easy selection.
+Shortened and flattened underground wall tiles.
+Switched a bunch of display settings over the new and improved color selector. Most color changes require a game restart to take effect.
+Added a slider to general settings to set the autodrink threshold %.
+Made ameter public to assist with getting it's value from pbot scripts.
+Enabled Loftar's "Toggle mine supports" button in menugrid under toggles, this one will work for towercaps.
+Removed right click on minimap moving unless your right click lands on a gob. 
+Added a toggle to new alerts window to only alarm once, while NOT selected the same mob/object can alarm more than once if it goes off screen and back into view again.
+Added 2 new options to "combat settings" to force fight session focus, one will only force focus if the chat box does not have focus (ie you're typing) the other will force fight session focus no matter what, meaning that keybinds will always be sent to the combat UI and also fixing the default client bug where if you reload the client in combat you might be unable to use moves.
+Added option to display settings to shorten palisade and brick wall segments, ie - flat walls. 
+Toggle chat keybind will now no longer hide chat, only restore it if it's already hidden - because MightySheep is a whiny little cunt.
+Added moles to alarm/hide list.
+Added a setting to audio settings to turn down the "door" volume when entering/exiting buildings. 
+Added volume slider to audio settings to turn down the "ding" sound from inspecting trees, and toggling most features.
+Added new toggle to general settings to alert on new wounds and the damage from them. Can be disabled, on by default.
+
+Botting changes:
+Merged all of Purus' new botting API changes, pathfinder, and auto tableware remover. 
+Depreciated PBotAPI, please use haven.purus.pbot.PBotUtils instead. There was no reason to attach the constantly updating GUI to two different botting API's. 
+Readded removed Purus "Nashorn" functionality to run side by side with the new. Two separate PBot script lists now, one for the new api and one for Nashorn scripts. To run a depreciated nashorn script, change the file extension to ".PBotOld" You will also need to change the API reference in your nashorn scripts to PBotUtils instead of PBotAPI
+The updater will now also download new scripts when added, feel free to send me your PBot scripts if you'd like them distributed and credited to yourself. 
+~
+
+1.00.107
+Moved Game Windows and Combat Decks buttons to the end of menugrid.
+Merged another loftar siege change, to make siege claims on by default.
+Reverting chat window minimize until I figure out a cleaner way to do it, if you close chat you can reopen via game windows in the menugrid.
+~
+
+1.00.106
+Partial rollback on change to fight session to remove the part that ensures it always has focus. Evidently this interferes with the chat window and other text boxes, who knew? Kept the part where it'll draw over everything else.
+Added folder with 5 buttons inside to menugrid to switch combat decks. TEST THIS IN SPARS PLEASE
+Added moose alarm/dropdown.
+Added Dewy Lady's Mantles to alarm list.
+Added separate toggle to UI settings to only disable magic menugrid hotkeys.
+Switched pclaim/vclaim/kclaim toggles over to new settings system and reverted the toggle buttons back to Amber-like.
+Hitting the X on the chat window will now minimize it to a small bar rather than closing it.
+Added "bruh" and "noperope" alarms.
+~
+
+1.00.105
+Study table total mental weight is now unique mental weight, not additive. 
+Fixed new CraftDB helper label resizing the window to fit.
+~
+
+1.00.104
+Switched the buffs list over to a movable widget and increased mouseover accuracy. Can now be moved by holding alt and right click and dragging.
+Fixed crash bug if you mouseover quest pointer while taking a road.
+Made inventory lock icon smaller.
+Fight session will now always have focus and draw over everything else.
+Added windmills to "hide houses" toggle.
+Added some query instructions to craft database window.
+Added "Korund" to boulder and minable stone list.
+Redesigned "off target" combat ui to make it smaller and the position more logical. 
+Stripped out some fluff from fight session, no longer attempting to calculate enemy defense weight/agility. Might re-add later when I have time to do it properly.
+Added wild horse alarm. Off by default, select an alarm to enable.
+Various loftar merges for the new sieging autism they're thinking about doing.
+~
+
+1.00.103
+Implemented Ender's expanded craft database, alt X by default.
+Made clicks on the bottom right menugrid not click through if you click a blank spot.
+~
+
+1.00.102
+Moved buff icons down a tad so that horse energy bars don't block them.
+Added another mob type to try to elevate the other animals if they die in water. Let me know if it works/doesn't/if I forgot one.
+Added autodrink option to general settings. Really not sure how I feel about this one, off by default. Triggers at <80% stamina and should fire at most once per 3~ seconds. Open to feedback. Turn it off if it gives you issues, and given that it's a new feature I don't advise having it on during pvp and such. 
+Added toggle in UI Settings to stack cupboard windows on top of eachother instead of staggering.
+Fixed claim toggle buttons not working on the first press when you log in.
+~
+
+1.00.101
+Fixed large map zoom indicator not updating when using mousescroll.
+Think I finally fixed large map movequeue zoom offset/drawing.
+Rewrote/optimized "EquipWeapon" script. Will now find all weapons in inventory and belt and prioritize Sword>Battleaxe>Axe. Will do nothing if a Sword/Battleaxe is already equipped, and should no longer end with something stuck on your mouse cursor. 
+Fixed hide quest panel on login toggle not working. Quest window can be reopened if hidden by selecting a quest from your character window.
+Added "EquipSacks" script that will attempt to equip up to 2 traveler sacks or bindles.
+Added a registry entry for your :hz setting, changing max foreground fps will now save between relogs.
+Log village chat to discord option is now character specific, and fixed the bug that was preventing every message from being transferred. Seems to work now. 
+~
+
+
+1.00.100
+Added 5 new keybinds for belt page switching, default alt1 - alt5.
+Fixed crash issue with miner alert and roads.
+Reversed window saving logic over to only ignore saved position for "Cupboard" currently, so multiple can be opened without stacking.
+~
+
+1.00.99
+Quick commit to remove the shift 1-5 belt change, will move to keybinder.
+~
+
+1.00.98
+Changed feast table and study desk logic over to pull translated local strings, should now work for languages other than English.
+Added some more items that need translated to language file.
+Switched windows back to pulling in translated values instead of hard coded english. 
+Please let me know what bots or features don't work because of using a language other than English so I can fix them.
+~
+
+1.00.97
+Switched map loading logic again to fix slowed map loads caused by an attempt to fix follow cam not finding a z axis coordinate to snap to. 
+Added total mental weight required to study desk printout.
+Readded using shift 1-5 to go through the first 5 pages of the main 1-0 hotbar. These shift 1-5 keybinds will override any set shift 1-5 keybinds.
+Added "Medlar" trees to tree list.
+Fixed minimap closing if you hit escape with it focused.
+Converted livestock manager over to a resizable window, going too narrow will hide buttons, but can make the window shorter in general now.
+Slight change to how windows save position, mostly this allows containers to not open on top of eachother making it easier to see contents.
+Switched quest helper window over to the window type that saves position and can be locked.
+Added toggle to "Control settings" to disable pick forage keybind from opening/closing gates.
+Fixed livestock manager not working for languages other than English
+Large update to translation file adding new labels/button strings for translation.
+Broke out horses from "hide animals" toggle into their own "hide horses" toggle.
+Changed proximity aggro to not target domestic horses. 
+Merged boshaw change to make certain windows "hideable." Selecting this button on the window will make the frame and background transparent unless the window has your mouseover focus. Currently the list is quest log, belt, and minimap. Accepting ideas for more windows to add this functionality to. Button looks horrible on default theme, not sure what to do about that - Belt caption doesn't have enough space.
+Added boshaw change that elevates mob types 5 points if theyre in water. Should make everything easier to pick up except foxes.
+Added treatment display for midge bites.
+~
+
+1.00.96
+Merged with Boshaw, who added locks to hotkey bars. Locked will allow you to drop things onto the bar, but not move/remove them.
+~
+
+1.00.95
+Added "ardclient" theme and set it to default. Not 100% identical to the old style, but moderately close. 
+Movement queue from the Ctrl+A map should now be somewhat accurate at different zoom lives, albeit the line is still not accurate.
+Added toggle to ui settings to increase font size of quality and quantity fields.
+Fixed filter window not having the help button on sloth theme.
+Actual fix for follow cam now, sorta, disable "no black load screens" if you want to use follow cam - sorry.
+~
+
+1.00.94
+Rollback on follow cam "fix" because it slowed every camera's loading down, fuck follow cam.
+~
+
+1.00.93
+Added quest helper window, alt Q by default.
+Made textentry boxes ignore keypresses including ctrl and alt so that keybinds will continue to work.
+Toggle chat keybind will now hide chat if chat has focus, unhide chat if its hidden, and focus chat if unhidden but not focused. Should be a cleaner way to interact with it.
+Numpad hotbar when in "Grid" style will now match the layout of the actual numbpad. Let me know if this causes new issues.
+Various bugs with Miner Alert should be fixed, mute button should work again, as well as miner alert not continuing to run once closed. 
+Added cave centipede hide option, should also enable th em to be picked up with Q
+Hand slots widget now displays equipped quality.
+Windows will now ignore mousedown clicks from mouse4/mouse5. 
+Fixed a Z axis issue when using follow cam and entering/leaving buildings. The fix will disable the "no black load screens" for follow cam, not sure another way around that.
+Added some basic unstucking to farmer bot to navigate around beehives and such. 
+~
+
+1.00.92
+Added LP/HR to pop out study window.
+Toggle chat keybind will now reopen the chat window if it's hidden.
+Added irrlight map icon and to icon list, Q should now work with irrlights.
+Fixed buttons not using themes.
+Fixed an elevation bug with follow cam. Could potentially cause other issues, let me know. 
+Fixed pclaim vclaim and realm minimap buttons not having mousedown animations anymore. 
+Added gates to "PickForagable" keybind. Will not work on visitor gates. Let me know if this causes weird interactions.
+Fixed Character Sheet not saving window position.
+~
+
+1.00.91
+Merged Ape Client's Themes functionality.
+Implemented numpad belt, uses numberpad keys to trigger. 
+Fixed feast all button eating food from study as well.
+Added toggle to display options to always display long tooltips.
+Added ability to lock inventory and equipped objects with ctrl right click. This will stop you from being able to accidentally left click them. Right clicks will still work.
+Fixed back button on menugrid taking you out an entire level, will now just go back one page unless on page one, and then it'll go back a full level.
+Merged some outdated wound stuff.
+Maybe fixed unbound keybinds triggering from anything. This could potentially have other implications I guess? Let me know if anything weird happens.
+Added debug crash write outs to the client folder to help with troubleshooting. They simply write the stacktrace in a text file that can be sent or copied to me whenever.
+Added display setting selectors for water and deep ocean colors.
+Added movement queing, alt click in the world, alt click on Ctrl+A map, and shift click on minimap. 
+Made the magic confirmation window popup for magic that is cast from a hotbar.
+Added animation disable toggles for visitor flags and the new flag pole.
+Added toggle in ui settings to disable the escape key closing UI windows, and ensured that escape will never close the chat window.
+Added another snake alarm.
+Reworked Coracle script, should have a 0% chance of crashing and will also work with coracles equipped now. Please test and let me know if you find a bug.
+Expanded study desk functionality to include adjustable colors for Low/Target/High timers and a variable slider for target study time.
+Made F1-F12 supersede all text entry boxes.
+Added ui settings toggle to disable calendar at the top of the screen. 
+Replaced "Search" window with Boshaw's, allows searching for scripts as well as things that previously weren't searchable before such as village and realm functions. 
+~
+
+1.00.90
+Fixed crash if you exit the options window from the login screen by clicking "x"
+Fixed shift left click crash.
+Some small changes to FPS counter in upper right.
+~
+
+1.00.89
+Small patch to fix combat hotkeys triggering keybinds.
+~
+
+1.00.88
+Adding toggle (on by default) to video settings to disable black loading screens, thx boshaw. 
+Added "Crack open" and "Collect coal" to auto select list.
+Added Ovens and Smelters to the disable animations list, will disable the smoke from them.
+Turned deep ocean a much darker and more obvious color to help people avoid it.
+Added mousewheel zoom to the Ctrl+A expanded map.
+Added rainbow shells to the alarm list.
+Fixed potential crash caused by recent alarm change, all alarms with incorrect values should be set to default upon login.
+Added sliders to set custom "daylight" filter, the CTRL+N functionality. This will allow you to customize your permanent daylight color. In display settings.
+Added alarm for combat initiation, off by default. To enable find the alarm in combat settings and select an alarm. 
+Fixed the ghostbusters sound effect file.
+Adding new list to "Control settings" of items to disable the shift+right click functionality on. This is to prevent accidentally emptying steel crucibles or smelters and such.
+Switched the curio list under study desk settings over to a list that you create yourself. If you generate a full list, feel free to share the .json file on discord for others.
+Added giant puffballs to alarm list.
+Added Perc*Exp to your equipment window above armor.
+Fixed server status button on login screen.
+Fixed ingame player counter.
+Fixed purus server status monitoring thread not closing when ingame.
+Added a couple more alarms.
+Added mayflower trees to tree list.
+Fixed magic cast from the f1-f12 bar not generating the confirmation window if so selected.
+Fixed map offset (again) when using minimap to move. 
+Adding video setting to lower terrain draw distance. Looks horrible, but will help fps for people who struggle with that.
+Adding "Output light settings" button to display options to better facilitate sharing light settings, and to help me gather data for some community generated presets.
+Added moon phases to the server time display under the Calendar. 
+Added turnips to trough filler.
+Added server call rate limiting for combat actions, and all other keypresses as well. Should fix getting d/cd when holding down buttons.
+Added "Pick leaf" to flowermenu options.
+Fixed mussels not setting off the alarm if so selected, also added oysters as a trigger for starting the mussel autopicker. 
+Fixed discord village chat relay duplicating messages sent from discord. 
+Fixed a null pointer crash if steel bot fails to pick up steel now, should just exit the bot. 
+Added seed stage turnips to Farmer bot by request. Seeds are "stage" 2 for turnips. 
+~
+
+1.00.87
+Fixed dipshit crash caused by hitting switch targets while not actually in combat, derp.
+~
+
+1.00.86
+Fixed minimap clicks having offset applied twice.
+Added seperate toggle to draw circles around all Kin, separate from drawing circles around Party. Also under display options.
+Publicized flax bot and the improved pepper bot, go nuts. Fuck Jorb. Flax bot is best used on wide open fields with lots of empty barrels, by a farmer with crawl speed left on 24/7. Will continously harvest flax, replant highest quality, and barrel leftover seeds generating near-infinite animal fodder while also raising flax quality continuously.
+Added toggle to disable village idol smoke.
+Added toggle to disable steel crucible smoke (I don't know if this works, I don't have steel crucibles.)
+Made target switching a keybind.
+Fixed dead bats not being picked up by hitting Q (Pick Forageables Keybind) - The fix was adding them to the minimap hide list, which I also did.
+~
+
+1.00.85
+New display settings for cave-in warning dust, colorful dust and the duration are now variable.
+~
+
+1.00.84
+Added Oysters to the mussel autopicker. 
+Added Oysters/Jellyfish to hide and alarm lists.
+Added gray clay to the hide list.
+~
+
+1.00.83
+Added soapstone and orthoclase to stones to drop while mining. 
+Added apatite boulder type.
+Added tar kilns and smelters to the available hide objects.
+Added frogspawn to the minimap hide list.
+Rewrote alarm system, new options are in "Sound alarms" every alarm should be selectable. Selecting an alarm will play the alarm, in accordance to the volume slider underneath the respective alarm. Keep that in mind, some alarms are louder than others. 
+Rewrote the "draw circle underneath player" logic to fix a performance issue it cuased.
+Added toggle in display settings to put a green circle around pavement stranglevines, to highlight them for destruction.
+Added video option to disable tar kiln smoke animation, should increase performance if turned on. 
+Added checkbox to timer window to automatically resort timers every 30 seconds based on time remaining.
+Added "setSpeed" and "maxSpeed" functions to PBotAPI, should allow you to set player speed and retrieve the current max player speed for a given terrain (I think)
+Fixed tooltips being off location when the map was manually offset. 
+Added candleberry to the minimap alarm list.
+Converted quest widget into a movable window that can be placed anywhere.
+Added percentage text to the middle of "Buff" icons to show their percentage without needing to hover over them.
+Changed the cave-in warning dust animation to persist for 30 minutes now, up from whatever tiny number it used to be by default. Should make it a little easier to keep track of cave-in tiles.
+Fixed bats showing a danger radius when dead, could potentially break other danger radiuses, let me know if it does. 
+~
+
+1.00.82
+Test your changes before you push update kids, derp. Fixing logic chain in new bucket functionality. 
+~
+
+1.00.81
+Added carried buckets to the drink macro.
+~
