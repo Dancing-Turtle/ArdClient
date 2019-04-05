@@ -35,8 +35,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import haven.automation.BeltDrink;
 import haven.automation.MinerAlert;
+import haven.purus.pbot.PBotAPI;
+import haven.purus.pbot.PBotUtils;
 import haven.res.ui.tt.q.qbuff.QBuff;
 
 public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owner {
@@ -307,13 +308,10 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
 
     private void dropItMaybe() {
         Resource curs = ui.root.getcurs(Coord.z);
-      //  GameUI gui = gameui();
         if (curs != null && curs.name.equals("gfx/hud/curs/mine")) {
-           /* IMeter.Meter stam = gui.getmeter("stam", 0);
-            if (stam.a < 40) {
-                Thread i = new Thread(new BeltDrink(gui), "BeltDrink");
-                i.start();
-            }*/
+            if (PBotUtils.getStamina() < 40) {
+                PBotUtils.drink(false);
+            }
             String name = this.resource().basename();
             if (Config.dropMinedStones && Config.mineablesStone.contains(name) ||
                     Config.dropMinedOre && Config.mineablesOre.contains(name) ||

@@ -16,12 +16,12 @@ const btnClick = () => {
 	const gob = PBotGobAPI.selectGob();
 	gob.doClick(0, 4);
 	PBotUtils.sysMsg("Gob chosen! Beginning to destroy!");
-	PBotUtils.drink();
+	PBotUtils.drink(true);
 	PBotCharacterAPI.doAct("destroy");
 	gob.doClick(1, 0);
 	while(PBotGobAPI.findGobById(gob.id) != null) {
 		if(PBotCharacterAPI.getStamina() < 80) {
-			PBotUtils.drink();
+			PBotUtils.drink(true);
 		}
 		PBotUtils.sleep(5000);
 	}

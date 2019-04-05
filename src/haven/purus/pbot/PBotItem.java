@@ -1,8 +1,10 @@
 package haven.purus.pbot;
 
 import haven.*;
+import haven.res.ui.tt.q.qbuff.QBuff;
 
 import java.util.regex.Pattern;
+import static haven.OCache.posres;
 
 public class PBotItem {
 
@@ -63,6 +65,14 @@ public class PBotItem {
 	}
 
 	/**
+	 * Itemact
+	 * @param mod modifier for example 1 = shift etc.
+	 */
+	public void itemact(int mod) {
+		gitem.wdgmsg("itemact",  mod);
+	}
+
+	/**
 	 * Get an amount of something such as seeds in a stack
 	 * @return Amount of something in the item
 	 */
@@ -108,11 +118,15 @@ public class PBotItem {
 	}
 
 	/**
-	 * Returns quality of the item
+	 * Returns quality of the item, or -1 if quality was not found
 	 * @return Quality of the item
 	 */
 	public double getQuality() {
-		return gitem.quality().q;
+		QBuff buff = gitem.quality();
+		if(buff == null)
+			return -1;
+		else
+			return buff.q;
 	}
 
 	/**

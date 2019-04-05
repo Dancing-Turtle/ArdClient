@@ -1,3 +1,10 @@
+1.00.117
+Fixed flowermenus intercepting mouse clicks while closing.
+Deleted outdated Gemstone class.
+Fixed typo causing alabaster to not be flagged on minimap.
+Fixed a few PBot scripts and switched the drink function to PBot default. PBotUtils.Drink(true)/PBotUtils.Drink(false) now to utilize. 
+~
+
 1.00.116
 Fixed gob hp toggle adjusting the wrong saved value.
 ~

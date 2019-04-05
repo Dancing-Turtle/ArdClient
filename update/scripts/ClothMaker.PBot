@@ -9,10 +9,14 @@ const PBotWindowAPI = Java.type('haven.purus.pbot.PBotWindowAPI');
 const window = PBotUtils.PBotWindow("Cloth Maker", 200, 200, ScriptID);
 const clothStockpiles = [];
 const flaxStockpiles = [];
+let stop = false;
+const shouldStop = () => {
+	return (stop || window.closed());
+};
 let loomGob, clothMade = 0;
 
 window.addButton("clothBtn", "Add cloth stockpiles", 180, 10, 10);
-window.addButton("flaxBtn", "Add flax stockpiles", 180, 10, 40);
+window.addButton("flaxBtn", "Add flax/hemp stockpiles", 180, 10, 40);
 window.addButton("loomBtn", "Choose a loom", 180, 10, 70);
 window.addButton("startBtn", "Start", 180, 10, 100);
 
@@ -30,10 +34,10 @@ const flaxBtn = () => {
 	PBotUtils.selectArea();
 	const gobs = PBotUtils.gobsInArea(PBotUtils.getSelectedAreaA(), PBotUtils.getSelectedAreaB());
 	for(let i=0; i<gobs.size(); i++) {
-		if(gobs[i].getResname() === 'gfx/terobjs/stockpile-flaxfibre')
+		if(gobs[i].getResname() === 'gfx/terobjs/stockpile-flaxfibre' || gobs[i].getResname() === 'gfx/terobjs/stockpile-hempfibre')
 			flaxStockpiles.push(gobs[i]);
 	}
-	PBotUtils.sysMsg("Flax stockpiles currently chosen: " + clothStockpiles.length);
+	PBotUtils.sysMsg("Flax stockpiles currently chosen: " + flaxStockpiles.length);
 };
 
 const loomBtn = () => {
@@ -55,13 +59,15 @@ const startBtn = () => {
 	}
 	let stop = false;
 	while(!stop) {
+		if(shouldStop()) return;
 		const playerInv = PBotUtils.playerInventory();
 		if(flaxStockpiles.length === 0) {
 			PBotUtils.sysMsg("Ran out of flax stockpiles!");
 			break;
 		}
-		let flaxInInv = PBotUtils.playerInventory().getInventoryItemsByNames(['Flax Fibres']).size();
+		let flaxInInv = PBotUtils.playerInventory().getInventoryItemsByNames(['Flax Fibres','Hemp Fibres']).size();
 		while(PBotUtils.playerInventory().freeSlotsInv() > 0) {
+			if(shouldStop()) return;
 			if(flaxStockpiles.length === 0) {
 				// Out of flax stockpiles
 				break;
@@ -84,16 +90,29 @@ const startBtn = () => {
 		PBotUtils.pfRightClick(loomGob, 0);
 		while(!PBotGobAPI.player().getPoses().contains('gfx/borka/loomsit'))
 			PBotUtils.sleep(25);
-		if(!PBotUtils.drink()) {
+		if(!PBotUtils.drink(true)) {
 			PBotUtils.sysMsg("Ran out of water!");
 			return;
 		}
-		let clothInInv = Math.floor(flaxInInv/5);
-		PBotUtils.craftItem("linencloth", 1);
-		while(PBotUtils.playerInventory().getInventoryItemsByNames(['Linen Cloth']).size() != clothInInv)
+
+		let clothInInv = 0;
+		
+		if(PBotUtils.playerInventory().getInventoryItemsByNames(['Flax Fibres']).size() > 5){
+			PBotUtils.craftItem("linencloth", 1);
+			clothInInv = Math.floor(flaxInInv/5);
+		}	
+		else if(PBotUtils.playerInventory().getInventoryItemsByNames(['Hemp Fibres']).size() >6){
+			PBotUtils.craftItem("hempcloth", 1);
+			clothInInv = Math.floor(flaxInInv/6);
+		}
+			
+		PBotUtils.sysMsg("Crafting "+clothInInv+" cloth!");
+			
+		while(PBotUtils.playerInventory().getInventoryItemsByNames(['Linen Cloth','Hemp Cloth']).size() != clothInInv)
 			PBotUtils.sleep(1);
 		clothMade += clothInInv;
 		while(clothInInv > 0) {
+			if(shouldStop()) return;
 			if(clothStockpiles.length == 0) {
 				stop = true;
 				PBotUtils.sysMsg("Ran out of free cloth stockpiles!");
@@ -108,7 +127,7 @@ const startBtn = () => {
 			if(count + used === slots)
 				clothStockpiles.shift();
 			clothInInv -= count;
-			while(PBotUtils.playerInventory().getInventoryItemsByNames(['Linen Cloth']).size() != clothInInv) {
+			while(PBotUtils.playerInventory().getInventoryItemsByNames(['Linen Cloth','Hemp Cloth']).size() != clothInInv) {
 				PBotUtils.sleep(25);
 			}
 		}

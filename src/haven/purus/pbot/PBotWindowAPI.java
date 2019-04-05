@@ -4,14 +4,12 @@ import haven.*;
 
 public class PBotWindowAPI {
 
-	private static GameUI gui = PBotAPI.gui;
-
 	/**
 	 * Wait for a window with a specific name to appear
 	 * @param windowName Name of the window
 	 */
 	public static void waitForWindow(String windowName) {
-		while (gui.getwnd(windowName) == null) {
+		while (PBotAPI.gui.getwnd(windowName) == null) {
 			PBotUtils.sleep(50);
 		}
 	}
@@ -21,7 +19,7 @@ public class PBotWindowAPI {
 	 * @param windowName Name of the window
 	 */
 	public static void waitForWindowClose(String windowName) {
-		while (gui.getwnd(windowName) != null) {
+		while (PBotAPI.gui.getwnd(windowName) != null) {
 			PBotUtils.sleep(50);
 		}
 	}
@@ -32,7 +30,7 @@ public class PBotWindowAPI {
 	 * @return The window or null if not found
 	 */
 	public static Window getWindow(String name) {
-		return gui.getwnd(name);
+		return PBotAPI.gui.getwnd(name);
 	}
 
 	/**
@@ -49,10 +47,10 @@ public class PBotWindowAPI {
 	 * @param window Window to look inventory from
 	 * @return Inventory of the window or null if not found
 	 */
-	public static Inventory getInventory(Window window) {
+	public static PBotInventory getInventory(Window window) {
 		for(Widget wdg = window.lchild; wdg!=null; wdg = wdg.prev) {
 			if(wdg instanceof Inventory) {
-				return (Inventory) wdg;
+				return new PBotInventory((Inventory) wdg);
 			}
 		}
 		return null;

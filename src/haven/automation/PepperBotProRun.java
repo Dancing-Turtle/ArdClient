@@ -149,8 +149,7 @@ try {
 				if (stopThread)
 					break;
 				lblProg2.settext("Drinking");
-				new Thread(new BeltDrink(gui), "BeltDrink").start();
-				PBotUtils.sleep(5000);
+				PBotUtils.drink(true);
 			}
 
 
@@ -361,8 +360,7 @@ try {
 						if (stopThread)
 							break;
 						lblProg2.settext("Drinking");
-						new Thread(new BeltDrink(gui), "BeltDrink").start();
-						PBotUtils.sleep(5000);
+						PBotUtils.drink(true);
 					}
 
 					if (PBotUtils.invFreeSlots() > 4)

@@ -33,6 +33,7 @@ import static haven.Inventory.invsq;
 import haven.automation.*;
 import haven.automation.Discord;
 import haven.livestock.LivestockManager;
+import haven.purus.DrinkWater;
 import haven.purus.ItemClickCallback;
 import haven.purus.pbot.PBotAPI;
 import haven.purus.pbot.PBotScriptlist;
@@ -119,6 +120,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public StudyWnd studywnd;
     public LivestockManager livestockwnd;
     public ItemClickCallback itemClickCallback;
+    public boolean drinkingWater, lastDrinkingSucessful;
     public CraftWindow makewnd;
     public BeltWnd fbelt, nbelt, npbelt;
     public MapPointer pointer;
@@ -1010,7 +1012,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         if(Config.autodrink && (DrinkThread == null || !DrinkThread.isAlive()) && stam.a < Config.autodrinkthreshold) {
             if(System.currentTimeMillis() - DrinkTimer >= 3000) {
                 DrinkTimer = System.currentTimeMillis();
-                Drink();
+                new Thread(new DrinkWater(this)).start();
             }
         }
         int energy = getmeter("nrj", 0).a;
@@ -1516,8 +1518,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     }
 
     public void Drink(){
-        DrinkThread = new Thread(new BeltDrink(this), "BeltDrink");
-        DrinkThread.start();
+        new Thread(new DrinkWater(this)).start();
     }
 
 

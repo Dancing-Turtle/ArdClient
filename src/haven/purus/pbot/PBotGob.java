@@ -10,7 +10,6 @@ import static haven.OCache.posres;
 public class PBotGob {
 
 	public Gob gob;
-	public GameUI gui = PBotAPI.gui;
 
 	PBotGob(Gob gob) {
 		this.gob = gob;
@@ -33,7 +32,7 @@ public class PBotGob {
 	 * @param mod 1 = shift, 2 = ctrl, 4 = alt
 	 */
 	public void itemClick(int mod) {
-		gui.map.wdgmsg("itemact", Coord.z, gob.rc.floor(posres), mod, 0, (int) gob.id, gob.rc.floor(posres), 0, -1);
+		PBotAPI.gui.map.wdgmsg("itemact", Coord.z, gob.rc.floor(posres), mod, 0, (int) gob.id, gob.rc.floor(posres), 0, -1);
 	}
 
 	/**
@@ -51,7 +50,7 @@ public class PBotGob {
 	 * @param mod 0 = no modifier, 1 = shift, 2 = ctrl, 4 = alt
 	 */
 	public void doClick(int button, int mod) {
-		gui.map.wdgmsg("click", Coord.z, gob.rc.floor(posres), button, 0, mod, (int) gob.id, gob.rc.floor(posres), 0,
+		PBotAPI.gui.map.wdgmsg("click", Coord.z, gob.rc.floor(posres), button, 0, mod, (int) gob.id, gob.rc.floor(posres), 0,
 				-1);
 	}
 
@@ -76,9 +75,11 @@ public class PBotGob {
 	 * @return Name of the gob
 	 */
 	public String getResname() {
+		try {
 		if(gob.getres() != null)
 			return gob.getres().name;
-		else
+		} catch(Loading l) {
+		}
 			return null;
 	}
 
@@ -107,6 +108,20 @@ public class PBotGob {
 	 */
 	public void highlightGob() {
 		doClick(0, 4);
+	}
+
+	/**
+	 * Right click a gob with pathfinder, wait until pathfinder is finished
+	 * @param btn 1 = left click, 3 = right click
+	 * @param mod 1 = shift, 2 = ctrl, 4 = alt
+	 */
+	public void pfClick(int btn, int mod) {
+		PBotAPI.gui.map.purusPfRightClick(this.gob, -1, btn, mod, null);
+		try {
+			PBotAPI.gui.map.pastaPathfinder.join();
+		} catch(InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -147,7 +162,7 @@ public class PBotGob {
 	 */
 	public void itemClickAll() {
 		Object[] args = {Coord.z, gob.rc.floor(posres), 1, 0, (int) gob.id, gob.rc.floor(posres), 0, -1};
-		gui.map.lastItemactClickArgs = args;
-		gui.map.wdgmsg("itemact", Coord.z, gob.rc.floor(posres), 1, 0, (int) gob.id, gob.rc.floor(posres), 0, -1);
+		PBotAPI.gui.map.lastItemactClickArgs = args;
+		PBotAPI.gui.map.wdgmsg("itemact", Coord.z, gob.rc.floor(posres), 1, 0, (int) gob.id, gob.rc.floor(posres), 0, -1);
 	}
 }

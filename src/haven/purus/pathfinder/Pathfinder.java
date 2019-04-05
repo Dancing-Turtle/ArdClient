@@ -154,6 +154,8 @@ public class Pathfinder extends Thread {
 							int left = (int)Math.ceil(plist.get(j-1));
 							int right = (int)Math.floor(plist.get(j));
 							for(int k=left; k<=right; k++) {
+								if(j < 0 || k < 0 || j/11 > 110 || k/11 > 110)
+									continue;
 								if(destGob != null && gob.id == destGob.id)
 									accessMatrix[(k)/11][(i)/11] = -1;
 								else
@@ -251,8 +253,12 @@ public class Pathfinder extends Thread {
 					}
 				}
 			}
-			if(toHere[destTile.x][destTile.y] == null) // A route does not exist!
+			if(toHere[destTile.x][destTile.y] == null) { // A route does not exist!
+				synchronized(gui.map) {
+					gui.map.foundPath = false;
+				}
 				return;
+			}
 
 			route = new Coord[dist[destTile.x][destTile.y]];
 			Coord cur = playerTile;
@@ -274,6 +280,9 @@ public class Pathfinder extends Thread {
 			}
 
 			System.out.println("Time taken for finding the route: " + (System.currentTimeMillis() - start));
+			synchronized(gui.map) {
+				gui.map.foundPath = true;
+			}
 			// Walk the route through
 			Coord clickDest = playerTile;
 			for(int i = 0; i < route.length; i++) {

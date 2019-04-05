@@ -1,8 +1,6 @@
 package haven.purus.pbot;
 
-import haven.Coord2d;
-import haven.GameUI;
-import haven.Gob;
+import haven.*;
 import haven.automation.GobSelectCallback;
 
 import java.util.ArrayList;
@@ -13,7 +11,6 @@ import static haven.OCache.posres;
 
 public class PBotGobAPI {
 
-	private static GameUI gui = PBotAPI.gui;
 	private static boolean gobSelectWait = false;
 	private static Gob selectedGob;
 
@@ -46,12 +43,28 @@ public class PBotGobAPI {
 	 */
 	public static List<PBotGob> getAllGobs() {
 		List<PBotGob> list = new ArrayList<PBotGob>();
-		synchronized(gui.ui.sess.glob.oc) {
-			for(Gob gob : gui.ui.sess.glob.oc) {
+		synchronized(PBotAPI.gui.ui.sess.glob.oc) {
+			for(Gob gob : PBotAPI.gui.ui.sess.glob.oc) {
 				list.add(new PBotGob(gob));
 			}
 		}
 		return list;
+	}
+
+	/**
+	 * Waits for any gob to appear at the precisely given coordinates, excluding player
+	 * @param x
+	 * @param y
+	 */
+	public static void waitForGob(double x, double y) {
+		Coord2d expected = new Coord2d(x, y);
+		while(true) {
+			for(PBotGob gob:getAllGobs()) {
+				if(gob.getRcCoords().equals(expected) && player().getGobId() != gob.getGobId())
+					return;
+			}
+			PBotUtils.sleep(25);
+		}
 	}
 
 	/**
@@ -64,16 +77,19 @@ public class PBotGobAPI {
 		Coord2d plc = player().getRcCoords();
 		double min = radius;
 		Gob nearest = null;
-		synchronized (gui.ui.sess.glob.oc) {
-			for (Gob gob : gui.ui.sess.glob.oc) {
+		synchronized (PBotAPI.gui.ui.sess.glob.oc) {
+			for (Gob gob : PBotAPI.gui.ui.sess.glob.oc) {
 				double dist = gob.rc.dist(plc);
 				if (dist < min) {
 					boolean matches = false;
+					try {
 					for (String name : names) {
 						if (gob.getres() != null && gob.getres().name.contains(name)) {
 							matches = true;
 							break;
 						}
+					}
+					} catch(Loading l) {
 					}
 					if (matches) {
 						min = dist;
@@ -94,8 +110,8 @@ public class PBotGobAPI {
 	 * @return Gob with coordinates or null
 	 */
 	public static PBotGob getGobWithCoords(Coord2d c) {
-		synchronized (gui.ui.sess.glob.oc) {
-			for (Gob gob : gui.ui.sess.glob.oc) {
+		synchronized (PBotAPI.gui.ui.sess.glob.oc) {
+			for (Gob gob : PBotAPI.gui.ui.sess.glob.oc) {
 				if(gob.rc.x == c.x && gob.rc.y == c.y)
 					return new PBotGob(gob);
 			}
@@ -108,7 +124,7 @@ public class PBotGobAPI {
 	 * @return Player gob
 	 */
 	public static PBotGob player() {
-		return new PBotGob(gui.map.player());
+		return new PBotGob(PBotAPI.gui.map.player());
 	}
 
 
@@ -118,11 +134,11 @@ public class PBotGobAPI {
 	 * @return Object, or null if not found
 	 */
 	public static PBotGob findGobById(long id) {
-		Gob gob = gui.ui.sess.glob.oc.getgob(id);
+		Gob gob = PBotAPI.gui.ui.sess.glob.oc.getgob(id);
 		if(gob == null)
 			return null;
 		else
-			return new PBotGob(gui.ui.sess.glob.oc.getgob(id));
+			return new PBotGob(PBotAPI.gui.ui.sess.glob.oc.getgob(id));
 	}
 
 
@@ -137,7 +153,7 @@ public class PBotGobAPI {
 		while(gobSelectWait) {
 			PBotUtils.sleep(25);
 		}
-		gui.map.unregisterGobSelect();
+		PBotAPI.gui.map.unregisterGobSelect();
 		return new PBotGob(selectedGob);
 	}
 
@@ -162,11 +178,10 @@ public class PBotGobAPI {
 
 	/**
 	 * Use to place something, for example, a stockpile
-	 * 11 offset = 1 tile
-	 * @param x Offset from player to place stockpile to
-	 * @param y Offset from player to place stockpile to
+	 * @param x x place stockpile to
+	 * @param y y place stockpile to
 	 */
-	public static void placeThing(int x, int y) {
-		gui.map.wdgmsg("place", player().getRcCoords().add(x, y).floor(posres), 0, 1, 0);
+	public static void placeThing(double x, double y) {
+		PBotAPI.gui.map.wdgmsg("place", new Coord2d(x, y).floor(posres), 0, 1, 0);
 	}
 }

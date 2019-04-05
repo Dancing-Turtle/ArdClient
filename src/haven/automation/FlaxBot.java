@@ -76,7 +76,7 @@ public class FlaxBot extends Window {
                     IMeter.Meter stam = gui.getmeter("stam", 0);
                     if (stam.a <= 30) {
                         lblProg2.settext("Drinking");
-                        PBotUtils.drink();
+                        PBotUtils.drink(true);
                     }
 
                     if (stopThread)

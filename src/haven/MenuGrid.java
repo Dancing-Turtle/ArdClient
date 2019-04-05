@@ -28,7 +28,6 @@ package haven;
 
 import haven.Resource.AButton;
 import haven.automation.*;
-import haven.automation.BeltDrink;
 import haven.automation.Discord;
 import haven.purus.*;
 import haven.automation.PepperBot;

@@ -82,7 +82,7 @@ public class TrellisFarmer extends Window implements Runnable {
 				GameUI gui = HavenPanel.lui.root.findchild(GameUI.class);
 				IMeter.Meter stam = gui.getmeter("stam", 0);
 				if (stam.a <= 30) {
-					PBotUtils.drink();
+					PBotUtils.drink(true);
 				}
 
 
@@ -193,7 +193,7 @@ public class TrellisFarmer extends Window implements Runnable {
 				GameUI gui = HavenPanel.lui.root.findchild(GameUI.class);
 				IMeter.Meter stam = gui.getmeter("stam", 0);
 				if (stam.a <= 30) {
-					PBotUtils.drink();
+					PBotUtils.drink(true);
 				}
 
 				if (stopThread)

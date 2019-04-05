@@ -7,27 +7,38 @@ const PBotCharacterAPI = Java.type('haven.purus.pbot.PBotCharacterAPI');
 const PBotGobAPI = Java.type('haven.purus.pbot.PBotGobAPI');
 const window = PBotUtils.PBotWindow("Cellar Digger", 70, 275, ScriptID);
 window.addLabel("Stand at position where bot drops the stones!", 10, 10);
-const btn = window.addButton("btnClick", "Start", 180, 10, 30);
+window.addLabel("Close window to stop bot.", 10, 30);
+const btn = window.addButton("btnClick", "Start", 180, 10, 50);
+let stop = false;
+
+const shouldStop = () => {
+	return (stop || window.closed());
+};
 
 const btnClick = () => {
 	const cellar = PBotGobAPI.findGobByNames(1000, ["gfx/terobjs/arch/cellardoor"]);
-	window.closeWindow();
+	btn.destroy();
 	if(cellar == null) {
 		PBotUtils.sysMsg("Couldn't find a cellar door!");
 		return;
 	}
 	PBotUtils.sysMsg("Starting to dig the cellar!");
 	const boulderPos = PBotGobAPI.player().getRcCoords().floor();
-	let stop = false;
-	while(PBotUtils.getWindow("Cellar Digger") != null && !stop) {
-		if(PBotCharacterAPI.getStamina() < 80)
-			PBotUtils.drink();
+	while(!stop) {
+		if(shouldStop()) return;
+		
+		if(PBotCharacterAPI.getStamina() < 80){
+			PBotUtils.drink(true);
+		}
+			
 		cellar.doClick(3, 0);
+		
 		while(PBotUtils.getHourglass() == -1) {
 			if(PBotGobAPI.findGobByNames(1000, ["gfx/terobjs/arch/cellardoor"]) == null) {
 				stop = true;
 				break;
 			}
+			if(shouldStop()) return;
 			PBotUtils.sleep(25);
 		}
 		if(stop)
@@ -42,6 +53,7 @@ const btnClick = () => {
 		
 		let boulder;
 		while(true) {
+		if(shouldStop()) return;
 			boulder = PBotGobAPI.findGobByNames(1000, ["bumling"]);
 			if(boulder != null && !PBotGobAPI.player().getRcCoords().equals(boulder.getRcCoords()))
 				break;
@@ -54,5 +66,6 @@ const btnClick = () => {
 		PBotUtils.dropItemFromHand(0);
 	}
 	PBotUtils.sysMsg("Finished digging the cellar!");
+	window.closeWindow();
 };
 

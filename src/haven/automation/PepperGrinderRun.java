@@ -82,8 +82,7 @@ public class PepperGrinderRun extends Window implements Runnable {
 				IMeter.Meter stam = gui.getmeter("stam", 0);
 				if (stam.a <= 60) {
 					lblProg.settext("Drinking");
-					new Thread(new BeltDrink(gui), "BeltDrink").start();
-					PBotUtils.sleep(5000);
+					PBotUtils.drink(true);
 				}
 
 
@@ -299,8 +298,7 @@ public class PepperGrinderRun extends Window implements Runnable {
 							}
 						} else {
 							lblProg.settext("Status - Drinking");
-							new Thread(new BeltDrink(gui), "BeltDrink").start();
-							PBotUtils.sleep(5000);
+							PBotUtils.drink(true);
 						}
 					}
 				//	gui.map.wdgmsg("click", hfire.sc, hfire.rc.floor(posres), 1, 0, 0, (int) hfire.id, hfire.rc.floor(posres), 0, -1);

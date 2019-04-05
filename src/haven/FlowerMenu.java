@@ -57,6 +57,7 @@ public class FlowerMenu extends Widget {
     public static String lastSel;
     public Thread horsemounter;
     private final Consumer<Integer> callback;
+    private boolean selected = false;
     private boolean ignoreAutoSetting;
 
     @RName("sm")
@@ -72,6 +73,7 @@ public class FlowerMenu extends Widget {
     public class Petal extends Widget {
         public String name;
         private boolean h;
+        private boolean clicked;
         public double ta, tr;
         private final static double rad = 75;
         public int num;
@@ -124,7 +126,9 @@ public class FlowerMenu extends Widget {
         }
 
         public boolean mousedown(Coord c, int button) {
-            choose(this);
+            if(!selected)
+               choose(this);
+            selected = true;
             return (true);
         }
 
@@ -193,10 +197,10 @@ public class FlowerMenu extends Widget {
 
     public class Chosen extends NormAnim {
         Petal chosen;
-
         Chosen(Petal c) {
             super(0.75);
             chosen = c;
+            selected = true;
         }
 
         public void ntick(double s) {
@@ -364,6 +368,8 @@ public class FlowerMenu extends Widget {
             this(null, options);
         }
 
+
+
         protected void added() {
             if (c.equals(-1, -1))
                 c = parent.ui.lcc;
@@ -374,6 +380,8 @@ public class FlowerMenu extends Widget {
         }
 
         public boolean mousedown(Coord c, int button) {
+            if(selected)
+                return false;
             if (!anims.isEmpty())
                 return (true);
             if (!super.mousedown(c, button))
@@ -395,33 +403,6 @@ public class FlowerMenu extends Widget {
                     break;
             }
         }
-
-    /*    public void binded() {
-        try {
-            int selindex = 0;
-            boolean menuoverride = false;
-            CheckListboxItem itm = null;
-            for (int i = 0; i < opts.length; i++) {
-                System.out.println(opts[i].name + " " + nextAutoSel);
-                if (opts[i].name.equals("Drink") && nextAutoSel != null && nextAutoSel.equals("Drink")) {
-                    selindex = i;
-                    menuoverride = true;
-                    nextAutoSel = null;
-                    break;
-                }
-                itm = Config.flowermenus.get(opts[i].name);
-                if (itm != null && itm.selected) {
-                    selindex = i;
-                    nextAutoSel = null;
-                    break;
-                }
-            }
-            if ((DefSettings.QUICKERMENU.get() && !ui.modctrl && itm != null && itm.selected && !ignoreAutoSetting) || menuoverride) {
-                PBotUtils.sysLogAppend("Autoselected : "+opts[selindex].name,"green");
-                wdgmsg("cl", selindex, 0);
-                hide();
-            }
-        }catch(Exception e){}//new functionality, dont crash no matter what. }*/
 
         public void draw(GOut g) {
             super.draw(g, false);
@@ -452,6 +433,7 @@ public class FlowerMenu extends Widget {
 
         public void choose(Petal option) {
             if (callback == null) {
+                selected = true;
                 if (option == null) {
                     wdgmsg("cl", -1);
                     lastSel = null;

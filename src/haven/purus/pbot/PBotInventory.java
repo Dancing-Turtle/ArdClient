@@ -7,7 +7,6 @@ import java.util.List;
 
 public class PBotInventory {
 
-	private static GameUI gui = PBotAPI.gui;
 	private Inventory inv;
 
 	public PBotInventory(Inventory inv) {

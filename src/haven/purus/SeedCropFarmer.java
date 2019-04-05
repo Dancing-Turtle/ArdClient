@@ -6,7 +6,6 @@ import java.awt.Color;
 import java.util.*;
 
 import haven.*;
-import haven.automation.BeltDrink;
 import haven.purus.pbot.PBotAPI;
 import haven.purus.pbot.PBotUtils;
 import haven.res.ui.tt.q.qbuff.QBuff;
@@ -83,8 +82,7 @@ public class SeedCropFarmer extends Window implements Runnable {
 			IMeter.Meter stam = gui.getmeter("stam", 0);
 			if (stam.a <= 60) {
 				lblProg2.settext("Drinking");
-				new Thread(new BeltDrink(gui), "BeltDrink").start();
-				PBotUtils.sleep(5000);
+				PBotUtils.drink(true);
 			}
 
 			if (stopThread)

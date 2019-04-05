@@ -51,6 +51,7 @@ public class MothKiller implements Runnable {
     }
     private List<WItem> getMoths (Inventory inv){
         List<WItem> moths = inv.getItemsPartial("Cocoon");
+        moths.addAll(inv.getItemsPartial("Chrysalis"));
         // BotUtils.sysMsg("trying to find trays", Color.WHITE);
         if(moths == null)
             return null;
@@ -59,6 +60,8 @@ public class MothKiller implements Runnable {
 
     private WItem getMoths2 (Inventory inv){
         WItem moths = inv.getItemPartialTrays("Cocoon");
+        if(moths == null)
+            moths = inv.getItemPartialTrays("Chrysalis");
         // BotUtils.sysMsg("trying to find trays", Color.WHITE);
         if(moths == null)
             return null;

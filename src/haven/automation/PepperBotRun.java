@@ -116,8 +116,7 @@ public class PepperBotRun extends Window implements Runnable {
 					if (stopThread)
 						break;
 					lblProg2.settext("Drinking");
-					new Thread(new BeltDrink(gui), "BeltDrink").start();
-					PBotUtils.sleep(5000);
+					PBotUtils.drink(true);
 				}
 
 

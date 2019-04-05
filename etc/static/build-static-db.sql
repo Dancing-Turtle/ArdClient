@@ -182,11 +182,11 @@ INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/bushes/gorse', 
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/bushes/poppycaps', (SELECT type_id FROM type WHERE name_key = 'BUSH'));
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/bushes/ghostpipe', (SELECT type_id FROM type WHERE name_key = 'BUSH'));
 --Boulders have 0 - 4 stages
-INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/bumlings/alabster0', (SELECT type_id FROM type WHERE name_key = 'BOULDER'));
-INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/bumlings/alabster1', (SELECT type_id FROM type WHERE name_key = 'BOULDER'));
-INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/bumlings/alabster2', (SELECT type_id FROM type WHERE name_key = 'BOULDER'));
-INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/bumlings/alabster3', (SELECT type_id FROM type WHERE name_key = 'BOULDER'));
-INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/bumlings/alabster4', (SELECT type_id FROM type WHERE name_key = 'BOULDER'));
+INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/bumlings/alabaster0', (SELECT type_id FROM type WHERE name_key = 'BOULDER'));
+INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/bumlings/alabaster1', (SELECT type_id FROM type WHERE name_key = 'BOULDER'));
+INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/bumlings/alabaster2', (SELECT type_id FROM type WHERE name_key = 'BOULDER'));
+INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/bumlings/alabaster3', (SELECT type_id FROM type WHERE name_key = 'BOULDER'));
+INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/bumlings/alabaster4', (SELECT type_id FROM type WHERE name_key = 'BOULDER'));
 
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/bumlings/basalt0', (SELECT type_id FROM type WHERE name_key = 'BOULDER'));
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/bumlings/basalt1', (SELECT type_id FROM type WHERE name_key = 'BOULDER'));
