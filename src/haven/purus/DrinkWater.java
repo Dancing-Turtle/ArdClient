@@ -40,9 +40,9 @@ public class DrinkWater implements Runnable {
 						}
 					}
 				}
-			} else if(w instanceof BeltWnd) { // Alternate belt must be separately enabled
+			} else if(w instanceof AltBeltWnd) { // Alternate belt must be separately enabled
 
-				BeltWnd invBelt = (BeltWnd)w;
+				AltBeltWnd invBelt = (AltBeltWnd)w;
 				for(WItem item:invBelt.children(WItem.class)) {
 					if(canDrinkFrom(item))
 						drinkFromThis = item;

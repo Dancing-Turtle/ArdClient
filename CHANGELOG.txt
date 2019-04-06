@@ -1,3 +1,7 @@
+1.00.118
+Fixed drink changes not working for alternate belt window.
+~
+
 1.00.117
 Fixed flowermenus intercepting mouse clicks while closing.
 Deleted outdated Gemstone class.
