@@ -83,6 +83,7 @@ public class SeedCropFarmer extends Window implements Runnable {
 			if (stam.a <= 60) {
 				lblProg2.settext("Drinking");
 				PBotUtils.drink(true);
+				PBotUtils.sleep(3000);//sleep while drinking
 			}
 
 			if (stopThread)
@@ -100,6 +101,8 @@ public class SeedCropFarmer extends Window implements Runnable {
 			while (PBotUtils.player().rc.x != g.rc.x || PBotUtils.player().rc.y != g.rc.y) {
 				lblProg2.settext("Moving to Harvest");
 				retryharvest++;
+				while(PBotUtils.isMoving())
+					PBotUtils.sleep(10);//if we're moving, sleep and dont trigger unstucking
 				if(retryharvest > 300)
 				{
 					lblProg2.settext("Unstucking");
@@ -128,9 +131,11 @@ public class SeedCropFarmer extends Window implements Runnable {
 			// Wait for harvest menu to appear and harvest the crop
 			retryharvest = 0;
 			while (ui.root.findchild(FlowerMenu.class) == null) {
+				lblProg2.settext("Waiting for flowermenu");
 				retryharvest++;
 				if(retryharvest > 500)
 				{
+					lblProg2.settext("Retry flower menu");
 					PBotUtils.pfRightClick(g,0);
 					retryharvest = 0;
 				}
@@ -151,8 +156,16 @@ public class SeedCropFarmer extends Window implements Runnable {
 					}
 				}
 			}
-
+			retryharvest = 0;
 			while (PBotUtils.findObjectById(g.id) != null) {
+				lblProg2.settext("Waiting for crop to disappear");
+				retryharvest++;
+				if(retryharvest > 500)
+				{
+					lblProg2.settext("Retry harvest");
+					PBotUtils.pfRightClick(g,0);
+					retryharvest = 0;
+				}
 				PBotUtils.sleep(10);
 			}
 
@@ -285,8 +298,16 @@ public class SeedCropFarmer extends Window implements Runnable {
 							PBotUtils.takeItem(item);
 						}
 					}
-					while (PBotUtils.getItemAtHand() == null)
+					retryharvest = 0;
+					while (PBotUtils.getItemAtHand() == null) {
+						retryharvest++;
+						if (retryharvest > 500){
+							lblProg2.settext("Failed to pickup seeds, retrying.");
+							PBotUtils.takeItem(item);
+							retryharvest = 0;
+						}
 						PBotUtils.sleep(10);
+					}
 					// Plant the seed from hand
 					int amount = 0;
 					if (seedName.contains("seed"))

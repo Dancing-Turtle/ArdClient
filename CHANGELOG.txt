@@ -1,3 +1,7 @@
+1.00.119
+Quick update - added a few retrys to Farmer to account for lag and such that will cause it to get stuck on various "waiting for something" steps.
+~
+
 1.00.118
 Fixed drink changes not working for alternate belt window.
 ~
