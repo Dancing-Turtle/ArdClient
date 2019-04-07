@@ -1,0 +1,54 @@
+// Create stockpiles from the selected item in the area
+// Made by Purus Cor to demonstrate usage of PBot API
+// For more information about API, join Purus Pasta discord
+// To suggest features into API, suggest them in discord
+const PBotUtils = Java.type('haven.purus.pbot.PBotUtils');
+const PBotGobAPI = Java.type('haven.purus.pbot.PBotGobAPI');
+
+javaListToArray = (javalist) => {
+	const ret = [];
+	for(let i=0; i<javalist.size(); i++)
+		ret.push(javalist.get(i));
+	return ret;
+};
+
+main = () => {
+	PBotUtils.sysMsg("Click item from inventory to make stockpiles from");
+	const selectedItem = PBotUtils.selectItem();
+	PBotUtils.sysMsg("Select 1 or 2 wide area");
+	PBotUtils.selectArea();
+	const aPnt = PBotUtils.getSelectedAreaA();
+	const bPnt = PBotUtils.getSelectedAreaB();
+	if(Math.abs(aPnt.x-bPnt.x) > 22 && Math.abs(aPnt.y-bPnt.y) > 22) {
+		PBotUtils.sysMsg("Selected area did not meet the constraints given!");
+		return;
+	}
+	let stockpileLocs = [];
+	for(let i=Math.min(aPnt.x, bPnt.x)+11/2; i<Math.max(aPnt.x, bPnt.x); i += 11) {
+		for(let j=Math.min(aPnt.y, bPnt.y)+11/2; j<Math.max(aPnt.y, bPnt.y); j += 11) {
+			stockpileLocs.push({x: i, y: j});
+		}
+	}
+	const items = javaListToArray(PBotUtils.playerInventory().getInventoryItemsByResnames([selectedItem.getResname()]));
+	while(stockpileLocs.length > 0 && items.length > 0) {
+		const location = stockpileLocs.shift();
+		const item = items.shift();
+		item.takeItem();
+		console.log(PBotUtils.getItemAtHand());
+		while(PBotUtils.getItemAtHand() == null)
+			PBotUtils.sleep(15);
+		PBotGobAPI.makePile();
+		while(PBotUtils.getItemAtHand() != null)
+			PBotUtils.sleep(15);
+		if(!PBotUtils.pfLeftClick(location.x+11, location.y) && !PBotUtils.pfLeftClick(location.x-11, location.y) && !PBotUtils.pfLeftClick(location.x, location.y+11) && !PBotUtils.pfLeftClick(location.x, location.y-11)) { // Couldn't find path next to the stockpile that we want to make next
+			items.push(item);
+			PBotUtils.sysMsg("QAQ");
+			continue;
+		}
+		PBotGobAPI.placeThing(location.x, location.y);
+		PBotGobAPI.waitForGob(location.x, location.y);
+	}
+	PBotUtils.sysMsg("Done!");
+}
+
+main();

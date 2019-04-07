@@ -49,7 +49,7 @@ public class Map {
     private Vertex vxend;
 
     private Dbg dbg;
-    private final static boolean DEBUG = true;
+    private final static boolean DEBUG = false;
     public final static boolean DEBUG_TIMINGS = false;
 
     public Map(Coord plc, Coord endc, MCache mcache) {

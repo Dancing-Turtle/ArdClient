@@ -370,7 +370,7 @@ public class SteelRefueler extends Window implements GobSelectCallback {
             }
 
             // navigate to the stockpile and load up on fuel
-            gameui().map.pfRightClick(s, -1, 3, 1, null);
+            gameui().map.purusPfRightClick(s, -1, 3, 1, null);
             try {
                 gui.map.pfthread.join();
             } catch (InterruptedException e) {

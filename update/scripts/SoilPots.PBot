@@ -1,0 +1,21 @@
+// Puts all soil in inventory to treepots
+// Made by Purus Cor to demonstrate usage of PBot API
+// For more information about API, join Purus Pasta discord
+// To suggest features into API, suggest them in discord
+const PBotUtils = Java.type('haven.purus.pbot.PBotUtils');
+const PBotGobAPI = Java.type('haven.purus.pbot.PBotGobAPI');
+
+const potstuff = ["gfx/invobjs/soil", "gfx/invobjs/soil", "gfx/invobjs/mulch", "gfx/invobjs/earthworm"];
+
+const potstuffs = PBotUtils.playerInventory().getInventoryItemsByResnames(potstuff);
+if(potstuffs.length > 0) {
+	potstuffs[0].takeItem();
+	const inventories = PBotUtils.getAllInventories();
+	for(let i=0; i<inventories.length; i++) {
+		const pots = inventories[i].getInventoryItemsByResnames(["gfx/invobjs/treepot", "gfx/invobjs/treepot-s"]);
+		for(let j=0; j<pots.length; j++) {
+			for(let k=0; k<4; k++)
+				pots[j].itemact(1);
+		}
+	}
+}

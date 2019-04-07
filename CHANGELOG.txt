@@ -1,3 +1,11 @@
+1.00.120
+Fixed memory leak being caused by Alerted system persisting through character switches.
+Added millet to farmer, assumed it finishes at the same stage barley/wheat does - let me know if that's wrong.
+Turned off pathfinder debugging, woops.
+Coracle script will now stop movement after dropping coracle into the water.
+Added auto stockpile selector to Farmer, still very much in beta, shouldn't crash your game but it also might not stockpile correctly.
+~
+
 1.00.119
 Quick update - added a few retrys to Farmer to account for lag and such that will cause it to get stuck on various "waiting for something" steps.
 ~

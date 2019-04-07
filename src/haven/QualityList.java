@@ -43,9 +43,6 @@ public class QualityList extends ItemInfo {
 	return isEmpty;
     }
 
- //   public Quality single() {
-	//return singles.get(CFG.Q_SINGLE_TYPE.get());
-   // }
 
     public Quality single(SingleType type) {
 	return singles.get(type);

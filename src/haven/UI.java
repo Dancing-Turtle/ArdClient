@@ -82,7 +82,14 @@ public class UI {
     private class WidgetConsole extends Console {
         {
             setcmd("q", (cons1, args) -> HackThread.tg().interrupt());
-            setcmd("lo", (cons1, args) -> sess.close());
+            setcmd("lo", new Command() {
+                public void run(Console cons, String[] args) {
+                    if (gui != null)
+                        gui.act("lo");
+                    else
+                        sess.close();
+                }
+            });
             setcmd("kbd", (cons1, args) -> {
                 Config.zkey = args[1].toString().equals("z") ? KeyEvent.VK_Y : KeyEvent.VK_Z;
                 Utils.setprefi("zkey", Config.zkey);
@@ -340,6 +347,7 @@ public class UI {
     }
 
     private void removeid(Widget wdg) {
+        wdg.removed();
         if (rwidgets.containsKey(wdg)) {
             int id = rwidgets.get(wdg);
             widgets.remove(id);

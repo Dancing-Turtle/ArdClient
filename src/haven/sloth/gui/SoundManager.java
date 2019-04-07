@@ -165,9 +165,7 @@ public class SoundManager extends Window implements ObservableMapListener<String
     }
 
     @Override
-    protected void removed() {
-	Alerted.unlisten(this);
-    }
+    protected void removed() {Alerted.unlisten(this);}
 
     @Override
     public void init(Map<String, Resource.Named> base) {

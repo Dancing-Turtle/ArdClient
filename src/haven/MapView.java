@@ -30,6 +30,7 @@ import haven.GLProgram.VarID;
 import haven.automation.*;
 import haven.pathfinder.PFListener;
 import haven.pathfinder.Pathfinder;
+import haven.purus.Farmer;
 import haven.purus.pbot.PBotUtils;
 import haven.resutil.BPRadSprite;
 import haven.sloth.gob.Alerted;
@@ -96,6 +97,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     private Pathfinder pf;
     public Thread pfthread;
     public SteelRefueler steelrefueler;
+    public Farmer farmer;
     public ShieldChecker shieldchecker;
     public LightWithTorch torchlight;
     public static Gob shooanimal;

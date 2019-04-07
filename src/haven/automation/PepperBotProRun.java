@@ -36,6 +36,7 @@ public class PepperBotProRun extends Window implements Runnable {
 	private Boolean boilmode = false;
 	private Coord finalloc;
 
+
 	public PepperBotProRun(ArrayList crops1, ArrayList crops2, ArrayList crops3, ArrayList crops4, ArrayList tables1, ArrayList tables2, ArrayList tables3,
                            ArrayList tables4, boolean harvest, Gob barrel, Gob water, Gob cauldron, int section, Gob hfire, int direction) {
 		super(new Coord(140, 55), "Trellis Farmer");
@@ -396,7 +397,9 @@ try {
 					PBotUtils.sleep(200);
 					VMeter vm = cwnd.getchild(VMeter.class);
 					//	System.out.println("Clicking craft");
-					ui.makewnd.wdgmsg("make", 1);
+					if(ui.makewnd.get() != null) {
+						ui.makewnd.get().wdgmsg("make", 1);
+					}
 					//System.out.println("after Clicking craft");
 					PBotUtils.sleep(2000);
 
@@ -409,8 +412,11 @@ try {
 						lblProg2.settext("Boiling");
 						PBotUtils.sleep(10);
 					}
-					if (stam.a > 50)
-						ui.makewnd.wdgmsg("make", 1);
+					if (stam.a > 50) {
+						if (ui.makewnd.get() != null) {
+							ui.makewnd.get().wdgmsg("make", 1);
+						}
+					}
 
 				}
 			}
@@ -600,7 +606,9 @@ try {
 			gui.map.wdgmsg("click", cauldron.sc, cauldron.rc.floor(posres), 3, 0, 0, (int) cauldron.id, cauldron.rc.floor(posres), 0, -1);
 			FlowerMenu.setNextSelection("Open");
 			PBotUtils.sleep(2000);
-			ui.makewnd.wdgmsg("make", 1);
+			if(ui.makewnd.get() != null) {
+				ui.makewnd.get().wdgmsg("make", 1);
+			}
 			PBotUtils.sleep(2000);
 		} else {
 			lblProg2.settext("Refill Cauldron");
@@ -616,7 +624,9 @@ try {
 			gui.map.wdgmsg("click", cauldron.sc, cauldron.rc.floor(posres), 3, 0, 0, (int) cauldron.id, cauldron.rc.floor(posres), 0, -1);
 			FlowerMenu.setNextSelection("Open");
 			PBotUtils.sleep(2000);
-			ui.makewnd.wdgmsg("make", 1);
+			if(ui.makewnd.get() != null) {
+				ui.makewnd.get().wdgmsg("make", 1);
+			}
 			PBotUtils.sleep(2000);
 		}
 	}

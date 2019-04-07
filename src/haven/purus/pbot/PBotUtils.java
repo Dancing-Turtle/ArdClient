@@ -4,6 +4,7 @@ import haven.*;
 import haven.Button;
 import haven.Window;
 import haven.purus.DrinkWater;
+import haven.purus.ItemClickCallback;
 import haven.purus.pbot.gui.PBotWindow;
 
 import java.awt.*;
@@ -20,6 +21,7 @@ public class PBotUtils {
 	private static Coord selectedAreaA, selectedAreaB;
 	private static boolean itemSelectWait;
 	private static PBotItem selectedItem;
+
 
 	/**
 	 * Sleep for t milliseconds
@@ -362,8 +364,38 @@ public class PBotUtils {
 	public static void selectArea() {
 		sysMsg("Please select an area by dragging!", Color.ORANGE);
 		PBotAPI.gui.map.PBotAPISelect = true;
-		while(PBotAPI.gui.map.PBotAPISelect)
+		while(PBotAPI.gui.map.PBotAPISelect) {
 			sleep(25);
+		}
+	}
+
+	/**
+	 * Next click to item in inventory returns the item, the function will wait until this happens
+	 */
+	public static PBotItem selectItem() {
+		synchronized (ItemClickCallback.class) {
+			PBotAPI.gui.registerItemCallback(new ItemCb());
+		}
+		while(itemSelectWait) {
+			PBotUtils.sleep(25);
+		}
+		synchronized(ItemClickCallback.class) {
+			PBotAPI.gui.unregisterItemCallback();
+		}
+		return selectedItem;
+	}
+
+	private static class ItemCb implements ItemClickCallback {
+
+		public ItemCb() {
+			itemSelectWait = true;
+		}
+
+		@Override
+		public void itemClick(WItem item) {
+			selectedItem = new PBotItem(item);
+			itemSelectWait = false;
+		}
 	}
 
 	/**
@@ -740,11 +772,17 @@ public class PBotUtils {
 
 	//Will set player speed to whatever int you send it.
 	public static void setSpeed(int speed){
-		PBotAPI.gui.speedget.set(speed);
+		Speedget speedwdg = PBotAPI.gui.speedget.get();
+		if (speedwdg != null)
+			speedwdg.set(speed);
 	}
 	//should return current max move speed? maybe?
 	public static int maxSpeed(){
-		return PBotAPI.gui.speedget.max;
+		Speedget speedwdg = PBotAPI.gui.speedget.get();
+		if (speedwdg != null)
+			return speedwdg.max;
+		else
+			return 0;
 	}
 
 	/**
@@ -855,7 +893,7 @@ public class PBotUtils {
 	 * @param mod 1 = shift, 2 = ctrl, 4 = alt
 	 */
 	public static void pfRightClick(Gob gob, int mod) {
-		PBotAPI.gui.map.pfRightClick(gob, -1, 3, mod, null);
+		PBotAPI.gui.map.purusPfRightClick(gob, -1, 3, mod, null);
 	}
 
 	/**

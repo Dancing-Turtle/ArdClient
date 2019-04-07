@@ -60,6 +60,8 @@ public class Coracleslol implements Runnable {
                     }
             } else {
                     coracle.item.wdgmsg("drop", Coord.z);
+                  //  PBotAPI.gui.map.wdgmsg("gk", 27); //sends escape key to mapview to stop movement so you dont walk away from the coracle
+                    PBotAPI.gui.ui.root.wdgmsg("gk",27);
                     if(invcoracle) {
                         while (gui.maininv.getItemPartial("Coracle") != null)
                             PBotUtils.sleep(10);

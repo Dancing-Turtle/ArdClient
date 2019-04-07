@@ -1,0 +1,84 @@
+// Pick leaves from mulberries and put them in the selected stockpiles
+// Made by Purus Cor to demonstrate usage of PBot API
+// For more information about API, join Purus Pasta discord
+// To suggest features into API, suggest them in discord
+const PBotUtils = Java.type('haven.purus.pbot.PBotUtils');
+const PBotWindowAPI = Java.type('haven.purus.pbot.PBotWindowAPI');
+const PBotGobAPI = Java.type('haven.purus.pbot.PBotGobAPI');
+let stop = false;
+
+shouldStop = () => {
+	return stop;
+}
+
+javaListToArray = (javalist) => {
+	const ret = [];
+	for(let i=0; i<javalist.size(); i++)
+		ret.push(javalist.get(i));
+	return ret;
+};
+
+main = () => {
+	PBotUtils.sysMsg("Select area with mulberry trees");
+	PBotUtils.selectArea();
+	let mulberries = javaListToArray(PBotUtils.gobsInArea(PBotUtils.getSelectedAreaA(), PBotUtils.getSelectedAreaB()));
+	mulberries = mulberries.filter((gob) => {
+		return(gob.getResname() === "gfx/terobjs/trees/mulberry")
+	});
+
+	PBotUtils.sysMsg("Select area with leaf stockpiles");
+	PBotUtils.selectArea();
+	let piles = javaListToArray(PBotUtils.gobsInArea(PBotUtils.getSelectedAreaA(), PBotUtils.getSelectedAreaB()));
+	piles = piles.filter((gob) => {
+		return(gob.getResname() === "gfx/terobjs/stockpile-leaf")
+	});
+	console.log(mulberries);
+	console.log(piles);
+	let tree = mulberries.shift();
+	while(tree != null && !shouldStop()) {
+		tree.pfClick(1, 0);
+		tree.doClick(3, 0);
+		PBotUtils.waitForFlowerMenu();
+		if(!PBotUtils.choosePetal("Pick leaf")) { // No leaves remaining
+			PBotUtils.closeFlowermenu();
+			tree = mulberries.shift();
+			continue;
+		}
+		PBotUtils.waitForHourglass(); // We may or may not have leave in our hand after this, maybe it doesn't matter
+		let leaves = PBotUtils.playerInventory().getInventoryItemsByResnames(["gfx/invobjs/leaf-mulberrytree"]).size();
+		while(leaves > 0) {
+			if(piles.length === 0) {
+				stop = true;
+				break;
+			}
+			if(piles[0].stockpileIsFull()) {
+				piles.shift();
+				continue;
+			}
+			PBotUtils.pfRightClick(piles[0], 0);
+			if(PBotUtils.getItemAtHand() != null) {
+				piles[0].itemClick(0);
+				while(PBotUtils.getItemAtHand() != null)
+					PBotUtils.sleep(25);
+				piles[0].doClick(3, 0);
+			}
+			PBotWindowAPI.waitForWindow("Stockpile");
+			const free = PBotWindowAPI.getStockpileTotalCapacity()-PBotWindowAPI.getStockpileUsedCapacity();
+			if(free === 0) {
+				piles.shift();
+				continue;
+			}
+			const count = Math.min(leaves, free);
+			if(count === free)
+				piles.shift();
+			leaves -= count;
+			PBotWindowAPI.putItemFromInventoryToStockpile(count);
+			while(PBotUtils.playerInventory().getInventoryItemsByResnames(["gfx/invobjs/leaf-mulberrytree"]).size() != leaves) {
+				PBotUtils.sleep(25);
+			}
+		}
+	}
+	PBotUtils.sysMsg("Done!");
+}
+
+main();
