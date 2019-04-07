@@ -340,6 +340,7 @@ public class SeedCropFarmer extends Window implements Runnable {
 				}catch(NullPointerException | Loading | Sprite.ResourceException q){}
 			} else if (replantcontainer & !ispumpkin) {
 				try {
+					retryharvest = 0;
 					while (PBotUtils.getItemAtHand() == null) { // loops until successfully picked up seeds
 						lblProg2.settext("Grabbing seeds");
 						while(gui.maininv.getItemPartial("seed") == null)
@@ -352,12 +353,20 @@ public class SeedCropFarmer extends Window implements Runnable {
 							GItem item = seeds.item;
 							if (PBotUtils.getAmount(item) >= 5) {
 								PBotUtils.takeItem(item);
+								while (PBotUtils.getItemAtHand() == null) { // just a double verification that we have successfully picked up seeds, should account for lag
+									retryharvest++;
+									if(retryharvest > 500){
+										retryharvest = 0;
+										PBotUtils.takeItem(item);
+									}
+									PBotUtils.sleep(10);
+								}
 								break;
 							}
 						}
 					}
-						while (PBotUtils.getItemAtHand() == null) // just a double verification that we have successfully picked up seeds, should account for lag
-							PBotUtils.sleep(10);
+
+
 
 						// Plant the seed from hand
 						int amount = 0;
@@ -744,7 +753,7 @@ public class SeedCropFarmer extends Window implements Runnable {
 				if (stockpiles.isEmpty()) {
 					System.out.println("Stockpiles empty");
 					PBotUtils.sysMsg("All chosen stockpiles full!", Color.GREEN);
-					stop = true;
+					return;
 				}
 				if (PBotUtils.stockpileIsFull(PBotUtils.findObjectById(stockpiles.get(0).id))) {
 					System.out.println("Stockpile full");

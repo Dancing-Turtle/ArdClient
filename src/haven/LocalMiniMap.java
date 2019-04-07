@@ -598,14 +598,14 @@ public class LocalMiniMap extends Widget {
             if (button == 1)
                 MapView.pllastcc = mc;
             Gob gob = findicongob(csd.add(delta));
-            if (gob == null && (ui.modflags() == 0 || ui.modshift)) { //click tile
-                if(ui.modshift) {
+            if (gob == null) { //click tile
+                if(ui.modmeta && button == 1) {
                     mv.queuemove(c2p(c.sub(delta)));
                 } else if (button == 1) {
-                    mv.moveto(c2p(c.sub(delta)));
+                    mv.wdgmsg("click", rootpos().add(csd), mc.floor(posres), button, ui.modflags());
                 }
                 return true;
-            } else if(gob != null) {
+            } else {
             mv.wdgmsg("click", rootpos().add(csd.add(delta)), mc.floor(posres), button, ui.modflags(), 0, (int) gob.id, gob.rc.floor(posres), 0, -1);
             if (Config.autopickmussels && gob.getres().basename().contains("mussel"))
                 mv.startMusselsPicker(gob);

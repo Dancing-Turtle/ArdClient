@@ -2526,11 +2526,6 @@ public class CharWnd extends Window {
             int parentid = (len > 3) ? ((args[a + 3] == null) ? -1 : (Integer)args[a + 3]) : -1;
             Wound w = wounds.get(id);
             if(w == null) {
-                try {
-                    if(Config.alertwounds) {
-                        PBotUtils.sysMsg("New wound : " + res.get().basename() + " damage : " + qdata.hashCode(), white);
-                    }
-                }catch(Exception e){}//could get an exception here getting the resource name, ignore it.
                 wounds.add(new Wound(id, res, qdata, parentid));
             } else {
                 w.res = res;

@@ -715,7 +715,9 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                         Coord2d pc = cc.add(o).mul(MCache.cutsz).mul(tilesz);
                         try {
                             MapMesh cut = glob.map.getcut(cc.add(o));
-                            rl.add(cut, Location.xlate(new Coord3f((float)pc.x, -(float)pc.y, 0)));
+                        if (cut != null) {
+                            rl.add(cut, Location.xlate(new Coord3f((float) pc.x, -(float) pc.y, 0)));
+                        }
                         } catch (Defer.DeferredException e) {
                             // there seems to be a rare problem with fetching gridcuts when teleporting, not sure why...
                             // we ignore Defer.DeferredException to prevent the client for crashing

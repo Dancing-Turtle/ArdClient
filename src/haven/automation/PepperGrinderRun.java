@@ -270,8 +270,8 @@ public class PepperGrinderRun extends Window implements Runnable {
 							lblProg.settext("Status - Grinding");
 						}
 						if (PBotUtils.getStamina() > 50) {
-							if(ui.makewnd.get() != null) {
-								ui.makewnd.get().wdgmsg("make", 1);
+							if(ui.makewnd != null) {
+								ui.makewnd.wdgmsg("make", 1);
 							}
 							PBotUtils.sleep(2000);
 							retrycount++;

@@ -1388,17 +1388,6 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
-        appender.add(new CheckBox("Alert on new wounds.") {
-            {
-                a = Config.alertwounds;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("alertwounds", val);
-                Config.alertwounds = val;
-                a = val;
-            }
-        });
         appender.add(new CheckBox("Abandon quests on right click") {
             {
                 a = Config.abandonrightclick;

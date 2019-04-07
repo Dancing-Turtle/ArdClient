@@ -772,13 +772,13 @@ public class PBotUtils {
 
 	//Will set player speed to whatever int you send it.
 	public static void setSpeed(int speed){
-		Speedget speedwdg = PBotAPI.gui.speedget.get();
+		Speedget speedwdg = PBotAPI.gui.speedget;
 		if (speedwdg != null)
 			speedwdg.set(speed);
 	}
 	//should return current max move speed? maybe?
 	public static int maxSpeed(){
-		Speedget speedwdg = PBotAPI.gui.speedget.get();
+		Speedget speedwdg = PBotAPI.gui.speedget;
 		if (speedwdg != null)
 			return speedwdg.max;
 		else

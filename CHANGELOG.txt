@@ -1,3 +1,13 @@
+1.00.121
+Fixed shift left click not doing infinite-move on minimap anymore.
+Due to above, movement queing through minimap is now the same as in the world, hold alt and left click.
+Fixed being sometimes unable to pick up scents if disable elevation was turned on.
+Fixed livestock manager "drop" options not clearing when the window is closed. 
+Added a warning to farmer that you must select your crop area before your stockpile area.
+Removing wound alert, may readd later, not super sure how to stop it from announcing treatments besides a big list of all of them to ignore.
+Fixed softcap in craft window not updating when changing gear.
+~
+
 1.00.120
 Fixed memory leak being caused by Alerted system persisting through character switches.
 Added millet to farmer, assumed it finishes at the same stage barley/wheat does - let me know if that's wrong.

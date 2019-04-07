@@ -354,8 +354,8 @@ public class PepperBotRun extends Window implements Runnable {
 						PBotUtils.sleep(200);
 						VMeter vm = cwnd.getchild(VMeter.class);
 					//	System.out.println("Clicking craft");
-						if(ui.makewnd.get() != null) {
-							ui.makewnd.get().wdgmsg("make", 1);
+						if(ui.makewnd != null) {
+							ui.makewnd.wdgmsg("make", 1);
 						}
 						//System.out.println("after Clicking craft");
 						PBotUtils.sleep(2000);
@@ -388,8 +388,8 @@ public class PepperBotRun extends Window implements Runnable {
 								gui.map.wdgmsg("click", cauldron.sc, cauldron.rc.floor(posres), 3, 0, 0, (int) cauldron.id, cauldron.rc.floor(posres), 0, -1);
 								FlowerMenu.setNextSelection("Open");
 								PBotUtils.sleep(1000);
-								if(ui.makewnd.get() != null) {
-									ui.makewnd.get().wdgmsg("make", 1);
+								if(ui.makewnd != null) {
+									ui.makewnd.wdgmsg("make", 1);
 								}
 								PBotUtils.sleep(1000);
 							} else {
@@ -406,8 +406,8 @@ public class PepperBotRun extends Window implements Runnable {
 								gui.map.wdgmsg("click", cauldron.sc, cauldron.rc.floor(posres), 3, 0, 0, (int) cauldron.id, cauldron.rc.floor(posres), 0, -1);
 								FlowerMenu.setNextSelection("Open");
 								PBotUtils.sleep(1000);
-								if(ui.makewnd.get() != null) {
-									ui.makewnd.get().wdgmsg("make", 1);
+								if(ui.makewnd != null) {
+									ui.makewnd.wdgmsg("make", 1);
 								}
 								PBotUtils.sleep(1000);
 							}
@@ -419,8 +419,8 @@ public class PepperBotRun extends Window implements Runnable {
 							PBotUtils.sleep(10);
 						}
 						if (stam.a > 50) {
-							if(ui.makewnd.get() != null) {
-								ui.makewnd.get().wdgmsg("make", 1);
+							if(ui.makewnd != null) {
+								ui.makewnd.wdgmsg("make", 1);
 							}
 						}
 

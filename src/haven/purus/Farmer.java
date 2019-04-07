@@ -471,9 +471,13 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 		stockpilearea = new Button(140, "Stockpile Area") {
 			@Override
 			public void click() {
-				PBotUtils.sysMsg("Click and Drag over 2 wide area for stockpiles", Color.WHITE);
-				selectingarea = new Thread(new Farmer.selectingarea(), "Farming Bots");
-				selectingarea.start();
+				if(a == null && b == null){
+					PBotUtils.sysMsg("Please select your crop area first before your stockpiles",Color.white);
+				}else {
+					PBotUtils.sysMsg("Click and Drag over 2 wide area for stockpiles", Color.WHITE);
+					selectingarea = new Thread(new Farmer.selectingarea(), "Farming Bots");
+					selectingarea.start();
+				}
 			}
 		};
 		add(stockpilearea, new Coord(20, y));

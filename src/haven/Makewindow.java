@@ -40,11 +40,12 @@ public class Makewindow extends Widget {
     List<Spec> outputs = Collections.emptyList();
     List<Indir<Resource>> qmod = null;
     static final Text qmodl = Text.render(Resource.getLocString(Resource.BUNDLE_LABEL, "Quality:"));
-    static Coord boff = new Coord(7, 9);
-    final int xoff = 45, qmy = 38, outy = 65;
-    private Tex qtex;
-    private boolean rebuild = false;
+    int xoff = 45;
+    private static final int qmy = 38, outy = 65;
     public static final Text.Foundry nmf = new Text.Foundry(Text.serif, 20).aa(true);
+    private long qModProduct = -1;
+    private static final Tex softcapl = Text.render("Softcap:").tex();
+    private Tex softcap;
 
     @RName("make")
     public static class $_ implements Factory {
@@ -69,7 +70,7 @@ public class Makewindow extends Widget {
             this.res = res;
             this.sdt = new MessageBuf(sdt);
 	    if(num >= 0)
-		this.num = new TexI(Utils.outline2(Text.render(Integer.toString(num), Color.WHITE).img, Utils.contrast(Color.WHITE)));
+                this.num = new TexI(Utils.outline2(Text.render(Integer.toString(num), Color.WHITE,  Text.num10Fnd).img, Utils.contrast(Color.WHITE)));
             else
                 this.num = null;
             this.rawinfo = info;
@@ -174,10 +175,20 @@ public class Makewindow extends Widget {
     }
 
     public Makewindow(String rcpnm) {
-	add(new Label("Input:"), new Coord(0, 8));
-	add(new Label("Result:"), new Coord(0, outy + 8));
-	obtn = add(new Button(85, "Craft"), new Coord(230, 75));
-	cbtn = add(new Button(85, "Craft All"), new Coord(325, 75));
+        Label lblIn = new Label("Input:");
+        Label lblOut = new Label("Result:");
+
+        xoff = qmodl.sz().x;
+        if (lblIn.sz.x > xoff)
+            xoff = lblIn.sz.x;
+        if (lblOut.sz.x > xoff)
+            xoff = lblOut.sz.x;
+        xoff += 8;
+
+        add(lblIn, new Coord(0, 8));
+        add(lblOut, new Coord(0, outy + 8));
+        obtn = add(new Button(85, "Craft"), new Coord(230, 75));
+        cbtn = add(new Button(85, "Craft All"), new Coord(325, 75));
         pack();
         adda(new Label(rcpnm, nmf), sz.x, 0, 1, 0);
     }
@@ -209,10 +220,11 @@ public class Makewindow extends Widget {
             this.outputs = outputs;
         } else if (msg == "qmod") {
             List<Indir<Resource>> qmod = new ArrayList<Indir<Resource>>();
-	    for(Object arg : args)
-		qmod.add(ui.sess.getres((Integer)arg));
+            for (Object arg : args) {
+                Indir<Resource> qm = ui.sess.getres((Integer) arg);
+                qmod.add(qm);
+            }
             this.qmod = qmod;
-	    this.rebuild = true;
         } else {
             super.uimsg(msg, args);
         }
@@ -239,11 +251,62 @@ public class Makewindow extends Widget {
         }
         if (qmod != null) {
             g.image(qmodl.tex(), new Coord(0, qmy + 4));
-	    if(rebuild) {
-		buildQTex();
+            c = new Coord(xoff, qmy);
+
+            CharWnd chrwdg = null;
+            try {
+                chrwdg = ((GameUI) parent.parent).chrwdg;
+            } catch (Exception e) { // fail silently
             }
-	    if(qtex != null) {
-		g.image(qtex, new Coord(xoff, qmy));
+
+            List<Integer> qmodValues = new ArrayList<Integer>(3);
+
+            for (Indir<Resource> qm : qmod) {
+                try {
+                    Tex t = qm.get().layer(Resource.imgc).tex();
+                    g.image(t, c);
+                    c = c.add(t.sz().x + 1, 0);
+
+                    if (Config.showcraftcap && chrwdg != null) {
+                        String name = qm.get().basename();
+                        for (CharWnd.SAttr attr : chrwdg.skill) {
+                            if (name.equals(attr.attr.nm)) {
+                                Coord sz = attr.attr.comptex.sz();
+                                g.image(attr.attr.comptex, c.add(3, t.sz().y / 2 - sz.y / 2));
+                                c = c.add(sz.x + 8, 0);
+                                qmodValues.add(attr.attr.comp);
+                                break;
+                            }
+                        }
+                        for (CharWnd.Attr attr : chrwdg.base) {
+                            if (name.equals(attr.attr.nm)) {
+                                Coord sz = attr.attr.comptex.sz();
+                                g.image(attr.attr.comptex, c.add(3, t.sz().y / 2 - sz.y / 2));
+                                c = c.add(sz.x + 8, 0);
+                                qmodValues.add(attr.attr.comp);
+                                break;
+                            }
+                        }
+                    }
+                } catch (Loading l) {
+                }
+            }
+
+            if (Config.showcraftcap && qmodValues.size() > 0) {
+                long product = 1;
+                for (long cap : qmodValues)
+                    product *= cap;
+
+                if (product != qModProduct) {
+                    qModProduct = product;
+                    softcap = Text.renderstroked("" + (int) Math.pow(product, 1.0 / qmodValues.size()),
+                            Color.WHITE, Color.BLACK, Text.num12boldFnd).tex();
+                }
+
+                Coord sz = softcap.sz();
+                Coord szl = softcapl.sz();
+                g.image(softcapl, this.sz.sub(sz.x + szl.x + 113, (this.sz.y / 2 + szl.y / 2) - 15));
+                g.image(softcap, this.sz.sub(sz.x +105, (this.sz.y / 2 + sz.y / 2) -15));
             }
         }
         c = new Coord(xoff, outy);
@@ -254,43 +317,6 @@ public class Makewindow extends Widget {
             c = c.add(Inventory.sqsz.x, 0);
         }
         super.draw(g);
-    }
-
-    private void buildQTex(){
-	rebuild = false;
-	double product = 1.0d;
-	int count = 0;
-	BufferedImage result = null;
-	for (Indir<Resource> qm : qmod) {
-	    try {
-		result = ItemInfo.catimgsh(8, result, qm.get().layer(Resource.imgc).img);
-		try {
-		    Glob.CAttr attr = ui.gui.chrwdg.findattr(qm.get().basename());
-		    if(attr != null) {
-			result = ItemInfo.catimgsh(1, result, attr.compline().img);
-			product = product * attr.comp;
-			count++;
-		    }
-		} catch (Exception ignored) {
-		    rebuild = true;
-		}
-	    } catch (Loading l) {
-		rebuild = true;
-	    }
-	}
-
-	if(count > 0) {
-	    double softcap = Math.pow(product, 1.0d / count);
-	    String format = String.format("Softcap: %.1f", softcap);
-	    Text txt = Text.renderstroked(format, Color.WHITE, Color.BLACK, Glob.CAttr.fnd);
-	    result = ItemInfo.catimgsh(16, result, txt.img);
-	}
-
-	if(result != null) {
-	    qtex = new TexI(result);
-	} else {
-	    qtex = null;
-	}
     }
 
     private long hoverstart;
@@ -305,16 +331,9 @@ public class Makewindow extends Widget {
             try {
                 for (Indir<Resource> qm : qmod) {
                     Tex t = qm.get().layer(Resource.imgc).tex();
-		    Coord sz = t.sz();
-		    try {
-			Glob.CAttr attr = ui.gui.chrwdg.findattr(qm.get().basename());
-			if(attr != null) {
-			    sz = sz.add(attr.compline().sz().x + 8, 0);
-			}
-		    }catch (Exception ignored){}
-		    if(mc.isect(c, sz))
+                    if (mc.isect(c, t.sz()))
                         return (qm.get().layer(Resource.tooltip).t);
-		    c = c.add(sz.x + 1, 0);
+                    c = c.add(t.sz().x + 1 + (Config.showcraftcap ? 21 : 0), 0);
                 }
             } catch (Loading l) {
             }

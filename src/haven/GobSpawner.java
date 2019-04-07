@@ -111,26 +111,21 @@ public class GobSpawner extends Window {
         put("Mammoth Idle","gfx/kritter/mammoth/idle");
     }};
 
-    public final static HashMap<String, String> defaultitems = new HashMap<String, String>(35) {{
-        put("gfx/kritter/rat/rat", "Rat");
-        put("gfx/kritter/chicken/chicken", "Chicken");
-        put("gfx/kritter/chicken/chick", "Chick");
-        put("gfx/kritter/dragonfly/dragonfly", "Dragonfly");
+    public final static HashMap<String, String> defaultitems = new HashMap<String, String>(45) {{
+        put("gfx/kritter/chicken/hen", "Chicken Hen");
+        put("gfx/kritter/chicken/rooster", "Chicken Rooster");
+        put("gfx/kritter/chicken/chick", "Chicken Chick");
         put("gfx/kritter/toad/toad", "Toad");
         put("gfx/kritter/frog/frog", "Frog");
         put("gfx/kritter/mallard/mallard", "Duck");
-        put("gfx/kritter/ladybug/ladybug", "Ladybug");
-        put("gfx/kritter/silkmoth/silkmoth", "Silkmoth");
         put("gfx/kritter/hedgehog/hedgehog", "Hedgehog");
         put("gfx/kritter/squirrel/squirrel", "Squirrel");
         put("gfx/kritter/rabbit/rabbit", "Rabbit");
-        put("gfx/kritter/grub/grub", "Grub");
         put("gfx/kritter/crab/crab", "Crab");
         put("gfx/kritter/irrbloss/irrbloss", "Irrlight");
         put("gfx/kritter/opiumdragon/opiumdragon", "Opium Dragon");
         put("gfx/kritter/forestsnail/forestsnail", "Forest Snail");
         put("gfx/kritter/forestlizard/forestlizard", "Forest Lizard");
-        put("gfx/kritter/jellyfish/jellyfish", "Jellyfish");
         put("gfx/kritter/bear/bear","Bear");
         put("gfx/kritter/adder/adder","Snake");
         put("gfx/kritter/lynx/lynx","Lynx");

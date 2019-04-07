@@ -204,11 +204,6 @@ public class LivestockManager extends ResizableWnd {
         pack();
     }
 
-
-
-
-
-
     private void createHeader(Panel panel, Map<String, Column> columns) {
         List<Map.Entry<String, Column>> cols = columns.entrySet()
                 .stream()
@@ -249,6 +244,29 @@ public class LivestockManager extends ResizableWnd {
         }
         else
             super.wdgmsg(sender, msg, args);
+    }
+
+    @Override
+    public void close(){
+        Config.DropEntrails =false;
+        Config.DropBones = false;
+        Config.DropMeat = false;
+        Config.DropIntestines = false;
+        InspectBox.a = false;
+        SlaughterBox.a = false;
+        DropEntrailsBox.a = false;
+        DropIntestinesBox.a = false;
+        DropMeatBox.a = false;
+        DropBonesBox.a = false;
+        Utils.loadprefchklist("flowersel", Config.flowermenus);
+        for(CheckListboxItem itm :Config.flowermenus.values()) {
+            if (itm.name.equals("Inspect"))
+                itm.selected = false;
+            if (itm.name.equals("Slaughter"))
+                itm.selected = false;
+        }
+        // visible = false;
+        super.hide();
     }
 
 
