@@ -53,7 +53,6 @@ public class Discord extends ListenerAdapter implements Runnable {
     public String LoadMSG;
     private String stuff;
 
-
     public void run() {
         channels = new ArrayList<>();
         try {

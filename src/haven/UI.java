@@ -49,19 +49,15 @@ public class UI {
     public int keycode;
     public boolean readytodrop = false;
     public Object lasttip;
-    public Cal calwdg;
     double lastevent, lasttick;
     public Widget mouseon;
-    public List<Integer> Questwidgetarray = new ArrayList<>();
-    public List<Integer> Questnumberarray = new ArrayList<>();
     public Console cons = new WidgetConsole();
     private Collection<AfterDraw> afterdraws = new LinkedList<AfterDraw>();
     public final ActAudio audio = new ActAudio();
     public int beltWndId = -1;
 	public GameUI gui;
-	public Widget realmchat;
-	public Widget makewnd;
-    public FightWnd fightwnd;
+	public WeakReference<Widget> realmchat;
+    public WeakReference<FightWnd> fightwnd;
 
     {
         lastevent = lasttick = Utils.rtime();
@@ -172,6 +168,7 @@ public class UI {
     }
 
     public void newwidget(int id, String type, int parent, Object[] pargs, Object... cargs) throws InterruptedException {
+
     //  System.out.println("Widget ID : "+id+" Type : "+type+" Parent : "+parent);
         if (Config.quickbelt && type.equals("wnd") && cargs[1].equals("Belt")) {
             // use custom belt window
@@ -226,16 +223,12 @@ public class UI {
             }
             bind(wdg, id);
             if(type.contains("rchan"))
-                realmchat = wdg;
+                 realmchat = new WeakReference<>(wdg);
             if(type.contains("speedget"))
-                gui.speedget = (Speedget)wdg;
-            if(type.contains("make")) {
-            //    System.out.println("Captured make widget of ID : "+wdg.wdgid());
-                makewnd = wdg;
-            }
+                gui.speedget = new WeakReference<>((Speedget)wdg);
             if(wdg instanceof FightWnd){
                 System.out.println("Captured Fightwnd widget of id : "+wdg.wdgid());
-                fightwnd = (FightWnd)wdg;
+                fightwnd = new WeakReference<>((FightWnd)wdg);
             }
         }
     }
@@ -408,15 +401,17 @@ public class UI {
     public void uimsg(int id, String msg, Object... args) {
         synchronized (this) {
             Widget wdg = widgets.get(id);
-
             if(realmchat != null){
-            if(id == realmchat.wdgid()){
-                if (msg.contains("msg") && wdg.toString().contains("Realm")) {
-                    ((ChatUI.EntryChannel) realmchat).updurgency(1);
-                    if(Config.realmchatalerts)
-                    Audio.play(ChatUI.notifsfx);
-                }
-            }}
+                try{
+                 if(id == realmchat.get().wdgid()) {
+                     if (msg.contains("msg") && wdg.toString().contains("Realm")) {
+                         ((ChatUI.EntryChannel) realmchat.get()).updurgency(1);
+                         if (Config.realmchatalerts)
+                             Audio.play(ChatUI.notifsfx);
+                     }
+                 }
+            }catch(NullPointerException e){e.printStackTrace();}
+            }
                 if (wdg != null) {
              // try { for(Object obj:args) if(!wdg.toString().contains("CharWnd")) System.out.println("UI Wdg : " + wdg + " msg : "+msg+" id = " + id + " arg 1 : " + obj); }catch(ArrayIndexOutOfBoundsException qq){}
                 wdg.uimsg(msg.intern(), args); }

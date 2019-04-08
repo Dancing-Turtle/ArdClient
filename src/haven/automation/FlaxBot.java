@@ -29,8 +29,6 @@ public class FlaxBot extends Window {
     public Gob g;
     private boolean stopThread = false;
     private Set<String> plants = new HashSet<>(5);
-    public String cropname = "gfx/terobjs/plants/flax";
-    public String seedname = "gfx/invobjs/seed-flax";
 
     public FlaxBot(GameUI gui) {
         super(new Coord(140, 95), "Flax Farmer");
@@ -272,9 +270,8 @@ public class FlaxBot extends Window {
                             }
                         }
                         // Plant the seed from hand
-                        int amount = 0;
-                        if (seedname.contains("seed"))
-                            amount = PBotUtils.getAmount(PBotUtils.getGItemAtHand());
+                        int amount;
+                        amount = PBotUtils.getAmount(PBotUtils.getGItemAtHand());
                         lblProg2.settext("Planting");
                        // PBotUtils.mapInteractClick();
                         gui.map.wdgmsg("itemact", Coord.z, PBotUtils.player().rc.floor(posres), 0, 0, (int) PBotUtils.player().id, PBotUtils.player().rc.floor(posres), 0, -1);
@@ -343,25 +340,6 @@ public class FlaxBot extends Window {
                             }
                         }
 
-                        // Merge seed from hand into inventory or put it in inventory
-                        //commented out at request to prevent mixing high and low q seeds
-                             /*   for (Widget w = BotUtils.playerInventory().child; w != null; w = w.next) {
-                                    if (w instanceof GItem && ((GItem) w).resource().name.equals(seedname)) {
-                                        GItem item = (GItem) w;
-                                        if (BotUtils.getItemAtHand() != null && BotUtils.getAmount(item) < 50) {
-                                            int handAmount = BotUtils.getAmount(BotUtils.getItemAtHand());
-                                            try {
-                                                item.wdgmsg("itemact", 0);
-                                            } catch (Exception e) {
-                                                BotUtils.sysLogAppend("exception e line 155", "white");
-                                            }
-                                            while (BotUtils.getItemAtHand() != null && BotUtils.getAmount(BotUtils.getItemAtHand()) == handAmount)
-                                                BotUtils.sleep(50);
-                                        }
-                                    }
-                                }*/
-
-
                         if (PBotUtils.getItemAtHand() != null) {
                             lblProg2.settext("Dropping Seeds to Inv");
                             Coord slot = PBotUtils.getFreeInvSlot(PBotAPI.gui.maininv);
@@ -410,13 +388,11 @@ public class FlaxBot extends Window {
                                     i++;
                                 }
                             }
-                            // while (BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), Arrays.asList(seedname)).size() != 0) {
                             items.subList(0, 14).clear();
                             for (WItem seed : items) {
                                 if (stopThread)
                                     break;
                                 GItem item = seed.item;
-                                //   item = BotUtils.getInventoryItemsByNames(BotUtils.playerInventory(), Arrays.asList(seedname)).get(0).item;
                                 PBotUtils.takeItem(item);
 
                                 gameui().map.wdgmsg("itemact", Coord.z, barrel.rc.floor(posres), 0, 0, (int) barrel.id,

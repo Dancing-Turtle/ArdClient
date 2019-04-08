@@ -8,6 +8,7 @@ import haven.purus.ItemClickCallback;
 import haven.purus.pbot.gui.PBotWindow;
 
 import java.awt.*;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -772,13 +773,13 @@ public class PBotUtils {
 
 	//Will set player speed to whatever int you send it.
 	public static void setSpeed(int speed){
-		Speedget speedwdg = PBotAPI.gui.speedget;
+		Speedget speedwdg = PBotAPI.gui.speedget.get();
 		if (speedwdg != null)
 			speedwdg.set(speed);
 	}
 	//should return current max move speed? maybe?
 	public static int maxSpeed(){
-		Speedget speedwdg = PBotAPI.gui.speedget;
+		Speedget speedwdg = PBotAPI.gui.speedget.get();
 		if (speedwdg != null)
 			return speedwdg.max;
 		else

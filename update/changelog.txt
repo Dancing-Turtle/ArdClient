@@ -1,3 +1,10 @@
+1.00.122
+Switched a couple UI widgets over to weak references to help with garbage collection inbetween sessions.
+Swapped "Select" and "Load Defaults" buttons on Sound Manager, to make it more clear that the select button is part of confirming an alarm selection from the middle list. 
+Switched the gui being fed to Discord away from the session gui, seems to solve a memory leak with persisting objects when switching characters if Discord is turned on. 
+Added Amber's toggle to bottom of general settings to "drop soil," will simply drop any soil that you pick up into your inventory.
+~
+
 1.00.121
 Fixed shift left click not doing infinite-move on minimap anymore.
 Due to above, movement queing through minimap is now the same as in the world, hold alt and left click.

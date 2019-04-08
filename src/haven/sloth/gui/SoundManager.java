@@ -20,7 +20,7 @@ public class SoundManager extends Window implements ObservableMapListener<String
     private HSlider volslider;
     private Label vollabel;
 	private final Listbox<String> defaults;
-	public static Button loaddefaults;
+	public static Button select;
 	private HashMap<String, String> defaultlist = new HashMap<>();
 	private List<String> shortvers = new ArrayList<>();
 
@@ -99,13 +99,13 @@ public class SoundManager extends Window implements ObservableMapListener<String
 	}, c.copy()).sz.y + 5;
 		{
 			Coord bc = c.copy();
-			bc.y += add(new Button(200, "Select", this::select), bc.copy()).sz.y + 5;
+			bc.y += add(new Button(200, "Load Defaults", this::loadDefaults), bc.copy()).sz.y + 5;
 			add(new Button(200, "Preview", this::preview), bc.copy());
 		}
 	{
 	    c.x = 0;
 	    add(new Button(200, "Remove Sound Alert", this::removeAlert), c.copy());
-		loaddefaults = add(new Button(200, "Load Defaults", this::loadDefaults), new Coord(c.copy().x+205,c.copy().y));
+		select = add(new Button(200, "Select", this::select), new Coord(c.copy().x+205,c.copy().y));
 	}
 	{
 		vollabel = add(new Label("Selected Alert Volume"),new Coord(c.copy().x+40,c.copy().y+20));

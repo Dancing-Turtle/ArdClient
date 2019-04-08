@@ -1960,7 +1960,6 @@ public class CharWnd extends Window {
         }
 
         protected void drawitem(GOut g, Quest q, int idx) {
-           // if(ui.Questnumberarray.contains(q.id)) remove(q);
             if ((quest != null) && (quest.questid() == q.id))
                 drawsel(g);
             g.chcolor((idx % 2 == 0) ? every : other);

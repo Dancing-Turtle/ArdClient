@@ -42,6 +42,7 @@ import haven.purus.pbot.PBotUtils;
 import haven.resutil.FoodInfo;
 import static haven.KeyBinder.*;
 import java.awt.*;
+import java.lang.ref.WeakReference;
 import java.util.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.WritableRaster;
@@ -94,7 +95,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     private ChatWnd chatwnd;
     private int saferadius = 1;
     private int dangerradius = 1;
-    public Speedget speedget;
+    public WeakReference<Speedget> speedget;
     public ChatUI.Channel syslog;
     public Window hidden, deleted, alerted, highlighted, gobspawner;
     public double prog = -1;
@@ -310,22 +311,14 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         this.questhelper.hide();
         hidden = add(new HiddenManager());
         hidden.hide();
-	deleted = add(new DeletedManager());
-	deleted.hide();
+	    deleted = add(new DeletedManager());
+	    deleted.hide();
         alerted = add(new SoundManager());
         alerted.hide();
         gobspawner = add(new GobSpawner());
         gobspawner.hide();
-        if(Config.firstrun || Config.firstrunalerts) {
-            SoundManager.loaddefaults.click();
-            Config.firstrun = false;
-            Config.firstrunalerts = false;
-            Utils.setprefb("firstrun",false);
-            Utils.setprefb("firstrunalerts",false);
-        }
-    highlighted = add(new HighlightManager());
+        highlighted = add(new HighlightManager());
         highlighted.hide();
-
         PBotScriptlist = add(new PBotScriptlist());
         PBotScriptlist.hide();
         PBotScriptlistold = add(new PBotScriptlistOld());
@@ -1512,6 +1505,12 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         quickslots.simulateclick(QuickSlotsWdg.lc);
     }
 
+    public void changeDecks(int deck){
+        FightWnd fightwdg = ui.fightwnd.get();
+        if(fightwdg != null)
+           fightwdg.changebutton(deck);
+    }
+
     public void leftHand(){
         quickslots.drop(QuickSlotsWdg.rc, Coord.z);
         quickslots.simulateclick(QuickSlotsWdg.rc);
@@ -1523,29 +1522,40 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 
 
     public void crawlSpeed(){
-        speedget.set(0);
+        Speedget speedwdg = speedget.get();
+        if (speedwdg != null)
+            speedwdg.set(0);
     }
 
     public void walkSpeed(){
-        speedget.set(1);
+        Speedget speedwdg = speedget.get();
+        if (speedwdg != null)
+            speedwdg.set(1);
     }
 
     public void runSpeed(){
-        speedget.set(2);
+        Speedget speedwdg = speedget.get();
+        if (speedwdg != null)
+            speedwdg.set(2);
     }
 
     public void sprintSpeed(){
-        speedget.set(3);
+        Speedget speedwdg = speedget.get();
+        if (speedwdg != null)
+            speedwdg.set(3);
     }
 
     public void cycleSpeed(){
-        if (speedget.max >= 0) {
-            int n;
-                if (speedget.cur > speedget.max)
+        Speedget speedwdg = speedget.get();
+        if (speedwdg != null){
+            if (speedwdg.max >= 0) {
+                int n;
+                if (speedwdg.cur > speedwdg.max)
                     n = 0;
                 else
-                    n = (speedget.cur + 1) % (speedget.max + 1);
-            speedget.set(n);
+                    n = (speedwdg.cur + 1) % (speedwdg.max + 1);
+                speedwdg.set(n);
+            }
         }
     }
 

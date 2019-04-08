@@ -28,6 +28,7 @@ package haven;
 
 
 import haven.automation.Discord;
+import haven.purus.pbot.PBotAPI;
 import haven.purus.pbot.PBotUtils;
 import haven.resutil.BPRadSprite;
 import haven.sloth.gfx.HitboxMesh;
@@ -515,7 +516,7 @@ public class OptWnd extends Window {
                 public void click() {
                     if(!gameui().discordconnected) {
                         if (Resource.getLocString(Resource.BUNDLE_LABEL, Config.discordbotkey) != null) {
-                            new Thread(new Discord(gameui(), "normal")).start();
+                            new Thread(new Discord(PBotAPI.gui, "normal")).start();
                             gameui().discordconnected = true;
                         }
                         else
@@ -529,7 +530,7 @@ public class OptWnd extends Window {
                     if(gameui().discordconnected)
                         PBotUtils.sysMsg("Already Connected.",Color.white);
                     else {
-                        new Thread(new Discord(gameui(), "ard")).start();
+                        new Thread(new Discord(PBotAPI.gui, "ard")).start();
                         gameui().discordconnected = true;
                     }
                 }
@@ -1653,6 +1654,17 @@ public class OptWnd extends Window {
             public void set(boolean val) {
                 Utils.setprefb("dropMinedCrystals", val);
                 Config.dropMinedCrystals = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Drop soil") {
+            {
+                a = Config.dropSoil;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("dropSoil", val);
+                Config.dropSoil = val;
                 a = val;
             }
         });

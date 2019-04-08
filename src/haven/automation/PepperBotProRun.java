@@ -397,9 +397,7 @@ try {
 					PBotUtils.sleep(200);
 					VMeter vm = cwnd.getchild(VMeter.class);
 					//	System.out.println("Clicking craft");
-					if(ui.makewnd != null) {
-						ui.makewnd.wdgmsg("make", 1);
-					}
+					PBotUtils.craftItem("boiledpepper",1);
 					//System.out.println("after Clicking craft");
 					PBotUtils.sleep(2000);
 
@@ -413,9 +411,7 @@ try {
 						PBotUtils.sleep(10);
 					}
 					if (stam.a > 50) {
-						if(ui.makewnd != null) {
-							ui.makewnd.wdgmsg("make", 1);
-						}
+						PBotUtils.craftItem("boiledpepper",1);
 					}
 
 				}
@@ -606,9 +602,7 @@ try {
 			gui.map.wdgmsg("click", cauldron.sc, cauldron.rc.floor(posres), 3, 0, 0, (int) cauldron.id, cauldron.rc.floor(posres), 0, -1);
 			FlowerMenu.setNextSelection("Open");
 			PBotUtils.sleep(2000);
-			if(ui.makewnd != null) {
-				ui.makewnd.wdgmsg("make", 1);
-			}
+			PBotUtils.craftItem("boiledpepper",1);
 			PBotUtils.sleep(2000);
 		} else {
 			lblProg2.settext("Refill Cauldron");
@@ -624,9 +618,7 @@ try {
 			gui.map.wdgmsg("click", cauldron.sc, cauldron.rc.floor(posres), 3, 0, 0, (int) cauldron.id, cauldron.rc.floor(posres), 0, -1);
 			FlowerMenu.setNextSelection("Open");
 			PBotUtils.sleep(2000);
-			if(ui.makewnd != null) {
-				ui.makewnd.wdgmsg("make", 1);
-			}
+			PBotUtils.craftItem("boiledpepper",1);
 			PBotUtils.sleep(2000);
 		}
 	}

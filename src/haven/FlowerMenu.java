@@ -185,7 +185,9 @@ public class FlowerMenu extends Widget {
                     Thread.sleep(50);
                 } catch (InterruptedException idkheh) {
                 }
-                gui.speedget.set(2);
+                Speedget speedwdg = gui.speedget.get();
+                if(speedwdg != null)
+                    speedwdg.set(2);
             } catch (Exception e) {
             }
         }

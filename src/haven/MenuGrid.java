@@ -37,6 +37,7 @@ import java.awt.event.KeyEvent;
 import java.awt.font.TextAttribute;
 import java.awt.image.BufferedImage;
 import haven.Resource.AButton;
+import haven.purus.pbot.PBotAPI;
 import haven.purus.pbot.PBotUtils;
 
 import java.io.*;
@@ -850,23 +851,23 @@ public class MenuGrid extends Widget {
 
         addSpecial(new SpecialPagina(this, "paginae::decks::deck1",
                 Resource.local().load("paginae/decks/deck1"),
-                (pag) -> ui.fightwnd.changebutton(0)));
+                (pag) -> ui.gui.changeDecks(0)));
 
         addSpecial(new SpecialPagina(this, "paginae::decks::deck2",
                 Resource.local().load("paginae/decks/deck2"),
-                (pag) -> ui.fightwnd.changebutton(1)));
+                (pag) -> ui.gui.changeDecks(1)));
 
         addSpecial(new SpecialPagina(this, "paginae::decks::deck3",
                 Resource.local().load("paginae/decks/deck3"),
-                (pag) -> ui.fightwnd.changebutton(2)));
+                (pag) -> ui.gui.changeDecks(2)));
 
         addSpecial(new SpecialPagina(this, "paginae::decks::deck4",
                 Resource.local().load("paginae/decks/deck4"),
-                (pag) -> ui.fightwnd.changebutton(3)));
+                (pag) -> ui.gui.changeDecks(3)));
 
         addSpecial(new SpecialPagina(this, "paginae::decks::deck5",
                 Resource.local().load("paginae/decks/deck5"),
-                (pag) -> ui.fightwnd.changebutton(4)));
+                (pag) -> ui.gui.changeDecks(4)));
 
     }
 
@@ -1136,12 +1137,12 @@ public class MenuGrid extends Widget {
                 gui.trackautotgld = true;
             }
             if(Config.autoconnectarddiscord && !discordconnected) {
-                new Thread(new Discord(gui,"ard")).start();
+                new Thread(new Discord(PBotAPI.gui,"ard")).start();
                 gui.discordconnected = true;
             }
             if(Config.autoconnectdiscord && !gui.discordconnected) {
                 if (Resource.getLocString(Resource.BUNDLE_LABEL, Config.discordbotkey) != null) {
-                    new Thread(new Discord(gui, "normal")).start();
+                    new Thread(new Discord(PBotAPI.gui, "normal")).start();
                     gui.discordconnected = true;
                 }
             }else if (gui.discordconnected)

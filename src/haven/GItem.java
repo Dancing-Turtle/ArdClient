@@ -308,19 +308,22 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
 
     private void dropItMaybe() {
         Resource curs = ui.root.getcurs(Coord.z);
-        if (curs != null && curs.name.equals("gfx/hud/curs/mine")) {
-            if (PBotUtils.getStamina() < 40) {
-                PBotUtils.drink(false);
-            }
             String name = this.resource().basename();
-            if (Config.dropMinedStones && Config.mineablesStone.contains(name) ||
-                    Config.dropMinedOre && Config.mineablesOre.contains(name) ||
-                    Config.dropMinedOrePrecious && Config.mineablesOrePrecious.contains(name) ||
-                    Config.dropMinedCatGold && this.getname().contains("Cat Gold") ||
-                    Config.dropMinedCrystals && this.getname().contains("Strange Crystal") ||
-                    Config.dropMinedSeaShells && this.getname().contains("Petrified Seashell"))
+            if ((Config.dropSoil && name.equals("soil")))
                 this.wdgmsg("drop", Coord.z);
-        }
+            if (curs != null && curs.name.equals("gfx/hud/curs/mine")) {
+                if (PBotUtils.getStamina() < 40) {
+                    PBotUtils.drink(false);
+                }
+                if (Config.dropMinedStones && Config.mineablesStone.contains(name) ||
+                        Config.dropMinedOre && Config.mineablesOre.contains(name) ||
+                        Config.dropMinedOrePrecious && Config.mineablesOrePrecious.contains(name) ||
+                        Config.dropMinedCatGold && this.getname().contains("Cat Gold") ||
+                        Config.dropMinedCrystals && this.getname().contains("Strange Crystal") ||
+                        Config.dropMinedSeaShells && this.getname().contains("Petrified Seashell"))
+                    this.wdgmsg("drop", Coord.z);
+            }
+
         if(Config.DropEntrails && this.getname().contains("Entrails") || Config.DropIntestines && this.getname().contains("Intestines")
                 || Config.DropMeat && this.getname().contains("Raw") || Config.DropBones && this.getname().contains("Bone Material"))
             this.wdgmsg("drop", Coord.z);
