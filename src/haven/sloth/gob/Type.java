@@ -37,6 +37,7 @@ public enum Type {
     COOP,
     STRANGLEVINE,
     WALLSEG,
+    SHED,
     UNKNOWN;
 
 

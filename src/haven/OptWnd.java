@@ -1134,7 +1134,7 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
-        appender.add(new CheckBox("Highlight full cupboards with a slight red tint. Requires restart.") {
+        appender.add(new CheckBox("Highlight cupboards based on amount of contents. Requires restart.") {
             {
                 a = Config.showcupboardstatus;
             }
@@ -1142,6 +1142,17 @@ public class OptWnd extends Window {
             public void set(boolean val) {
                 Utils.setprefb("showcupboardstatus", val);
                 Config.showdframestatus = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Highlight sheds based on amount of contents. Requires restart.") {
+            {
+                a = Config.showshedstatus;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showshedstatus", val);
+                Config.showshedstatus = val;
                 a = val;
             }
         });

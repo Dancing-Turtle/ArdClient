@@ -38,7 +38,12 @@ public class CountGobs implements Runnable, GobSelectCallback {
 
     public void gobselect(Gob gob) {
         selection = gob;
-        PBotUtils.sysMsg("Selection is "+selection.getres().name+ " stage is "+gob.getStage()+" type is : "+selection.type,Color.white);
+        try {
+            int i = selection.getattr(ResDrawable.class).sdt.peekrbuf(0);
+            PBotUtils.sysMsg("Selection is " + selection.getres().name + " stage is " + i + " type is : " + selection.type, Color.white);
+        }catch(Exception e){
+            PBotUtils.sysMsg("Selection is " + selection.getres().name + " type is : " + selection.type, Color.white);
+        }
         gui.map.unregisterGobSelect();
 
     }

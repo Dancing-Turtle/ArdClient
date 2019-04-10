@@ -570,8 +570,8 @@ public class SeedCropFarmer extends Window implements Runnable {
 			//this attempts to resolve the inventory res and ground res of what you harvested
 			if(cropName.contains("carrot") || cropName.contains("yellowonion") || cropName.contains("redonion") || cropName.contains("beet")
 					|| cropName.contains("leek") || cropName.contains("turnip") || cropName.contains("pumpkin")){
-				groundname = seedName;
-				invname.add(cropName.replaceAll("terobjs/plants", "invobjs/"));
+				groundname = seedName.replaceAll("plants","items");
+				invname.add(cropName.replaceAll("terobjs/plants", "invobjs"));
 			}else{
 				if(cropName.contains("pipeweed")){
 					groundname = "gfx/terobjs/items/tobacco-fresh";

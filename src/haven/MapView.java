@@ -1721,7 +1721,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         }
     }
 
-    private void clearmovequeue() {
+    public void clearmovequeue() {
         movequeue.clear();
         movingto = null;
         ui.gui.pointer.update(null);

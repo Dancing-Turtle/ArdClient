@@ -57,7 +57,6 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
     private static final Material.Colors potDOne = new Material.Colors(new Color(0, 0, 0, 255));
     public static Gob.Overlay animalradius = new Gob.Overlay(new BPRadSprite(100.0F, -10.0F, BPRadSprite.smatDanger));
     public static Gob.Overlay doubleanimalradius = new Gob.Overlay(new BPRadSprite(200.0F, -20.0F, BPRadSprite.smatDanger));
-    private static final Map<Gob, Gob.Overlay> playerhighlight = new HashMap<Gob, Gob.Overlay>();
 
     public static class Overlay implements Rendered {
         public Indir<Resource> res;
@@ -776,6 +775,16 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
                 //if(ols.size()>0)
                 //  rl.prepc(cupboardfull);
             }
+            if(Config.showshedstatus && type == Type.SHED){
+                int stage = getattr(ResDrawable.class).sdt.peekrbuf(0);
+
+                if (stage == 30 || stage == 29)
+                    rl.prepc(cupboardfull);
+                if(stage == 1 || stage == 2)
+                    rl.prepc(cupboardempty);
+                //while open : empty == 1, 1 item to half items = 5, half full = 13, full 29
+                //while closed : empty = 2, 1 item to half items = 6, half full= 14, full 30
+            }
 
             if (MapView.markedGobs.contains(id))
                 rl.prepc(MapView.markedFx);
@@ -993,20 +1002,12 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             if (sp != null)
                 rl.add(sp.fx, null);
             KinInfo ki = getattr(KinInfo.class);
-            if (ki != null) {
+            if (ki != null)
                 rl.add(ki.fx, null);
-                if (!playerhighlight.containsKey(this)) {
-                    Resource res = getres();
-                    if (res != null && res.name.contains("body") && !isplayer()) {
-                        Overlay overlay = new Gob.Overlay(new PartyMemberOutline(this, BuddyWnd.gc[ki.group]));
-                        ols.add(overlay);
-                        playerhighlight.put(this, overlay);
-                    }
-                }
-            }
-            if(DefSettings.SHOWHITBOX.get() && hitboxmesh != null) {
+
+            if(DefSettings.SHOWHITBOX.get() && hitboxmesh != null)
                 rl.add(hitboxmesh, null);
-            }
+
         }
         return (false);
     }

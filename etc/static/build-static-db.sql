@@ -37,6 +37,8 @@ INSERT OR IGNORE INTO type (name_key) VALUES ("COOP");
 INSERT OR IGNORE INTO type (name_key) VALUES ("STRANGLEVINE");
 INSERT OR IGNORE INTO type (name_key) VALUES ("DANGANIMAL");
 INSERT OR IGNORE INTO type (name_key) VALUES ("WALLSEG");
+INSERT OR IGNORE INTO type (name_key) VALUES ("SHED");
+
 CREATE TABLE IF NOT EXISTS object (
     object_id   INTEGER,    -- Alias for ROWID
     name        TEXT,       -- The res name of the obj
@@ -83,6 +85,8 @@ INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/chickencoop', (
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/rabbithutch', (SELECT type_id FROM type WHERE name_key = 'HUTCH'));
 --CUPBOARDS
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/cupboard', (SELECT type_id FROM type WHERE name_key = 'CUPBOARD'));
+--SHEDS
+INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/shed', (SELECT type_id FROM type WHERE name_key = 'SHED'));
 --DRYING FRAMES
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/dframe', (SELECT type_id FROM type WHERE name_key = 'DFRAME'));
 --TAN TUB

@@ -26,6 +26,8 @@ public class PickForageable implements Runnable {
     public void run() {
         Gob herb = null;
         synchronized (gui.map.glob.oc) {
+            if (gui.map.player() == null)
+                return;//player is null, possibly taking a road, don't bother trying to do all of the below.
             for (Gob gob : gui.map.glob.oc) {
                 Resource res = null;
                 boolean gate = false;

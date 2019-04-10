@@ -1,3 +1,11 @@
+1.00.123
+Fixed a couple typos in the new farmer stockpiler that would've prevented it from working, I'd previously only tested with flax.
+Fixed minimap move clicks not clearing the active movement queue. 
+Added overlay coloring to garden sheds, on by default, can disable via display settings. Uses the same colors/logic that cupboards do. 
+Fixed a crash hitting the "pick foragable" button while taking a road.
+Removed what appears to be another memory leak being caused by kinned/memoed player circles. Party circles and personal circle still persist using the default Amber logic.
+~
+
 1.00.122
 Switched a couple UI widgets over to weak references to help with garbage collection inbetween sessions.
 Swapped "Select" and "Load Defaults" buttons on Sound Manager, to make it more clear that the select button is part of confirming an alarm selection from the middle list. 

@@ -603,6 +603,7 @@ public class LocalMiniMap extends Widget {
                     mv.queuemove(c2p(c.sub(delta)));
                 } else if (button == 1) {
                     mv.wdgmsg("click", rootpos().add(csd), mc.floor(posres), button, ui.modflags());
+                    mv.clearmovequeue();
                 }
                 return true;
             } else {

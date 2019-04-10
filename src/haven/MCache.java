@@ -333,14 +333,6 @@ public class MCache {
             }
         }
 
-        public void invalidateAll() {
-            synchronized (grids) {
-                for(final Grid g : grids.values()) {
-                    g.invalidate();
-                }
-            }
-        }
-
         public void dispose() {
 	    for(Cut cut : cuts) {
 		if(cut.dmesh != null)
@@ -435,14 +427,6 @@ public class MCache {
                 g.tick(dt);
             }
         }
-    }
-
-    public void invalidateAll() {
-        synchronized (grids) {
-            for(final Grid g : grids.values()) {
-                g.invalidate();
-	    }
-	}
     }
 
     public void invalidate(Coord cc) {
