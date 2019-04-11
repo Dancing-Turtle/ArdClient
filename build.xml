@@ -238,6 +238,7 @@ jackson-core.jar graal-sdk.jar graaljs.jar tregex.jar truffle-api.jar" />
                 <include name="logging.properties"/>
                 <include name="static.sqlite"/>
                 <include name="grid_ids.txt"/>
+                <include name="amber-res.jar"/>
             </fileset>
             <fileset dir="build/classes">
                 <include name="changelog.txt" />
