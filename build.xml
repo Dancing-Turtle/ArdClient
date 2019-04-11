@@ -2,7 +2,7 @@
 
 <project name="hafen" default="deftgt">
   <property name="name" value="ArdClient"/>
-  <property name="version" value="1.00.123"/>
+  <property name="version" value="1.00.124"/>
 
   <target name="build-env">
     <mkdir dir="build" />
@@ -25,6 +25,16 @@
         version = ${version}
     </echo>
   </target>
+
+    <target name="build-custom-res">
+        <delete dir="etc/res/built/" includes="**"/>
+        <exec executable="etc/res/hafen-layer-util.exe">
+            <arg value="ENCODE"/>
+            <arg value="etc/res/unbuilt/"/>
+            <arg value="etc/res/built/"/>
+            <arg value="etc/res/layers/hafen"/>
+        </exec>
+    </target>
 
   <target name="hafen-client" depends="build-env">
     <javac srcdir="src" destdir="build/classes" debug="on"

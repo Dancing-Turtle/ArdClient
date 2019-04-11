@@ -4,6 +4,7 @@ import haven.ChatUI;
 import haven.Coord2d;
 import haven.GameUI;
 import haven.Widget;
+import haven.automation.Discord;
 
 import static haven.OCache.posres;
 
@@ -52,13 +53,16 @@ public class PBotCharacterAPI {
 
 	}
 
-	/**
-	 * Log out to character selection
-	 */
-	public static void logoutChar() {
+	public void logout(){
+		if(haven.automation.Discord.jdalogin != null)
+			PBotAPI.gui.DiscordToggle();
+		PBotAPI.gui.act("lo");
+	}
+	public void logoutChar() {
+		if(Discord.jdalogin != null)
+			PBotAPI.gui.DiscordToggle();
 		PBotAPI.gui.act("lo", "cs");
 	}
-
 	/**
 	 * Send message to given chat
 	 * @param chatName Name of the chat, for example "Area Chat"

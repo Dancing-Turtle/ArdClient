@@ -3,9 +3,11 @@ package haven.purus.pbot;
 import haven.*;
 import haven.Button;
 import haven.Window;
+import haven.automation.Discord;
 import haven.purus.DrinkWater;
 import haven.purus.ItemClickCallback;
 import haven.purus.pbot.gui.PBotWindow;
+import net.dv8tion.jda.core.entities.TextChannel;
 
 import java.awt.*;
 import java.lang.ref.WeakReference;
@@ -207,6 +209,17 @@ public class PBotUtils {
 			sleep(25);
 		}
 		return true;
+	}
+	//will send a message to the selected channel with message text if discord is connected ingame.
+	public static void sendDiscordMsg(String channel, String text){
+		if(Discord.jdalogin!=null){
+			GameUI gui = PBotAPI.gui;
+			for(TextChannel loop:haven.automation.Discord.channels)
+				if (loop.getName().equals(channel)) {
+					loop.sendMessage(gui.getparent(GameUI.class).buddies.getCharName() + ": " + text).queue();
+					break;
+				}
+		}
 	}
 
 	/**
@@ -1116,7 +1129,18 @@ public class PBotUtils {
 	/**
 	 * Log out to character selection
 	 */
-	public static void logoutChar() {
+	//public static void logoutChar() {
+	//	PBotAPI.gui.act("lo", "cs");
+	//}
+
+	public void logout(){
+		if(haven.automation.Discord.jdalogin != null)
+			PBotAPI.gui.DiscordToggle();
+		PBotAPI.gui.act("lo");
+	}
+	public void logoutChar() {
+		if(Discord.jdalogin != null)
+			PBotAPI.gui.DiscordToggle();
 		PBotAPI.gui.act("lo", "cs");
 	}
 

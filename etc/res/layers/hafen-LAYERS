@@ -1,0 +1,30 @@
+[x] image
+[x] tooltip
+[x] tile
+[x] neg
+[x] anim
+[x] tileset2
+[x] tileset
+[x] pagina
+[x] action
+[x] code
+[x] codeeentry
+[x] audio
+[x] audio2
+[x] midi
+[x] font
+[x] tex
+[x] foodev
+[x] clamb
+[x] mesh
+[x] light
+[x] mat2
+[decode] manim
+[decode] vbuf2
+[ ] rlink
+[ ] skel
+[ ] skan
+[ ] boneoff
+[ ] slink
+[ ] mat   (Salem mat layer)
+[ ] vbuf  (Salem mat layer)

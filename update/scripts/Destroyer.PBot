@@ -35,22 +35,22 @@ const btnClick = () => {
 			gob.pfClick(1, 0);
 			while(true) {
 				if(shouldStop()) return;
+				if(PBotUtils.getStamina() < 60){
 				if(!PBotUtils.drink(true)) {
 					stop = true;
 					PBotUtils.sysMsg("Ran out of water!");
 					break;
 				}
+				}
 				if(shouldStop()) return;
 				PBotCharacterAPI.doAct("destroy");
 				gob.doClick(1, 0);
 				PBotCharacterAPI.cancelAct();
-				if(!PBotUtils.waitForHourglass(5000)) {
+				if(PBotGobAPI.findGobById(gob.getGobId()) == null) {
 					break;
-				} else {
-					if(PBotGobAPI.findGobById(gob.getGobId()) == null) {
-						break;
-					}
 				}
+				PBotUtils.sleep(5000);
+				
 			}
 		}
 	});

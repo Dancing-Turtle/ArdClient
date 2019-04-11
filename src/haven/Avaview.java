@@ -33,6 +33,7 @@ import java.util.Random;
 import haven.Composited.Desc;
 
 public class Avaview extends PView {
+    private static final String plkey = "PlayerAvaview";
     public static final Tex missing = Resource.loadtex("gfx/hud/equip/missing");
     public static final Coord dasz = missing.sz();
     public Color color = Color.WHITE;
@@ -42,7 +43,11 @@ public class Avaview extends PView {
     private Composited comp;
     private List<Composited.MD> cmod = null;
     private List<Composited.ED> cequ = null;
+    private UI.Grab dm;
+    private Coord doff;
     private final String camnm;
+    private final boolean player, party, fight;
+
 
     @RName("av")
     public static class $_ implements Factory {
@@ -62,7 +67,37 @@ public class Avaview extends PView {
 
     public Avaview(Coord sz, long avagob, String camnm) {
 	super(sz);
+        switch (camnm) {
+            case "plavacam":
+                player = true;
+                party = false;
+                fight = false;
+                this.camnm = "avacam";
+                break;
+            case "ptavacam":
+                player = false;
+                party = true;
+                fight = false;
+                this.camnm = "avacam";
+                break;
+            case "fightcam":
+                player = false;
+                party = false;
+                fight = true;
+                this.camnm = "avacam";
+                break;
+            case "bdavacam":
+                player = false;
+                party = false;
+                fight = true;
+                this.camnm = "equcam";
+                break;
+            default:
+                player = false;
+                fight = false;
+                party = false;
 	this.camnm = camnm;
+        }
 	this.avagob = avagob;
     }
 
@@ -177,6 +212,37 @@ public class Avaview extends PView {
 	if(comp != null)
 	    comp.tick((int)(dt * 1000));
     }
+
+	private String rnm(Indir<Resource> r) {
+		try {
+			if (r != null && r.get() != null)
+				return r.get().name;
+		} catch (Exception e) {
+			return "";
+		}
+		return "";
+	}
+
+	public Object tooltip(Coord cc, Widget prev) {
+		if ((!camnm.equals("equcam") || fight) && Config.avatooltips) {
+			StringBuilder base = new StringBuilder();
+
+			if (cequ != null)
+				for (Composited.ED eq : cequ) {
+					base.append("\nEqu: ");
+					base.append(rnm(eq.res.res));
+				}
+
+			if (cmod != null)
+				for (Composited.MD md : cmod) {
+					base.append("\nMod: ");
+					base.append(rnm(md.mod));
+				}
+
+			return RichText.render(base.toString(), 300);
+		}
+		return null;
+	}
 
     public void draw(GOut g) {
     	if(TexGL.disableall)

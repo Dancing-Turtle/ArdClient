@@ -1,3 +1,15 @@
+1.00.124
+Added function sendDiscordMsg(String channel, String text) to PBotUtils, can be used in conjunction with the Discord API to send messages to connected channels ingame. 
+Added function "logout" to PBotUtils to exit straight to the login screen, also added the discord disconnects to both PBotUtil logout functions. 
+Fixed a bunch of sound alerts having jumbled audio to them.
+Added a bunch more audio alerts from various games - thank Omnipotent, not me. 
+Removed the alarm path from the sound manager for most alarms, should only display the alarm name now.
+Changed the old PBotMenu to hotkey "N" instead of "P" so it doesn't conflict with the new one. 
+Moved gob spawner hotkey to "R" so it doesn't conflict with alerted. Search and  Study still conflict on S, unsure which one to move. Open to suggestions.
+Worked on Destroyer bot a bit, can be used to mass destroy dirt stockpiles for example.
+Added boshaw's Avatar mouseover details. Disabled by default, can be enabled in Display settings. Mousing over the picture of someone in your friend's list, and other various places, will show you a list of the equipment they are wearing. 
+~
+
 1.00.123
 Fixed a couple typos in the new farmer stockpiler that would've prevented it from working, I'd previously only tested with flax.
 Fixed minimap move clicks not clearing the active movement queue. 

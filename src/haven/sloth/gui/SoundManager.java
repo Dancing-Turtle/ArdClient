@@ -65,7 +65,7 @@ public class SoundManager extends Window implements ObservableMapListener<String
 
 	    @Override
 	    protected void drawitem(GOut g, Resource.Named item, int i) {
-		g.text(item.name, new Coord(5, 1));
+		g.text(item.name.replace("custom/sfx/omni/",""), new Coord(5, 1));
 	    }
 	}, c.copy()).sz.x + 5;
 

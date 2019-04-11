@@ -926,6 +926,17 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
+        appender.add(new CheckBox("Display Avatar Equipment tooltips.") {
+            {
+                a = Config.avatooltips;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("avatooltips", val);
+                Config.avatooltips = val;
+                a = val;
+            }
+        });
         appender.add(new CheckBox("Display kin names") {
             {
                 a = Config.showkinnames;

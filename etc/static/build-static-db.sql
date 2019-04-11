@@ -558,6 +558,7 @@ INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/Z_W
 INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/BounceOdd', (SELECT type_id FROM type WHERE name_key = 'SOUND'), .8);
 INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/Pinging', (SELECT type_id FROM type WHERE name_key = 'SOUND'), .8);
 INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/Z_LOZ_Secret', (SELECT type_id FROM type WHERE name_key = 'SOUND'), .8);
+INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/Z_LOZ_Recorder', (SELECT type_id FROM type WHERE name_key = 'SOUND'), .8);
 INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/Z_OOT_Fanfare_HeartContainer', (SELECT type_id FROM type WHERE name_key = 'SOUND'), .8);
 INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/Z_OOT_Fanfare_Item', (SELECT type_id FROM type WHERE name_key = 'SOUND'), .8);
 INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/Z_OOT_Fanfare_SmallItem', (SELECT type_id FROM type WHERE name_key = 'SOUND'), .8);
@@ -582,6 +583,36 @@ INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/Z_T
 INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/Z_WW_Get_Item', (SELECT type_id FROM type WHERE name_key = 'SOUND'), .8);
 INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/Z_WW_Get_Rupee_Blue', (SELECT type_id FROM type WHERE name_key = 'SOUND'), .8);
 INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/Z_WW_Secret', (SELECT type_id FROM type WHERE name_key = 'SOUND'), .8);
+
+INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/Sonic2_Ring', (SELECT type_id FROM type WHERE name_key = 'SOUND'), .8);
+INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/Sonic2_RingsLost', (SELECT type_id FROM type WHERE name_key = 'SOUND'), .8);
+INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/Sonic2_Jump', (SELECT type_id FROM type WHERE name_key = 'SOUND'), .8);
+INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/SMB3_Vine', (SELECT type_id FROM type WHERE name_key = 'SOUND'), .8);
+INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/SMB3_Tail', (SELECT type_id FROM type WHERE name_key = 'SOUND'), .8);
+INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/SMB3_Power-Up', (SELECT type_id FROM type WHERE name_key = 'SOUND'), .8);
+INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/SMB3_Pause', (SELECT type_id FROM type WHERE name_key = 'SOUND'), .8);
+INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/SMB3_Mushroom_Appears', (SELECT type_id FROM type WHERE name_key = 'SOUND'), .8);
+INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/SMB3_Jump', (SELECT type_id FROM type WHERE name_key = 'SOUND'), .8);
+INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/SMB3_Coin', (SELECT type_id FROM type WHERE name_key = 'SOUND'), .8);
+INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/SMB3_1-Up', (SELECT type_id FROM type WHERE name_key = 'SOUND'), .8);
+INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/SMB2_Shrink', (SELECT type_id FROM type WHERE name_key = 'SOUND'), .8);
+INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/SM64_Boo', (SELECT type_id FROM type WHERE name_key = 'SOUND'), .8);
+INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/MK2_FinishHim', (SELECT type_id FROM type WHERE name_key = 'SOUND'), .8);
+INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/MGS3_Alert', (SELECT type_id FROM type WHERE name_key = 'SOUND'), .8);
+INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/AOE2_VillagerCreation', (SELECT type_id FROM type WHERE name_key = 'SOUND'), .8);
+INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/AOE2_Tribute', (SELECT type_id FROM type WHERE name_key = 'SOUND'), .8);
+INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/AOE2_TownBell', (SELECT type_id FROM type WHERE name_key = 'SOUND'), .8);
+INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/AOE2_Relic', (SELECT type_id FROM type WHERE name_key = 'SOUND'), .8);
+INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/AOE2_MilitaryCreation', (SELECT type_id FROM type WHERE name_key = 'SOUND'), .8);
+INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/AOE2_Harp', (SELECT type_id FROM type WHERE name_key = 'SOUND'), .8);
+INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/AOE2_EnemyConvertSuccess', (SELECT type_id FROM type WHERE name_key = 'SOUND'), .8);
+INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/AOE2_Chat', (SELECT type_id FROM type WHERE name_key = 'SOUND'), .8);
+INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/AOE2_Dock', (SELECT type_id FROM type WHERE name_key = 'SOUND'), .8);
+INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/AOE2_AttackWarning', (SELECT type_id FROM type WHERE name_key = 'SOUND'), .8);
+INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/AOE1_Select1', (SELECT type_id FROM type WHERE name_key = 'SOUND'), .8);
+INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/AOE1_House', (SELECT type_id FROM type WHERE name_key = 'SOUND'), .8);
+INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/AOE1_PriestConvert2', (SELECT type_id FROM type WHERE name_key = 'SOUND'), .8);
+
 
 CREATE TABLE IF NOT EXISTS growth (
     object_id   INTEGER,    -- Objects that can grow and have stages

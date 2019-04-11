@@ -61,6 +61,7 @@ public class Config {
     public static boolean hideflovisual = Utils.getprefb("hideflovisual", false);
     public static boolean daylight = Utils.getprefb("daylight", false);
     public static boolean longtooltips = Utils.getprefb("longtooltips", true);
+    public static boolean avatooltips = Utils.getprefb("avatooltips", false);
     public static boolean showkinnames = Utils.getprefb("showkinnames", true);
     public static boolean savemmap = Utils.getprefb("savemmap", false);
     public static boolean studylock = Utils.getprefb("studylock", false);
