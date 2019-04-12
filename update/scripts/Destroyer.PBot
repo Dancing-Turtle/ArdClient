@@ -34,7 +34,7 @@ const btnClick = () => {
 			}
 			gob.pfClick(1, 0);
 			while(true) {
-				if(shouldStop()) return;
+			if(shouldStop()) return;
 				if(PBotUtils.getStamina() < 60){
 				if(!PBotUtils.drink(true)) {
 					stop = true;
@@ -49,11 +49,14 @@ const btnClick = () => {
 				if(PBotGobAPI.findGobById(gob.getGobId()) == null) {
 					break;
 				}
-				PBotUtils.sleep(5000);
+				PBotUtils.sleep(1000);
 				
 			}
 		}
 	});
+	if(shouldStop())
+	PBotUtils.sysMsg("Stopped due to window closure.")
+	else
 	PBotUtils.sysMsg("Destroying of gobs finished");
 	window.closeWindow();
 };

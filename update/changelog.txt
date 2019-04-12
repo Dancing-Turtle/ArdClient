@@ -1,3 +1,7 @@
+1.00.126
+Small fix to PBotWindows so they'll acknowledge being closed and can be closed to stop scripts early.
+~
+
 1.00.125
 Tiny fix to farmer.
 ~
