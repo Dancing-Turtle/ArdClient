@@ -117,7 +117,13 @@ public class PBotWindow extends Window {
 		reqdestroy();
 		closed = true;
 	}
-	
+
+	@Override
+	public void close(){
+		reqdestroy();
+		closed = true;
+	}
+
 	@Override
 	public void wdgmsg(Widget sender, String msg, Object... args) {
 		if(sender == cbtn) {

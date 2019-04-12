@@ -156,10 +156,12 @@ public class Pathfinder extends Thread {
 							for(int k=left; k<=right; k++) {
 								if(j < 0 || k < 0 || j/11 > 110 || k/11 > 110)
 									continue;
-								if(destGob != null && gob.id == destGob.id)
-									accessMatrix[(k)/11][(i)/11] = -1;
-								else
-									accessMatrix[(k)/11][(i)/11] = 1;
+								try {
+									if (destGob != null && gob.id == destGob.id)
+										accessMatrix[(k) / 11][(i) / 11] = -1;
+									else
+										accessMatrix[(k) / 11][(i) / 11] = 1;
+								}catch(ArrayIndexOutOfBoundsException a){a.printStackTrace();}
 							}
 							if(left == right) {
 								j--;

@@ -53,12 +53,12 @@ public class PBotCharacterAPI {
 
 	}
 
-	public void logout(){
+	public static void logout(){
 		if(haven.automation.Discord.jdalogin != null)
 			PBotAPI.gui.DiscordToggle();
 		PBotAPI.gui.act("lo");
 	}
-	public void logoutChar() {
+	public static void logoutChar() {
 		if(Discord.jdalogin != null)
 			PBotAPI.gui.DiscordToggle();
 		PBotAPI.gui.act("lo", "cs");
