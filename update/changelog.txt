@@ -1,3 +1,7 @@
+1.00.125
+Tiny fix to farmer.
+~
+
 1.00.124
 Added function sendDiscordMsg(String channel, String text) to PBotUtils, can be used in conjunction with the Discord API to send messages to connected channels ingame. 
 Added function "logout" to PBotUtils to exit straight to the login screen, also added the discord disconnects to both PBotUtil logout functions. 

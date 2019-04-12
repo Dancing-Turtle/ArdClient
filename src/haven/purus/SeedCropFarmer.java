@@ -100,7 +100,7 @@ public class SeedCropFarmer extends Window implements Runnable {
 			// Right click the crop
 			lblProg2.settext("Harvesting");
 			try {
-				PBotUtils.doClick(g, 3, 0);
+				PBotUtils.doClick(g, 1, 0);
 				//BotUtils.pfRightClick(g,0);
 			}catch(NullPointerException ii){continue;}
 		//	BotUtils.gui.map.wdgmsg("click", Coord.z, g.rc.floor(posres), 1, 0);
@@ -133,8 +133,8 @@ public class SeedCropFarmer extends Window implements Runnable {
 				}
 				PBotUtils.sleep(10);
 			}
-			PBotUtils.doClick(g, 3, 0);
-			//PBotUtils.pfRightClick(g, 0);
+			PBotUtils.doClick(g,3,0);
+		//	PBotUtils.pfRightClick(g, 0);
 
 			// Wait for harvest menu to appear and harvest the crop
 			retryharvest = 0;
@@ -144,7 +144,6 @@ public class SeedCropFarmer extends Window implements Runnable {
 				if(retryharvest > 500)
 				{
 					lblProg2.settext("Retry flower menu");
-					//PBotUtils.doClick(g, 1, 0);
 					PBotUtils.pfRightClick(g,0);
 					retryharvest = 0;
 				}
@@ -172,7 +171,6 @@ public class SeedCropFarmer extends Window implements Runnable {
 				if(retryharvest > 500)
 				{
 					lblProg2.settext("Retry harvest");
-					//PBotUtils.doClick(g, 1, 0);
 					PBotUtils.pfRightClick(g,0);
 					retryharvest = 0;
 				}
