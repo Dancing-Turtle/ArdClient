@@ -13,3 +13,4 @@ amber-*.zip
 /.settings
 /doc/javadoc
 *.rar
+etc/res/*.exe
