@@ -2071,6 +2071,17 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
+        appender.add(new CheckBox("Detailed Shift+Mouseover tooltips - Negative FPS Impact when holding shift.") {
+            {
+                a = Config.detailedresinfo;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("detailedresinfo", val);
+                Config.detailedresinfo = val;
+                a = val;
+            }
+        });
         appender.add(new CheckBox("Show quick hand slots") {
             {
                 a = Config.quickslots;

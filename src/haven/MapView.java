@@ -2475,12 +2475,63 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
             if ((placing.lastmc == null) || !placing.lastmc.equals(c)) {
                 delay(placing.new Adjust(c, ui.modflags()));
             }
+        }else if (ui.modshift && !ui.modctrl && Config.detailedresinfo) {
+            delay(new Hover(c));
         } else if (ui.modshift && !ui.modctrl && Config.resinfo) {
-                delay(new Hover(c));
-            } else {
-                lasttt = "";
-                tt = null;
+            long now = System.currentTimeMillis();
+            if ((now - lastmmhittest > 500 || lasthittestc.dist(c) > tilesz.x) && gameui().hand.isEmpty()) {
+                lastmmhittest = now;
+                lasthittestc = c;
+
+                delay(new Hittest(c,0) {
+                    protected void hit(Coord pc, Coord2d mc, ClickInfo inf) {
+                        if (inf != null) {
+                            MapView.gobclickargs(inf);
+                            if (inf.gob != null) {
+                                Resource res = inf.gob.getres();
+                                if (res != null) {
+                                    tooltip = res.name;
+                                    return;
+                                }
+                            }
+                        }
+                        tooltip = null;
+                    }
+
+                    protected void nohit(Coord pc) {
+                        tooltip = null;
+                    }
+                });
             }
+        } else if (ui.modshift && ui.modctrl && Config.resinfo) {
+            long now = System.currentTimeMillis();
+            if (now - lastmmhittest > 500 || lasthittestc.dist(c) > tilesz.x) {
+                lastmmhittest = now;
+                lasthittestc = c;
+                delay(new Hittest(c,0) {
+                    public void hit(Coord pc, Coord2d mc, ClickInfo inf) {
+                        if (inf == null) {
+                            MCache map = ui.sess.glob.map;
+                            int t = map.gettile(mc.floor(tilesz));
+                            Resource res = map.tilesetr(t);
+                            if (res != null) {
+                                tooltip = res.name;
+                                return;
+                            }
+                        }
+                        tooltip = null;
+                    }
+
+                    public void nohit(Coord pc) {
+                        tooltip = null;
+                    }
+                });
+            }
+        }else {
+            lasttt = "";
+            tt = null;
+        }
+
     }
 
     private class Hover extends Hittest {
@@ -2657,6 +2708,8 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                 return (selection.tt);
         } else if (tt != null && ui.modshift) {
             return tt;
+        } else if (tooltip != null && ui.modshift) {
+            return Text.render(tooltip);
         }
         return (super.tooltip(c, prev));
     }

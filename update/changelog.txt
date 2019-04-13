@@ -1,3 +1,7 @@
+1.00.128
+Added toggle to "UI Settings" to enable the new detailed mouseover tooltips, for people who hate change and information. Detailed tooltips are now off by default.
+~
+
 1.00.127
 
 PLEASE START USING THE NEW UPDATER, IT'S LITERALLY BETTER IN EVERY WAY. Will self heal corrupted files and only download when there's an update. Also faster.
