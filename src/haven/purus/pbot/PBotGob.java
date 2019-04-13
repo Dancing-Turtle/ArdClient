@@ -20,7 +20,7 @@ public class PBotGob {
 	 * @return True if stockpile is full, else false
 	 */
 	public boolean stockpileIsFull() {
-		if(gob.getattr(ResDrawable.class).sdt.peekrbuf(0)==31)
+		if(gob.sdt()==31)
 			return true;
 		else
 			return false;

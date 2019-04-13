@@ -28,7 +28,9 @@ package haven;
 
 
 import haven.purus.pbot.PBotUtils;
+import haven.sloth.gob.HeldBy;
 import haven.sloth.gob.Hidden;
+import haven.sloth.gob.Holding;
 
 import java.util.*;
 import java.util.List;
@@ -242,6 +244,7 @@ public class OCache implements Iterable<Gob> {
         if ((d != null) && (d.res == res) && !d.sdt.equals(sdt) && (d.spr != null) && (d.spr instanceof Gob.Overlay.CUpd)) {
             ((Gob.Overlay.CUpd) d.spr).update(sdt);
             d.sdt = sdt;
+            g.updsdt();
         } else if ((d == null) || (d.res != res) || !d.sdt.equals(sdt)) {
             g.setattr(new ResDrawable(g, res, sdt));
         }
@@ -347,7 +350,8 @@ public class OCache implements Iterable<Gob> {
 
     public synchronized void cmppose(Gob g, int pseq, List<ResData> poses, List<ResData> tposes, boolean interp, float ttime) {
         Composite cmp = (Composite) g.getattr(Drawable.class);
-        if (cmp != null && cmp.pseq != pseq) {
+        if (cmp != null) {
+            if (cmp.pseq != pseq) {
             cmp.pseq = pseq;
             if (poses != null)
                 cmp.chposes(poses, interp);
@@ -355,6 +359,7 @@ public class OCache implements Iterable<Gob> {
                 cmp.tposes(tposes, WrapMode.ONCE, ttime);
         }
         changed(g);
+    }
     }
 
     public void cmppose(Gob gob, Message msg) {
@@ -536,6 +541,12 @@ public class OCache implements Iterable<Gob> {
     public synchronized void follow(Gob g, long oid, Indir<Resource> xfres, String xfname) {
         if (oid == 0xffffffffl) {
             g.delattr(Following.class);
+            final HeldBy heldby = g.getattr(HeldBy.class);
+            if (heldby != null) {
+                g.delattr(HeldBy.class);
+                g.updateHitmap();
+                heldby.holder.delattr(Holding.class);
+            }
         } else {
             Following flw = g.getattr(Following.class);
             if (flw == null) {

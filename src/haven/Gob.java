@@ -32,13 +32,13 @@ import haven.sloth.gfx.HitboxMesh;
 import haven.sloth.gob.*;
 import haven.sloth.gob.Type;
 import haven.sloth.io.HighlightData;
-//import haven.sloth.script.pathfinding.Hitbox;
-//import haven.sloth.script.pathfinding.GobHitmap;
-//import haven.sloth.script.pathfinding.Hitbox;
+import haven.sloth.script.pathfinding.Hitbox;
+
 
 import java.awt.*;
 import java.util.*;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
     public int cropstgmaxval = 0;
@@ -84,6 +84,17 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             this.res = null;
             this.sdt = null;
             this.spr = spr;
+        }
+
+        public String name() {
+            try {
+                if(res != null)
+                    return res.get().name;
+                else
+                    return "";
+            } catch (Loading l) {
+                return "";
+            }
         }
 
         public static interface CDel {
@@ -245,12 +256,14 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
 	public void apply(GOut g) {}
 	public void unapply(GOut g) {}
 	public void prep(Buffer buf) {
+            synchronized (ols) {
 	    for(Overlay ol : ols) {
 		if(ol.spr instanceof Overlay.SetupMod) {
 		    ((Overlay.SetupMod)ol.spr).setupgob(buf);
 		}
 	    }
 	}
+        }
     };
 
     public Coord2d rc;
@@ -276,11 +289,12 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
         }
     };
     private List<Overlay> dols = new ArrayList<>();
-    private List<GAttrib> dattrs = new ArrayList<>();
+    private List<Pair<GAttrib, Consumer<Gob>>> dattrs = new ArrayList<>();
 
     private final Collection<ResAttr.Cell<?>> rdata = new LinkedList<ResAttr.Cell<?>>();
     private final Collection<ResAttr.Load> lrdata = new LinkedList<ResAttr.Load>();
     private HitboxMesh hitboxmesh;
+    private boolean pathfinding_blackout = false;
     private List<Coord> hitboxcoords;
 
     private boolean discovered = false;
@@ -332,13 +346,13 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
                     setattr(new Halo(this));
                 }
 
-	/*	res().ifPresent((res) -> { //should always be present once name is discovered
+		res().ifPresent((res) -> { //should always be present once name is discovered
 		    final Hitbox hitbox = Hitbox.hbfor(this, true);
 		    if (hitbox != null) {
 			hitboxmesh = HitboxMesh.makehb(hitbox.size(), hitbox.offset());
-			//hitboxcoords = glob.gobhitmap.add(this);
+                        updateHitmap();
 		    }
-		});*/
+                });
             } else {
                 //We don't care about these gobs, tell OCache to start the removal process
                 dispose();
@@ -348,7 +362,30 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
         }
     }
 
-    public boolean isDiscovered() { return discovered; }
+    public boolean isDiscovered() {
+        return discovered;
+    }
+
+    public void updateHitmap() {
+        synchronized (glob.gobhitmap) {
+            if (hitboxcoords != null) {
+                glob.gobhitmap.rem(this, hitboxcoords);
+                hitboxcoords = null;
+            }
+            //don't want objects being held to be on the hitmap
+            final UI ui = glob.ui.get();
+            if(getattr(HeldBy.class) == null &&
+                    (getattr(Holding.class) == null || ui == null || getattr(Holding.class).held.id != ui.gui.map.plgob) &&
+                    !pathfinding_blackout) {
+                hitboxcoords = glob.gobhitmap.add(this);
+            }
+        }
+    }
+
+    public void updatePathfindingBlackout(final boolean val) {
+        this.pathfinding_blackout = val;
+        updateHitmap();
+    }
 
     public void mark(final int life) {
         if(findol(Mark.id) == null) {
@@ -371,12 +408,15 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
 
         for (GAttrib a : attr.values())
             a.ctick(dt);
-	final Iterator<GAttrib> ditr = dattrs.iterator();
-	while(ditr.hasNext()) {
-	    setattr(ditr.next());
+        final Iterator<Pair<GAttrib, Consumer<Gob>>> ditr = dattrs.iterator();
+	        while(ditr.hasNext()) {
+            final Pair<GAttrib, Consumer<Gob>> pair = ditr.next();
+            setattr(pair.a);
+            pair.b.accept(this);
 	    ditr.remove();
 	}
 
+        synchronized (ols) {
         for (Iterator<Overlay> i = ols.iterator(); i.hasNext(); ) {
             Overlay ol = i.next();
             if (ol.spr == null) {
@@ -397,6 +437,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
         }
         if (virtual && ols.isEmpty())
             glob.oc.remove(id);
+    }
     }
 
     public String details() {
@@ -505,8 +546,11 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
 
     /* Intended for local code. Server changes are handled via OCache. */
     public void addol(Overlay ol) {
+        synchronized (ols) {
         ols.add(ol);
     }
+    }
+
     public void addol(Sprite ol) {
         addol(new Overlay(ol));
     }
@@ -520,6 +564,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
         return ol;
     }
     public Overlay findol(int id) {
+        synchronized (ols) {
         for (Overlay ol : ols) {
             if (ol.id == id)
                 return (ol);
@@ -527,6 +572,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
         for(Overlay ol : dols) {
             if(ol.id == id)
                 return ol;
+        }
         }
         return (null);
     }
@@ -541,6 +587,12 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
     }
 
     public void dispose() {
+        if(hitboxcoords != null) {
+            synchronized (glob.gobhitmap) {
+                glob.gobhitmap.rem(this, hitboxcoords);
+                hitboxcoords = null;
+            }
+        }
         for (GAttrib a : attr.values())
             a.dispose();
         for (ResAttr.Cell rd : rdata) {
@@ -549,12 +601,38 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
         }
     }
 
+    public void updsdt() {
+        resname().ifPresent(name -> {
+            if (name.endsWith("gate") || name.endsWith("/pow")) {
+                updateHitmap();
+            }
+        });
+    }
+
+    public boolean moving() {
+        return getattr(Moving.class) != null;
+    }
+
     public void move(Coord2d c, double a) {
         Moving m = getattr(Moving.class);
         if (m != null)
             m.move(c);
+        synchronized (glob.gobhitmap) {
+            if (hitboxcoords != null) {
+                glob.gobhitmap.rem(this, hitboxcoords);
+                hitboxcoords = null;
+            }
         this.rc = c;
         this.a = a;
+            final UI ui = glob.ui.get();
+            if(discovered) {
+                if (getattr(HeldBy.class) == null &&
+                        (getattr(Holding.class) == null || ui == null || getattr(Holding.class).held.id != ui.gui.map.plgob) &&
+                        !pathfinding_blackout) {
+                    hitboxcoords = glob.gobhitmap.add(this);
+                }
+            }
+        }
     }
 
     public Coord3f getc() {
@@ -615,8 +693,8 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
         }
     }
 
-    public void delayedsetattr(GAttrib a) {
-        dattrs.add(a);
+    public void delayedsetattr(GAttrib a, Consumer<Gob> cb) {
+        dattrs.add(new Pair<GAttrib, Consumer<Gob>>(a, cb));
     }
 
     public <C extends GAttrib> C getattr(Class<C> c) {
@@ -745,11 +823,13 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             }
         }
         else {
+            synchronized (ols) {
             for (Overlay ol : ols)
                 rl.add(ol, null);
             for (Overlay ol : ols) {
                 if (ol.spr instanceof Overlay.SetupMod)
                     ((Overlay.SetupMod) ol.spr).setupmain(rl);
+            }
             }
 
             final GobHealth hlt = getattr(GobHealth.class);
@@ -1031,6 +1111,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
                     break;
                 }
             }
+            synchronized (ols) {
             for(Overlay ol : ols) {
                 Object os = ol.staticp();
                 if(os == Rendered.CONSTANS) {
@@ -1041,6 +1122,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
                     rs = 2;
                     break;
                 }
+            }
             }
 	    if(getattr(KinInfo.class) != null) {
 	        rs = 2; //I want to see the names above fires/players without it being screwed up
@@ -1073,6 +1155,10 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
 
     public Optional<String> resname() {
         return res().map((res) -> res.name);
+    }
+
+    public String name() {
+        return resname().orElse("");
     }
 
     public Optional<Resource> res() {

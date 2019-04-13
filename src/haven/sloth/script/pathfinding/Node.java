@@ -16,7 +16,7 @@ public class Node implements Comparable<Node> {
     //Parent node
     public final Node parent;
 
-    public Node(final Node parent, final Coord c, final double g, final double h) {
+    Node(final Node parent, final Coord c, final double g, final double h) {
         this.parent = parent;
         this.c = c;
         this.g = g;

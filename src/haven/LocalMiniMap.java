@@ -57,6 +57,10 @@ public class LocalMiniMap extends Widget {
 
 
 	private final HashSet<Long> sgobs = new HashSet<Long>();
+
+	private float zoom = 1f; //zoom multiplier
+	private float iconZoom = 1f; //zoom multiplier for minimap icons
+
     private final Map<Coord, Tex> maptiles = new LinkedHashMap<Coord, Tex>(100, 0.75f, false) {
         @Override
         protected boolean removeEldestEntry(Map.Entry<Coord, Tex> eldest) {
@@ -178,11 +182,11 @@ public class LocalMiniMap extends Widget {
     }
 
     public Coord p2c(Coord2d pc) {
-        return (pc.floor(tilesz).sub(cc).add(sz.div(2)));
+    	return (pc.floor(tilesz).sub(cc).mul(zoom).add(sz.div(2)));
     }
 
     public Coord2d c2p(Coord c) {
-        return (c.sub(sz.div(2)).add(cc).mul(tilesz).add(tilesz.div(2)));
+        return (c.sub(sz.div(2)).div(zoom).add(cc).mul(tilesz).add(tilesz.div(2)));
     }
 
     public void drawicons(GOut g) {
@@ -205,7 +209,7 @@ public class LocalMiniMap extends Widget {
                                 tex = gob.isDead() == Boolean.TRUE ? icon.texgrey() : icon.tex();
                             else
                                 tex = Config.additonalicons.get(res.name);
-                            g.image(tex, p2c(gob.rc).sub(tex.sz().div(2)).add(delta));
+                                g.image(tex, p2c(gob.rc).sub(tex.sz().mul(iconZoom).div(2)).add(delta), tex.dim.mul(iconZoom));
                         }
                     } else if (gob.type == Type.HUMAN && player != null && gob.id != player.id) {
                         dangergobs.add(gob);
@@ -291,7 +295,7 @@ public class LocalMiniMap extends Widget {
                                 tex = gob.isDead() == Boolean.TRUE ? icon.texgrey() : icon.tex();
                             else
                                 tex = Config.additonalicons.get(gob.getres().name);
-                            g.image(tex, p2c(gob.rc).sub(tex.sz().div(2)).add(delta));
+                        g.image(tex, p2c(gob.rc).sub(tex.sz().mul(iconZoom).div(2)).add(delta), tex.dim.mul(iconZoom));
                         }
                     }
                 } catch (Exception e) { // fail silently
@@ -491,15 +495,14 @@ public class LocalMiniMap extends Widget {
             }
         }
         if (cur != null) {
+    		int tileSize = (int)(100 * zoom);
+    		Coord ts = new Coord(tileSize, tileSize);
             int hhalf = sz.x / 2;
             int vhalf = sz.y / 2;
-
-            int ht = (hhalf / 100) + 2;
-            int vt = (vhalf / 100) + 2;
-
-            int pox = cur.grid.gc.x * 100 - cc.x + hhalf + delta.x;
-            int poy = cur.grid.gc.y * 100 - cc.y + vhalf + delta.y;
-
+            int ht = (hhalf / tileSize) + 2;
+            int vt = (vhalf / tileSize) + 2;
+            int pox = (int)((cur.grid.gc.x * 100 - cc.x) * zoom) + hhalf + delta.x;
+            int poy = (int)((cur.grid.gc.y * 100 - cc.y) * zoom) + vhalf + delta.y;
             int tox = pox / 100 - 1;
             int toy = poy / 100 - 1;
 
@@ -508,14 +511,14 @@ public class LocalMiniMap extends Widget {
                     for (int y = -vt; y < vt + vt; y++) {
                         Tex mt = maptiles.get(cur.grid.gc.add(x - tox, y - toy));
                         if (mt != null) {
-                            int mtcx = (x - tox) * 100 + pox;
-                            int mtcy = (y - toy) * 100 + poy;
-                            if (mtcx + 100 < 0 || mtcx > sz.x || mtcy + 100 < 0 || mtcy > sz.y)
+                            int mtcx = (x - tox) * tileSize + pox;
+                            int mtcy = (y - toy) * tileSize + poy;
+                            if (mtcx + tileSize < 0 || mtcx > sz.x || mtcy + tileSize < 0 || mtcy > sz.y)
                                 continue;
                             Coord mtc = new Coord(mtcx, mtcy);
-                            g.image(mt, mtc);
+                            g.image(mt, mtc, ts);
                             if (Config.mapshowgrid)
-                                g.image(gridred, mtc);
+                                g.image(gridred, mtc, ts);
                         }
                     }
                 }
@@ -526,7 +529,7 @@ public class LocalMiniMap extends Widget {
             if (Config.mapshowviewdist) {
                 Gob player = mv.player();
                 if (player != null)
-                    g.image(gridblue, p2c(player.rc).add(delta).sub(44, 44));
+                    g.image(gridblue, p2c(player.rc).add(delta).sub((int)(44 * zoom), (int)(44 * zoom)), gridblue.dim.mul(zoom));
             }
         }
         drawicons(g);
@@ -607,7 +610,7 @@ public class LocalMiniMap extends Widget {
                 }
                 return true;
             } else {
-            mv.wdgmsg("click", rootpos().add(csd.add(delta)), mc.floor(posres), button, ui.modflags(), 0, (int) gob.id, gob.rc.floor(posres), 0, -1);
+                mv.wdgmsg("click", rootpos().add(csd), mc.floor(posres), button, ui.modflags(), 0, (int) gob.id, gob.rc.floor(posres), 0, -1);
             if (Config.autopickmussels && gob.getres().basename().contains("mussel"))
                 mv.startMusselsPicker(gob);
             if(Config.autopickclay && gob.getres().basename().contains("clay-gray"))
@@ -633,5 +636,15 @@ public class LocalMiniMap extends Widget {
             dragging = null;
         }
         return (true);
+    }
+
+    public boolean mousewheel(Coord c, int amount) {
+    	if (amount > 0 && zoom > 1)
+    		zoom = Math.round(zoom * 100 - 20) / 100f;
+    	else if (amount < 0 && zoom < 3)
+    		zoom = Math.round(zoom * 100 + 20) / 100f;
+
+    	iconZoom = Math.round((zoom - 1) * 100 / 2) / 100f + 1;
+    	return true;
     }
 }

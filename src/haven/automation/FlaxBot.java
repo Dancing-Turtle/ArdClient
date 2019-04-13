@@ -68,7 +68,7 @@ public class FlaxBot extends Window {
             lblProg.settext(cropsHarvested + " Units Harvested");
             lblProg2.settext(cropsHarvested + "Starting");
             GameUI gui = HavenPanel.lui.root.findchild(GameUI.class);
-            while (!stopThread) {
+            while (!stopThread || gui.getwnd("Flax Farmer") != null) {
                 try {
                     lblProg.settext(cropsHarvested + " Units Harvested");
                     IMeter.Meter stam = gui.getmeter("stam", 0);
@@ -77,15 +77,19 @@ public class FlaxBot extends Window {
                         PBotUtils.drink(true);
                     }
 
-                    if (stopThread)
-                        stop();
+                    if(stopThread || gui.getwnd("Flax Farmer") == null)
+                        return;
 
                     while (PBotUtils.findNearestStageCrop(5000, 3, "gfx/terobjs/plants/flax") == null) {
+                        if(stopThread || gui.getwnd("Flax Farmer") == null)
+                            return;
                         lblProg2.settext("No Flax");
                         PBotUtils.sleep(200);
                     }
                     while (g == null) {
                         lblProg2.settext("Found Flax");
+                        if(stopThread || gui.getwnd("Flax Farmer") == null)
+                            return;
                         g = PBotUtils.findNearestStageCrop(5000, 3, "gfx/terobjs/plants/flax");
                     }
 
@@ -95,7 +99,7 @@ public class FlaxBot extends Window {
                     int retrycount = 0;
                     PBotAPI.gui.map.wdgmsg("click", Coord.z, g.rc.floor(posres), 1, 0);
                     while (PBotUtils.player().rc.x != g.rc.x || PBotUtils.player().rc.y != g.rc.y) {
-                        if (stopThread)
+                        if(stopThread || gui.getwnd("Flax Farmer") == null)
                             return;
                         if(!PBotUtils.isMoving())
                         retryharvest++;
@@ -130,7 +134,7 @@ public class FlaxBot extends Window {
                     // Wait for harvest menu to appear and harvest the crop
                     while (ui.root.findchild(FlowerMenu.class) == null) {
                         lblProg2.settext("Waiting for Flowermenu");
-                        if (stopThread)
+                        if(stopThread || gui.getwnd("Flax Farmer") == null)
                             return;
                         retryharvest++;
                         PBotUtils.sleep(10);
@@ -171,11 +175,11 @@ public class FlaxBot extends Window {
                             retrycount++;
                         }
 
-                        if (stopThread)
+                        if(stopThread || gui.getwnd("Flax Farmer") == null)
                             return;
                     }
 
-                    if (stopThread)
+                    if(stopThread || gui.getwnd("Flax Farmer") == null)
                         return;
 
                     FlowerMenu menu = gui.ui.root.findchild(FlowerMenu.class);
@@ -191,7 +195,7 @@ public class FlaxBot extends Window {
                     }
                     while (PBotUtils.findObjectById(g.id) != null) {
                         lblProg2.settext("Waiting for Harvest");
-                        if (stopThread)
+                        if(stopThread || gui.getwnd("Flax Farmer") == null)
                             return;
                         retryharvest++;
                         PBotUtils.sleep(10);
@@ -225,7 +229,7 @@ public class FlaxBot extends Window {
                         }
                     }
 
-                    if (stopThread)
+                    if(stopThread || gui.getwnd("Flax Farmer") == null)
                         return;
                     PBotUtils.sleep(200);
 
@@ -278,6 +282,8 @@ public class FlaxBot extends Window {
                         retrycount = 0;
                         while (PBotUtils.findNearestStageCrop(5, 0, "gfx/terobjs/plants/flax") == null || (PBotUtils.getItemAtHand() != null
                                 && amount == PBotUtils.getAmount(PBotUtils.getGItemAtHand()))) {
+                            if(stopThread || gui.getwnd("Flax Farmer") == null)
+                                return;
                             retryharvest++;
                             if (retryharvest > 500) {
                                 lblProg2.settext("Retry Planting");
@@ -333,8 +339,11 @@ public class FlaxBot extends Window {
                                         seedslol.item.wdgmsg("itemact", 0);
                                     } catch (Exception e) {
                                     }
-                                    while (PBotUtils.getItemAtHand() != null && PBotUtils.getAmount(PBotUtils.getGItemAtHand()) == handAmount)
+                                    while (PBotUtils.getItemAtHand() != null && PBotUtils.getAmount(PBotUtils.getGItemAtHand()) == handAmount) {
+                                        if(stopThread || gui.getwnd("Flax Farmer") == null)
+                                            return;
                                         PBotUtils.sleep(50);
+                                    }
                                     break;
                                 }
                             }
@@ -351,6 +360,8 @@ public class FlaxBot extends Window {
                             }
                         }
                         if (PBotUtils.invFreeSlots() < 3) {
+                            if(stopThread || gui.getwnd("Flax Farmer") == null)
+                                return;
                             lblProg2.settext("Barreling");
                             Gob barrel = PBotUtils.findNearestBarrel(5000,blacklist);
                             barrel.delattr(GobHighlight.class);

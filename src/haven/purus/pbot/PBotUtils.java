@@ -55,6 +55,10 @@ public class PBotUtils {
 			return PBotAPI.gui.map.foundPath;
 		}
 	}
+	//new boshaw pf right clicks.
+	//public static void pfRightClick(Gob gob, int mod){
+		//PBotAPI.gui.map.pathtoRightClick(gob, mod);
+	//}
 
 
 	/**
@@ -1150,7 +1154,7 @@ public class PBotUtils {
 	 * @return True if stockpile is full, else false
 	 */
 	public static boolean stockpileIsFull(Gob gob) {
-		if(gob.getattr(ResDrawable.class).sdt.peekrbuf(0)==31)
+		if(gob.sdt()==31)
 			return true;
 		else
 			return false;

@@ -12,6 +12,7 @@ INSERT OR IGNORE INTO type (name_key) VALUES ('HUMAN');
 INSERT OR IGNORE INTO type (name_key) VALUES ('ANIMAL');
 INSERT OR IGNORE INTO type (name_key) VALUES ('TAMEDANIMAL');
 INSERT OR IGNORE INTO type (name_key) VALUES ('SMALLANIMAL');
+INSERT OR IGNORE INTO type (name_key) VALUES ('WATERVEHICLE');
 INSERT OR IGNORE INTO type (name_key) VALUES ('VEHICLE');
 INSERT OR IGNORE INTO type (name_key) VALUES ('TILE');
 INSERT OR IGNORE INTO type (name_key) VALUES ('SOUND');
@@ -320,13 +321,16 @@ INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/beehive', (SELE
 -- humans
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/borka/body', (SELECT type_id FROM type WHERE name_key = 'HUMAN'));
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/borka/wisp', (SELECT type_id FROM type WHERE name_key = 'HUMAN'));
+-- water vehicles
+INSERT OR REPLACE INTO object (name, type_id) VALUES('gfx/terobjs/vehicle/knarr'		, (SELECT type_id FROM type WHERE name_key = 'WATERVEHICLE'));
+INSERT OR REPLACE INTO object (name, type_id) VALUES('gfx/terobjs/vehicle/rowboat'		, (SELECT type_id FROM type WHERE name_key = 'WATERVEHICLE'));
+INSERT OR REPLACE INTO object (name, type_id) VALUES('gfx/terobjs/vehicle/coracle'		, (SELECT type_id FROM type WHERE name_key = 'WATERVEHICLE'));
+INSERT OR REPLACE INTO object (name, type_id) VALUES('gfx/terobjs/vehicle/dugout'		, (SELECT type_id FROM type WHERE name_key = 'WATERVEHICLE'));
 -- vehicles
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/vehicle/cart'			, (SELECT type_id FROM type WHERE name_key = 'VEHICLE'));
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/vehicle/catapult'		, (SELECT type_id FROM type WHERE name_key = 'VEHICLE'));
-INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/vehicle/knarr'			, (SELECT type_id FROM type WHERE name_key = 'VEHICLE'));
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/vehicle/plow'			, (SELECT type_id FROM type WHERE name_key = 'VEHICLE'));
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/vehicle/raft'			, (SELECT type_id FROM type WHERE name_key = 'VEHICLE'));
-INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/vehicle/rowboat'		, (SELECT type_id FROM type WHERE name_key = 'VEHICLE'));
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/vehicle/wagon'			, (SELECT type_id FROM type WHERE name_key = 'VEHICLE'));
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/vehicle/wheelbarrow'	, (SELECT type_id FROM type WHERE name_key = 'VEHICLE'));
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/vehicle/wreckingball'	, (SELECT type_id FROM type WHERE name_key = 'VEHICLE'));

@@ -53,6 +53,7 @@ import haven.sloth.gui.HiddenManager;
 import haven.sloth.gui.HighlightManager;
 import haven.sloth.gui.SoundManager;
 import haven.GobSpawner;
+import haven.sloth.script.pathfinding.GobHitmap;
 
 import static haven.Inventory.invsq;
 
@@ -129,33 +130,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public QuestHelper questhelper;
     public Thread DrinkThread;
     public CraftDBWnd craftwnd = null;
-
-
-    public abstract class Belt extends Widget {
-        public Belt(Coord sz) {
-            super(sz);
-        }
-
-        public void keyact(final int slot) {
-            if (map != null) {
-                Coord mvc = map.rootxlate(ui.mc);
-                if (mvc.isect(Coord.z, map.sz)) {
-                    map.delay(map.new Hittest(mvc) {
-                        protected void hit(Coord pc, Coord2d mc, MapView.ClickInfo inf) {
-                            Object[] args = {slot, 1, ui.modflags(), mc.floor(OCache.posres)};
-                            if (inf != null)
-                                args = Utils.extend(args, MapView.gobclickargs(inf));
-                            GameUI.this.wdgmsg("belt", args);
-                        }
-
-                        protected void nohit(Coord pc) {
-                            GameUI.this.wdgmsg("belt", slot, 1, ui.modflags());
-                        }
-                    });
-                }
-            }
-        }
-    }
 
     @RName("gameui")
     public static class $_ implements Factory {
@@ -377,6 +351,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         if((chrwdg != null) && chrwdg.show(!chrwdg.visible)) {
             chrwdg.raise();
             fitwdg(chrwdg);
+            setfocus(chrwdg);
         }
     }
 

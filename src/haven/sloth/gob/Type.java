@@ -14,6 +14,7 @@ public enum Type {
     DANGANIMAL,
     TAMEDANIMAL,
     SMALLANIMAL,
+    WATERVEHICLE,
     VEHICLE,
     TILE,
     SOUND,

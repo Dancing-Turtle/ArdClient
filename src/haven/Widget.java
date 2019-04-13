@@ -941,7 +941,7 @@ public class Widget {
         return (false);
     }
 
-    public boolean mouseclick(Coord c, int button, int count) {
+   public boolean mouseclick(Coord c, int button, int count) {
         for(Widget wdg = lchild; wdg != null; wdg = wdg.prev) {
             if(!wdg.visible)
                 continue;

@@ -867,7 +867,7 @@ public class Config {
         put("gfx/terobjs/flagpole", new CheckListboxItem("Flag Poles"));
     }};
 
-    public final static HashMap<String, CheckListboxItem> disableshiftclick = new HashMap<String, CheckListboxItem>(7){{
+    public final static HashMap<String, CheckListboxItem> disableshiftclick = new HashMap<String, CheckListboxItem>(8){{
        put("steelcrucible", new CheckListboxItem("Steel Crucibles"));
         put("ttub", new CheckListboxItem("Tanning Tub"));
         put("smelter", new CheckListboxItem("Smelters"));
@@ -875,6 +875,7 @@ public class Config {
         put("kiln", new CheckListboxItem("Kilns"));
         put("htable", new CheckListboxItem("Herb Tables"));
         put("cupboard", new CheckListboxItem("Cupboards"));
+        put("cauldron", new CheckListboxItem("Cauldrons"));
     }};
 
     public final static HashMap<String, String> alarms = new HashMap<String,String>(37){{

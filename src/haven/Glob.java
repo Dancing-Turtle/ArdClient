@@ -28,6 +28,10 @@ package haven;
 
 //import haven.sloth.script.pathfinding.GobHitmap;
 
+import haven.sloth.script.pathfinding.GobHitmap;
+
+import java.lang.ref.WeakReference;
+import java.util.*;
 import java.awt.Color;
 import java.lang.ref.WeakReference;
 import java.util.Collection;
@@ -41,6 +45,7 @@ import java.util.Observable;
 public class Glob {
     //TODO: Glob should honestly make the ui, not have the UI attach onto it.
     public WeakReference<UI> ui;
+    public final GobHitmap gobhitmap;
     public static final double SERVER_TIME_RATIO = 3.29d;
     public double serverEpoch, localEpoch = Utils.rtime();
     //public final GobHitmap gobhitmap;
@@ -76,7 +81,7 @@ public class Glob {
 
     public Glob(Session sess) {
         this.sess = sess;
-//	gobhitmap = new GobHitmap();
+        gobhitmap = new GobHitmap();
         map = new MCache(sess);
         party = new Party(this);
     }

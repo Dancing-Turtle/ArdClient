@@ -16,7 +16,6 @@ public class Hitbox {
         hitboxes.put("gfx/terobjs/herbs", NOHIT);
         hitboxes.put("gfx/terobjs/items", NOHIT);
         hitboxes.put("gfx/terobjs/plants", NOHIT);
-        hitboxes.put("gfx/borka/body", new Hitbox(new Coord(-4, -4), new Coord(8, 8)));
 
         //misc
         hitboxes.put("gfx/terobjs/consobj", new Hitbox(new Coord(-4, -4), new Coord(8, 8)));
@@ -31,7 +30,8 @@ public class Hitbox {
         hitboxes.put("gfx/terobjs/bumlings", new Hitbox(new Coord(8, 8), new Coord(-16, -16)));
 
         //walls
-        final Hitbox wallseg = new Hitbox(new Coord(-6, -6), new Coord(11,11));
+        //XXX: loftar's real hitbox size for this is certainly a decimal..
+        final Hitbox wallseg = new Hitbox(new Coord(-5, -5), new Coord(11, 11));
         final Hitbox gate = new Hitbox(new Coord(-5, -10), new Coord(11, 22));
         final Hitbox biggate = new Hitbox(new Coord(-5, -16), new Coord(11, 33));
         hitboxes.put("gfx/terobjs/arch/brickwallcp", wallseg);
@@ -92,8 +92,8 @@ public class Hitbox {
     private static Hitbox loadHitboxFromRes(final Resource res) {
         final Resource.Neg neg = res.layer(Resource.negc);
         if(neg != null) {
-            Coord hsz = new Coord(Math.abs(neg.bc.x) + Math.abs(neg.bs.x),
-                    Math.abs(neg.bc.y) + Math.abs(neg.bc.y));
+            Coord hsz = new Coord(Math.abs(neg.bc.x) + Math.abs(neg.bs.x) + 1,
+                    Math.abs(neg.bc.y) + Math.abs(neg.bs.y) + 1);
             Coord hoff = neg.bc;
             final Hitbox hb = new Hitbox(hoff, hsz, true, false);
             hitboxes.put(res.name, hb);
@@ -104,8 +104,8 @@ public class Hitbox {
                 if(meshres.isPresent()) {
                     final Resource.Neg meshneg = meshres.get().layer(Resource.negc);
                     if(meshneg != null) {
-                        Coord hsz = new Coord(Math.abs(meshneg.bc.x) + Math.abs(meshneg.bs.x),
-                                Math.abs(meshneg.bc.y) + Math.abs(meshneg.bc.y));
+                        Coord hsz = new Coord(Math.abs(meshneg.bc.x) + Math.abs(meshneg.bs.x) + 1,
+                                Math.abs(meshneg.bc.y) + Math.abs(meshneg.bs.y) + 1);
                         Coord hoff = meshneg.bc;
                         final Hitbox hb = new Hitbox(hoff, hsz, true, false);
                         hitboxes.put(res.name, hb);

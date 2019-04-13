@@ -45,7 +45,7 @@ public class TrellisHarvest implements Runnable {
                                 }
                             }
                         }
-                        int stage = gob.getattr(ResDrawable.class).sdt.peekrbuf(0);
+                        int stage = gob.sdt();
                         if (stage == gob.cropstgmaxval) {
                             Coord2d plc = gui.map.player().rc;
                             if ((plant == null || gob.rc.dist(plc) < plant.rc.dist(plc)))

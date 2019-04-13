@@ -29,7 +29,7 @@ package haven;
 public class ResDrawable extends Drawable {
     public final Indir<Resource> res;
     public Sprite spr = null;
-    public MessageBuf sdt;
+    MessageBuf sdt;
     private int delay = 0;
 
     public ResDrawable(Gob gob, Indir<Resource> res, Message sdt) {

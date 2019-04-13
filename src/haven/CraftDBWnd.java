@@ -28,7 +28,7 @@ public class CraftDBWnd extends Window implements DTarget2, ObservableListener<M
 
     private static final String CONFIG_JSON = "favourites.json";
     private static final Gson gson;
-    private static Map<String, List<String>> config;
+    private static final Map<String, List<String>> config;
     private Subscription subscription;
 
     private RecipeListBox box;
@@ -54,14 +54,16 @@ public class CraftDBWnd extends Window implements DTarget2, ObservableListener<M
 
     static {
         gson = (new GsonBuilder()).setPrettyPrinting().create();
+        Map<String, List<String>> cfg = null;
         try {
             Type type = new TypeToken<Map<String, List<String>>>() {
             }.getType();
-            config = gson.fromJson(Config.loadFile(CONFIG_JSON), type);
+            cfg = gson.fromJson(Config.loadFile(CONFIG_JSON), type);
         } catch (Exception ignore) {}
-        if(config == null) {
-            config = new HashMap<>();
+        if(cfg == null) {
+            cfg = new HashMap<>();
         }
+        config = cfg;
     }
 
     private static void save() {
@@ -122,7 +124,7 @@ public class CraftDBWnd extends Window implements DTarget2, ObservableListener<M
 
     private void loadFavourites(String player) {
         Favourites.items.clear();
-        if(!config.containsKey(player)) {
+        if(!config.containsKey(player) || config.get(player) == null) {
             config.put(player, new LinkedList<>());
         }
         favourites = config.get(player);

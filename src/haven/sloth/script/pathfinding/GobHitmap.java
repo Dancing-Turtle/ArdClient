@@ -3,13 +3,13 @@ package haven.sloth.script.pathfinding;
 import com.google.common.flogger.FluentLogger;
 import haven.Coord;
 import haven.Gob;
+import haven.OCache;
 import haven.UI;
 
-import java.awt.*;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.*;
-import java.util.List;
 
 /**
  * A hitmap for Gobs
@@ -40,6 +40,38 @@ public class GobHitmap {
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
     private final Map<Coord, HitTile> map = new HashMap<>();
 
+    public synchronized BufferedImage debug2(final Coord tl, final Coord br) {
+        //Update tl/br if needed
+        for (final Coord c : map.keySet()) {
+            if (c.x < tl.x)
+                tl.x = c.x;
+            else if (c.x > br.x)
+                br.x = c.x;
+
+            if (c.y < tl.y)
+                tl.y = c.y;
+            else if (c.y > br.y)
+                br.y = c.y;
+        }
+        final BufferedImage buf = new BufferedImage(br.x - tl.x + 1, br.y - tl.y + 1, BufferedImage.TYPE_INT_RGB);
+
+        //Render our hitmap
+        final HashMap<Tile, Color> tmap = new HashMap<>();
+        tmap.put(Tile.GOB, Color.RED);
+        tmap.put(Tile.DEEPWATER, Color.BLUE);
+        tmap.put(Tile.SHALLOWWATER, Color.CYAN);
+        tmap.put(Tile.CAVE, Color.GRAY);
+        tmap.put(Tile.RIDGE, Color.YELLOW);
+        tmap.put(Tile.PLAYER, Color.GREEN);
+
+        for (final Coord c : map.keySet()) {
+            final Coord offset = c.sub(tl);
+            buf.setRGB(offset.x, offset.y, tmap.get(map.get(c).tile).getRGB());
+        }
+
+        return buf;
+    }
+
     public synchronized void debug() {
         if(map.size() > 0) {
 	    //find our boundaries
@@ -56,8 +88,8 @@ public class GobHitmap {
 		else if (c.y > br.y)
 		    br.y = c.y;
 	    }
+            final BufferedImage buf = new BufferedImage(br.x - tl.x + 1, br.y - tl.y + 1, BufferedImage.TYPE_INT_RGB);
 	    final HashMap<Tile, Color> tmap = new HashMap<>();
-	    final BufferedImage buf = new BufferedImage(br.x - tl.x + 1, br.y - tl.y + 1, BufferedImage.TYPE_INT_RGB);
 	    tmap.put(Tile.GOB, Color.RED);
 	    tmap.put(Tile.DEEPWATER, Color.BLUE);
 	    tmap.put(Tile.SHALLOWWATER, Color.CYAN);
@@ -84,7 +116,7 @@ public class GobHitmap {
 
     public synchronized List<Coord> add(final Gob g) {
         final UI ui = g.glob.ui.get();
-        if(ui != null && g.id != ui.gui.map.plgob) {
+        if (ui != null && g.id != ui.gui.map.plgob && !(g instanceof OCache.Virtual) && g.id >= 0) {
 	    return fill(g);
 	} else {
             return null;
@@ -224,7 +256,7 @@ public class GobHitmap {
 		    br = br.rot((float)g.a);
 
 		    //translate back
-		    final Coord gc = new Coord(g.getc());
+                    final Coord gc = g.getc().round();
 		    tl = gc.add(tl);
 		    tr = gc.add(tr);
 		    bl = gc.add(bl);
@@ -243,7 +275,7 @@ public class GobHitmap {
 		}
 
 		//Handle gd = 0, 90, 180 or 270
-		Coord off = new Coord(g.getc()).add(hoff); //xlate(new Coord(g.getc()), hoff);
+                Coord off = g.getc().round().add(hoff);
 		Coord br = off.add(hsz);
 
 		int x, y;

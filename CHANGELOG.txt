@@ -1,3 +1,22 @@
+1.00.127
+
+PLEASE START USING THE NEW UPDATER, IT'S LITERALLY BETTER IN EVERY WAY. Will self heal corrupted files and only download when there's an update. Also faster.
+http://tinyurl.com/y29vdsjb
+
+Changes:
+Fixed a bug where windows could become clickgrabs if toggled to hidden while dragging/clicking it.
+Added some logic to a few of the Xtensions that should allow them to exit if the window is closed.
+Switched over to Boshaw's pathfinder, scripts still use purus for now, much faster and more accurate. Please note that you can't pathfind to a place that isn't visible/loaded yet. Default keybind to toggle pathfinding is still Ctrl Z, feel free to play around with it and give feedback.
+Merged Amber minimap zoom feature. 
+Added Boshaw's detailed info tooltips when doing shift/mouseover with resource info toggled on.
+Your movement speed is now displayed in the upper right if you have "show fps' toggled on.
+Fixed the infamous loftar alt tab bug where alt tabbing while moving the camera would make every UI element clickthrough.
+~
+
+1.00.126
+Small fix to PBotWindows so they'll acknowledge being closed and can be closed to stop scripts early.
+~
+
 1.00.125
 Tiny fix to farmer.
 ~

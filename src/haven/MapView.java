@@ -25,7 +25,8 @@
  */
 
 package haven;
-
+import static haven.MCache.tilesz;
+import static haven.OCache.posres;
 import haven.GLProgram.VarID;
 import haven.automation.*;
 import haven.pathfinder.PFListener;
@@ -49,7 +50,16 @@ import java.lang.ref.WeakReference;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.List;
 
+import com.jogamp.opengl.*;
+import haven.DefSettings;
+import haven.sloth.gob.*;
+import haven.sloth.gui.SoundSelector;
+import haven.sloth.io.HighlightData;
+import haven.sloth.script.Context;
+import haven.sloth.script.pathfinding.Move;
+import haven.sloth.script.pathfinding.NBAPathfinder;
 import static haven.DefSettings.*;
 import static haven.MCache.tilesz;
 import static haven.OCache.posres;
@@ -105,7 +115,6 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     public PepperBot pepperbot;
     public PepperBotPro pepperbotpro;
     public FlaxBot flaxbot;
-    public DestroyArea destroyarea;
     public MinerAlert mineralert;
     private Thread musselPicker;
     private Thread clayPicker;
@@ -119,10 +128,13 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     public boolean PBotAPISelect = false;
     private Coord2d movingto;
     private Coord2d lastrc;
-    private double mspeed;
+    private double mspeed, totaldist = 0, mspeedavg, totaldt = 0;
     public haven.purus.pathfinder.Pathfinder pastaPathfinder;
     private long lastMove = System.currentTimeMillis();
     private Queue<Coord2d> movequeue = new ArrayDeque<>();
+    private Gob pathfindGob;
+    private String lasttt = "";
+    private Object tt;
 
     public interface Delayed {
         public void run(GOut g);
@@ -1689,25 +1701,47 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
             }
         }
 
+
+    private void updateSpeed(final double dt) {
+        final Gob pl = ui.sess.glob.oc.getgob(plgob);
+        if (pl != null) {
+            final Coord2d plc = new Coord2d(pl.getc());
+            if (lastrc != null) {
+                totaldist += plc.dist(lastrc);
+                totaldt += dt;
+                if(totaldt >= 1) {
+                    mspeedavg = totaldist/totaldt;
+                    totaldt = 0;
+                    totaldist = 0;
+                }
+                mspeed = plc.dist(lastrc) / dt;
+            } else {
+                mspeedavg = 0;
+                totaldist = 0;
+                totaldt = 0;
+                mspeed = 0;
+            }
+            lastrc = plc;
+        }
+    }
+
+    public double speed() {
+        return mspeedavg;
+    }
+
     /**
      * 1) If you made it to your destination within a reasonable limit
      * a) Exactly on target destination
      * b) Not moving anymore and within 5 units of it
      * c) Predictive model said it was okay
      */
-    private boolean triggermove(final double dt) {
+    private boolean triggermove() {
         final Gob pl = ui.sess.glob.oc.getgob(plgob);
         if(pl != null) {
             if(movingto != null && pl.getattr(Moving.class) != null) {
                 final Coord2d plc = new Coord2d(pl.getc());
-                if(lastrc != null) {
-                    mspeed = plc.dist(lastrc) / dt;
-                } else {
-                    mspeed = 0;
-                }
                 final double left = plc.dist(movingto) / mspeed;
                 //Only predictive models can trigger here
-                lastrc = plc;
                 return movingto.dist(pl.rc) <= 5 || left == 0;
             } else if(movingto == null || movingto.dist(pl.rc) <= 5) {
                 return true;
@@ -1722,6 +1756,8 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     }
 
     public void clearmovequeue() {
+        if(pathfindGob != null)
+            pathfindGob = null; //set pathfind gob back to null incase pathfinding was interrupted in the middle of a pathfind right click.
         movequeue.clear();
         movingto = null;
         ui.gui.pointer.update(null);
@@ -1731,12 +1767,69 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         movequeue.add(c);
     }
 
+    public boolean los(final Coord2d c) {
+        final NBAPathfinder finder = new NBAPathfinder(ui);
+        return finder.walk(new Coord(ui.sess.glob.oc.getgob(plgob).getc()), c.floor());
+    }
+
+    public void los(final Gob g) {
+
+    }
+
+    public Move[] findpath(final Coord2d c) {
+        final NBAPathfinder finder = new NBAPathfinder(ui);
+        final List<Move> moves = finder.path(new Coord(ui.sess.glob.oc.getgob(plgob).getc()), c.floor());
+        return moves != null ? moves.toArray(new Move[0]) : null;
+    }
+
+    public Move[] findpath(final Gob g) {
+        g.updatePathfindingBlackout(true);
+        final Move[] moves = findpath(new Coord2d(g.getc()));
+        g.updatePathfindingBlackout(false);
+        return moves;
+    }
+
+    public void pathto(final Coord2d c) {
+        final Move[] moves = findpath(c);
+        if(moves != null) {
+            clearmovequeue();
+            for(final Move m : moves) {
+                queuemove(m.dest());
+            }
+        }
+    }
+
+    public void pathto(final Gob g) {
+        g.updatePathfindingBlackout(true);
+        pathto(new Coord2d(g.getc()));
+        g.updatePathfindingBlackout(false);
+    }
+
+    public void pathtoRightClick(final Gob g, int mod){
+        //	PBotAPI.gui.map.purusPfRightClick(gob.gob, -1, 3, mod, null);
+        g.updatePathfindingBlackout(true);
+        pathto(new Coord2d(g.getc()));
+        pathfindGob = g;
+        g.updatePathfindingBlackout(false);
+    }
+
     public void moveto(final Coord2d c) {
         clearmovequeue();
         wdgmsg("click", new Coord(1,1), c.floor(posres), 1, 0);
     }
 
-    public Coord2d movingto() { return movingto; }
+    public void relMove(final Coord2d c) {
+        final Gob g = ui.sess.glob.oc.getgob(plgob);
+        if(g != null) {
+            final Coord gc = new Coord2d(g.getc()).add(c).floor(posres);
+            wdgmsg("click", new Coord(1, 1), gc, 1, 0);
+        }
+    }
+
+    public Coord2d movingto() {
+        return movingto;
+    }
+
     public Iterator<Coord2d> movequeue() {
         return movequeue.iterator();
     }
@@ -1753,13 +1846,19 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         } catch (Loading e) {
             camload = e;
         }
+        updateSpeed(dt);
         if (placing != null)
             placing.ctick((int) (dt * 1000));
-        if (movequeue.size() > 0 && (System.currentTimeMillis() - lastMove > 500) && triggermove(dt)) {
+        if (movequeue.size() > 0 && (System.currentTimeMillis() - lastMove > 500) && triggermove()) {
             movingto = movequeue.poll();
             ui.gui.pointer.update(movingto);
             wdgmsg("click", new Coord(1, 1), movingto.floor(posres), 1, 0);
             lastMove = System.currentTimeMillis();
+        }
+        if(movequeue.size() == 0 && pathfindGob != null)
+        {
+            wdgmsg("click", Coord.z, pathfindGob.rc.floor(posres), 3, 0, 0, (int) pathfindGob.id, pathfindGob.rc.floor(posres), 0, -1);
+            pathfindGob = null;
         }
         partyHighlight.update();
     }
@@ -1843,6 +1942,10 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         }
         olflash = 0;
         olftimer = 0;
+    }
+
+    public Plob placing() {
+        return placing;
     }
 
     public void uimsg(String msg, Object... args) {
@@ -1939,9 +2042,11 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         private Coord2d mapcl;
         private ClickInfo gobcl;
         private int dfl = 0;
+        private final int flags;
 
-        public Hittest(Coord c) {
+        public Hittest(Coord c, int flags) {
             clickc = c;
+            this.flags = flags;
         }
 
         public void run(GOut g) {
@@ -1989,6 +2094,12 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         public Object[] clickargs(ClickInfo inf);
     }
 
+    //[ 0, id, rc.floor(posres), 0 ,-1 ]
+    //  ^-- Contains overlay     ^   ^
+    //                           |   |- FastMesh Res ID
+    //                           |
+    //                           +-- Overlay id
+
     public static Object[] gobclickargs(ClickInfo inf) {
         if (inf == null)
             return (new Object[0]);
@@ -2019,8 +2130,8 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     private class Click extends Hittest {
         int clickb;
 
-        private Click(Coord c, int b) {
-            super(c);
+        private Click(Coord c, int flags, int b) {
+            super(c, flags);
             clickb = b;
 
             synchronized (Pathfinder.class) {
@@ -2113,14 +2224,16 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
 
                 if (inf == null) {
                     if (Config.pf && clickb == 1 && curs != null && !curs.name.equals("gfx/hud/curs/study")) {
-                        purusPfLeftClick(mc.floor(), null);
+                        pathto(mc);
+                  //      purusPfLeftClick(mc.floor(), null);
                     } else if (clickb == 1 && ui.modmeta && gameui().vhand == null) {
                         //Queued movement
                         movequeue.add(mc);
                     } else {
                         args = Utils.extend(args, gobargs);
-                        if (clickb == 1 || gobargs.length > 0)
+                        if (clickb == 1 || gobargs.length > 0) {
                             clearmovequeue();
+                        }
                         wdgmsg("click", args);
                     }
                 } else {
@@ -2175,11 +2288,13 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                             }
                         }
                     } else if (Config.pf && curs != null && !curs.name.equals("gfx/hud/curs/study") && gob != null) {
-                        purusPfRightClick(gob, (int) args[8], clickb, 0, null);
+                      //  purusPfRightClick(gob, (int) args[8], clickb, 0, null);
+                        pathtoRightClick(gob, 0);
                     } else {
                         args = Utils.extend(args, gobargs);
-                        if (clickb == 1 || gobargs.length > 0)
+                        if (clickb == 1 || gobargs.length > 0) {
                             clearmovequeue();
+                        }
                         wdgmsg("click", args);
                         if (Config.autopickmussels && (gob.getres().basename().equals("mussels") || gob.getres().basename().equals("oyster")))
                             startMusselsPicker(gob);
@@ -2303,7 +2418,11 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     }
 
     public boolean mousedown(Coord c, int button) {
-      //  System.out.println("Mousedown detected mapview grab is : "+grab);
+        if (camdrag != null) { //this fixes a loftar bug where alt tabbing out while dragging the camera locks it in permanent drag state.
+            camera.release();
+            camdrag.remove();
+            camdrag = null;
+        }
     	if(button == 1 && farmSelect) {
             synchronized (this) {
                 if (selection == null) {
@@ -2340,7 +2459,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                 wdgmsg("place", placing.rc.floor(posres), (int)Math.round(placing.a * 32768 / Math.PI), button, ui.modflags());
         } else if ((grab != null) && grab.mmousedown(c, button)) {
         } else {
-            delay(new Click(c, button));
+            delay(new Click(c, ui.modflags(), button));
         }
         return (true);
     }
@@ -2357,54 +2476,70 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                 delay(placing.new Adjust(c, ui.modflags()));
             }
         } else if (ui.modshift && !ui.modctrl && Config.resinfo) {
-            long now = System.currentTimeMillis();
-            if ((now - lastmmhittest > 500 || lasthittestc.dist(c) > tilesz.x) && gameui().hand.isEmpty()) {
-                lastmmhittest = now;
-                lasthittestc = c;
-
-                delay(new Hittest(c) {
-                    protected void hit(Coord pc, Coord2d mc, ClickInfo inf) {
-                        if (inf != null) {
-                            MapView.gobclickargs(inf);
-                            if (inf.gob != null) {
-                                Resource res = inf.gob.getres();
-                                if (res != null) {
-                                    tooltip = res.name;
-                                    return;
-                                }
-                            }
-                        }
-                        tooltip = null;
-                    }
-
-                    protected void nohit(Coord pc) {
-                        tooltip = null;
-                    }
-                });
+                delay(new Hover(c));
+            } else {
+                lasttt = "";
+                tt = null;
             }
-        } else if (ui.modshift && ui.modctrl && Config.resinfo) {
-            long now = System.currentTimeMillis();
-            if (now - lastmmhittest > 500 || lasthittestc.dist(c) > tilesz.x) {
-                lastmmhittest = now;
-                lasthittestc = c;
-                delay(new Hittest(c) {
-                    public void hit(Coord pc, Coord2d mc, ClickInfo inf) {
-                        if (inf == null) {
-                            MCache map = ui.sess.glob.map;
-                            int t = map.gettile(mc.floor(tilesz));
-                            Resource res = map.tilesetr(t);
-                            if (res != null) {
-                                tooltip = res.name;
-                                return;
-                            }
-                        }
-                        tooltip = null;
-                    }
+    }
 
-                    public void nohit(Coord pc) {
-                        tooltip = null;
+    private class Hover extends Hittest {
+        private Hover(Coord c) {
+            super(c, 0);
+        }
+
+        private Optional<Gob> gobFromClick(final ClickInfo inf) {
+            if (inf == null)
+                return Optional.empty();
+            Rendered[] st = inf.array();
+            for (final Rendered g : st) {
+                if (g instanceof Gob) {
+                    return Optional.of((Gob) g);
+                }
+            }
+            return Optional.empty();
+        }
+
+        private void updatett(final String ntt) {
+            if (!ntt.equals(lasttt)) {
+                lasttt = null;
+                try {
+                    tt = RichText.render(ntt, 300);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    tt = null;
+                }
+            }
+        }
+
+        protected void hit(Coord pc, Coord2d mc, ClickInfo inf) {
+            if (inf != null) {
+                final Optional<Gob> gob = gobFromClick(inf);
+                if (gob.isPresent()) {
+                    updatett(gob.get().details());
+                } else {
+                    try {
+                        final int tile_id = ui.sess.glob.map.gettile_safe(mc.div(MCache.tilesz).floor());
+                        final MCache.Grid grid = ui.sess.glob.map.getgrid(mc.floor(tilesz).div(MCache.cmaps));
+                        final Resource res = ui.sess.glob.map.tilesetr(tile_id);
+                        final String name = ui.sess.glob.map.tiler(tile_id).getClass().getSimpleName();
+                        updatett("Tile: " + res.name + "[" + tile_id + "] of type " + name + "\n" + mc + " [" + grid.id + "]");
+                    } catch (Exception e) {
+                        lasttt = "";
+                        tt = null;
                     }
-                });
+                }
+            } else {
+                try {
+                    final int tile_id = ui.sess.glob.map.gettile_safe(mc.div(MCache.tilesz).floor());
+                    final MCache.Grid grid = ui.sess.glob.map.getgrid(mc.floor(tilesz).div(MCache.cmaps));
+                    final Resource res = ui.sess.glob.map.tilesetr(tile_id);
+                    final String name = ui.sess.glob.map.tiler(tile_id).getClass().getSimpleName();
+                    updatett("Tile: " + res.name + "[" + tile_id + "] of type " + name + "\n" + mc + " [" + grid.id + "]");
+                } catch (Exception e) {
+                    lasttt = "";
+                    tt = null;
+                }
             }
         }
     }
@@ -2431,7 +2566,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     }
 
     public boolean drop(final Coord cc, final Coord ul) {
-        delay(new Hittest(cc) {
+        delay(new Hittest(cc, ui.modflags()) {
             public void hit(Coord pc, Coord2d mc, ClickInfo inf) {
                 if ((Config.nodropping || Config.nodropping_all) && !ui.modctrl) {
                     // no dropping at all or when we are on water
@@ -2456,7 +2591,8 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                     if (nodropping) {
                         // we really don't want dropping, so click is moving
                         if (Config.pf) {
-                            purusPfLeftClick(mc.floor(), null);
+                           // purusPfLeftClick(mc.floor(), null);
+                            pathto(mc);
                         } else {
                             wdgmsg("click", pc, mc.floor(posres), 1, 0);
                         }
@@ -2470,7 +2606,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     }
 
     public boolean iteminteract(Coord cc, Coord ul) {
-        delay(new Hittest(cc) {
+        delay(new Hittest(cc, ui.modflags()) {
             public void hit(Coord pc, Coord2d mc, ClickInfo inf) {
                 lastItemactClickArgs = null;
                 if (inf == null && Config.tilecenter) {
@@ -2519,8 +2655,8 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         if (selection != null) {
             if (selection.tt != null)
                 return (selection.tt);
-        } else if (tooltip != null && ui.modshift) {
-            return Text.render(tooltip);
+        } else if (tt != null && ui.modshift) {
+            return tt;
         }
         return (super.tooltip(c, prev));
     }

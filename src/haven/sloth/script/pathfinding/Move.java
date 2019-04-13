@@ -1,9 +1,6 @@
 package haven.sloth.script.pathfinding;
 
-import haven.Coord;
-import haven.Coord2d;
-import haven.Gob;
-import haven.MapView;
+import haven.*;
 
 public class Move {
     private static final Coord fake = new Coord(1, 1);
@@ -13,7 +10,7 @@ public class Move {
     }
 
     public void apply(MapView mv) {
-	mv.wdgmsg("click", fake, dest, 1, 0);
+        mv.wdgmsg("click", fake, dest.floor(OCache.posres), 1, 0);
     }
 
     public Coord2d dest() {
@@ -53,9 +50,9 @@ public class Move {
 
 	public void apply(MapView mv) {
 	    if(inf.olclicked == 0) {
-		mv.wdgmsg("click", fake, inf.gob.rc, cb, flags, 0, (int)inf.gob.id, inf.gob.rc, 0, inf.meshid);
+                mv.wdgmsg("click", fake, inf.gob.rc.floor(OCache.posres), cb, flags, 0, (int) inf.gob.id, inf.gob.rc.floor(OCache.posres), 0, inf.meshid);
 	    } else {
-		mv.wdgmsg("click", fake, inf.gob.rc, cb, flags, 1, (int)inf.gob.id, inf.gob.rc, inf.olid, inf.meshid);
+                mv.wdgmsg("click", fake, inf.gob.rc.floor(OCache.posres), cb, flags, 1, (int) inf.gob.id, inf.gob.rc.floor(OCache.posres), inf.olid, inf.meshid);
 	    }
 
 	}

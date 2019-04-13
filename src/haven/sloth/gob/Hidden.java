@@ -86,7 +86,7 @@ public class Hidden extends GAttrib {
             if(hb != null) {
                 mesh = HitboxMesh.makehb(hb.size(), hb.offset());
             } else {
-                mesh = HitboxMesh.makehb(new Coord(11,11), Coord.z);
+                    mesh = HitboxMesh.makehb(new Coord(11,11), Coord.z);
             }
         });
     }

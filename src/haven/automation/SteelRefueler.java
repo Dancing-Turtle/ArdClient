@@ -108,7 +108,7 @@ public class SteelRefueler extends Window implements GobSelectCallback {
         @Override
         public void run() {
             GameUI gui = gameui();
-            while (!terminate) {
+            while (!terminate || gui.getwnd("Steel Refueler") != null ) {
                 if(!ui.sess.alive()) {
                     if (Discord.jdalogin != null) {
                         for (TextChannel loop : haven.automation.Discord.channels) {

@@ -267,7 +267,7 @@ if(Config.dropsmelterstones) {
         @Override
              public void run() {
             gui = gameui();
-                        while(autodropperon) {
+                        while(autodropperon || gui.getwnd("Add Coal To Smelters") != null) {
                             try {
                                 PBotUtils.waitForWindow("Ore Smelter");
                                 while(gui.getwnd("Ore Smelter") == null){
@@ -358,7 +358,7 @@ if(Config.dropsmelterstones) {
                     stopbtn.click();
                     return;
                 }
-                while (!terminateore) {
+                while (!terminateore || gui.getwnd("Add Coal To Smelter") != null) {
                     for (Gob gob : list) {
                         if (terminateore)
                             break;
@@ -456,7 +456,7 @@ if(Config.dropsmelterstones) {
                         activelist.addAll(list);
                     int remaining = activelist.size() * count;
                     System.out.println("Coal needed : "+remaining);
-                    while (!terminaterun) {
+                    while (!terminaterun || gui.getwnd("Add Coal To Smelters") != null) {
                         PBotUtils.sysLogAppend("Filling : " + activelist.size() + " Smelters/Ovens.", "white");
                         for (Gob gob : activelist) {
 
@@ -636,7 +636,7 @@ if(Config.dropsmelterstones) {
             public void run() {
                 GameUI gui = gameui();
                 torchlist.addAll(list);
-                while (!terminatelight) {
+                while (!terminatelight || gui.getwnd("Add Coal To Smelters") != null) {
                     for (Gob gob : torchlist) {
                         try {
                             if (list.size() == 0) {

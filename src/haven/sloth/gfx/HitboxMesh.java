@@ -37,7 +37,7 @@ public class HitboxMesh extends FastMesh {
 	if(hb != null)
 	    return hb;
 	else {
-	    rec = rec.add(off);
+            rec = rec.add(off).sub(1, 1);
 
 	    FloatBuffer pa = Utils.mkfbuf(8 * 3);
 	    FloatBuffer na = Utils.mkfbuf(8 * 3);

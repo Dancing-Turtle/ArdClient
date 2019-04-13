@@ -26,6 +26,9 @@
 
 package haven;
 
+import haven.sloth.gob.HeldBy;
+import haven.sloth.gob.Holding;
+
 import java.util.Optional;
 
 public class Following extends Moving {
@@ -73,6 +76,19 @@ public class Following extends Moving {
     }
     public Gob tgt() {
         return (gob.glob.oc.getgob(this.tgt));
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        final Gob tgt = tgt();
+        if (tgt != null) {
+            final Holding holding = tgt.getattr(Holding.class);
+            if (holding == null || holding.held != gob) {
+                tgt.setattr(new Holding(tgt, gob));
+                gob.delayedsetattr(new HeldBy(gob, tgt), Gob::updateHitmap);
+            }
+        }
     }
 
     private Skeleton.Pose getpose(Gob tgt) {
