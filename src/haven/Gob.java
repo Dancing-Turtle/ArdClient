@@ -624,14 +624,16 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             }
         this.rc = c;
         this.a = a;
+        if(glob.ui != null) {
             final UI ui = glob.ui.get();
-            if(discovered) {
+            if (discovered) {
                 if (getattr(HeldBy.class) == null &&
                         (getattr(Holding.class) == null || ui == null || getattr(Holding.class).held.id != ui.gui.map.plgob) &&
                         !pathfinding_blackout) {
                     hitboxcoords = glob.gobhitmap.add(this);
                 }
             }
+        }
         }
     }
 

@@ -311,7 +311,8 @@ public class Pathfinder extends Thread {
 			if(action != null && action.length() > 0)
 				gui.act(action);
 			if(destGob != null && destGob.rc != null)
-				gui.map.wdgmsg("click", Coord.z, destGob.rc.floor(posres), button, 0, mod, (int) destGob.id, destGob.rc.floor(posres), 0, meshid);
+				gui.map.wdgmsg("click", Coord.z, destGob.rc.floor(posres), button, mod, 0, (int) destGob.id, destGob.rc.floor(posres), 0, meshid);
+		//	gui.map.wdgmsg("click", gob.sc, mc, clickb, modflags, 0, (int) gob.id, gob.rc.floor(posres), 0, meshid);
 		}
 	}
 

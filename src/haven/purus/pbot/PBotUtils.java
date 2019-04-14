@@ -56,9 +56,9 @@ public class PBotUtils {
 		}
 	}
 	//new boshaw pf right clicks.
-	//public static void pfRightClick(Gob gob, int mod){
-		//PBotAPI.gui.map.pathtoRightClick(gob, mod);
-	//}
+	public static void PathfinderRightClick(Gob gob, int mod){
+		PBotAPI.gui.map.pathtoRightClick(gob, mod);
+	}
 
 
 	/**

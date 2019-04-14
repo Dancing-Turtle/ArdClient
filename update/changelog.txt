@@ -1,3 +1,9 @@
+1.00.129
+Fixed a literal 1 in a billion bug where hitting char select with a dead character that died while moving would crash the client due to the UI not being created yet (Why Loftar, why?)
+Various fixes to Oven/Smelter filler bot. Switched over to new pathfinder. I don't use this much, so let me know what issues it has and I'll work on them.
+Put a pathfinder left click in farmer stockpiling to navigate around stockpiles before picking up more stuff to stockpile.
+~
+
 1.00.128
 Added toggle to "UI Settings" to enable the new detailed mouseover tooltips, for people who hate change and information. Detailed tooltips are now off by default.
 ~

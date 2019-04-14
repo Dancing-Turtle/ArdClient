@@ -685,7 +685,7 @@ public class SeedCropFarmer extends Window implements Runnable {
 					PBotUtils.sleep(10);
 				items.remove(item);
 				stockpileLocs.remove(location);
-				PBotUtils.sleep(1000);//putting in small delay, seems to miss creating the last stockpile
+				PBotUtils.sleep(2000);//putting in small delay, seems to miss creating the last stockpile
 			}
 			stockpiles.addAll(Stockpiles(PBotUtils.getSelectedAreaA(),PBotUtils.getSelectedAreaB()));
 			boolean stop = false;
@@ -708,6 +708,16 @@ public class SeedCropFarmer extends Window implements Runnable {
 					}
 					PBotUtils.sysLogAppend("Grabbing stuff.", "white");
 					Gob g = PBotUtils.findObjectByNames(5000, groundname);
+					PBotAPI.gui.map.pathto(g);
+					int retry = 0;
+					while (PBotUtils.player().rc.x != g.rc.x || PBotUtils.player().rc.y != g.rc.y) { //pathfind move to pickup area.
+						retry++;
+						if(retry > 500){ //still not there, retry movement
+							retry = 0;
+							PBotAPI.gui.map.pathto(g);
+						}
+						PBotUtils.sleep(10);
+					}
 					//shift right click
 					gameui().map.wdgmsg("click", g.sc, g.rc.floor(posres), 3, 1, 0, (int) g.id, g.rc.floor(posres), 0, -1);
 					PBotUtils.sleep(2000);//sleep for 2 seconds to see if we're started mass picking up

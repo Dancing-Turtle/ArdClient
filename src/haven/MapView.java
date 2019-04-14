@@ -133,6 +133,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     private long lastMove = System.currentTimeMillis();
     private Queue<Coord2d> movequeue = new ArrayDeque<>();
     private Gob pathfindGob;
+    private int pathfindGobMod = 0;
     private String lasttt = "";
     private Object tt;
 
@@ -1756,8 +1757,10 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     }
 
     public void clearmovequeue() {
-        if(pathfindGob != null)
+        if(pathfindGob != null) {
             pathfindGob = null; //set pathfind gob back to null incase pathfinding was interrupted in the middle of a pathfind right click.
+            pathfindGobMod = 0;
+        }
         movequeue.clear();
         movingto = null;
         ui.gui.pointer.update(null);
@@ -1810,6 +1813,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         g.updatePathfindingBlackout(true);
         pathto(new Coord2d(g.getc()));
         pathfindGob = g;
+        pathfindGobMod = mod;
         g.updatePathfindingBlackout(false);
     }
 
@@ -1857,8 +1861,9 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         }
         if(movequeue.size() == 0 && pathfindGob != null)
         {
-            wdgmsg("click", Coord.z, pathfindGob.rc.floor(posres), 3, 0, 0, (int) pathfindGob.id, pathfindGob.rc.floor(posres), 0, -1);
+            wdgmsg("click", Coord.z, pathfindGob.rc.floor(posres), 3, pathfindGobMod, 0, (int) pathfindGob.id, pathfindGob.rc.floor(posres), 0, -1);
             pathfindGob = null;
+            pathfindGobMod = 0;
         }
         partyHighlight.update();
     }
