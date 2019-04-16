@@ -1098,6 +1098,9 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
     private static final Object DYNAMIC = new Object();
     private Object seq = null;
     public Object staticp() {
+    if (type == Type.HUMAN)
+        seq = DYNAMIC;
+
 	if (seq != null) {
 	    return ((seq == DYNAMIC) ? null : seq);
 	} else if (getattr(Hidden.class) == null) {

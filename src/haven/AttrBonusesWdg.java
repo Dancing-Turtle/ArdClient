@@ -39,7 +39,6 @@ public class AttrBonusesWdg extends Widget implements ItemInfo.Owner {
     public void update(WItem[] items) {
 	this.items = items;
 	needUpdate = true;
-
     }
 
     @Override

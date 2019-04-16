@@ -43,6 +43,6 @@ public abstract class GAttrib {
     }
 
     public Object staticp() {
-	return(Rendered.CONSTANS);
+        return (Gob.STATIC);
     }
 }

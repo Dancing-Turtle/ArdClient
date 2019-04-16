@@ -1,3 +1,10 @@
+1.00.130
+Merged a few more boshaw things:
+Dead animals are now static, meaning they use next to no rendering resources in the client. 
+Added toggle to "video settings" to "Disable Animations" Which will turn all gobs with animations static greatly reducing the resources spent rendering them. The downside to this is they look mildly ugly walking around due to lack of animations, but it is a very notable FPS boost when toggled on.
+Fixed a bug making sketchbooks unusable to change building materials.
+~
+
 1.00.129
 Fixed a literal 1 in a billion bug where hitting char select with a dead character that died while moving would crash the client due to the UI not being created yet (Why Loftar, why?)
 Various fixes to Oven/Smelter filler bot. Switched over to new pathfinder. I don't use this much, so let me know what issues it has and I'll work on them.

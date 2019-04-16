@@ -571,7 +571,7 @@ public class SeedCropFarmer extends Window implements Runnable {
 			cropsHarvested++;
 			lblProg.settext(cropsHarvested + "/" + totalCrops);
 		}
-		if(replantcontainer) {
+		if(replantcontainer || containeronly) {
 			lblProg2.settext("Barreling");
 			if (PBotUtils.getItemAtHand() != null)
 				PBotUtils.dropItem(0);
@@ -699,8 +699,6 @@ public class SeedCropFarmer extends Window implements Runnable {
 				while(PBotUtils.getItemAtHand() == null){
 					if (stopThread)
 						return;
-					if (stop)
-						break;
 					if (PBotUtils.findObjectByNames(5000, groundname) == null) {
 						PBotUtils.sysLogAppend("Out of items to stockpile, finishing.", "white");
 						stop = true;
@@ -709,27 +707,10 @@ public class SeedCropFarmer extends Window implements Runnable {
 					PBotUtils.sysLogAppend("Grabbing stuff.", "white");
 					Gob g = PBotUtils.findObjectByNames(5000, groundname);
 					PBotAPI.gui.map.pathto(g);
-					int retry = 0;
-					while (PBotUtils.player().rc.x != g.rc.x || PBotUtils.player().rc.y != g.rc.y) { //pathfind move to pickup area.
-						retry++;
-						if(retry > 500){ //still not there, retry movement
-							retry = 0;
-							PBotAPI.gui.map.pathto(g);
-						}
-						PBotUtils.sleep(10);
-					}
+					PBotUtils.sleep(2000); //sleep for 2 seconds once we get in position, should be enough time to at least get line of sight.
 					//shift right click
 					gameui().map.wdgmsg("click", g.sc, g.rc.floor(posres), 3, 1, 0, (int) g.id, g.rc.floor(posres), 0, -1);
-					PBotUtils.sleep(2000);//sleep for 2 seconds to see if we're started mass picking up
-					if(!PBotUtils.isMoving())//not moving so try a pf right click instead
-						PBotUtils.pfRightClick(g,0);
-					while(PBotUtils.isMoving()) {//now we// 're moving, sleep and wait until we're back near the objects and then send the shift rightclick again.
-						if (stopThread)
-							return;
-						PBotUtils.sleep(10);
-					}
-					//same shift right click since we should now be around whatever was stopping us
-					gameui().map.wdgmsg("click", g.sc, g.rc.floor(posres), 3, 1, 0, (int) g.id, g.rc.floor(posres), 0, -1);
+					PBotUtils.sleep(2000);//wait 2 seconds to start moving
 					while(PBotUtils.getItemAtHand() == null & PBotUtils.findObjectByNames(5000,groundname)!=null && PBotUtils.isMoving()) {
 						if (stopThread)
 							return;

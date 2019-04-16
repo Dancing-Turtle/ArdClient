@@ -26,27 +26,24 @@
 
 package haven;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import haven.MapView.ClickInfo;
 import haven.Skeleton.Pose;
 import haven.Skeleton.PoseMod;
 import haven.MapView.ClickInfo;
+import haven.DefSettings;
+import haven.sloth.gob.Type;
 
 public class Composited implements Rendered, MapView.Clickable {
     public final Skeleton skel;
     public final Pose pose;
     private final PoseMorph morph;
-    public Collection<Model> mod = new LinkedList<Model>();
-    public Collection<Equ> equ = new LinkedList<Equ>();
+    public Collection<Model> mod = new LinkedList<>();
+    public Collection<Equ> equ = new LinkedList<>();
     public Poses poses = new Poses();
-    public List<MD> nmod = null, cmod = new LinkedList<MD>();
-    public List<ED> nequ = null, cequ = new LinkedList<ED>();
+    public List<MD> nmod = null, cmod = new LinkedList<>();
+    public List<ED> nequ = null, cequ = new LinkedList<>();
     public Sprite.Owner eqowner = null;
 
     public class Poses {
@@ -54,7 +51,7 @@ public class Composited implements Rendered, MapView.Clickable {
 	Pose old;
 	float ipold = 0.0f, ipol = 0.0f;
 	public float limit = -1.0f;
-	public boolean stat, ldone;
+        public boolean stat, ldone, finished;
 	private Random srnd = new Random();
 	private float rsmod = (srnd.nextFloat() * 0.1f) + 0.95f;
 
@@ -118,6 +115,7 @@ public class Composited implements Rendered, MapView.Clickable {
                 rebuild();
             if (done)
                 done();
+            finished = done && ldone;
         }
 
         @Deprecated
@@ -126,6 +124,18 @@ public class Composited implements Rendered, MapView.Clickable {
         }
 
         protected void done() {
+        }
+
+        /**
+         * Poses are where most of the animation is.
+         * Could be static when `done`, otherwise no.
+         */
+        public Object staticp() {
+            for (PoseMod m : mods) {
+                if (!m.done())
+                    return null;
+            }
+            return Gob.STATIC;
         }
     }
 
@@ -153,9 +163,13 @@ public class Composited implements Rendered, MapView.Clickable {
         }
     };
 
+    /**
+     * MorphedMesh static or not? Lets try static
+     */
     public class Model implements Rendered {
         public final MorphedMesh m;
         public final int id;
+        public final List<Layer> lay = new ArrayList<>();
         int z = 0, lz = 0;
 
         public class Layer implements FRendered {
@@ -184,8 +198,6 @@ public class Composited implements Rendered, MapView.Clickable {
             }
         }
 
-        public final List<Layer> lay = new ArrayList<Layer>();
-
         private Model(FastMesh m, int id) {
             this.m = new MorphedMesh(m, morph);
             this.id = id;
@@ -200,10 +212,14 @@ public class Composited implements Rendered, MapView.Clickable {
 
         public boolean setup(RenderList r) {
             m.setup(r);
-            for (Layer lay : this.lay) {
+            for (Layer lay : this.lay)
                 r.add(lay, null);
-            }
             return (false);
+        }
+
+        @Override
+        public Object staticp() {
+            return null;
         }
     }
 
@@ -226,6 +242,11 @@ public class Composited implements Rendered, MapView.Clickable {
         public void tick(int dt) {
             spr.tick(dt);
         }
+
+        @Override
+        public Object staticp() {
+            return spr.staticp();
+        }
     }
 
     public class LightEqu extends Equ {
@@ -243,8 +264,17 @@ public class Composited implements Rendered, MapView.Clickable {
             rl.add(l, null);
             return (false);
         }
+
+        @Override
+        public Object staticp() {
+            return l.staticp();
+        }
     }
 
+    /**
+     * Equ are equipment ontop of the Skeleton or lighting for whatever reason. Always static at this level
+     * Classes that extend this will likely override based off what they do
+     */
     public abstract class Equ implements Rendered {
         private final GLState et;
         public final ED desc;
@@ -278,9 +308,13 @@ public class Composited implements Rendered, MapView.Clickable {
                 this.et = bt;
         }
 
-        public void tick(int dt) {}
+        public void tick(int dt) {
         }
 
+        public Object staticp() {
+            return Gob.STATIC;
+        }
+    }
 
     public static class MD implements Cloneable {
         public Indir<Resource> mod;
@@ -532,9 +566,10 @@ public class Composited implements Rendered, MapView.Clickable {
         return (new Object[0]);
     }
 
-    /*private static class CompositeClick extends ClickInfo {
-        CompositeClick(ClickInfo prev, Integer id) {
-            super(prev, id);
+    /*
+    private static class CompositeClick extends ClickInfo {
+	CompositeClick(ClickInfo prev, Integer id, Rendered r) {
+	    super(prev, id, r);
         }
 
         public ClickInfo include(Rendered r) {
@@ -542,22 +577,22 @@ public class Composited implements Rendered, MapView.Clickable {
             if (r instanceof Model) {
                 Model mod = (Model) r;
                 if (mod.id >= 0)
-                    return (new CompositeClick(this, 0x01000000 | ((mod.id & 0xff) << 8)));
+		    return(new CompositeClick(this, 0x01000000 | ((mod.id & 0xff) << 8), r));
             } else if (r instanceof Equ) {
                 Equ equ = (Equ) r;
                 if (equ.id >= 0)
-                    return (new CompositeClick(this, 0x02000000 | ((equ.id & 0xff) << 16)));
+		    return(new CompositeClick(this, 0x02000000 | ((equ.id & 0xff) << 16), r));
             } else if (r instanceof FastMesh.ResourceMesh) {
                 FastMesh.ResourceMesh rm = (FastMesh.ResourceMesh) r;
                 if ((id & 0xff000000) == 2)
-                    return (new CompositeClick(this, id & 0xffff0000 | (rm.id & 0xffff)));
+		    return(new CompositeClick(this, id & 0xffff0000 | (rm.id & 0xffff), r));
             }
             return (this);
         }
     }
 
     public ClickInfo clickinfo(Rendered self, ClickInfo prev) {
-        return (new CompositeClick(prev, null));
+	return(new CompositeClick(prev, null, self));
     }
     */
 
@@ -585,14 +620,34 @@ public class Composited implements Rendered, MapView.Clickable {
         tick(dt);
     }
 
+    public Object staticp() {
+        Gob compowner = null;
+        if(eqowner instanceof  Gob)
+            compowner = (Gob) eqowner;
+        if (!Config.disableAllAnimations || (compowner != null && compowner.type == Type.HUMAN)) {
+            Object stat = poses.staticp();
+            if (stat != null) {
+                for (Equ equ : this.equ) {
+                    stat = equ.staticp();
+                    if (stat != null)
+                        continue;
+                    break;
+                }
+            }
+            return stat;
+        } else {
+            return Gob.STATIC;
+        }
+    }
+
     public void chmod(List<MD> mod) {
         if (mod.equals(cmod))
             return;
-        this.mod = new LinkedList<Model>();
-        nmod = new LinkedList<MD>();
+        this.mod = new LinkedList<>();
+        nmod = new LinkedList<>();
         for (MD md : mod)
             nmod.add(md.clone());
-        cmod = new ArrayList<MD>(mod);
+        cmod = new ArrayList<>(mod);
     }
 
     public void chequ(List<ED> equ) {
@@ -600,9 +655,9 @@ public class Composited implements Rendered, MapView.Clickable {
             return;
         for (Equ oequ : this.equ)
             oequ.matched = false;
-        nequ = new LinkedList<ED>();
+        nequ = new LinkedList<>();
         for (ED ed : equ)
             nequ.add(ed.clone());
-        cequ = new ArrayList<ED>(equ);
+        cequ = new ArrayList<>(equ);
     }
 }

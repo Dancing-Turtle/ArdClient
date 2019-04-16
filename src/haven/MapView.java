@@ -2049,6 +2049,11 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         private int dfl = 0;
         private final int flags;
 
+        public Hittest(Coord c) {
+            clickc = c;
+            this.flags = 0;
+        }
+
         public Hittest(Coord c, int flags) {
             clickc = c;
             this.flags = flags;

@@ -43,9 +43,9 @@ public class Composite extends Drawable {
     public final static float ipollen = 0.2f;
     public final Indir<Resource> base;
     public Composited comp;
-    public Collection<ResData> nposes = null, tposes = null, prevposes;
+    private Collection<ResData> nposes = null, tposes = null;
     public Collection<ResData> oldposes = null, oldtposes;
-    public boolean nposesold, retainequ = false;
+    private boolean nposesold, retainequ = false;
     private float tptime;
     private WrapMode tpmode;
     public int pseq;
@@ -62,7 +62,7 @@ public class Composite extends Drawable {
         if (comp != null)
             return;
         Resource res = base.get();
-        comp = new Composited(res.layer(Skeleton.Res.class).s);
+        comp = new Composited(base.get().layer(Skeleton.Res.class).s);
         comp.eqowner = gob;
         if (gob.type == null) {
             Type.getType(res.name);
@@ -121,7 +121,6 @@ public class Composite extends Drawable {
             try {
                 Composited.Poses np = comp.new Poses(loadposes(nposes, comp.skel, nposesold));
                 np.set(nposesold ? 0 : ipollen);
-                prevposes = nposes;
                 nposes = null;
 		updequ();
 	    } catch(Loading e) {}
@@ -142,8 +141,6 @@ public class Composite extends Drawable {
         } else if (!retainequ) {
             updequ();
         }
-        if(Config.disableAllAnimations)
-        	return;
         comp.tick(dt);
     }
 
