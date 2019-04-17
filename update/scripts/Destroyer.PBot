@@ -50,7 +50,7 @@ const btnClick = () => {
 				if(PBotGobAPI.findGobById(gob.getGobId()) == null) {
 					break;
 				}
-				while(PBotGobAPI.player().getPoses().contains('gfx/borka/treechop'))
+				while(PBotGobAPI.player().getPoses().contains('gfx/borka/treechop') || PBotGobAPI.player().getPoses().contains('gfx/borka/shoveldig'))
 					PBotUtils.sleep(25);
 			}
 		}
