@@ -624,6 +624,8 @@ public class Composited implements Rendered, MapView.Clickable {
         Gob compowner = null;
         if(eqowner instanceof  Gob)
             compowner = (Gob) eqowner;
+        if(eqowner instanceof Avaview.AvaOwner)
+            return null;
         if (!Config.disableAllAnimations || (compowner != null && compowner.type == Type.HUMAN)) {
             Object stat = poses.staticp();
             if (stat != null) {

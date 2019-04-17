@@ -218,6 +218,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
 	private Matrix4f update = null;
 	private final Location xl = new Location(Matrix4f.id, "gobx"), rot = new Location(Matrix4f.id, "gob");
 
+
 	public void tick() {
 	    try {
 		Coord3f c = getc();

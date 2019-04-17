@@ -298,7 +298,7 @@ public class UI {
         String cap = wdg.origcap;
         if (cap.equals("Charter Stone") || cap.equals("Sublime Portico")) {
             // show secrets list only for already built chartes/porticos
-            if (wdg.wsz.y >= 80) {
+            if (wdg.wsz.y >= 50) {
                 wdg.add(new CharterList(150, 20), new Coord(0, 50));
                 wdg.presize();
             }

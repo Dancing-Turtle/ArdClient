@@ -2153,7 +2153,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         }
 
         protected void hit(Coord pc, Coord2d mc, ClickInfo inf) {
-            if (clickb == 3 && ui.modmeta && !ui.modctrl) {
+            if (clickb == 3 && ui.modmeta && gameui().vhand == null) {
                 final Optional<Gob> gob = gobFromClick(inf);
                 if(gob.isPresent()) {
                     showSpecialMenu(gob.get());

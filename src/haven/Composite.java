@@ -43,9 +43,9 @@ public class Composite extends Drawable {
     public final static float ipollen = 0.2f;
     public final Indir<Resource> base;
     public Composited comp;
-    private Collection<ResData> nposes = null, tposes = null;
+    public Collection<ResData> nposes = null, tposes = null, prevposes;
     public Collection<ResData> oldposes = null, oldtposes;
-    private boolean nposesold, retainequ = false;
+    public boolean nposesold, retainequ = false;
     private float tptime;
     private WrapMode tpmode;
     public int pseq;
@@ -121,8 +121,9 @@ public class Composite extends Drawable {
             try {
                 Composited.Poses np = comp.new Poses(loadposes(nposes, comp.skel, nposesold));
                 np.set(nposesold ? 0 : ipollen);
+                updequ();
+                prevposes = nposes;
                 nposes = null;
-		updequ();
 	    } catch(Loading e) {}
         } else if (tposes != null) {
             try {
@@ -184,15 +185,15 @@ public class Composite extends Drawable {
         nmod = mod;
     }
 
-    public void chequ(List<ED> equ) {
+public void chequ(List<ED> equ) {
         nequ = equ;
-    }
+        }
 
 
-    //TODO: Should inherit from `comp`, this composite could very well be static. Ex: dead animals
-    //      OCache already calls changed anytime it changes equ/poses.. so this should ONLY be dynamic
-    //      If one of the equ/poses are an animation and `Show Animations` is on
-    public Object staticp() {
-	return comp != null ? comp.staticp() : null;
-    }
-}
+//TODO: Should inherit from `comp`, this composite could very well be static. Ex: dead animals
+//      OCache already calls changed anytime it changes equ/poses.. so this should ONLY be dynamic
+//      If one of the equ/poses are an animation and `Show Animations` is on
+public Object staticp() {
+        return comp != null ? comp.staticp() : null;
+        }
+        }
