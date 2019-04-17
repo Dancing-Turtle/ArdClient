@@ -124,7 +124,6 @@ const startBtn = () => {
 			const used = PBotWindowAPI.getStockpileUsedCapacity();
 			const count = Math.min(clothInInv, slots-used);
 			PBotWindowAPI.putItemFromInventoryToStockpile(count);
-				PBotUtils.sysMsg("Adding "+count+" cloth to stockpile already containing +"used+" cloth!");
 			if(count + used === slots)
 				clothStockpiles.shift();
 			clothInInv -= count;
