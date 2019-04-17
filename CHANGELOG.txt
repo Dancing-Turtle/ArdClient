@@ -1,3 +1,8 @@
+1.00.132
+Fixes for accuracy and speed on farmer stockpiling.
+Fixed pick forage keybind not triggering multi picks for oysters.
+~
+
 1.00.131
 Fixed charter secrets not showing up in charters and portico windows. 
 Alt right click will no longer open the alternate flower menu if holding a visible item on your cursor. If you're someone who wants to abuse running with a bucket of water or something, use alt H to toggle the visibility and the alt menu will work again. 

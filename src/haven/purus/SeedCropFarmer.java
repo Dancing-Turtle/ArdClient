@@ -696,6 +696,7 @@ public class SeedCropFarmer extends Window implements Runnable {
 				System.out.println("In main loop");
 				if (stop)
 					break;
+				boolean pathfind = true;
 				while(PBotUtils.getItemAtHand() == null){
 					if (stopThread)
 						return;
@@ -706,8 +707,34 @@ public class SeedCropFarmer extends Window implements Runnable {
 					}
 					PBotUtils.sysLogAppend("Grabbing stuff.", "white");
 					Gob g = PBotUtils.findObjectByNames(5000, groundname);
-					PBotAPI.gui.map.pathto(g);
-					PBotUtils.sleep(2000); //sleep for 2 seconds once we get in position, should be enough time to at least get line of sight.
+					int retry = 0;
+					if(pathfind) {
+						pathfind = false;
+						PBotAPI.gui.map.pathto(g);
+						while (g.rc.dist(PBotAPI.gui.map.player().rc) > 11) { //get within one tile of the target
+							if (stopThread)
+								return;
+							lblProg2.settext("Moving to Pickup");
+							retry++;
+							while(PBotUtils.isMoving())
+								PBotUtils.sleep(10);//if we're moving, sleep and dont trigger unstucking
+							if(retry > 500)
+							{
+								retry = 0;
+								lblProg2.settext("Unstucking");
+								PBotUtils.sysLogAppend("Moving char to unstuck", "white");
+								Gob player = PBotAPI.gui.map.player();
+								Coord location = player.rc.floor(posres);
+								int x = location.x + getrandom();
+								int y = location.y + getrandom();
+								Coord finalloc = new Coord(x, y);
+								gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
+								PBotUtils.sleep(1000);
+								PBotAPI.gui.map.pathto(g);
+							}
+							PBotUtils.sleep(10);
+						}
+					}
 					//shift right click
 					gameui().map.wdgmsg("click", g.sc, g.rc.floor(posres), 3, 1, 0, (int) g.id, g.rc.floor(posres), 0, -1);
 					PBotUtils.sleep(2000);//wait 2 seconds to start moving
