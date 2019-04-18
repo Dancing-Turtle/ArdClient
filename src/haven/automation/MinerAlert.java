@@ -6,6 +6,8 @@ import haven.*;
 import haven.Label;
 import haven.Utils;
 import haven.Window;
+import haven.purus.pbot.PBotAPI;
+import haven.purus.pbot.PBotGobAPI;
 import haven.purus.pbot.PBotUtils;
 
 import java.awt.*;
@@ -35,10 +37,12 @@ public class MinerAlert extends Window {
     public List<Gob> slimecount = new ArrayList<>();
     private static final Resource goldsfx = Resource.local().loadwait("sfx/Zelda");
     private static final Resource silversfx = Resource.local().loadwait("sfx/gold");
-    public Boolean audiomute;
+    private static final Resource supportalertsfx = Resource.local().loadwait("custom/sfx/omni/Z_OOT_Navi_WatchOut");
+    private Boolean audiomute, SupportAlertHalf = false, SupportAlertQuarter = false; // quarter is 25% damage, half is 50% damage
+    private CheckBox SupportsQuarter, SupportsHalf;// quarter is 25% damage, half is 50% damage
 
     public MinerAlert(GameUI gui) {
-        super(new Coord(170, 240), "Miner Alert");
+        super(new Coord(220, 300), "Miner Alert");
         this.gui = gui;
         int yvalue = 17;
         int yvalue2 = 8;
@@ -94,7 +98,28 @@ public class MinerAlert extends Window {
         labelcountslimestotal = new Label("0", Text.num12boldFnd, Color.WHITE);
         add(labelcountslimestotal, new Coord(65, yvalue+=20));
 
+        SupportsQuarter = new CheckBox("Stop Mining at <25% HP Supports"){
+            {
+                a = SupportAlertQuarter;
+            }
 
+            public void set(boolean val) {
+                SupportAlertQuarter = val;
+                a = val;
+            }
+        };
+        add(SupportsQuarter,10,yvalue+=20);
+        SupportsHalf = new CheckBox("Stop Mining at <50% HP Supports"){
+            {
+                a = SupportAlertHalf;
+            }
+
+            public void set(boolean val) {
+                SupportAlertHalf = val;
+                a = val;
+            }
+        };
+        add(SupportsHalf,10,yvalue+=20);
         runbtn = new Button(100, "Run") {
             @Override
             public void click() {
@@ -138,12 +163,14 @@ public class MinerAlert extends Window {
                     Gob player = gui.map.player();
                     List<Gob> allGobs = PBotUtils.getGobs();
                     List<Gob> list = new ArrayList<>();
-
+                    List<Gob> supportlist = new ArrayList<>();
 
                     for (int i = 0; i < allGobs.size(); i++) {
                         try {
+                            if(allGobs.get(i).type.toString().contains("SUPPORT"))
+                                supportlist.add(allGobs.get(i));
                             Resource res = allGobs.get(i).getres();
-                            if (allGobs.get(i).getres().name.endsWith("greenooze") && !allGobs.get(i).isDead()) {
+                            if (res.name.endsWith("greenooze") && !allGobs.get(i).isDead()) {
                                 list.add(allGobs.get(i));
                                 if (!slimecount.contains(allGobs.get(i)))
                                     slimecount.add(allGobs.get(i));
@@ -151,9 +178,28 @@ public class MinerAlert extends Window {
                         } catch (NullPointerException | Loading e) { }
                     }
                     countslimes = list.size();
-                    while(player == null)
+                    while(PBotUtils.player() == null)
                         PBotUtils.sleep(10); //sleep if player is null, teleporting through a road?
                     Coord pltc = new Coord((int) player.getc().x / 11, (int) player.getc().y / 11);
+
+                    if(SupportAlertHalf || SupportAlertQuarter){//if support alerts toggled, resolve mine supports and HP
+                        for(Gob support : supportlist) {
+                            double distFromPlayer = support.rc.dist(PBotUtils.player().rc);
+                            if (distFromPlayer <= 13 * 11) {    //support is less than or equal to 13 tiles from current player position, check it's HP
+                                if(support.getattr(GobHealth.class) != null && support.getattr(GobHealth.class).hp <= 2 && SupportAlertHalf){
+                                    PBotUtils.sysMsg("Detected mine support at 50% or less HP",Color.white);
+                                        Audio.play(supportalertsfx);
+                                    if(PBotGobAPI.player().getPoses().contains("gfx/borka/choppan") || PBotGobAPI.player().getPoses().contains("gfx/borka/pickan"))
+                                        PBotAPI.gui.ui.root.wdgmsg("gk",27);
+                                }else if(support.getattr(GobHealth.class) != null && support.getattr(GobHealth.class).hp <= 1 && SupportAlertQuarter){
+                                    PBotUtils.sysMsg("Detected mine support at 25% or less HP less than 13 tiles away",Color.white);
+                                    Audio.play(supportalertsfx);
+                                    if(PBotGobAPI.player().getPoses().contains("gfx/borka/choppan") || PBotGobAPI.player().getPoses().contains("gfx/borka/pickan"))
+                                        PBotAPI.gui.ui.root.wdgmsg("gk",27);
+                                }
+                            }
+                        }
+                    }
 
                     for (int x = -44; x < 44; x++) {
                         for (int y = -44; y < 44; y++) {

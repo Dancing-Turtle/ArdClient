@@ -1204,6 +1204,7 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
+        appender.add(ColorPreWithLabel("Garden Pot Finished Color (Requires restart)", GARDENPOTDONECOLOR));
         appender.add(new CheckBox("Draw circles around party members.") {
             {
                 a = Config.partycircles;
@@ -1460,7 +1461,6 @@ public class OptWnd extends Window {
         Label AutodrinkThreshold;
         AutodrinkThreshold = new Label("Autodrink Threshold: "+Config.autodrinkthreshold);
         appender.add(AutodrinkThreshold);
-        //  System.out.println("adding new sliders and stuff");
         appender.add(new HSlider(130, 0, 100, Config.autodrinkthreshold) {
             public void added() {
                 updateLabel();
@@ -2072,6 +2072,28 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
+        appender.add(new CheckBox("Show PBot Menugrid icon (Requires relog)") {
+            {
+                a = Config.showPBot;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showPBot", val);
+                Config.showPBot = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Show Old PBot Menugrid icon (Requires relog)") {
+            {
+                a = Config.showPBotOld;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showPBotOld", val);
+                Config.showPBotOld = val;
+                a = val;
+            }
+        });
         appender.add(new CheckBox("Detailed Shift+Mouseover tooltips - Negative FPS Impact when holding shift.") {
             {
                 a = Config.detailedresinfo;
@@ -2419,6 +2441,39 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
+        appender.add(new CheckBox("Automatically pick all clustered Gooseneck Barnacles (auto 'Pick' needs to be enabled)") {
+            {
+                a = Config.autopickbarnacles;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("autopickbarnacles", val);
+                Config.autopickbarnacles = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Automatically pick all clustered Cattails (auto 'Pick' needs to be enabled)") {
+            {
+                a = Config.autopickcattails;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("autopickcattails", val);
+                Config.autopickcattails = val;
+                a = val;
+            }
+        });
+         appender.add(new CheckBox("Automatically drop Cattail Heads/Roots (Only keep fibres)") {
+            {
+                a = Config.DropCattails;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("DropCattails", val);
+                Config.DropCattails = val;
+                a = val;
+            }
+        });
         appender.add(new Label("Automatic selecton:"));
 
         CheckListbox flowerlist = new CheckListbox(140, 17) {
@@ -2432,7 +2487,7 @@ public class OptWnd extends Window {
         Utils.loadprefchklist("flowersel", Config.flowermenus);
         for (CheckListboxItem itm : Config.flowermenus.values())
             flowerlist.items.add(itm);
-        flowermenus.add(flowerlist, new Coord(0, 70));
+        appender.add(flowerlist);
 
         flowermenus.add(new PButton(200, "Back", 27, main), new Coord(210, 360));
         flowermenus.pack();

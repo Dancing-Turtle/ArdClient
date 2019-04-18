@@ -227,7 +227,6 @@ public class UI {
             if(type.contains("speedget"))
                 gui.speedget = new WeakReference<>((Speedget)wdg);
             if(wdg instanceof FightWnd){
-                System.out.println("Captured Fightwnd widget of id : "+wdg.wdgid());
                 fightwnd = new WeakReference<>((FightWnd)wdg);
             }
         }
@@ -496,7 +495,6 @@ public class UI {
    // }
 
     public void mousedown(MouseEvent ev, Coord c, int button) {
-      //  System.out.println("Mousedown Detected UI");
         setmods(ev);
         lcc = mc = c;
         for (Grab g : c(mousegrab)) {

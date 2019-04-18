@@ -1555,8 +1555,6 @@ public class CharWnd extends Window {
         public static class $quest implements Factory {
             public Widget create(UI ui, Object[] args) {
                 int id = (Integer) args[0];
-                //for(Object obj : args)
-                  //  System.out.println(" args : "+obj);
                 Indir<Resource> res = ui.sess.getres((Integer) args[1]);
                 String title = (args.length > 2)?(String)args[2]:null;
                 return(new DefaultBox(id, res, title));

@@ -307,7 +307,8 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
     }
 
     private void dropItMaybe() {
-        Resource curs = ui.root.getcurs(Coord.z);
+        try {
+            Resource curs = ui.root.getcurs(Coord.z);
             String name = this.resource().basename();
             if ((Config.dropSoil && name.equals("soil")))
                 this.wdgmsg("drop", Coord.z);
@@ -323,10 +324,13 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
                         Config.dropMinedSeaShells && this.getname().contains("Petrified Seashell"))
                     this.wdgmsg("drop", Coord.z);
             }
+            if (Config.DropCattails && (name.equals("cattailroots") || name.equals("cattailhead")))
+                this.wdgmsg("drop", Coord.z);
 
-        if(Config.DropEntrails && this.getname().contains("Entrails") || Config.DropIntestines && this.getname().contains("Intestines")
-                || Config.DropMeat && this.getname().contains("Raw") || Config.DropBones && this.getname().contains("Bone Material"))
-            this.wdgmsg("drop", Coord.z);
+            if (Config.DropEntrails && this.getname().contains("Entrails") || Config.DropIntestines && this.getname().contains("Intestines")
+                    || Config.DropMeat && this.getname().contains("Raw") || Config.DropBones && this.getname().contains("Bone Material"))
+                this.wdgmsg("drop", Coord.z);
+        }catch(Resource.Loading e){e.printStackTrace(); }
     }
     public Coord size() {
         Indir<Resource> res = getres().indir();

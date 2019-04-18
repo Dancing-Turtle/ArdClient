@@ -1,3 +1,12 @@
+1.00.133
+Added toggles to "Menu Settings" to autopick clustered Gooseneck Barnacles and Cattails, and a toggle to autodrop Cattail Roots/Heads (Only keep Fibres) 
+Added total LP per curio to study desk window. 
+Potentially fixed quest pointer locations being incorrect on questgivers at extreme Z elevations with disable elevation turned on. 
+Added two toggles to "Miner Alert" to warn about and automatically stop in-progress mining if a mine support is detected <= 13 tiles from the player at <50% HP or <25% HP depending on the selected toggle. Currently only tested on wood supports, but should work for all. The auto-stop fires off the player having a current mining pose, so I don't know that you can bet your entire life on it. Will trigger every 5 seconds while in range of the damaged support if the toggle is enabled (the update frequency of miner alert itself.)
+Added toggles to UI Settings to enable/disable the purus PBot menugrid buttons. 
+Added a color selector to display settings to change the color of the garden pot finished overlay. Will require client restart to change.
+~
+
 1.00.132
 Fixes for accuracy and speed on farmer stockpiling.
 Fixed pick forage keybind not triggering multi picks for oysters.

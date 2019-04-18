@@ -279,7 +279,6 @@ public class Inventory extends Widget implements DTarget {
     // Null if no free slots found
     public Coord getFreeSlot() {
     	int[][] invTable = new int[isz.x][isz.y];
-    	//System.out.println(isz.x +", " + isz.y);
         for (Widget wdg = child; wdg != null; wdg = wdg.next) {
             if (wdg instanceof WItem) {
             	WItem item = (WItem) wdg;
@@ -300,7 +299,6 @@ public class Inventory extends Widget implements DTarget {
     public List<Coord> getFreeSlots() {
         List<Coord> cordlist = new ArrayList<>();
         int[][] invTable = new int[isz.x][isz.y];
-       // System.out.println(isz.x +", " + isz.y);
         for (Widget wdg = child; wdg != null; wdg = wdg.next) {
             if (wdg instanceof WItem) {
                 WItem item = (WItem) wdg;

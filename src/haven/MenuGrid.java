@@ -725,30 +725,36 @@ public class MenuGrid extends Widget {
                         new Thread(new Dismount(gui), "Dismount").start();
                     }}
         ));
-        addSpecial(new SpecialPagina(this, "paginae::amber::pbotmenu",
-                Resource.local().load("paginae/purus/PBotMenu"),
-                (pag) -> {
-                    GameUI gui = gameui();
-                    if(gui != null){
-                        if (gui.PBotScriptlist.show(!gui.PBotScriptlist.visible)) {
-                            gui.PBotScriptlist.raise();
-                            gui.fitwdg(gui.PBotScriptlist);
-                            setfocus(gui.PBotScriptlist);
+        if(Config.showPBot) {
+            addSpecial(new SpecialPagina(this, "paginae::amber::pbotmenu",
+                    Resource.local().load("paginae/purus/PBotMenu"),
+                    (pag) -> {
+                        GameUI gui = gameui();
+                        if (gui != null) {
+                            if (gui.PBotScriptlist.show(!gui.PBotScriptlist.visible)) {
+                                gui.PBotScriptlist.raise();
+                                gui.fitwdg(gui.PBotScriptlist);
+                                setfocus(gui.PBotScriptlist);
+                            }
                         }
-                    }}
-        ));
-        addSpecial(new SpecialPagina(this, "paginae::amber::pbotmenuold",
-                Resource.local().load("paginae/purus/PBotMenuOld"),
-                (pag) -> {
-                    GameUI gui = gameui();
-                    if(gui != null){
-                        if (gui.PBotScriptlistold.show(!gui.PBotScriptlistold.visible)) {
-                            gui.PBotScriptlistold.raise();
-                            gui.fitwdg(gui.PBotScriptlistold);
-                            setfocus(gui.PBotScriptlistold);
+                    }
+            ));
+        }
+        if(Config.showPBotOld) {
+            addSpecial(new SpecialPagina(this, "paginae::amber::pbotmenuold",
+                    Resource.local().load("paginae/purus/PBotMenuOld"),
+                    (pag) -> {
+                        GameUI gui = gameui();
+                        if (gui != null) {
+                            if (gui.PBotScriptlistold.show(!gui.PBotScriptlistold.visible)) {
+                                gui.PBotScriptlistold.raise();
+                                gui.fitwdg(gui.PBotScriptlistold);
+                                setfocus(gui.PBotScriptlistold);
+                            }
                         }
-                    }}
-        ));
+                    }
+            ));
+        }
         addSpecial(new SpecialPagina(this, "paginae::windows::char",
                 Resource.local().load("paginae/windows/char"),
                 (pag) -> {

@@ -35,7 +35,7 @@ public class PBotScriptlistOld extends Window {
 		add(list, new Coord(10, 35));
 		pack();
 	}
-	
+
 	@Override
 	public boolean show(boolean show) {
 		if(show) {

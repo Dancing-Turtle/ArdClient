@@ -98,6 +98,7 @@ public class DefSettings {
 	public static final IndirSetting<Color> ANIMALDANGERCOLOR = new IndirSetting<>(global, "gameplay.danger-color");         //[RGBA] Color of animal radii circles
 	public static final IndirSetting<Color> SUPPORTDANGERCOLOR = new IndirSetting<>(global, "gameplay.support-color");       //[RGBA] Color of mine suport radii circles
 	public static final IndirSetting<Color> CHEESERACKMISSINGCOLOR = new IndirSetting<>(global, "gameplay.cheeserack-color");//[RGBA] Color of cheese racks missing trays
+	public static final IndirSetting<Color> GARDENPOTDONECOLOR = new IndirSetting<>(global, "gameplay.gardenpot-color");//[RGBA] Color of cheese racks missing trays
 	public static final IndirSetting<Boolean> SHOWQUALITY = new IndirSetting<>(global, "gameplay.show-item-quality");        //[Bool] Toggle item quality
 	public static final IndirSetting<Boolean> SHOWWEAR = new IndirSetting<>(global, "gameplay.show-item-wear");              //[Bool] Toggle item wear bar
 	public static final IndirSetting<Boolean> SHOWCMETER = new IndirSetting<>(global, "gameplay.show-content-meter");        //[Bool] Toggle item content bar
@@ -245,6 +246,7 @@ public class DefSettings {
 		ANIMALDANGERCOLOR.ensure(new Color(255,0,0,80));
 		SUPPORTDANGERCOLOR.ensure(new Color(0,255,0,80));
 		CHEESERACKMISSINGCOLOR.ensure(Color.GREEN);
+		GARDENPOTDONECOLOR.ensure(Color.BLACK);
 		SHOWQUALITY.ensure(true);
 		SHOWWEAR.ensure(true);
 		SHOWCMETER.ensure(true);

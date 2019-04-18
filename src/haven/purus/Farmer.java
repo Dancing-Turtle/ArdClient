@@ -202,7 +202,6 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 					PBotUtils.sysMsg("Please select a container by holding alt and clicking it before starting if using barrel or replantbarrel.", Color.white);
 				}
 				else if (a != null && b != null) {
-				//	System.out.println(a + "" + b);
 					// Start barley farmer and close this window
 					SeedCropFarmer bf =
 							new SeedCropFarmer(a, b, "gfx/terobjs/plants/barley", "gfx/invobjs/seed-barley", 3, replant, containeronly, replantcontainer, containers,stockpile,stockpileLocs);

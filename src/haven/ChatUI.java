@@ -701,7 +701,6 @@ public class ChatUI extends Widget {
                 for(TextChannel loop:haven.automation.Discord.channels)
                     if (loop.getName().equals(Config.discordchannel) && !Discord.discordmessage) {
                         loop.sendMessage(gui.getparent(GameUI.class).buddies.getCharName() + ": " + text).queue();
-                       // System.out.println("Discord message5 : "+Discord.discordmessage);
                     }else
                         Discord.SwitchMessageFlag();
             }
@@ -905,8 +904,6 @@ public class ChatUI extends Widget {
                         for (TextChannel loop : haven.automation.Discord.channels) {
                             if (loop.getName().equals(Config.discordchannel)) {
                                 loop.sendMessage(name + ": " + cmsg.text().text).queue();
-                             //   Discord.SwitchMessageFlag();
-                              //  System.out.println("Discord message3 : " + Discord.discordmessage);
                             }
                         }
                     }
@@ -1370,9 +1367,6 @@ public class ChatUI extends Widget {
             this.chan = chan;
             this.msg = msg;
             this.chnm = chansel.nf[0].render(chan.name());
-           // System.out.println("Channel sel : "+chnm.text);
-            //System.out.println("Channel sel : "+chan.name());
-            //System.out.println("Channel sel : "+chansel.nf[0].toString());
 try {
     if(haven.automation.Discord.channels != null) {
         for (TextChannel channel : haven.automation.Discord.channels) {

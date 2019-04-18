@@ -80,7 +80,6 @@ public class AudioSprite {
         public ClipSprite(Owner owner, Resource res, Resource.Audio clip) {
             super(owner, res);
             haven.Audio.CS stream = clip.stream();
-        //    System.out.println("audiosprite res name : "+res.name);
             if (Config.sfxchipvol != 1.0 && "sfx/chip".equals(res.name))
                 stream = new Audio.VolAdjust(stream, Config.sfxchipvol);
             else if ("sfx/squeak".equals(res.name))

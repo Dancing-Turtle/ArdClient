@@ -309,6 +309,18 @@ public class Window extends MovableWidget implements DTarget {
         return sb.toString();
     }
 
+    String sensibleLPFormat(int LP) {
+        StringBuilder sb = new StringBuilder();
+        int thousands = new Double(LP / 1000).intValue();
+
+        if (thousands > 0) {
+            sb.append(thousands + "k LP");
+        }
+        else
+            sb.append(LP + " LP");
+        return sb.toString();
+    }
+
     private List<WItem> getfoods(Inventory inv){
         List<WItem> getfoods = inv.getItemsPartial("");
         return getfoods;
@@ -431,12 +443,14 @@ public class Window extends MovableWidget implements DTarget {
                 int totalAttn = 0;
                 HashMap<String, Double> studyTimes = new HashMap<String, Double>();
                 HashMap<String, Integer> AttnTotal = new HashMap<String, Integer>();
+                List<Curio> curiolist = new ArrayList<>();
                 for (Widget wdg = this.lchild; wdg != null; wdg = wdg.prev) {
                     if (wdg instanceof Inventory) {
                         for (WItem item : ((Inventory) wdg).wmap.values()) {
                             try {
                                 Curiosity ci = ItemInfo.find(Curiosity.class, item.item.info());
                                 totalLP += ci.exp;
+                                curiolist.add(new Curio(item.item.getname(), studyTimes.get(item.item.getname()) == null ? item.item.studytime : studyTimes.get(item.item.getname()) + item.item.studytime,ci.exp));
                                 studyTimes.put(item.item.getname(), studyTimes.get(item.item.getname()) == null ? item.item.studytime : studyTimes.get(item.item.getname()) + item.item.studytime);
                                 AttnTotal.put(item.item.getname(), AttnTotal.get(item.item.getname()) == null ? ci.mw : AttnTotal.get(item.item.getname()));
                             }catch(NullPointerException qq){}
@@ -455,8 +469,14 @@ public class Window extends MovableWidget implements DTarget {
                 List<Map.Entry<String, Double>> lst = studyTimes.entrySet().stream().sorted((e1, e2)-> e1.getValue().compareTo(e2.getValue())).collect(Collectors.toList());
                 for(Map.Entry<String, Double> entry : lst) {
                 CurioCounter.add(entry.getKey());
+                    int LP = 0;
+                    for(Curio c : curiolist){
+                        if(c.CurioName.equals(entry.getKey()))
+                            LP += c.LPGain;
+                    }
                     if (entry.getValue() > Config.curiotimetarget * 3) {
-                        g.image(Text.labelFnd.render(entry.getKey() + ": " + sensibleTimeFormat(entry.getValue()), CURIOHIGH.get()).tex(), new Coord(30, y));
+
+                        g.image(Text.labelFnd.render(entry.getKey() + ": " + sensibleTimeFormat(entry.getValue())+ " - "+sensibleLPFormat(LP), CURIOHIGH.get()).tex(), new Coord(30, y));
                         y += 15;
                         sizeY += 15;
                         for (int i = 0; i < Curios.size(); i++) {
@@ -467,7 +487,7 @@ public class Window extends MovableWidget implements DTarget {
                         GetCurios.add(entry.getKey());
                     }
                     else if (entry.getValue() < Config.curiotimetarget) {
-                        g.image(Text.labelFnd.render(entry.getKey() + ": " + sensibleTimeFormat(entry.getValue()), CURIOLOW.get()).tex(), new Coord(30, y));
+                        g.image(Text.labelFnd.render(entry.getKey() + ": " + sensibleTimeFormat(entry.getValue())+ " - "+sensibleLPFormat(LP), CURIOLOW.get()).tex(), new Coord(30, y));
                         y += 15;
                         sizeY += 15;
                         for (int i = 0; i < Curios.size(); i++) {
@@ -478,7 +498,7 @@ public class Window extends MovableWidget implements DTarget {
                         GetCurios.add(entry.getKey());
 
                     } else {
-                        g.image(Text.labelFnd.render(entry.getKey() + ": " + sensibleTimeFormat(entry.getValue()), CURIOTARGET.get()).tex(), new Coord(30, y));
+                        g.image(Text.labelFnd.render(entry.getKey() + ": " + sensibleTimeFormat(entry.getValue())+ " - "+sensibleLPFormat(LP), CURIOTARGET.get()).tex(), new Coord(30, y));
                         y += 15;
                         sizeY += 15;
                         for (int i = 0; i < Curios.size(); i++) {
@@ -511,7 +531,6 @@ public class Window extends MovableWidget implements DTarget {
                     curiolow = add(ColorPreWithLabel("Low Color", CURIOLOW), new Coord(0, y + 35));
                     studyhours = add(new Label(""), new Coord(140, y + 40));
                     curiosliderlabel = add(new Label("Curio Time Target:"), new Coord(0, y + 50));
-                  //  System.out.println("adding new sliders and stuff");
                     curioslider = add(new HSlider(130, 0, 10080, Config.curiotimetarget) {
                         public void added() {
                             updateLabel();
@@ -561,7 +580,18 @@ public class Window extends MovableWidget implements DTarget {
     	}
     }
 
-    public void draw(GOut g) {
+    public class Curio{
+        private String CurioName;
+        private double StudyTime;
+        private int LPGain;
+        public Curio(String CurioName, double StudyTime, int LPGain) {
+           this.CurioName = CurioName;
+           this.StudyTime = StudyTime;
+           this.LPGain = LPGain;
+        }
+    }
+
+        public void draw(GOut g) {
         if(!hidden) {
             drawframe(g);
         }

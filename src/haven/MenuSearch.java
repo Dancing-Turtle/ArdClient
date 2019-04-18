@@ -15,7 +15,8 @@ public class MenuSearch extends Window implements ObservableListener<MenuGrid.Pa
         setfocusctl(true);
         entry = add(new TextEntry(WIDTH, "") {
             public void activate(String text) {
-                act(list.sel.pagina);
+                if(list.sel != null)
+                    act(list.sel.pagina);
                 MenuSearch.this.hide();
             }
 

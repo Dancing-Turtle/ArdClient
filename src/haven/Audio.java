@@ -604,12 +604,10 @@ public class Audio {
 
     public static void play(Resource res, double vol)
     {
-       // System.out.println("sound with vol from res : "+res.name);
         play(new Audio.VolAdjust(fromres(res), vol));
     }
 
     public static void play(final Indir<Resource> clip) {
-      //  System.out.println("sound from clip : "+clip.get().name);
         queue(new Runnable() {
             public void run() {
                 try {

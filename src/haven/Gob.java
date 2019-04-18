@@ -54,7 +54,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
     private static final Material.Colors cupboardempty = new Material.Colors(new Color(0, 255, 0, 175));
     private static final Material.Colors dframeWater = new Material.Colors(new Color(0, 0, 255, 200));
     private static final Material.Colors dframeBark = new Material.Colors(new Color(165, 42, 42, 200));
-    private static final Material.Colors potDOne = new Material.Colors(new Color(0, 0, 0, 255));
+    private static final Material.Colors potDOne = new Material.Colors(DefSettings.GARDENPOTDONECOLOR.get());
     public static Gob.Overlay animalradius = new Gob.Overlay(new BPRadSprite(100.0F, -10.0F, BPRadSprite.smatDanger));
     public static Gob.Overlay doubleanimalradius = new Gob.Overlay(new BPRadSprite(200.0F, -20.0F, BPRadSprite.smatDanger));
 
@@ -445,6 +445,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
         StringBuilder sb = new StringBuilder();
         sb.append("Res: " ); sb.append(resname().orElse(""));
         sb.append(" ["); sb.append(id); sb.append("]\n");
+        sb.append("Type: " );sb.append(type); sb.append("\n");
         sb.append("staticp: "); sb.append(staticp() != null ? "static" : "dynamic"); sb.append("\n");
         final Holding holding = getattr(Holding.class);
         if(holding != null) {

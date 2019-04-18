@@ -193,7 +193,9 @@ public class Config {
     public static int combatkeys =  Utils.getprefi("combatkeys", 0);
     public static boolean logcombatactions =  Utils.getprefb("logcombatactions", false);
     public static boolean autopickmussels =  Utils.getprefb("autopickmussels", false);
-    public static boolean autopickclay =  Utils.getprefb("autopickclay", false);
+    public static boolean autopickclay =  Utils.getprefb("autopickclay", true);
+    public static boolean autopickbarnacles =  Utils.getprefb("autopickbarnacles", false);
+    public static boolean autopickcattails =  Utils.getprefb("autopickcattails", false);
     //public static boolean studydeskalerts =  Utils.getprefb("studydeskalerts", false);
     public static boolean confirmmagic =  Utils.getprefb("confirmmagic", true);
     public static boolean disablemagaicmenugrid =  Utils.getprefb("disablemagaicmenugrid", false);
@@ -217,6 +219,7 @@ public class Config {
     public static boolean abandonrightclick = Utils.getprefb("abandonrightclick", false);
     public static boolean DropEntrails = Utils.getprefb("DropEntrails", false);
     public static boolean DropIntestines = Utils.getprefb("DropIntestines", false);
+    public static boolean DropCattails = Utils.getprefb("DropCattails", false);
     public static boolean StarveAlert = Utils.getprefb("StarveAlert", true);
     public static boolean stackwindows = Utils.getprefb("stackwindows", false);
     public static boolean autodrink = Utils.getprefb("autodrink", false);
@@ -284,7 +287,8 @@ public class Config {
     public static String confid = "ArdClient";
     public static final boolean isUpdate;
     private static String username, playername;
-
+    public static boolean showPBot = Utils.getprefb("showPBot",true);
+    public static boolean showPBotOld = Utils.getprefb("showPBotOld",true);
     public static int AmbientRed = Utils.getprefi("AmbientRed",200);
     public static int AmbientGreen = Utils.getprefi("AmbientGreen",200);
     public static int AmbientBlue = Utils.getprefi("AmbientBlue",200);

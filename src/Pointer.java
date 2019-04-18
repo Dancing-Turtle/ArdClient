@@ -137,7 +137,10 @@ public class Pointer extends Widget {
 	final Coord2d gobrc;
 	if (questgob != null) {
 	    try {
-		gobsc = (getparent(GameUI.class)).map.screenxf(questgob.getc());
+	    	Coord3f cc = questgob.getc();
+			if(Config.disableelev)
+				cc.z = 0;
+		gobsc = (getparent(GameUI.class)).map.screenxf(cc);
 		gobrc = questgob.rc;
 	    } catch (Loading localLoading) {
 		return;

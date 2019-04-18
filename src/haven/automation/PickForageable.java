@@ -69,11 +69,15 @@ public class PickForageable implements Runnable {
         }
         if (herb == null)
             return;
-
         gui.map.wdgmsg("click", herb.sc, herb.rc.floor(posres), 3, 0, 0, (int) herb.id, herb.rc.floor(posres), 0, -1);
         if ((herb.getres().basename().contains("mussel") || herb.getres().basename().contains("oyster")) && Config.autopickmussels)
             gui.map.startMusselsPicker(herb);
         if(herb.getres().basename().contains("clay-gray") && Config.autopickclay)
-            gui.map.startClayPicker(herb);
+            gui.map.startMusselsPicker(herb);
+        if(herb.getres().basename().contains("goosebarnacle") && Config.autopickbarnacles)
+            gui.map.startMusselsPicker(herb);
+        if(herb.getres().basename().contains("cattail") && Config.autopickcattails)
+            gui.map.startMusselsPicker(herb);
+
     }
 }

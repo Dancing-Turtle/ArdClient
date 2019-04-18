@@ -139,7 +139,6 @@ public class SteelRefueler extends Window implements GobSelectCallback {
                     int fuelticks = 5; // branch
 
                     // navigate to crucible
-                  //  System.out.println("Before move to crucible");
                   //  gui.map.pfRightClick(c, -1, 3, 1, null);
                     PBotUtils.pfRightClick(c,0);
                     try {
@@ -147,7 +146,6 @@ public class SteelRefueler extends Window implements GobSelectCallback {
                     } catch (InterruptedException e) {
                         return;
                     }
-                    //System.out.println("After move to crucible");
 
                     if (terminate)
                         return;
@@ -204,7 +202,6 @@ public class SteelRefueler extends Window implements GobSelectCallback {
                     int fueltoload = (100 - vm.amount) / fuelticks;
 
                     // take fuel
-                   // System.out.println("Take fuel");
                     if(fuel == null){//this shouldn't happen, assume the worst and just close.
                         terminate = true;
                         terminate();
@@ -223,8 +220,6 @@ public class SteelRefueler extends Window implements GobSelectCallback {
                         }
                     }
                     int curbranches = gui.maininv.getItemPartialCount("Branch");
-                 //   System.out.println("branches : "+curbranches);
-                 //   System.out.println("Loading : "+fueltoload);
                     int freeslots = PBotUtils.invFreeSlots();
                     for (; fueltoload > 0; fueltoload--) {
 

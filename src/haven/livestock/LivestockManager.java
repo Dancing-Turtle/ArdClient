@@ -553,37 +553,31 @@ public class LivestockManager extends ResizableWnd {
             milk = val;
         if(meat > 0 && quality > 0 && !combinedmeat){
             pendingAnimal.put("Meat quality2:", quality * meat / 100);
-         //   System.out.println("attributes status : "+pendingAnimal.hasAllAttributes()+" size : "+pendingAnimal.size()+" resolved combined meat");
             pendingAnimal.attributeResolved();
             combinedmeat = true;
         }
         if(milk > 0 && quality > 0 && !combinedmilk){
             pendingAnimal.put("Milk quality2:", quality * milk / 100);
-          //  System.out.println("attributes status : "+pendingAnimal.hasAllAttributes()+" size : "+pendingAnimal.size()+" resolved combined milk");
             pendingAnimal.attributeResolved();
             combinedmilk = true;
         }
         if(hide > 0 && quality > 0 && !combinedhide){
             pendingAnimal.put("Hide quality2:", quality * hide / 100);
-          //  System.out.println("attributes status : "+pendingAnimal.hasAllAttributes()+" size : "+pendingAnimal.size()+" resolved combined hide");
             pendingAnimal.attributeResolved();
             combinedhide = true;
         }
         if (quality > 0 && breedquality > 0 && !combined) {
             pendingAnimal.put("Combined quality:", quality + breedquality);
-          //  System.out.println("attributes status : "+pendingAnimal.hasAllAttributes()+" size : "+pendingAnimal.size()+" resolved combined quality");
             pendingAnimal.attributeResolved();
             combined = true;
         }
         pendingAnimal.put(name, val);
         pendingAnimal.attributeResolved();
-       // System.out.println("attributes status : "+pendingAnimal.hasAllAttributes()+" size : "+pendingAnimal.size()+" resolved is "+name);
 
 
 
 
         if (pendingAnimal.hasAllAttributes()) {
-          //  System.out.println("has all attributes");
             combined = false;
             combinedmeat = false;
             combinedmilk = false;

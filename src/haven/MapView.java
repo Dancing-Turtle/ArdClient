@@ -2306,10 +2306,14 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                             clearmovequeue();
                         }
                         wdgmsg("click", args);
-                        if (Config.autopickmussels && (gob.getres().basename().equals("mussels") || gob.getres().basename().equals("oyster")))
+                        if (Config.autopickmussels && gob.getres() != null && (gob.getres().basename().equals("mussels") || gob.getres().basename().equals("oyster")))
                             startMusselsPicker(gob);
-                        if (Config.autopickclay && gob.getres().basename().equals("clay-gray"))
-                            startClayPicker(gob);
+                        if (Config.autopickclay && gob.getres() != null &&  gob.getres().basename().equals("clay-gray"))
+                            startMusselsPicker(gob);
+                        if (Config.autopickbarnacles && gob.getres() != null &&  gob.getres().basename().equals("goosebarnacle"))
+                            startMusselsPicker(gob);
+                        if (Config.autopickcattails && gob.getres() != null &&  gob.getres().basename().equals("cattail"))
+                            startMusselsPicker(gob);
                     }
                 }
             }
@@ -3052,10 +3056,6 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     public void startMusselsPicker(Gob gob) {
         musselPicker = new Thread(new MusselPicker(gameui(), gob), "MusselPicker");
         musselPicker.start();
-    }
-    public void startClayPicker(Gob gob) {
-        clayPicker = new Thread(new ClayPicker(gameui(), gob), "ClayPicker");
-        clayPicker.start();
     }
 
     private void showSpecialMenu(final Gob g) {

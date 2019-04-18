@@ -42,7 +42,7 @@ public class GobHealth extends GAttrib {
 	    Text.renderstroked("50%", Color.WHITE, Color.BLACK, Gob.gobhpf).tex(),
 	    Text.renderstroked("75%", Color.WHITE, Color.BLACK, Gob.gobhpf).tex()
     };
-    int hp;
+    public int hp;
     Material.Colors fx;
     public PView.Draw2D hpfx;
 
