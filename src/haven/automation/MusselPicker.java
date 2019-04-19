@@ -41,8 +41,12 @@ public class MusselPicker implements Runnable {
                 for (Gob gob : gui.map.glob.oc) {
                     try {
                         Resource res = gob.getres();
-                        if (res != null && (res.name.equals("gfx/terobjs/herbs/mussels") || res.name.equals("gfx/terobjs/herbs/clay-gray") ||
-                                res.name.equals("gfx/terobjs/herbs/oyster") || res.name.equals("gfx/terobjs/herbs/goosebarnacle") || res.name.equals("gfx/terobjs/herbs/cattail"))) {
+                        if (res != null && (res.name.equals("gfx/terobjs/herbs/mussels") ||
+                                res.name.equals("gfx/terobjs/herbs/clay-gray") ||
+                                res.name.equals("gfx/terobjs/herbs/oyster") ||
+                                res.name.equals("gfx/terobjs/herbs/goosebarnacle") ||
+                                res.name.equals("gfx/terobjs/herbs/cattail") ||
+                                res.name.equals("gfx/kritter/jellyfish/jellyfish"))) {
                             if (closestsMussel == null || gob.rc.dist(initMussel.rc) < closestsMussel.rc.dist(initMussel.rc))
                                 closestsMussel = gob;
                         }

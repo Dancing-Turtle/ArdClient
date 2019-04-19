@@ -1068,8 +1068,6 @@ public class OptWnd extends Window {
             if (gui != null) {
                 if (gui.map != null) {
                     MapView.rovlbeehive = new Gob.Overlay(new BPRadSprite(151.0F, -10.0F, BPRadSprite.smatBeehive));
-                    gui.map.glob.oc.refreshalloverlays();
-                    gui.map.glob.oc.changeAllGobs();
                     gui.map.refreshGobsAll();
                 }
             }
@@ -1080,8 +1078,6 @@ public class OptWnd extends Window {
             if (gui != null) {
                 if (gui.map != null) {
                     MapView.rovltrough = new Gob.Overlay(new BPRadSprite(200.0F, -10.0F, BPRadSprite.smatTrough));
-                    gui.map.glob.oc.refreshalloverlays();
-                    gui.map.glob.oc.changeAllGobs();
                     gui.map.refreshGobsAll();
                 }
             }
@@ -1093,8 +1089,6 @@ public class OptWnd extends Window {
                 if (gui.map != null) {
                     Gob.animalradius = new Gob.Overlay(new BPRadSprite(100.0F, -10.0F, BPRadSprite.smatDanger));
                     Gob.doubleanimalradius = new Gob.Overlay(new BPRadSprite(200.0F, -20.0F, BPRadSprite.smatDanger));
-                    gui.map.glob.oc.refreshalloverlays();
-                    gui.map.glob.oc.changeAllGobs();
                     gui.map.refreshGobsAll();
                 }
             }
@@ -1107,8 +1101,6 @@ public class OptWnd extends Window {
                     MapView.rovlsupport = new Gob.Overlay(new BPRadSprite(100.0F, 0, BPRadSprite.smatSupports));
                     MapView.rovlcolumn = new Gob.Overlay(new BPRadSprite(125.0F, 0, BPRadSprite.smatSupports));
                     MapView.rovlbeam = new Gob.Overlay(new BPRadSprite(150.0F, 0, BPRadSprite.smatSupports));
-                    gui.map.glob.oc.refreshalloverlays();
-                    gui.map.glob.oc.changeAllGobs();
                     gui.map.refreshGobsAll();
                 }
             }

@@ -160,6 +160,7 @@ INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/trees/persimmon
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/trees/mayflower', (SELECT type_id FROM type WHERE name_key = 'TREE'));
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/trees/towercap', (SELECT type_id FROM type WHERE name_key = 'TREE'));
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/trees/medlartree', (SELECT type_id FROM type WHERE name_key = 'TREE'));
+INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/trees/oldtrunk', (SELECT type_id FROM type WHERE name_key = 'TREE'));
 --Bushes
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/bushes/arrowwood', (SELECT type_id FROM type WHERE name_key = 'BUSH'));
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/bushes/crampbark', (SELECT type_id FROM type WHERE name_key = 'BUSH'));
