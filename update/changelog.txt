@@ -1,3 +1,9 @@
+1.00.134
+Fixed steel refueler using the wrong pathfinder and causing a crash due to it.
+Restructured menu settings so that you can mousewheel scroll the automatic selection list once again. Moved Cattail Head/Root autodrop to general settings near the mining autodrop options. 
+Reverted Oven/Smelter filler to old pathfinder. 
+~
+
 1.00.133
 Added toggles to "Menu Settings" to autopick clustered Gooseneck Barnacles and Cattails, and a toggle to autodrop Cattail Roots/Heads (Only keep Fibres) 
 Added total LP per curio to study desk window. 

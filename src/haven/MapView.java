@@ -2306,14 +2306,19 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                             clearmovequeue();
                         }
                         wdgmsg("click", args);
-                        if (Config.autopickmussels && gob.getres() != null && (gob.getres().basename().equals("mussels") || gob.getres().basename().equals("oyster")))
+                        if(gob != null && gob.getres() != null) {
+                            CheckListboxItem itm = Config.autoclusters.get(gob.getres().name);
+                            if (itm != null && itm.selected)
+                                startMusselsPicker(gob);
+                        }
+                     /*   if (Config.autopickmussels && gob.getres() != null && (gob.getres().basename().equals("mussels") || gob.getres().basename().equals("oyster")))
                             startMusselsPicker(gob);
                         if (Config.autopickclay && gob.getres() != null &&  gob.getres().basename().equals("clay-gray"))
                             startMusselsPicker(gob);
                         if (Config.autopickbarnacles && gob.getres() != null &&  gob.getres().basename().equals("goosebarnacle"))
                             startMusselsPicker(gob);
                         if (Config.autopickcattails && gob.getres() != null &&  gob.getres().basename().equals("cattail"))
-                            startMusselsPicker(gob);
+                            startMusselsPicker(gob);*/
                     }
                 }
             }

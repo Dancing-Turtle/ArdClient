@@ -1702,6 +1702,17 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
+        appender.add(new CheckBox("Automatically drop Cattail Heads/Roots (Only keep fibres)") {
+            {
+                a = Config.DropCattails;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("DropCattails", val);
+                Config.DropCattails = val;
+                a = val;
+            }
+        });
         appender.add(new CheckBox("Shoo animals with Ctrl+Left Click") {
             {
                 a = Config.shooanimals;
@@ -2419,63 +2430,20 @@ public class OptWnd extends Window {
         appender.setVerticalMargin(VERTICAL_MARGIN);
         appender.setHorizontalMargin(HORIZONTAL_MARGIN);
 
-        appender.add(new CheckBox("Automatically pick all clustered mussels (auto 'Pick' needs to be enabled)") {
-            {
-                a = Config.autopickmussels;
+        flowermenus.add(new Label("Autopick Clusters:"), new Coord(150,0));
+        CheckListbox clusterlist = new CheckListbox(140, 17) {
+            @Override
+            protected void itemclick(CheckListboxItem itm, int button) {
+                super.itemclick(itm, button);
+                Utils.setprefchklst("clustersel", Config.autoclusters);
             }
+        };
+        Utils.loadprefchklist("clustersel", Config.autoclusters);
+        clusterlist.items.addAll(Config.autoclusters.values());
+        flowermenus.add(clusterlist, new Coord(150, 20));
 
-            public void set(boolean val) {
-                Utils.setprefb("autopickmussels", val);
-                Config.autopickmussels = val;
-                a = val;
-            }
-        });
-        appender.add(new CheckBox("Automatically pick all clustered gray clay (auto 'Pick' needs to be enabled)") {
-            {
-                a = Config.autopickclay;
-            }
 
-            public void set(boolean val) {
-                Utils.setprefb("autopickclay", val);
-                Config.autopickclay = val;
-                a = val;
-            }
-        });
-        appender.add(new CheckBox("Automatically pick all clustered Gooseneck Barnacles (auto 'Pick' needs to be enabled)") {
-            {
-                a = Config.autopickbarnacles;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("autopickbarnacles", val);
-                Config.autopickbarnacles = val;
-                a = val;
-            }
-        });
-        appender.add(new CheckBox("Automatically pick all clustered Cattails (auto 'Pick' needs to be enabled)") {
-            {
-                a = Config.autopickcattails;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("autopickcattails", val);
-                Config.autopickcattails = val;
-                a = val;
-            }
-        });
-         appender.add(new CheckBox("Automatically drop Cattail Heads/Roots (Only keep fibres)") {
-            {
-                a = Config.DropCattails;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("DropCattails", val);
-                Config.DropCattails = val;
-                a = val;
-            }
-        });
-        appender.add(new Label("Automatic selecton:"));
-
+        flowermenus.add(new Label("Automatic selecton:"), new Coord(0,0));
         CheckListbox flowerlist = new CheckListbox(140, 17) {
             @Override
             protected void itemclick(CheckListboxItem itm, int button) {
@@ -2483,11 +2451,9 @@ public class OptWnd extends Window {
                 Utils.setprefchklst("flowersel", Config.flowermenus);
             }
         };
-
         Utils.loadprefchklist("flowersel", Config.flowermenus);
-        for (CheckListboxItem itm : Config.flowermenus.values())
-            flowerlist.items.add(itm);
-        appender.add(flowerlist);
+        flowerlist.items.addAll(Config.flowermenus.values());
+        flowermenus.add(flowerlist, new Coord(0, 20));
 
         flowermenus.add(new PButton(200, "Back", 27, main), new Coord(210, 360));
         flowermenus.pack();

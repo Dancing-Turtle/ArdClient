@@ -364,13 +364,11 @@ public class SteelRefueler extends Window implements GobSelectCallback {
                     continue;
             }
 
-            // navigate to the stockpile and load up on fuel
-            gameui().map.purusPfRightClick(s, -1, 3, 1, null);
-            try {
-                gui.map.pfthread.join();
-            } catch (InterruptedException e) {
-                return;
-            }
+            PBotUtils.pfRightClick(s,1);
+            while(!PBotUtils.player().isMoving())
+                PBotUtils.sleep(10); //wait to start moving
+            while(PBotUtils.player().isMoving())
+                PBotUtils.sleep(10); //wait till we stop moving
 
             // return if got enough fuel
             int availableFuelCoal = gui.maininv.getItemPartialCount("Coal");
