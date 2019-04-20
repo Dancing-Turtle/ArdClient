@@ -1,3 +1,7 @@
+1.00.136
+Added minimap icons for lobster pots and fishing nets.
+~
+
 1.00.135
 Added jellyfish to cluster picking options.
 Fixed minimap toggle to highlight mirkwood logs not working.

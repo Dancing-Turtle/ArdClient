@@ -469,7 +469,7 @@ public class Config {
         put("medlar", new CheckListboxItem("Medlar"));
     }};
 
-    public final static HashMap<String, CheckListboxItem> icons = new HashMap<String, CheckListboxItem>(62) {{
+    public final static HashMap<String, CheckListboxItem> icons = new HashMap<String, CheckListboxItem>(66) {{
         put("dandelion", new CheckListboxItem("Dandelion"));
         put("chantrelle", new CheckListboxItem("Chantrelle"));
         put("blueberry", new CheckListboxItem("Blueberry"));
@@ -533,6 +533,9 @@ public class Config {
         put("mole", new CheckListboxItem("Moles"));
         put("lorchel", new CheckListboxItem("Morels"));
         put("frogscrown", new CheckListboxItem("Frog's Crown"));
+        put("lobsterpot", new CheckListboxItem("Lobster Pot"));
+        put("fishingnet", new CheckListboxItem("Fishing Net"));
+
     }};
 
     public final static HashMap<String, CheckListboxItem> flowermenus = new HashMap<String, CheckListboxItem>(35) {{
@@ -623,7 +626,7 @@ public class Config {
         put("Easter Egg", new CheckListboxItem("Easter Egg"));
     }};
 
-    public final static Map<String, Tex> additonalicons = new HashMap<String, Tex>(18) {{
+    public final static Map<String, Tex> additonalicons = new HashMap<String, Tex>(21) {{
         put("gfx/terobjs/vehicle/bram", Resource.loadtex("gfx/icons/bram"));
         put("gfx/kritter/toad/toad", Resource.loadtex("gfx/icons/toad"));
         put("gfx/terobjs/vehicle/rowboat", Resource.loadtex("gfx/icons/rowboat"));
@@ -643,6 +646,8 @@ public class Config {
         put("gfx/kritter/nidbane/nidbane", Resource.loadtex("gfx/icons/spooky"));
         put("gfx/kritter/irrbloss/irrbloss", Resource.loadtex("gfx/icons/irrbloss"));
         put("gfx/kritter/opiumdragon/opiumdragon", Resource.loadtex("gfx/icons/opiumdragon"));
+        put("gfx/terobjs/lobsterpot", Resource.loadtex("gfx/icons/lobsterpot"));
+        put("gfx/terobjs/fishingnet", Resource.loadtex("gfx/icons/fishingnet"));
     }};
 
     public final static HashMap<String, CheckListboxItem> alarmitems = new HashMap<String, CheckListboxItem>(52) {{
