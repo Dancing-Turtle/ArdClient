@@ -45,8 +45,11 @@ public class CoalToSmelters extends Window implements GobSelectCallback {
     public Thread runner, light, autodropper, selectingarea, oreselectingarea, orefiller;
     private int countretain;
     public static int delay = 100;
-    public Equipory e;
-    public boolean noltorch;
+    private Equipory e;
+    private boolean noltorch;
+    private String pathfinder = "boshaw";
+    private CheckBox boshawpf, puruspf, amberpf;
+
 
    List<String> invobjs = Arrays.asList("Bloodstone", "Cassiterite", "Chalcopyrite", "Cinnabar", "Malachite",
             "Heavy Earth", "Iron Ochre","Black Ore","Galena","Silvershrine","Horn Silver","Direvein","Schrifterz","Leaf Ore","Meteorite");
@@ -61,7 +64,7 @@ public class CoalToSmelters extends Window implements GobSelectCallback {
     public CoalToSmelters(GameUI gui) {
 
 
-        super(new Coord(270, 215), "Add Coal To Smelters");
+        super(new Coord(270, 265), "Add Coal To Smelters");
 
         final Label lbl = new Label("Alt + Click to select Ovens or Smelters", infof);
         add(lbl, new Coord(53, 0));
@@ -190,7 +193,7 @@ public class CoalToSmelters extends Window implements GobSelectCallback {
                 }
             }
         };
-        add(swapbtn, new Coord(179, 190));
+        add(swapbtn, new Coord(179, 185));
         areaSelBtn = new Button(100, "Select") {
             @Override
             public void click() {
@@ -229,6 +232,57 @@ public class CoalToSmelters extends Window implements GobSelectCallback {
             }
         };
         add(orefill, new Coord(0, 143));
+
+        boshawpf = new CheckBox("Sloth pathfinding - Most Accurate"){
+            {
+                a = true;
+            }
+
+            public void set(boolean val) {
+                a = val;
+                if(a) {
+                    pathfinder = "boshaw";
+                    puruspf.a = false;
+                    amberpf.a = false;
+                }
+            }
+        };
+        add(boshawpf, new Coord(40, 205));
+
+        //        add(areaSelBtn, new Coord(80, 185));
+
+        puruspf = new CheckBox("Purus pathfinding - Accurate but Slow"){
+            {
+                a = false;
+            }
+
+            public void set(boolean val) {
+                a = val;
+                if(a) {
+                    pathfinder = "purus";
+                    boshawpf.a = false;
+                    amberpf.a = false;
+                }
+            }
+        };
+        add(puruspf, new Coord(40, 225));
+
+        amberpf = new CheckBox("Amber pathfinding - Not advised"){
+            {
+                a = false;
+            }
+
+            public void set(boolean val) {
+                a = val;
+                if(a) {
+                    pathfinder = "amber";
+                    boshawpf.a = false;
+                    puruspf.a = false;
+                }
+            }
+        };
+        add(amberpf, new Coord(40, 245));
+
 if(Config.dropsmelterstones && !autodropperon &&  autodropper == null) {
     autodropper = new Thread(new CoalToSmelters.autodropper(), "Add Coal To Smelters");
     autodropper.start();
@@ -342,7 +396,17 @@ if(Config.dropsmelterstones && !autodropperon &&  autodropper == null) {
                             getore();
                         System.out.println("ore count : " + availableore);
                         System.out.println("before click");
-                        PBotUtils.pfRightClick(gob, 0);
+                        switch(pathfinder){
+                            case "boshaw":
+                                PBotUtils.PathfinderRightClick(gob,0);
+                                break;
+                            case "purus":
+                                PBotUtils.pfRightClick(gob,0);
+                                break;
+                            case "amber":
+                                PBotAPI.gui.map.pfRightClick(gob,-1,3,0,null);
+                                break;
+                        }
                         while(!PBotUtils.player().isMoving())
                             PBotUtils.sleep(10); //wait to start moving
                         while(PBotUtils.player().isMoving())
@@ -362,7 +426,17 @@ if(Config.dropsmelterstones && !autodropperon &&  autodropper == null) {
                                 Coord finalloc = new Coord(x, y);
                                 gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
                                 PBotUtils.sleep(1000);
-                                PBotUtils.pfRightClick(gob, 0);
+                                switch(pathfinder){
+                                    case "boshaw":
+                                        PBotUtils.PathfinderRightClick(gob,0);
+                                        break;
+                                    case "purus":
+                                        PBotUtils.pfRightClick(gob,0);
+                                        break;
+                                    case "amber":
+                                        PBotAPI.gui.map.pfRightClick(gob,-1,3,0,null);
+                                        break;
+                                }
                                 unstucktimer = 0;
                             }
                             PBotUtils.sleep(50);
@@ -384,7 +458,17 @@ if(Config.dropsmelterstones && !autodropperon &&  autodropper == null) {
                                 Coord finalloc = new Coord(x, y);
                                 gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
                                 PBotUtils.sleep(1000);
-                                PBotUtils.pfRightClick(gob, 0);
+                                switch(pathfinder){
+                                    case "boshaw":
+                                        PBotUtils.PathfinderRightClick(gob,0);
+                                        break;
+                                    case "purus":
+                                        PBotUtils.pfRightClick(gob,0);
+                                        break;
+                                    case "amber":
+                                        PBotAPI.gui.map.pfRightClick(gob,-1,3,0,null);
+                                        break;
+                                }
                                 unstucktimer = 0;
                             }
                             PBotUtils.sleep(50);
@@ -457,7 +541,19 @@ if(Config.dropsmelterstones && !autodropperon &&  autodropper == null) {
                                 }
                             }
                             if (coalw != null) {
-                                PBotUtils.pfRightClick(gob,0);
+                                System.out.println("pf right click on smelter");
+
+                                switch(pathfinder){
+                                    case "boshaw":
+                                        PBotUtils.PathfinderRightClick(gob,0);
+                                        break;
+                                    case "purus":
+                                        PBotUtils.pfRightClick(gob,0);
+                                        break;
+                                    case "amber":
+                                        PBotAPI.gui.map.pfRightClick(gob,-1,3,0,null);
+                                        break;
+                                }
 
                                 String wndname;
                                 if(gob.getres().name.contains("smelter"))
@@ -481,7 +577,17 @@ if(Config.dropsmelterstones && !autodropperon &&  autodropper == null) {
                                         Coord finalloc = new Coord(x, y);
                                         gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
                                         PBotUtils.sleep(1000);
-                                        PBotUtils.pfRightClick(gob,0);
+                                        switch(pathfinder){
+                                            case "boshaw":
+                                                PBotUtils.PathfinderRightClick(gob,0);
+                                                break;
+                                            case "purus":
+                                                PBotUtils.pfRightClick(gob,0);
+                                                break;
+                                            case "amber":
+                                                PBotAPI.gui.map.pfRightClick(gob,-1,3,0,null);
+                                                break;
+                                        }
                                         unstucktimer = 0;
                                     }
                                     PBotUtils.sleep(10);
@@ -532,7 +638,17 @@ if(Config.dropsmelterstones && !autodropperon &&  autodropper == null) {
                                 }
                             }
                             if (coalw2 != null) {
-                                PBotUtils.pfRightClick(gob,0);
+                                switch(pathfinder){
+                                    case "boshaw":
+                                        PBotUtils.PathfinderRightClick(gob,0);
+                                        break;
+                                    case "purus":
+                                        PBotUtils.pfRightClick(gob,0);
+                                        break;
+                                    case "amber":
+                                        PBotAPI.gui.map.pfRightClick(gob,-1,3,0,null);
+                                        break;
+                                }
                                 String wndname;
                                 if(gob.getres().name.contains("smelter"))
                                     wndname = "Ore Smelter";
@@ -552,7 +668,17 @@ if(Config.dropsmelterstones && !autodropperon &&  autodropper == null) {
                                         Coord finalloc = new Coord(x, y);
                                         gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
                                         PBotUtils.sleep(1000);
-                                        PBotUtils.pfRightClick(gob,0);
+                                        switch(pathfinder){
+                                            case "boshaw":
+                                                PBotUtils.PathfinderRightClick(gob,0);
+                                                break;
+                                            case "purus":
+                                                PBotUtils.pfRightClick(gob,0);
+                                                break;
+                                            case "amber":
+                                                PBotAPI.gui.map.pfRightClick(gob,-1,3,0,null);
+                                                break;
+                                        }
                                         unstucktimer = 0;
                                     }
 
@@ -655,7 +781,17 @@ if(Config.dropsmelterstones && !autodropperon &&  autodropper == null) {
                                     return;
                                 }
                             }
-                            PBotUtils.pfRightClick(gob, 0);
+                            switch(pathfinder){
+                                case "boshaw":
+                                    PBotUtils.PathfinderRightClick(gob,0);
+                                    break;
+                                case "purus":
+                                    PBotUtils.pfRightClick(gob,0);
+                                    break;
+                                case "amber":
+                                    PBotAPI.gui.map.pfRightClick(gob,-1,3,0,null);
+                                    break;
+                            }
                             String wndname;
                             if (gob.getres().name.contains("smelter"))
                                 wndname = "Ore Smelter";
@@ -677,7 +813,17 @@ if(Config.dropsmelterstones && !autodropperon &&  autodropper == null) {
                                     Coord finalloc = new Coord(x, y);
                                     gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
                                     PBotUtils.sleep(1000);
-                                    PBotUtils.pfRightClick(gob, 0);
+                                    switch(pathfinder){
+                                        case "boshaw":
+                                            PBotUtils.PathfinderRightClick(gob,0);
+                                            break;
+                                        case "purus":
+                                            PBotUtils.pfRightClick(gob,0);
+                                            break;
+                                        case "amber":
+                                            PBotAPI.gui.map.pfRightClick(gob,-1,3,0,null);
+                                            break;
+                                    }
                                     unstucktimer = 0;
                                 }
 
@@ -777,11 +923,22 @@ private void getfuel() {
         }
 
 
-        gameui().map.purusPfRightClick(s, -1, 3, 1, null);
+        System.out.println("Triggering stockpile shift rightclick");
+        switch(pathfinder){
+            case "boshaw":
+                PBotUtils.PathfinderRightClick(s,1);
+                break;
+            case "purus":
+                PBotUtils.pfRightClick(s,1);
+                break;
+            case "amber":
+                PBotAPI.gui.map.pfRightClick(s,-1,3,1,null);
+                break;
+        }
         while(!PBotUtils.player().isMoving())
             PBotUtils.sleep(10); //wait to start moving
-        while(PBotUtils.player().isMoving())
-            PBotUtils.sleep(10); //wait till we stop moving
+            while(PBotUtils.player().isMoving())
+                PBotUtils.sleep(10); //wait till we stop moving
         // return if got enough fuel
         int availableFuelCoal = gui.maininv.getItemPartialCount("Coal");
         int availableFuelBranch = gui.maininv.getItemPartialCount("Branch");
@@ -805,7 +962,17 @@ private void getfuel() {
             int freeslots = PBotUtils.invFreeSlots();
 
 
-            gameui().map.purusPfRightClick(s, -1, 3, 1, null);
+            switch(pathfinder){
+                case "boshaw":
+                    PBotUtils.PathfinderRightClick(s,1);
+                    break;
+                case "purus":
+                    PBotUtils.pfRightClick(s,1);
+                    break;
+                case "amber":
+                    PBotAPI.gui.map.pfRightClick(s,-1,3,1,null);
+                    break;
+            }
             while(!PBotUtils.player().isMoving())
                 PBotUtils.sleep(10); //wait to start moving
             while(PBotUtils.player().isMoving())

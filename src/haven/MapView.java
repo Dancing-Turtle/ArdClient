@@ -1309,8 +1309,9 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     }
 
     private abstract static class Clicklist<T> extends RenderList {
-        private Map<States.ColState, T> rmap = new WeakHashMap<States.ColState, T>();
-        private Map<T, Reference<States.ColState>> idmap = new WeakHashMap<T, Reference<States.ColState>>();
+        private Map<States.ColState, T> rmap = new WeakHashMap<>();
+        private Map<T, Reference<States.ColState>> idmap = new WeakHashMap<>();
+
         private int i = 1;
         private GLState.Buffer plain, bk;
 
@@ -1366,7 +1367,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         }
 
         public boolean aging() {
-	    return(i > (1 << 20));
+            return (i > (1 << 13));
         }
     }
 

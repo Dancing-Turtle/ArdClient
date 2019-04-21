@@ -53,7 +53,9 @@ public class Text {
     public static final Foundry num10Fnd;
     public static final Foundry num11Fnd;
     public static final Foundry num12boldFnd;
+    public static final Foundry num20Fnd;
     public static final Foundry delfnd;
+    public static final Foundry delfnd2;
     public static final Foundry slotFnd;
     public static final Foundry attrf;
     public final static FontSettings cfg;
@@ -129,13 +131,15 @@ public class Text {
         serif = new Font(Text.cfg.font.get("serif"), Font.PLAIN, 12);
         mono = new Font("Monospace", Font.PLAIN, 12);
         fraktur = Resource.local().loadwait("ui/fraktur").layer(Resource.Font.class).font;
+        num20Fnd = new Foundry(serif, 20);
 
         latin = new Font("Dialog", Font.PLAIN, 10);
         num10Fnd = new Foundry(latin);
         num11Fnd = new Text.Foundry(latin, 11);
         num12boldFnd = new Text.Foundry(latin.deriveFont(Font.BOLD), 12).aa(true);
-        delfnd = new Text.Foundry(latin.deriveFont(Font.BOLD), 16);
 
+        delfnd = new Text.Foundry(latin.deriveFont(Font.BOLD), 16);
+        delfnd2 = new Text.Foundry(serif.deriveFont(Font.BOLD), 18);
         std = new Foundry(sans, Text.cfg.def);
         labelFnd = new Foundry(sans, Text.cfg.label);
 

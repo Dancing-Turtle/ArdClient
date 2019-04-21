@@ -119,6 +119,8 @@ public class KeyBinder {
 	add(KeyEvent.VK_4,ALT,BELT_PAGEFOUR);
 	add(KeyEvent.VK_5,ALT,BELT_PAGEFIVE);
 	add(KeyEvent.VK_X,ALT,TOGGLE_CRAFTWND);
+	add(KeyEvent.VK_P,0,PEACE_CURRENT);
+	add(KeyEvent.VK_Z,0,MARK_CURRENT);
     }
     
     private static synchronized void store() {

@@ -1343,6 +1343,18 @@ public class OptWnd extends Window {
         map.add(new Label("Show trees:"), new Coord(320, 0));
         map.add(new Label("Hide icons:"), new Coord(475, 0));
 
+        map.add(new CheckBox("Draw party members/names") {
+            {
+                a = Config.mapdrawparty;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("mapdrawparty", val);
+                Config.mapdrawparty = val;
+                a = val;
+            }
+        },420,380);
+
         map.add(new PButton(200, "Back", 27, main), new Coord(210, 380));
         map.pack();
     }
@@ -3204,6 +3216,7 @@ public class OptWnd extends Window {
                 a = val;
             }
         },475,340);
+
         map.add(new PButton(100,"Clear Boulders", 27,clearboulders), new Coord(15,355));
         map.add(new PButton(100,"Clear Bushes", 27,clearbushes), new Coord(170,355));
         map.add(new PButton(100,"Clear Trees", 27,cleartrees), new Coord(325,355));

@@ -33,7 +33,7 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 				if (a != null && b != null) {
 					gameui().map.unregisterAreaSelect();
 					// Start carrot farmer and close this window
-					SeedCropFarmer SCF = new SeedCropFarmer(b, a, "gfx/terobjs/plants/carrot", "gfx/invobjs/carrot", 4, true, false, false, containers,stockpile,stockpileLocs);
+					SeedCropFarmer SCF = new SeedCropFarmer(b, a, "gfx/terobjs/plants/carrot", "gfx/invobjs/carrot", 4, true, false, false, containers,false,null);
 					gameui().add(SCF,
 							new Coord(gameui().sz.x / 2 - SCF.sz.x / 2, gameui().sz.y / 2 - SCF.sz.y / 2 - 200));
 					new Thread(SCF).start();
@@ -54,7 +54,7 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 				}
 				else if (a != null && b != null) {
 					SeedCropFarmer bf =
-							new SeedCropFarmer(a, b, "gfx/terobjs/plants/carrot", "gfx/invobjs/seed-carrot", 3, replant, containeronly, replantcontainer, containers,stockpile,stockpileLocs);
+							new SeedCropFarmer(a, b, "gfx/terobjs/plants/carrot", "gfx/invobjs/seed-carrot", 3, replant, containeronly, replantcontainer, containers,false,null);
 
 					gameui().add(bf, new Coord(gameui().sz.x / 2 - bf.sz.x / 2, gameui().sz.y / 2 - bf.sz.y / 2 - 200));
 					new Thread(bf).start();
@@ -73,7 +73,7 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 				if (a != null && b != null) {
 					// Start yellow onion farmer and close this window
 					SeedCropFarmer bf =
-							new SeedCropFarmer(a, b, "gfx/terobjs/plants/yellowonion", "gfx/invobjs/yellowonion", 3, true, false, false, containers,stockpile,stockpileLocs);
+							new SeedCropFarmer(a, b, "gfx/terobjs/plants/yellowonion", "gfx/invobjs/yellowonion", 3, true, false, false, containers,false,null);
 
 					gameui().add(bf, new Coord(gameui().sz.x / 2 - bf.sz.x / 2, gameui().sz.y / 2 - bf.sz.y / 2 - 200));
 					new Thread(bf).start();
@@ -92,7 +92,7 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 			if (a != null && b != null) {
 					// Start yellow onion farmer and close this window
 					SeedCropFarmer bf =
-							new SeedCropFarmer(a, b, "gfx/terobjs/plants/redonion", "gfx/invobjs/redonion", 3,true, false, false, containers,stockpile,stockpileLocs);
+							new SeedCropFarmer(a, b, "gfx/terobjs/plants/redonion", "gfx/invobjs/redonion", 3,true, false, false, containers,false,null);
 
 					gameui().add(bf, new Coord(gameui().sz.x / 2 - bf.sz.x / 2, gameui().sz.y / 2 - bf.sz.y / 2 - 200));
 					new Thread(bf).start();
@@ -110,7 +110,7 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 			public void click() {
 			if (a != null && b != null) {
 					// Start beetroot onion farmer and close this window
-					SeedCropFarmer bf = new SeedCropFarmer(a, b, "gfx/terobjs/plants/beet", "gfx/invobjs/beet", 3,true, false, false, containers,stockpile,stockpileLocs);
+					SeedCropFarmer bf = new SeedCropFarmer(a, b, "gfx/terobjs/plants/beet", "gfx/invobjs/beet", 3,true, false, false, containers,false,null);
 
 					gameui().add(bf, new Coord(gameui().sz.x / 2 - bf.sz.x / 2, gameui().sz.y / 2 - bf.sz.y / 2 - 200));
 					new Thread(bf).start();
@@ -146,7 +146,7 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 			public void click() {
 				if (a != null && b != null) {
 					// Start beetroot onion farmer and close this window
-					SeedCropFarmer bf = new SeedCropFarmer(a, b, "gfx/terobjs/plants/turnip", "gfx/invobjs/turnip", 3, true, false, false, containers,stockpile,stockpileLocs);
+					SeedCropFarmer bf = new SeedCropFarmer(a, b, "gfx/terobjs/plants/turnip", "gfx/invobjs/turnip", 3, true, false, false, containers,false,null);
 
 					gameui().add(bf, new Coord(gameui().sz.x / 2 - bf.sz.x / 2, gameui().sz.y / 2 - bf.sz.y / 2 - 200));
 					new Thread(bf).start();
@@ -166,7 +166,7 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 					PBotUtils.sysMsg("Please select a container by holding alt and clicking it before starting if using barrel or replantbarrel.", Color.white);
 				}
 				else if (a != null && b != null) {
-					SeedCropFarmer bf = new SeedCropFarmer(a, b, "gfx/terobjs/plants/turnip", "gfx/invobjs/seed-turnip", 1, replant, containeronly, replantcontainer, containers,stockpile,stockpileLocs);
+					SeedCropFarmer bf = new SeedCropFarmer(a, b, "gfx/terobjs/plants/turnip", "gfx/invobjs/seed-turnip", 1, replant, containeronly, replantcontainer, containers,false,null);
 
 					gameui().add(bf, new Coord(gameui().sz.x / 2 - bf.sz.x / 2, gameui().sz.y / 2 - bf.sz.y / 2 - 200));
 					new Thread(bf).start();
@@ -183,7 +183,7 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 			@Override
 			public void click() {
 				if (a != null && b != null) {
-					SeedCropFarmer bf = new SeedCropFarmer(a, b, "gfx/terobjs/plants/pumpkin", "gfx/invobjs/seed-pumpkin", 4, true, false, false, containers,stockpile,stockpileLocs);
+					SeedCropFarmer bf = new SeedCropFarmer(a, b, "gfx/terobjs/plants/pumpkin", "gfx/invobjs/seed-pumpkin", 4, true, false, false, containers,false,null);
 					gameui().add(bf, new Coord(gameui().sz.x / 2 - bf.sz.x / 2, gameui().sz.y / 2 - bf.sz.y / 2 - 200));
 					new Thread(bf).start();
 					this.parent.destroy();
@@ -204,7 +204,7 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 				else if (a != null && b != null) {
 					// Start barley farmer and close this window
 					SeedCropFarmer bf =
-							new SeedCropFarmer(a, b, "gfx/terobjs/plants/barley", "gfx/invobjs/seed-barley", 3, replant, containeronly, replantcontainer, containers,stockpile,stockpileLocs);
+							new SeedCropFarmer(a, b, "gfx/terobjs/plants/barley", "gfx/invobjs/seed-barley", 3, replant, containeronly, replantcontainer, containers,false,null);
 
 					gameui().add(bf, new Coord(gameui().sz.x / 2 - bf.sz.x / 2, gameui().sz.y / 2 - bf.sz.y / 2 - 200));
 					new Thread(bf).start();
@@ -226,7 +226,7 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 				else if (a != null && b != null) {
 					// Start yellow onion farmer and close this window
 					SeedCropFarmer bf =
-							new SeedCropFarmer(a, b, "gfx/terobjs/plants/wheat", "gfx/invobjs/seed-wheat", 3, replant, containeronly, replantcontainer, containers,stockpile,stockpileLocs);
+							new SeedCropFarmer(a, b, "gfx/terobjs/plants/wheat", "gfx/invobjs/seed-wheat", 3, replant, containeronly, replantcontainer, containers,false,null);
 
 					gameui().add(bf, new Coord(gameui().sz.x / 2 - bf.sz.x / 2, gameui().sz.y / 2 - bf.sz.y / 2 - 200));
 					new Thread(bf).start();
@@ -248,7 +248,7 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 				else if (a != null && b != null) {
 					// Start yellow onion farmer and close this window
 					SeedCropFarmer bf =
-							new SeedCropFarmer(a, b, "gfx/terobjs/plants/millet", "gfx/invobjs/seed-millet", 3, replant, containeronly, replantcontainer, containers,stockpile,stockpileLocs);
+							new SeedCropFarmer(a, b, "gfx/terobjs/plants/millet", "gfx/invobjs/seed-millet", 3, replant, containeronly, replantcontainer, containers,false,null);
 
 					gameui().add(bf, new Coord(gameui().sz.x / 2 - bf.sz.x / 2, gameui().sz.y / 2 - bf.sz.y / 2 - 200));
 					new Thread(bf).start();
@@ -463,6 +463,8 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 			public void set(boolean val) {
 				a = val;
 				stockpile = val;
+				if(a)
+					PBotUtils.sysMsg("Currently only objects with smaller hitboxes work with stockpile, such as flax/hemp/poppy/leeks/pipeweed.");
 			}
 		};
 		add(fillContainerChkbox, new Coord(85, y));

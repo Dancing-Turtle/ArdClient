@@ -1,3 +1,13 @@
+1.00.137
+Lowered curgoblist retention to lower overall client memory usage.
+Fixed a miner alert crash if you leave miner alert open when you log out or switch chars.
+Added some barreling retries to farmer if pathfinding to the barrel fails.
+Farmer will now only attempt to stockpile if you run it on hemp/flax/poppy/pipeweed/leeks. Haven't had time to work out location allocation on a per hitbox size basis yet. 
+Added keybinds to peace current target, and mark current combat target for party. Peace is P by default, mark is Z by default. Feel free to change them.
+Added a toggle to map settings to display party members and their names on the large marker map. Shouldn't cause any crashes, but let me know if it happens to. Would recommend testing in valhalla or just running around your village before risking your life using it, it's off by default.
+Added pathfinder selector to coal/oven filler. Some pathfinders seem to work with some setups than others.  
+~
+
 1.00.136
 Added minimap icons for lobster pots and fishing nets.
 ~

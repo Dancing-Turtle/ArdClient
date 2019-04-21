@@ -56,7 +56,10 @@ public enum Action {
     BELT_PAGEFOUR(GameUI::beltPageSwitch4,"NBelt page 4"),
     BELT_PAGEFIVE(GameUI::beltPageSwitch5,"NBelt page 5"),
     TOGGLE_CRAFTWND(GameUI::toggleCraftDB,"Toggle Craft Database"),
-    TOGGLE_HIDDENGOBS(GameUI::toggleHiddenGobs,"Toggles hide on individually hidden objects.");
+    TOGGLE_HIDDENGOBS(GameUI::toggleHiddenGobs,"Toggles hide on individually hidden objects."),
+    PEACE_CURRENT(GameUI::peaceCurrent,"Hits peace button for current target."),
+    MARK_CURRENT(GameUI::markTarget,"Marks current combat target for party.");
+
 
 
     

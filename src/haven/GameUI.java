@@ -48,6 +48,7 @@ import java.awt.event.KeyEvent;
 import java.awt.image.WritableRaster;
 import java.util.List;
 import haven.MapPointer;
+import haven.sloth.gob.Mark;
 import haven.sloth.gui.DeletedManager;
 import haven.sloth.gui.HiddenManager;
 import haven.sloth.gui.HighlightManager;
@@ -331,6 +332,34 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         } else {
             craftwnd.close();
         }
+    }
+
+    public void markTarget(){
+        try {
+            Gob g = null;
+            if (fv != null && fv.current != null)
+                g = map.glob.oc.getgob(fv.current.gobid);
+            if (g != null) {
+                g.mark(20000);
+                for(Widget wdg = chat.lchild; wdg != null; wdg = wdg.prev) {
+                    if(wdg instanceof ChatUI.PartyChat) {
+                        final ChatUI.PartyChat chat = (ChatUI.PartyChat) wdg;
+                        chat.send(String.format(Mark.CHAT_FMT, g.id, 20000));
+                    }
+                }
+            }
+        }catch(Exception e){e.printStackTrace();}
+    }
+
+    public void peaceCurrent(){
+        try {
+            if (fv != null && fv.current != null) {
+                if(fv.current.give.state == 1)
+                    fv.current.give(0);
+                else
+                    fv.current.give(1);
+            }
+        }catch(Exception e){e.printStackTrace();}
     }
 
     public void toggleInventory() {
@@ -1426,7 +1455,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             Utils.setprefb("statuswdgvisible", true);
         }
     }
-
     void toggleDeleted() {
         if(deleted != null && deleted.show(!deleted.visible)) {
             deleted.raise();

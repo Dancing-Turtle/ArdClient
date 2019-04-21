@@ -928,7 +928,14 @@ public class PBotUtils {
 	 * @return Player gob
 	 */
 	public static Gob player() {
-		return PBotAPI.gui.map.player();
+		if(PBotAPI.gui != null && PBotAPI.gui.map != null) {
+			if(PBotAPI.gui.map.player() != null)
+				return PBotAPI.gui.map.player();
+			else
+				return null;
+		}
+		else
+			return null;
 	}
 
 	/**

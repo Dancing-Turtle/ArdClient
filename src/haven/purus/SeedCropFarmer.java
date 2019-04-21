@@ -432,10 +432,16 @@ public class SeedCropFarmer extends Window implements Runnable {
 							if (PBotUtils.getItemAtHand() != null)
 								PBotUtils.dropItem(0);
 							PBotUtils.pfRightClick(containers.get(0), 0);
-							if (containers.get(0).getres().basename().contains("barrel"))
-								PBotUtils.waitForWindow("Barrel");
-							else
-								PBotUtils.waitForWindow("Trough");
+							int retrybarrel= 0;
+							while(PBotAPI.gui.getwnd("Barrel") == null && PBotAPI.gui.getwnd("Trough") == null){
+								retrybarrel++;
+								while(PBotUtils.isMoving())
+									PBotUtils.sleep(10);
+								if(retrybarrel > 100){
+									PBotUtils.pfRightClick(containers.get(0), 0);
+									retrybarrel = 0;
+								}
+							}
 							GItem item = PBotUtils.getInventoryItemsByNames(PBotAPI.gui.maininv, Arrays.asList(seedName)).get(0).item;
 							PBotUtils.takeItem(item);
 							while(PBotUtils.getInventoryItemsByName(PBotAPI.gui.maininv,seedName).size() > 0){
@@ -503,7 +509,16 @@ public class SeedCropFarmer extends Window implements Runnable {
 						if (PBotUtils.invFreeSlots() == 0) {
 							lblProg2.settext("Barreling");
 							PBotUtils.pfRightClick(containers.get(0), 0);
-							PBotUtils.waitForWindow("Barrel");
+							int retrybarrel= 0;
+							while(PBotAPI.gui.getwnd("Barrel") == null && PBotAPI.gui.getwnd("Trough") == null){
+								retrybarrel++;
+								while(PBotUtils.isMoving())
+									PBotUtils.sleep(10);
+								if(retrybarrel > 100){
+									PBotUtils.pfRightClick(containers.get(0), 0);
+									retrybarrel = 0;
+								}
+							}
 							item = PBotUtils.getInventoryItemsByNames(PBotAPI.gui.maininv, Arrays.asList(seedName)).get(0).item;
 							PBotUtils.takeItem(item);
 							while(PBotUtils.getInventoryItemsByName(PBotAPI.gui.maininv,seedName).size() > 0){
@@ -576,10 +591,16 @@ public class SeedCropFarmer extends Window implements Runnable {
 			if (PBotUtils.getItemAtHand() != null)
 				PBotUtils.dropItem(0);
 			PBotUtils.pfRightClick(containers.get(0), 0);
-			if(containers.get(0).getres().basename().contains("barrel"))
-				PBotUtils.waitForWindow("Barrel");
-			else
-				PBotUtils.waitForWindow("Trough");
+			int retrybarrel= 0;
+			while(PBotAPI.gui.getwnd("Barrel") == null && PBotAPI.gui.getwnd("Trough") == null){
+				retrybarrel++;
+				while(PBotUtils.isMoving())
+					PBotUtils.sleep(10);
+				if(retrybarrel > 100){
+					PBotUtils.pfRightClick(containers.get(0), 0);
+					retrybarrel = 0;
+				}
+			}
 	
 			while (PBotUtils.getInventoryItemsByNames(PBotAPI.gui.maininv, Arrays.asList(seedName)).size() != 0) {
 				if (stopThread)
