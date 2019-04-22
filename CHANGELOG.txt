@@ -1,3 +1,7 @@
+1.00.139
+Roll back the farmer barreling retries 
+~
+
 1.00.138
 Small change to peace keybind, turns out there are more than just 2 states. Should replicate the logic of just clicking the button now.
 ~
