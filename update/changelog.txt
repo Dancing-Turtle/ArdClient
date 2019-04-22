@@ -1,3 +1,7 @@
+1.00.138
+Small change to peace keybind, turns out there are more than just 2 states. Should replicate the logic of just clicking the button now.
+~
+
 1.00.137
 Lowered curgoblist retention to lower overall client memory usage.
 Fixed a miner alert crash if you leave miner alert open when you log out or switch chars.

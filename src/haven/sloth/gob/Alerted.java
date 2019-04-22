@@ -105,8 +105,6 @@ public class Alerted {
 			if (sfxmap.containsKey(name)) {
 				if (!name.equals("gfx/borka/body") && !g.isDead() && !sgobs.contains(g.id)) {
 					if (!alertedmap.containsKey(g.id) || (System.currentTimeMillis() - alertedmap.get(g.id) > 5000)) {
-						System.out.println("alarm triggered for " + name);
-						//Audio.play(sfxmap.get(name), Config.alertsvol);
 						Audio.play(sfxmap.get(name), volmap.get(name));
 						if (Config.alarmonce) {
 							sgobs.add(g.id);

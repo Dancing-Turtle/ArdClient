@@ -54,7 +54,7 @@ public class Fightview extends Widget {
     public Indir<Resource> lastact = null;
     public double lastuse = 0;
     public double atkcd;
-    private GiveButton curgive;
+    public GiveButton curgive;
     private Avaview curava;
     private Button curpurs;
     public final Bufflist buffs = add(new Bufflist());

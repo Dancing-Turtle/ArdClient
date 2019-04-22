@@ -353,11 +353,8 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 
     public void peaceCurrent(){
         try {
-            if (fv != null && fv.current != null) {
-                if(fv.current.give.state == 1)
-                    fv.current.give(0);
-                else
-                    fv.current.give(1);
+            if (fv != null && fv.current != null && fv.curgive != null) {
+              fv.curgive.mousedown(Coord.z,1);
             }
         }catch(Exception e){e.printStackTrace();}
     }
