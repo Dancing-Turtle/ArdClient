@@ -95,62 +95,96 @@ public class EquipWeapon implements Runnable {
                 return popularity1.compareTo(popularity2);
             }
         });
-        weaponItem = weapons.get(weapons.size() - 1).item;
-
-
-        weaponItem.wdgmsg("take", new Coord(weaponItem.sz.x / 2, weaponItem.sz.y / 2));
-
-        try {
-            if (!Utils.waitForOccupiedHand(gui, TIMEOUT, "waitForOccupiedHand timed-out"))
-                return;
-        } catch (InterruptedException ie) {
+        if(weapons.size() == 0){
+            PBotUtils.sysMsg("No weapons found.",Color.white);
             return;
         }
+        weaponItem = weapons.get(weapons.size() - 1).item;
 
-        Equipory e = gui.getequipory();
+            Equipory e = gui.getequipory();
             if (e == null)//equipory is somehow null, break
                 return;
 
-        if(lhand == null) //try to find an empty hand first, otherwise drop it in left hand
-            e.wdgmsg("drop", 6);
-        else if(rhand == null)
-            e.wdgmsg("drop", 7);
-        else
-            e.wdgmsg("drop", 6);
+        if(lhand == null || rhand == null) {//nothing in either left or right hand, makes equipping easy.
+            weaponItem.wdgmsg("take", new Coord(weaponItem.sz.x / 2, weaponItem.sz.y / 2));
 
-        try {
-            if (!Utils.waitForOccupiedHand(gui, TIMEOUT, "waitForOccupiedHand2 timed-out"))
+            try {
+                if (!Utils.waitForOccupiedHand(gui, TIMEOUT, "waitForOccupiedHand timed-out"))
+                    return;
+            } catch (InterruptedException ie) {
                 return;
-        } catch (InterruptedException ie) {
-            return;
+            }
+            if (lhand == null) //try to find an empty hand first, otherwise drop it in left hand
+                e.wdgmsg("drop", 6);
+            else
+                e.wdgmsg("drop", 7);
+        } else {//neither hand is empty, if we're equipping a sword this is no problem, if we're not - it's a problem.
+            if (weaponItem.getname().contains("Sword"))//if sword just drop it in a hand
+                e.wdgmsg("drop", 6);
+            else {//else, we have to empty one hand before we can drop it in.
+                PBotUtils.takeItem(lhand);
+                try {
+                    if (!Utils.waitForOccupiedHand(gui, TIMEOUT, "waitForOccupiedHand timed-out"))
+                        return;
+                } catch (InterruptedException ie) {
+                    return;
+                }
+                if (beltInv != null && PBotUtils.getFreeInvSlots(beltInv).size() > 0)//if not null and at least 1 slot, drop it to belt, otherwise drop to inv.
+                    PBotUtils.dropItemToInventory(PBotUtils.getFreeInvSlot(beltInv), beltInv);
+                else
+                    PBotUtils.dropItemToInventory(PBotUtils.getFreeInvSlot(PBotAPI.gui.maininv), PBotAPI.gui.maininv);
+                int timeout = 0;
+                while (PBotUtils.getGItemAtHand() != null) {//sleep till we recognize item is gone from cursor
+                    timeout++;
+                    if (timeout > 200)//exit script if we stuck in this while loop
+                        return;
+                    PBotUtils.sleep(10);
+                }
+                PBotUtils.takeItem(weaponItem);
+                try {
+                    if (!Utils.waitForOccupiedHand(gui, TIMEOUT, "waitForOccupiedHand timed-out"))
+                        return;
+                } catch (InterruptedException ie) {
+                    return;
+                }
+                e.wdgmsg("drop", 6);
+                while (PBotUtils.getGItemAtHand() == weaponItem)//sleep till we recognize item on cursor has changed.
+                    PBotUtils.sleep(100);
+            }
         }
 
-        WItem hand = gui.vhand;
+        GItem hand = PBotUtils.getGItemAtHand();
         if (hand != null) { //try to empty hand into belt
             if (beltInv != null) {
                 List<Coord> slots = PBotUtils.getFreeInvSlots(beltInv);
                 for (Coord i : slots) {
+                    if(PBotUtils.getGItemAtHand() == null)
+                        break;
                     PBotUtils.dropItemToInventory(i, beltInv);
-                    PBotUtils.sleep(10);
+                    PBotUtils.sleep(100);
                 }
             } else if (quickBeltInv != null) {
                 List<Coord> slots = PBotUtils.getFreeInvSlotsAlt(quickBeltInv);
                 for (Coord i : slots) {
+                    if(PBotUtils.getGItemAtHand() == null)
+                        break;
                     PBotUtils.dropItemToInventory(i, quickBeltInv);
-                    PBotUtils.sleep(10);
+                    PBotUtils.sleep(100);
                 }
             }
         }
-        if (gui.vhand != null) { //hand still not empty, dump into main inventory
+        if (PBotUtils.getGItemAtHand() != null) { //hand still not empty, dump into main inventory
             List<Coord> slots = PBotUtils.getFreeInvSlots(PBotAPI.gui.maininv);
             for (Coord i : slots) {
+                if(PBotUtils.getGItemAtHand() == null)
+                    break;
                 PBotUtils.dropItemToInventory(i, PBotAPI.gui.maininv);
-                PBotUtils.sleep(10);
+                PBotUtils.sleep(100);
             }
         }
             PBotUtils.sysLogAppend("Finished equipWeapon script, if a weapon did not equip check to ensure you had inventory space to remove a bindle/sack.","white");
     }catch(Exception e){
-            PBotUtils.sysMsg("Exception occured in EquipWeapon script, ignored.",Color.white);
+            PBotUtils.sysMsg("Exception occurred in EquipWeapon script, ignored.",Color.white);
            e.printStackTrace();
         }//ignore all exceptions, this script will likely be used in a combat situation and crashes are unacceptable
     }
@@ -158,10 +192,18 @@ public class EquipWeapon implements Runnable {
     private HashMap<WItem, Integer> getWeapon(Inventory inv) {
         HashMap<WItem, Integer> map = new HashMap<>();
         int priority;
-        WItem weapon = inv.getItemPartial("Sword");
-        priority = 3;
+        WItem weapon = inv.getItemPartial("Battleaxe");
+        priority = 5;
         if (weapon == null) {
-            weapon = inv.getItemPartial("Battleaxe");
+            weapon = inv.getItemPartial("Cutblade");
+            priority = 4;
+        }
+        if (weapon == null) {
+            weapon = inv.getItemPartial("Sword");
+            priority = 3;
+        }
+        if (weapon == null) {
+            weapon = inv.getItemPartial("Boar Spear");
             priority = 2;
         }
         if (weapon == null) {
@@ -175,11 +217,19 @@ public class EquipWeapon implements Runnable {
 
     private HashMap<WItem, Integer> getWeaponQuickBelt(InventoryBelt inv) {
         HashMap<WItem, Integer> map = new HashMap<>();
-        int priority = 0;
-        WItem weapon = inv.getItemPartial("Sword");
-        priority = 3;
+        int priority;
+        WItem weapon = inv.getItemPartial("Battleaxe");
+        priority = 5;
         if (weapon == null) {
-            weapon = inv.getItemPartial("Battleaxe");
+            weapon = inv.getItemPartial("Cutblade");
+            priority = 4;
+        }
+        if (weapon == null) {
+            weapon = inv.getItemPartial("Sword");
+            priority = 3;
+        }
+        if (weapon == null) {
+            weapon = inv.getItemPartial("Boar Spear");
             priority = 2;
         }
         if (weapon == null) {

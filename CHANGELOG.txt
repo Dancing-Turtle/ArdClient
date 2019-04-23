@@ -1,3 +1,9 @@
+1.00.140
+Fixed seals not working with gob spawner.
+Fixed miner alert so it should no longer crash if you switch chars with it open, it should simply close.
+Upgraded Equip Weapon script, "should" now successfully equip B12s/Spears/Cutblades even if both hands are full. Added Spear/Cutblade support, priority is now B12/Cutblade/Sword/Boar Spear/Axe. I can't account for having an inventory too full to unequip t-sacks to try to equip a weapon, so be mindful of that limitation if relying on the script to quickly arm yourself.
+~
+
 1.00.139
 Roll back the farmer barreling retries 
 ~

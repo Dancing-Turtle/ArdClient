@@ -156,6 +156,9 @@ public class MinerAlert extends Window {
             while (gui.getwnd("Miner Alert") != null) {
                 PBotUtils.sleep(5000);//sleep 5 seconds every iteration, no reason to update more than once every 5 seconds.
                 try {
+                    if(PBotAPI.gui == null || PBotAPI.gui.ui == null)
+                        break;
+
                     countiron = 0;
                     countgold = 0;
                     countsilver = 0;
@@ -320,7 +323,10 @@ public class MinerAlert extends Window {
                     countmagnetite = 0;
                     countcinnabar = 0;
                     countslimes = 0;
-                }catch(Loading lolloadingerrors){}
+                }catch(Exception lolloadingerrors){
+                    lolloadingerrors.printStackTrace();
+                    reqdestroy();
+                }
             }
         }
     }

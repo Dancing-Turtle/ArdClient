@@ -130,7 +130,7 @@ public class GobSpawner extends Window {
         put("gfx/kritter/adder/adder","Snake");
         put("gfx/kritter/lynx/lynx","Lynx");
         put("gfx/kritter/walrus/walrus","Walrus");
-        put("gfx/kritter/seal/seal","Seal");
+        put("gfx/kritter/greyseal/greyseal","Seal");
         put("gfx/kritter/troll/troll","Troll");
         put("gfx/kritter/mammoth/mammoth","Mammoth");
         put("gfx/kritter/goldeneagle/goldeneagle","Eagle");

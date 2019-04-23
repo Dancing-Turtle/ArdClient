@@ -145,34 +145,40 @@ public class EquipSacks implements Runnable {
                 }
 
 
-                WItem hand = gui.vhand;
+                GItem hand = PBotUtils.getGItemAtHand();
                 if (hand != null) { //try to empty hand into belt
                     if (beltInv != null) {
                         List<Coord> slots = PBotUtils.getFreeInvSlots(beltInv);
                         for (Coord i : slots) {
+                            if(PBotUtils.getGItemAtHand() == null)
+                                break;
                             PBotUtils.dropItemToInventory(i, beltInv);
-                            PBotUtils.sleep(10);
+                            PBotUtils.sleep(100);
                         }
                     } else if (quickBeltInv != null) {
                         List<Coord> slots = PBotUtils.getFreeInvSlotsAlt(quickBeltInv);
                         for (Coord i : slots) {
+                            if(PBotUtils.getGItemAtHand() == null)
+                                break;
                             PBotUtils.dropItemToInventory(i, quickBeltInv);
-                            PBotUtils.sleep(10);
+                            PBotUtils.sleep(100);
                         }
                     }
                 }
                 if (gui.vhand != null) { //hand still not empty, dump into main inventory
                     List<Coord> slots = PBotUtils.getFreeInvSlots(PBotAPI.gui.maininv);
                     for (Coord i : slots) {
+                        if(PBotUtils.getGItemAtHand() == null)
+                            break;
                         PBotUtils.dropItemToInventory(i, PBotAPI.gui.maininv);
-                        PBotUtils.sleep(10);
+                        PBotUtils.sleep(100);
                     }
                 }
               //  System.out.println("Iteration done");
                 beltInv = null;
                 quickBeltInv = null;
-                lhand = gui.getequipory().quickslots[6];
-                rhand = gui.getequipory().quickslots[7];
+                lhand = PBotAPI.gui.getequipory().quickslots[6];
+                rhand = PBotAPI.gui.getequipory().quickslots[7];
                 wepmap.clear();
             }
         }catch(Exception e){
