@@ -556,5 +556,6 @@ public class UI {
 
     public void destroy() {
         audio.clear();
+        removeid(root);
     }
 }

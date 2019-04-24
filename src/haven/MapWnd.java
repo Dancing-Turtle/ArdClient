@@ -212,7 +212,7 @@ public class MapWnd extends Window {
 
 
                             final Coord mc = new Coord2d(ppc).floor(tilesz);
-                            final Coord gc = xlate(new Location(ploc.seg, ploc.tc.add(mc.sub(pc))));
+                            final Coord gc = xlate(new Location(ploc.seg, ploc.tc.add(mc.sub(pc).div(MapFileWidget.scalef()))));
                             ignore.add(m.gobid);
                             if (gc != null) {
                                 Gob gob = m.getgob();

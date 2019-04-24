@@ -603,6 +603,14 @@ public class MenuGrid extends Widget {
                         new Thread(new SliceCheese(gui), "SliceCheese").start();
                     }}
         ));
+        addSpecial(new SpecialPagina(this, "paginae::amber::oysteropener",
+                Resource.local().load("paginae/amber/OysterOpener"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                        new Thread(new OysterOpener(gui), "OysterOpener").start();
+                    }}
+        ));
         addSpecial(new SpecialPagina(this, "paginae::amber::splitlogs",
                 Resource.local().load("paginae/amber/SplitLogs"),
                 (pag) -> {

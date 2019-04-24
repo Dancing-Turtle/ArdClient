@@ -1,3 +1,9 @@
+1.00.141
+Added "Gnomes Hat" tree to tree list, should now show growth progress and such.
+Fixed party drawing on marker map not accounting for zoom level. 
+Added Oyster Opener, should open oysters in inventory. 
+~
+
 1.00.140
 Fixed seals not working with gob spawner.
 Fixed miner alert so it should no longer crash if you switch chars with it open, it should simply close.

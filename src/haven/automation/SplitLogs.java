@@ -33,11 +33,16 @@ public class SplitLogs implements Runnable {
                 FlowerMenu.setNextSelection("Split");
                 System.out.println(PBotUtils.getPlayerInvContentsPartial("Block").size()+ " startsize : "+startsize);
                 item.item.wdgmsg("iact", Coord.z, -1);
-                while(PBotUtils.getPlayerInvContentsPartial("Block").size() == startsize)
-                     PBotUtils.sleep(100);
+                int timeout = 0;
+                while(PBotUtils.getPlayerInvContentsPartial("Block").size() == startsize) {
+                    timeout++;
+                    if(timeout > 200)
+                        break;
+                    PBotUtils.sleep(100);
+                }
                 startsize--;
         }
-        PBotUtils.sysMsg("Done",Color.white);
+        PBotUtils.sysMsg("Exiting Log Splitter",Color.white);
     }
 }
 
