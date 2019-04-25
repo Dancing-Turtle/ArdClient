@@ -1137,6 +1137,18 @@ public class PBotUtils {
 		return finallist;
 	}
 
+	public static List<WItem> getPlayerInvContentsExact(String witem){
+		List<WItem> witems = new ArrayList<>();
+		List<WItem> finallist = new ArrayList<>();
+		witems.addAll(getInventoryContents(PBotAPI.gui.maininv));
+		for(WItem item:witems) {
+			if (item.item.getname().equals(witem)) {
+				finallist.add(item);
+			}
+		}
+		return finallist;
+	}
+
 	/**
 	 * Log out to character selection
 	 */

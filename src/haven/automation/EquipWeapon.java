@@ -119,8 +119,17 @@ public class EquipWeapon implements Runnable {
             else
                 e.wdgmsg("drop", 7);
         } else {//neither hand is empty, if we're equipping a sword this is no problem, if we're not - it's a problem.
-            if (weaponItem.getname().contains("Sword"))//if sword just drop it in a hand
+            if (weaponItem.getname().contains("Sword") ||(weaponItem.getname().contains("Axe") && !weaponItem.getname().contains("Battleaxe"))) {//if sword just drop it in a hand
+                weaponItem.wdgmsg("take", new Coord(weaponItem.sz.x / 2, weaponItem.sz.y / 2));
+
+                try {
+                    if (!Utils.waitForOccupiedHand(gui, TIMEOUT, "waitForOccupiedHand timed-out"))
+                        return;
+                } catch (InterruptedException ie) {
+                    return;
+                }
                 e.wdgmsg("drop", 6);
+            }
             else {//else, we have to empty one hand before we can drop it in.
                 PBotUtils.takeItem(lhand);
                 try {

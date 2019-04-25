@@ -23,19 +23,18 @@ public class OysterOpener implements Runnable {
     public void run() {
         List<WItem> oysters = new ArrayList<>();
         try {
-            oysters.addAll(PBotUtils.getPlayerInvContentsPartial("Oyster"));
+            oysters.addAll(PBotUtils.getPlayerInvContentsExact("Oyster"));
             startsize = oysters.size();
         } catch (Exception q) {}
         if(oysters.size() == 0){
-            PBotUtils.sysMsg("No blocks found.",Color.white);
+            PBotUtils.sysMsg("No Oysters found.",Color.white);
             return;
         }
         for (WItem item : oysters) {
             FlowerMenu.setNextSelection("Crack open");
-            System.out.println(PBotUtils.getPlayerInvContentsPartial("Block").size()+ " startsize : "+startsize);
             item.item.wdgmsg("iact", Coord.z, -1);
             int timeout = 0;
-            while(PBotUtils.getPlayerInvContentsPartial("Oyster").size() == startsize) {
+            while(PBotUtils.getPlayerInvContentsExact("Oyster").size() == startsize) {
                 timeout++;
                 if(timeout > 200)
                     break;

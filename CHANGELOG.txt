@@ -1,3 +1,8 @@
+1.00.142
+Fixed regular swords not working for weapon equip script anymore.
+Maybe fixed new oyster opener, Idk, I'm too lazy to go find oysters to test it.
+~
+
 1.00.141
 Added "Gnomes Hat" tree to tree list, should now show growth progress and such.
 Fixed party drawing on marker map not accounting for zoom level. 
