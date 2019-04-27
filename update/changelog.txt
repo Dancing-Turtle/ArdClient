@@ -1,3 +1,8 @@
+1.00.143
+Fixed steel refueler.
+Added toggle to general settings for the automatic table cutlery removal.
+~
+
 1.00.142
 Fixed regular swords not working for weapon equip script anymore.
 Maybe fixed new oyster opener, Idk, I'm too lazy to go find oysters to test it.

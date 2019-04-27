@@ -141,11 +141,6 @@ public class SteelRefueler extends Window implements GobSelectCallback {
                     // navigate to crucible
                   //  gui.map.pfRightClick(c, -1, 3, 1, null);
                     PBotUtils.pfRightClick(c,0);
-                    try {
-                        gui.map.pfthread.join();
-                    } catch (InterruptedException e) {
-                        return;
-                    }
 
                     if (terminate)
                         return;

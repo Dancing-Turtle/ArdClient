@@ -1451,6 +1451,17 @@ public class OptWnd extends Window {
             }
         });
         appender.addRow(new Label("Auto Logout after x Minutes - 0 means never"), makeafkTimeDropdown());
+        appender.add(new CheckBox("Auto remove damaged tableware items") {
+            {
+                a = Config.savecutlery;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("savecutlery", val);
+                Config.savecutlery = val;
+                a = val;
+            }
+        });
         appender.add(new CheckBox("Autodrink below threshold") {
             {
                 a = Config.autodrink;
