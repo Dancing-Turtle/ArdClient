@@ -1,3 +1,7 @@
+1.00.145
+Rolled back loftar's changes to how satiations are displayed. It's a retarded change for literally no reason and I'm not playing his fucking reindeer games.
+~
+
 1.00.144
 Fixed really goddamn obscure bug with alarm autosorting involving having 2 alarms within 1-2 seconds of eachother and switching chars at a specific time.
 Added lampstalks to minimap hide list.
