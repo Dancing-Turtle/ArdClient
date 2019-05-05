@@ -60,6 +60,7 @@ public class Config {
     public static URL screenurl = geturl("http://game.havenandhearth.com/mt/ss");
     public static boolean hideflocomplete = Utils.getprefb("hideflocomplete", false);
     public static boolean mapdrawparty = Utils.getprefb("mapdrawparty", false);
+    public static boolean mapdrawquests = Utils.getprefb("mapdrawquests", true);
     public static boolean hideflovisual = Utils.getprefb("hideflovisual", false);
     public static boolean daylight = Utils.getprefb("daylight", false);
     public static boolean longtooltips = Utils.getprefb("longtooltips", true);

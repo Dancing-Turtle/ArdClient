@@ -28,6 +28,7 @@ package haven;
 
 import static haven.MCache.cmaps;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -219,8 +220,16 @@ public class MapFileWidget extends Widget {
                 } catch(Exception e) {
                     cc = Coord.z;
                 }
-                if(img != null)
+                if(img != null) {
+                    //((SMarker)m).res.name.startsWith("gfx/invobjs/small"));
+                    if (Config.mapdrawquests) {
+                    if (sm.res != null && sm.res.name.startsWith("gfx/invobjs/small")) {
+                        Tex tex = Text.renderstroked(sm.nm, Color.white, Color.BLACK, Text.num12boldFnd).tex();
+                        g.image(tex, c.sub(cc).add(img.sz.x / 2, -20).sub(tex.sz().x / 2, 0));
+                    }
+                    }
                     g.image(img, c.sub(cc));
+                }
             }
         }
     }

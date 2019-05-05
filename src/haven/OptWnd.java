@@ -1366,6 +1366,18 @@ public class OptWnd extends Window {
             }
         },420,380);
 
+        map.add(new CheckBox("Show names above questgivers.") {
+            {
+                a = Config.mapdrawquests;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("mapdrawquests", val);
+                Config.mapdrawquests = val;
+                a = val;
+            }
+        },0,380);
+
         map.add(new PButton(200, "Back", 27, main), new Coord(210, 380));
         map.pack();
     }

@@ -1,3 +1,7 @@
+1.00.146
+Added toggle to map settings, on by default, to display questgiver names above their icon on the large marker map.
+~
+
 1.00.145
 Rolled back loftar's changes to how satiations are displayed. It's a retarded change for literally no reason and I'm not playing his fucking reindeer games.
 ~
