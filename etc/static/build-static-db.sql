@@ -372,15 +372,24 @@ INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/kritter/cavelouse/cavel
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/kritter/goat/wildgoat', (SELECT type_id FROM type WHERE name_key = 'DANGANIMAL'));
 
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/kritter/sheep/sheep', (SELECT type_id FROM type WHERE name_key = 'TAMEDANIMAL'));
-INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/kritter/cattle/bull', (SELECT type_id FROM type WHERE name_key = 'TAMEDANIMAL'));
-INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/kritter/cattle/cattle', (SELECT type_id FROM type WHERE name_key = 'TAMEDANIMAL'));
-INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/kritter/cattle/cow', (SELECT type_id FROM type WHERE name_key = 'TAMEDANIMAL'));
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/kritter/sheep/ram', (SELECT type_id FROM type WHERE name_key = 'TAMEDANIMAL'));
+INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/kritter/sheep/lamb', (SELECT type_id FROM type WHERE name_key = 'TAMEDANIMAL'));
+
+INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/kritter/cattle/bull', (SELECT type_id FROM type WHERE name_key = 'TAMEDANIMAL'));
+INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/kritter/cattle/cow', (SELECT type_id FROM type WHERE name_key = 'TAMEDANIMAL'));
+INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/kritter/cattle/calf', (SELECT type_id FROM type WHERE name_key = 'TAMEDANIMAL'));
+
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/kritter/goat/billy', (SELECT type_id FROM type WHERE name_key = 'TAMEDANIMAL'));
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/kritter/goat/nanny', (SELECT type_id FROM type WHERE name_key = 'TAMEDANIMAL'));
-INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/kritter/horse/horse', (SELECT type_id FROM type WHERE name_key = 'TAMEDANIMAL'));
+INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/kritter/goat/kid', (SELECT type_id FROM type WHERE name_key = 'TAMEDANIMAL'));
+
+INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/kritter/horse/foal', (SELECT type_id FROM type WHERE name_key = 'TAMEDANIMAL'));
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/kritter/horse/mare', (SELECT type_id FROM type WHERE name_key = 'TAMEDANIMAL'));
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/kritter/horse/stallion', (SELECT type_id FROM type WHERE name_key = 'TAMEDANIMAL'));
+
+INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/kritter/pig/hog', (SELECT type_id FROM type WHERE name_key = 'TAMEDANIMAL'));
+INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/kritter/pig/sow', (SELECT type_id FROM type WHERE name_key = 'TAMEDANIMAL'));
+INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/kritter/pig/piglet', (SELECT type_id FROM type WHERE name_key = 'TAMEDANIMAL'));
 
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/kritter/rabbit/rabbit', (SELECT type_id FROM type WHERE name_key = 'SMALLANIMAL'));
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/kritter/chicken/chick', (SELECT type_id FROM type WHERE name_key = 'SMALLANIMAL'));

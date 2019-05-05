@@ -2398,6 +2398,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     }
 
     public void pfRightClick(Gob gob, int meshid, int clickb, int modflags, String action) {
+        System.out.println("pf right click");
         Gob player = player();
         if (player == null)
             return;
@@ -3103,6 +3104,10 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                         }
                         break;
                     case 4: //Delete all gobs like this one
+                        if(g.type == Type.TAMEDANIMAL){
+                            PBotUtils.sysMsg("I know you tried to delete this, but it's basically just a bad idea. Not adding to delete. Deleting livestock can/will lead to game crashes. If you really want them gone, hide them.",Color.white);
+                            break;
+                        }
                         Deleted.add(name);
                         ui.sess.glob.oc.removeAll(name);
                         break;

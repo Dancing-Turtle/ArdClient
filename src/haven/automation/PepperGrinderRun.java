@@ -4,6 +4,7 @@ import haven.Button;
 import haven.*;
 import haven.Label;
 import haven.Window;
+import haven.purus.pbot.PBotAPI;
 import haven.purus.pbot.PBotUtils;
 
 import java.awt.*;
@@ -83,60 +84,13 @@ public class PepperGrinderRun extends Window implements Runnable {
 				if (stam.a <= 60) {
 					lblProg.settext("Drinking");
 					PBotUtils.drink(true);
+					PBotUtils.sleep(5000);
 				}
 
 
 				if (stopThread)
 					return;
 
-
-	/*if (section == 2) {
-		lblProg.settext("Status - Moving");
-		Gob player = gui.map.player();
-		Coord location = player.rc.floor(posres);
-		if (direction == 1) {
-			x = location.x;
-			y = location.y - rowgap;
-		}
-		if (direction == 2) {
-			x = location.x;
-			y = location.y + rowgap;
-		}
-		if (direction == 3) {
-			x = location.x + rowgap;
-			y = location.y;
-		}
-		if (direction == 4) {
-			x = location.x - rowgap;
-			y = location.y;
-		}
-		finalloc = new Coord(x, y);
-		gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
-		BotUtils.sleep(2000);
-	} else if (section != 1 && section != 2) {
-		lblProg.settext("Status - Moving");
-		Gob player = gui.map.player();
-		Coord location = player.rc.floor(posres);
-		if (direction == 1) {
-			x = location.x;
-			y = location.y - ((rowgap * section) - rowgap);
-		}
-		if (direction == 2) {
-			x = location.x;
-			y = location.y + ((rowgap * section) - rowgap);
-		}
-		if (direction == 3) {
-			x = location.x + ((rowgap * section) - rowgap);
-			y = location.y;
-		}
-		if (direction == 4) {
-			x = location.x - ((rowgap * section) - rowgap);
-			y = location.y;
-		}
-		finalloc = new Coord(x, y);
-		gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
-		BotUtils.sleep(6000);
-	}*/
 				int finishtimeout = 0;
 				while (PBotUtils.invFreeSlots() > 2 && !stopThread) {
 					if(stopThread)
@@ -147,9 +101,6 @@ public class PepperGrinderRun extends Window implements Runnable {
 						return;
 					}
 					lblProg.settext("Status - Collecting");
-					//while (BotUtils.findObjectByNames(10, "gfx/terobjs/htable") == null)
-					//BotUtils.sleep(10);
-					//BotUtils.sysLogAppend("tablecoutn : "+tables.size(), "white");
 					while (htable == null) {
 						finishtimeout++;
 						if (finishtimeout > 10000) {
@@ -169,22 +120,16 @@ public class PepperGrinderRun extends Window implements Runnable {
 					blacklist.clear();
 					//BotUtils.sleep(500);
 					//	BotUtils.sysLogAppend("Found table, clicking", "white");
-					PBotUtils.pfRightClick(htable, 0);
-					try {
-						gui.map.pfthread.join();
-					} catch (InterruptedException e) {
-						return;
-					}
-					try {
-						Thread.sleep(TIMEOUT);
-					} catch (InterruptedException e) {
-						return;
-					}
+					//PBotUtils.pfRightClick(htable, 0);
+					//PBotAPI.gui.map.pfRightClick(htable,-1,3,0,null);
+					PBotUtils.PathfinderRightClick(htable,0);
+					PBotUtils.sleep(1000);
 					int retrytimer = 0;
 					int retrycount = 0;
 					while (gui.getwnd("Herbalist Table") == null) {
 						retrytimer++;
 						if (retrytimer > 1000) {
+							retrytimer = 0;
 							retrycount++;
 							if (retrycount > 1) {
 								lblProg.settext("Unstucking");
@@ -197,28 +142,17 @@ public class PepperGrinderRun extends Window implements Runnable {
 								retrycount = 0;
 								PBotUtils.sleep(1000);
 							}
-							PBotUtils.pfRightClick(htable, 0);
-							try {
-								gui.map.pfthread.join();
-							} catch (InterruptedException e) {
-								return;
-							}
-							try {
-								Thread.sleep(TIMEOUT);
-							} catch (InterruptedException e) {
-								return;
-							}
+						//	PBotUtils.pfRightClick(htable, 0);
+							//PBotAPI.gui.map.pfRightClick(htable,-1,3,0,null);
+							PBotUtils.PathfinderRightClick(htable,0);
 						}
 						PBotUtils.sleep(10);
 					}
 					PBotUtils.waitForWindow("Herbalist Table");
-					//gui.map.wdgmsg("click", htable.sc, htable.rc.floor(posres), 3, 0, 0, (int) htable.id, htable.rc.floor(posres), 0, -1);
-					//BotUtils.sysLogAppend("Found table, clicked", "white");
-					//BotUtils.waitForWindow("Herbalist Table");
 					Window herbtable = gui.getwnd("Herbalist Table");
 					if (herbtable == null)
 						continue;
-					int freeslots = PBotUtils.invFreeSlots();
+					int freeslots;
 					for (Widget w = herbtable.lchild; w != null; w = w.prev) {
 						if (w instanceof Inventory) {
 							Inventory inv = (Inventory) w;
@@ -243,19 +177,10 @@ public class PepperGrinderRun extends Window implements Runnable {
 				}
 				if (PBotUtils.invFreeSlots() <= 2) {
 					GItem pepperlol = gui.maininv.getItemPartial("Dried").item;
-					java.util.List<WItem> pepper = gui.maininv.getIdenticalItems((pepperlol));
 					lblProg.settext("Status - Going to Grind");
-					PBotUtils.pfRightClick(grinder, 0);
-					try {
-						gui.map.pfthread.join();
-					} catch (InterruptedException e) {
-						return;
-					}
-					try {
-						Thread.sleep(TIMEOUT);
-					} catch (InterruptedException e) {
-						return;
-					}
+				//	PBotUtils.pfRightClick(grinder, 0);
+				//	PBotAPI.gui.map.pfRightClick(grinder,-1,3,0,null);
+					PBotUtils.PathfinderRightClick(grinder,0);
 					PBotUtils.sleep(6000); //sleep 6 seconds to walk to grinder
 					int timeout = 0;
 					int retrycount = 0;
@@ -266,7 +191,7 @@ public class PepperGrinderRun extends Window implements Runnable {
 							timeout = 0;
 						}
 						while (gui.prog >= 0) {
-							PBotUtils.sleep(10);
+							PBotUtils.sleep(100);
 							lblProg.settext("Status - Grinding");
 						}
 						if (PBotUtils.getStamina() > 50) {
@@ -283,28 +208,16 @@ public class PepperGrinderRun extends Window implements Runnable {
 								gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
 								retrycount = 0;
 								PBotUtils.sleep(1000);
-
-								PBotUtils.pfRightClick(grinder, 0);
-								try {
-									gui.map.pfthread.join();
-								} catch (InterruptedException e) {
-									return;
-								}
-								try {
-									Thread.sleep(TIMEOUT);
-								} catch (InterruptedException e) {
-									return;
-								}
+								//PBotUtils.pfRightClick(grinder, 0);
+							//	PBotAPI.gui.map.pfRightClick(grinder,-1,3,0,null);
+								PBotUtils.PathfinderRightClick(grinder,0);
 							}
 						} else {
 							lblProg.settext("Status - Drinking");
 							PBotUtils.drink(true);
+							PBotUtils.sleep(5000);
 						}
 					}
-				//	gui.map.wdgmsg("click", hfire.sc, hfire.rc.floor(posres), 1, 0, 0, (int) hfire.id, hfire.rc.floor(posres), 0, -1);
-					//BotUtils.sleep(2000);
-
-
 				}
 				if(stopThread)
 					return;

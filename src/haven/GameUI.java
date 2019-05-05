@@ -78,6 +78,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public Window invwnd, equwnd;
     public FilterWnd filter;
     public Inventory maininv;
+    private Boolean temporarilyswimming = false;
     public CharWnd chrwdg;
     public MapWnd mapfile;
     public Widget qqview;
@@ -91,7 +92,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public OptWnd opts;
     public Collection<DraggedItem> hand = new LinkedList<DraggedItem>();
     private Collection<DraggedItem> handSave = new LinkedList<DraggedItem>();
-    private long  DrinkTimer = 0, StarvationAlertDelay = 0;
+    private long  DrinkTimer = 0, StarvationAlertDelay = 0, SwimTimer;
     public WItem vhand;
     public ChatUI chat;
     private ChatWnd chatwnd;
@@ -1003,6 +1004,13 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         double now = Utils.rtime();
         try{
         IMeter.Meter stam = getmeter("stam", 0);
+        if(Config.temporaryswimming && temporarilyswimming){
+            if(System.currentTimeMillis() - SwimTimer >= 30000){
+                SwimTimer = 0;
+                temporarilyswimming = false;
+                PBotUtils.doAct("swim");
+            }
+        }
         if(Config.autodrink && (DrinkThread == null || !DrinkThread.isAlive()) && stam.a < Config.autodrinkthreshold) {
             if(System.currentTimeMillis() - DrinkTimer >= 3000) {
                 DrinkTimer = System.currentTimeMillis();
@@ -1702,6 +1710,14 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 
     public void msg(String msg, Color color, Color logcol) {
         msgtime = Utils.rtime();
+        if(Config.temporaryswimming && msg.equals("Swimming is now turned on.")) { //grab it here before we localize the message
+            temporarilyswimming = true;
+            SwimTimer = System.currentTimeMillis();
+        }
+        if(Config.temporaryswimming && temporarilyswimming && msg.equals("Swimming is now turned off.")){//swimming manually toggled back off before the auto-off trigger fired, reset the auto-toggle flags.
+            temporarilyswimming = false;
+            SwimTimer = 0;
+        }
         msg = Resource.getLocString(Resource.BUNDLE_MSG, msg);
         lastmsg = msgfoundry.render(msg, color);
         syslog.append(msg, logcol);

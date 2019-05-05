@@ -92,8 +92,6 @@ public class TimersWnd extends Window {
             }
         };
         add(port, new Coord(20, 50));
-        if(Config.timersort)
-        sort(timers);
 
         for (int i = 0; i < timers.size(); i++)
             port.cont.add(timers.get(i), new Coord(0, i * TimerWdg.height));
@@ -122,8 +120,6 @@ public class TimersWnd extends Window {
             }
         }
     }
-
-
 
     public void resize() {
         List<TimerWdg> timers = Glob.timersThread.getall();

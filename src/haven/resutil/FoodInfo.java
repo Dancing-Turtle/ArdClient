@@ -121,6 +121,7 @@ public class FoodInfo extends ItemInfo.Tip {
 	    for (int type : types) {
 		CharacterInfo.Constipation.Data c = constipation.get(type);
 		if(c!=null) {
+			c.value = 1.00 - c.value;//have to do this because loftar's a fucking idiot and changed how satiations are displayed without actually changing how the system works.
 		    imgs.add(constipation.render(FoodInfo.class, c));
 		    total *= c.value;
 		}

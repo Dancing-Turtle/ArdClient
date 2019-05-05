@@ -216,7 +216,10 @@ public class Ridges extends MapMesh.Hooks {
                 hi = 10;
             } else {
                 lo = Math.min(z1, z2);
-                hi = Math.max(z1, z2);
+                if(Config.obviousridges)
+                    hi = Math.max(z1, z2) + 15;
+                else
+                    hi = Math.max(z1, z2);
             }
         }
         int nseg = Math.max((hi - lo + (segh / 2)) / segh, 2) - 1;
@@ -573,7 +576,7 @@ public class Ridges extends MapMesh.Hooks {
             for (int i = 0; i < n; i++) {
                 col[i] = new Coord3f(tcx + ((rnd.nextFloat() - 0.5f) * 5.0f),
                         tcy + ((rnd.nextFloat() - 0.5f) * 5.0f),
-                        Config.disableelev ? 10 : zs[i]);
+                        Config.disableelev ? 10 : (Config.obviousridges ? (zs[i] + 15) : zs[i]));
             }
         }
 

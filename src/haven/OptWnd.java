@@ -226,6 +226,17 @@ public class OptWnd extends Window {
                             },
                             dpy);
                 }
+                appender.add(new CheckBox("Add flared lip to top of ridges to make them obvious. (Requires restart)") {
+                    {
+                        a = Config.obviousridges;
+                    }
+
+                    public void set(boolean val) {
+                        Utils.setprefb("obviousridges", val);
+                        Config.obviousridges = val;
+                        a = val;
+                    }
+                });
                 appender.add(new CheckBox("Disable Animations (Big Performance Boost, makes some animations look weird.)") {
                     {
                         a = Config.disableAllAnimations;
@@ -1425,6 +1436,17 @@ public class OptWnd extends Window {
             public void set(boolean val) {
                 Utils.setprefb("abandonrightclick", val);
                 Config.abandonrightclick = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Disable swimming automatically after 30 seconds.") {
+            {
+                a = Config.temporaryswimming;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("temporaryswimming", val);
+                Config.temporaryswimming = val;
                 a = val;
             }
         });

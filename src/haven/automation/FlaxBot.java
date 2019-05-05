@@ -478,12 +478,6 @@ public class FlaxBot extends Window {
     public void stop () {
         // Stops thread
         PBotUtils.sysMsg("Flax Farmer stopped!", Color.white);
-        try {
-            if (gameui().map.pfthread != null) {
-                gameui().map.pfthread.interrupt();
-            }
-        } catch (NullPointerException q) {
-        }
         runner.interrupt();
         stopThread = true;
         this.destroy();

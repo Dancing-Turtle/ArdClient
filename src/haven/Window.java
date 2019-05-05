@@ -393,15 +393,16 @@ public class Window extends MovableWidget implements DTarget {
                                                 if(!((Window)q.parent).cap.text.equals("Study")) {
                                                     List<WItem> foods = getfoods((Inventory) q);
                                                     for (WItem item : foods) {
-                                                        GItem food = item.item;
-                                                        food.wdgmsg("iact", Coord.z, -1);
+                                                        if(!item.item.getname().contains("Corn")) {
+                                                            GItem food = item.item;
+                                                            food.wdgmsg("iact", Coord.z, -1);
+                                                        }
                                                     }
                                                 }
                                         }
                                     }
 
-                                } catch (NullPointerException q) {
-                                }
+                                } catch (Exception q) {}
                             }
                             PBotUtils.sleep(1000);
                             Map idk2 = getStats();

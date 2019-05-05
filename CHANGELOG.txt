@@ -1,3 +1,19 @@
+1.00.144
+Fixed really goddamn obscure bug with alarm autosorting involving having 2 alarms within 1-2 seconds of eachother and switching chars at a specific time.
+Added lampstalks to minimap hide list.
+Fixed pepperbot's peppergrinder.
+Added "Man the helm" to flowermenu autoselect options.
+Added wound treatment information for sand flea bites.
+Added gemstones to the alerted select list. 
+Added toggle to video settings to add a flared lip to the top side of ridges that make it obvious they're there. Off by default.
+Probably fixed "eat all" button eating cornocopias. 
+Put all tamed animals properly in the tamed animals type so that proximity aggro won't effect them.
+Additional reason for the above, removed the ability to delete tamed animals. Deleting dynamic gobs is basically just a terrible idea and should never be done on livestock, for starters, someone butchering a deleted animal will crash your game. Hide them instead.
+Added toggle to general settings to automatically toggle swimming back off after 30 seconds. 
+Added minimap icon for knarrs.
+Latest client changes merged with that retard loftar who doesn't actually play the game and yet implements dipshit changes such as flipping the logic on how satiations are displayed without actually changing how the client receives and stores satiation information.
+~
+
 1.00.143
 Fixed steel refueler.
 Added toggle to general settings for the automatic table cutlery removal.
