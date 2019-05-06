@@ -1,3 +1,13 @@
+1.00.147
+Added additional toggle to map settings to show names above custom marker flags.
+Sped up log splitter greatly, it's quite literally as fast as programatically possible now. 
+Sped up coracle script. In addition, coracle script will no longer drop the coracle unless you are standing on a water tile.
+Sped up moth killer, I don't do silk so I can't test it - let me know if it doesn't work anymore. 
+Sped up oyster opener.
+Right clicking the quest pointer (little circle of a tree that points toward your current quest giver) will now draw a pathing line on the large marker map to/through the quest giver. Lines will persist until the map is closed by hitting escape or the X, but won't redraw if you move the map manually. Can be used to triangulate questgivers.
+In light of fixing the alerted system memory leak, returned :lo to instant logout and converted the logout keybind to instant as well.
+~
+
 1.00.146
 Added toggle to map settings, on by default, to display questgiver names above their icon on the large marker map.
 ~

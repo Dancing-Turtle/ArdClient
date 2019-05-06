@@ -3,6 +3,7 @@ package haven.automation;
 
 import haven.*;
 import haven.Window;
+import haven.purus.pbot.PBotAPI;
 import haven.purus.pbot.PBotUtils;
 
 import java.awt.*;
@@ -19,17 +20,14 @@ public class MothKiller implements Runnable {
     @Override
     public void run() {
         WItem moth = null;
-        List<WItem> moths = new ArrayList<>();
-        List<Widget> children = new ArrayList<>();
+        List<WItem> cocoons = new ArrayList<>();
+        List<WItem> deadheads = new ArrayList<>();
         synchronized (gui.ui.root.lchild) {
             try {
                 for (Widget q = gui.ui.root.lchild; q != null; q = q.rnext()) {
                     if (q instanceof Inventory) {
-                        moth = getMoths2((Inventory) q);
-                        if (moth != null) {
-                            children.add(q);
-                            moths = getMoths((Inventory) q);
-                        }
+                            cocoons.addAll(getcocoons((Inventory) q));
+                            deadheads.addAll(getdeadheads((Inventory) q));
                     }
 
                 }
@@ -39,33 +37,36 @@ public class MothKiller implements Runnable {
         }
 
              //  trays2.addAll(trays);
-        if(moths!=null)
-        if(moths.size() > 0)
-            PBotUtils.sysMsg("Found "+moths.size()+" to kill.",Color.white);
-        for (WItem item : moths) {
-                FlowerMenu.setNextSelection("Kill");
+        if(cocoons.size() > 0 || deadheads.size() > 0)
+            PBotUtils.sysMsg("Found "+(cocoons.size() + deadheads.size())+" to kill.",Color.white);
+        else {
+            PBotUtils.sysMsg("No cocoons found",Color.white);
+            return;
+        }
+        int startid = PBotAPI.gui.ui.next_predicted_id;
+        int iteration = 0;
+        if(cocoons.size() > 0) {
+            for (WItem item : cocoons) {
                 item.item.wdgmsg("iact", Coord.z, -1);
-            PBotUtils.sleep(1000);
+                PBotAPI.gui.ui.wdgmsg(startid + iteration, "cl", 0, 0);
+                iteration++;
+            }
+        }
+        if(deadheads.size()>0) {
+            for (WItem item : deadheads) {
+                item.item.wdgmsg("iact", Coord.z, -1);
+                PBotAPI.gui.ui.wdgmsg(startid + iteration, "cl", 1, 0);
+                iteration++;
+            }
         }
         PBotUtils.sysMsg("Done",Color.white);
     }
-    private List<WItem> getMoths (Inventory inv){
-        List<WItem> moths = inv.getItemsPartial("Cocoon");
-        moths.addAll(inv.getItemsPartial("Chrysalis"));
-        // BotUtils.sysMsg("trying to find trays", Color.WHITE);
-        if(moths == null)
-            return null;
-        return moths;
-    }
 
-    private WItem getMoths2 (Inventory inv){
-        WItem moths = inv.getItemPartialTrays("Cocoon");
-        if(moths == null)
-            moths = inv.getItemPartialTrays("Chrysalis");
-        // BotUtils.sysMsg("trying to find trays", Color.WHITE);
-        if(moths == null)
-            return null;
-        return moths;
+    private List<WItem> getcocoons (Inventory inv){
+        return inv.getItemsPartial("Cocoon");
+    }
+    private List<WItem> getdeadheads (Inventory inv){
+        return inv.getItemsPartial("Chrysalis");
     }
 }
 

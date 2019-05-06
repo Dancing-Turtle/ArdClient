@@ -72,6 +72,7 @@ public class MapWnd extends Window {
     private final static Comparator<Marker> namecmp = ((a, b) -> a.nm.compareTo(b.nm));
     private Map<Color, Tex> xmap = new HashMap<Color, Tex>(6);
     private Map<Long, Tex> namemap = new HashMap<>(50);
+    private Map<Coord, Coord> questlinemap = new HashMap<>();
 
 
     public MapWnd(MapFile file, MapView mv, Coord sz, String title) {
@@ -302,6 +303,37 @@ public class MapWnd extends Window {
         }
 
 
+        private void questgiverLines(GOut g, final Location ploc){
+            List<Coord2d> questQueue = new ArrayList<>();
+            final Coord pc = new Coord2d(mv.getcc()).floor(tilesz);
+            final double dist = 90000.0D;
+            questQueue.addAll(mv.questQueue());
+            try {
+                if (questQueue.size() > 0) {
+                    for (Coord2d coord : questQueue) {
+                        PBotAPI.gui.mapfile.view.follow = false;
+                        final Gob player = PBotAPI.gui.map.player();
+                        double angle = PBotAPI.gui.map.player().rc.angle(coord);
+                        final Coord mc = new Coord2d(player.rc).floor(tilesz);
+                        final Coord lc = mc.add((int) (Math.cos(angle) * dist), (int) (Math.sin(angle) * dist));
+                        final Coord gc = xlate(new Location(ploc.seg, ploc.tc.add(mc.sub(pc))));
+                        final Coord mlc = xlate(new Location(ploc.seg, ploc.tc.add(lc.sub(pc))));
+                        questlinemap.put(gc, mlc);
+                    }
+                    questQueue.clear();
+                    mv.questQueue().clear();
+                }
+                if(questlinemap.size() > 0){
+                    for(Map.Entry<Coord, Coord> entry : questlinemap.entrySet()) {
+                        g.chcolor(Color.MAGENTA);
+                        g.dottedline(entry.getKey(), entry.getValue(), 2);
+                        g.chcolor();
+                    }
+                }
+            }catch(Exception e){e.printStackTrace();}
+        }
+
+
         public void draw(GOut g) {
             g.chcolor(0, 0, 0, 128);
             g.frect(Coord.z, sz);
@@ -318,6 +350,8 @@ public class MapWnd extends Window {
                         ignore = drawparty(g, loc);
                     g.chcolor();
                     drawmovement(g.reclip(view.c, view.sz), loc);
+                    questgiverLines(g.reclip(view.c, view.sz), loc);
+
                 }
             } catch (Loading l) {
             }
@@ -667,9 +701,17 @@ public class MapWnd extends Window {
     }
 
     @Override
+    public void close(){
+        show(false);
+        mv.questQueue().clear();
+        questlinemap.clear();
+    }
+
+    @Override
     public void wdgmsg(Widget sender, String msg, Object... args) {
-        if (sender == cbtn)
+        if (sender == cbtn) {
             show(false);
+        }
         else
             super.wdgmsg(sender, msg, args);
     }
@@ -677,8 +719,9 @@ public class MapWnd extends Window {
     @Override
     public boolean type(char key, KeyEvent ev) {
         if (key == 27) {
-            if (cbtn.visible)
+            if (cbtn.visible) {
                 show(false);
+            }
             return true;
         }
         return super.type(key, ev);

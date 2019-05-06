@@ -3,6 +3,7 @@ package haven.automation;
 
 import haven.*;
 import haven.Window;
+import haven.purus.pbot.PBotAPI;
 import haven.purus.pbot.PBotUtils;
 
 import java.awt.*;
@@ -29,18 +30,21 @@ public class SplitLogs implements Runnable {
             PBotUtils.sysMsg("No blocks found.",Color.white);
             return;
         }
+        int startID = PBotAPI.gui.ui.next_predicted_id;
+            int iteration = 0;
+            int freespace = PBotUtils.freeSlotsInv(PBotAPI.gui.maininv);
         for (WItem item : blocks) {
-                FlowerMenu.setNextSelection("Split");
-                System.out.println(PBotUtils.getPlayerInvContentsPartial("Block").size()+ " startsize : "+startsize);
-                item.item.wdgmsg("iact", Coord.z, -1);
-                int timeout = 0;
-                while(PBotUtils.getPlayerInvContentsPartial("Block").size() == startsize) {
-                    timeout++;
-                    if(timeout > 200)
-                        break;
-                    PBotUtils.sleep(100);
-                }
-                startsize--;
+            item.item.wdgmsg("iact", Coord.z, -1);
+            PBotAPI.gui.ui.wdgmsg(startID + iteration, "cl",0, 0);
+            if(freespace >= 3)
+                iteration = iteration + 6;
+            else if(freespace == 2)
+                iteration = iteration + 5;
+            else if(freespace == 1)
+                iteration = iteration + 4;
+            else
+                iteration = iteration + 3;
+            freespace = freespace - 3;
         }
         PBotUtils.sysMsg("Exiting Log Splitter",Color.white);
     }

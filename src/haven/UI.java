@@ -78,14 +78,7 @@ public class UI {
     private class WidgetConsole extends Console {
         {
             setcmd("q", (cons1, args) -> HackThread.tg().interrupt());
-            setcmd("lo", new Command() {
-                public void run(Console cons, String[] args) {
-                    if (gui != null)
-                        gui.act("lo");
-                    else
-                        sess.close();
-                }
-            });
+            setcmd("lo", (cons1, args) -> sess.close());
             setcmd("kbd", (cons1, args) -> {
                 Config.zkey = args[1].toString().equals("z") ? KeyEvent.VK_Y : KeyEvent.VK_Z;
                 Utils.setprefi("zkey", Config.zkey);
@@ -167,6 +160,9 @@ public class UI {
         }
     }
 
+    //ids go sequential, 2^16 limit judging by parent != 65535...
+    //At 65535 wrap back around? Can we break the game by hitting that limit.............
+    public int next_predicted_id = 2;
     public void newwidget(int id, String type, int parent, Object[] pargs, Object... cargs) throws InterruptedException {
 
     //  System.out.println("Widget ID : "+id+" Type : "+type+" Parent : "+parent);
@@ -230,6 +226,7 @@ public class UI {
                 fightwnd = new WeakReference<>((FightWnd)wdg);
             }
         }
+        next_predicted_id = id + 1;
     }
 
     public void addwidget(int id, int parent, Object[] pargs) {
@@ -371,6 +368,14 @@ public class UI {
                 destroy(wdg);
             }
         }
+    }
+
+    /**
+     * For scripting only
+     */
+    public void wdgmsg(final int id, final String msg, Object... args) {
+        if(rcvr != null)
+            rcvr.rcvmsg(id, msg, args);
     }
 
     public void wdgmsg(Widget sender, String msg, Object... args) {

@@ -23,13 +23,6 @@ public class Alerted {
 	private static HashSet<Long> sgobs = new HashSet<Long>();
 	private static HashMap<Long, Long> alertedmap = new HashMap<>(); //map for the purposes of tracking gobs/alerts to ensure alerts only first with a minimum of a 1 second delay
     public static void init(final Storage internal) {
-    	if(Config.firstrunalerts){ //if first run on version 108, drop table if it exists to ensure it gets created with new volume category
-			Storage.dynamic.ensure((sql) -> {
-				try (final Statement stmt = sql.createStatement()) {
-					stmt.executeUpdate("DROP TABLE IF EXISTS gob_sound");
-				}
-			});
-		}
 		Storage.dynamic.ensure((sql) -> {
 			try (final Statement stmt = sql.createStatement()) {
 				stmt.executeUpdate("CREATE TABLE IF NOT EXISTS gob_sound ( name TEXT PRIMARY KEY, sfx TEXT, volume DOUBLE )");

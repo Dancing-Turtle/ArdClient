@@ -12,7 +12,7 @@ public enum Action {
     TOGGLE_MAP(GameUI::toggleMap, "Toggle Map"),
     TAKE_SCREENSHOT(GameUI::takeScreenshot, "Take Screenshot"),
     CRAWL_SPEED(GameUI::crawlSpeed,"Crawling Speed"),
-    LOGOUT(GameUI::logout,"Initiates Logout"),
+    LOGOUT(GameUI::logout,"Instant Logout"),
     LOGOUTSELECT(GameUI::logoutChar,"Logs out to char select."),
     TOGGLEDEBUG(GameUI::toggleDebug,"Toggles advanced client data."),
     WALK_SPEED(GameUI::walkSpeed,"Walking Speed"),

@@ -194,8 +194,12 @@ public class Pointer extends Widget {
         if(this.lc != null && this.lc.dist(c) < 20.0) {
             if(gobid > 0) {
 		ui.gui.map.wdgmsg("click", rootpos().add(c), this.tc.floor(posres), button, ui.modflags(), 0, (int) gobid, this.tc.floor(posres), 0, -1);
+				if(button == 3 && ui.gui.mapfile.visible)//only add to marker map if map open
+					ui.gui.map.questQueueAdd(this.tc);
 	    } else {
                 ui.gui.map.wdgmsg("click", rootpos().add(c), this.tc.floor(posres), button, ui.modflags());
+				if(button == 3 && ui.gui.mapfile.visible)//only add to marker map if map open
+					ui.gui.map.questQueueAdd(this.tc);
 	    }
             return true;
 	} else {

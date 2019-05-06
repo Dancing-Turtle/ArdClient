@@ -390,7 +390,7 @@ public class OptWnd extends Window {
                 });
 
                 appender.add(new Label("Disable animations (req. restart):"));
-                CheckListbox disanimlist = new CheckListbox(320, Math.min(8, Config.disableanim.values().size()), 18 + Config.fontadd) {
+                CheckListbox disanimlist = new CheckListbox(320, Config.disableanim.values().size(), 18 + Config.fontadd) {
                     @Override
                     protected void itemclick(CheckListboxItem itm, int button) {
                         super.itemclick(itm, button);
@@ -1376,7 +1376,18 @@ public class OptWnd extends Window {
                 Config.mapdrawquests = val;
                 a = val;
             }
-        },0,380);
+        },0,370);
+        map.add(new CheckBox("Show names above marker flags.") {
+            {
+                a = Config.mapdrawflags;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("mapdrawflags", val);
+                Config.mapdrawflags = val;
+                a = val;
+            }
+        },0,390);
 
         map.add(new PButton(200, "Back", 27, main), new Coord(210, 380));
         map.pack();
@@ -3262,7 +3273,7 @@ public class OptWnd extends Window {
             }
         },475,340);
 
-        map.add(new PButton(100,"Clear Boulders", 27,clearboulders), new Coord(15,355));
+        map.add(new PButton(100,"Clear Boulders", 27,clearboulders), new Coord(15,345));
         map.add(new PButton(100,"Clear Bushes", 27,clearbushes), new Coord(170,355));
         map.add(new PButton(100,"Clear Trees", 27,cleartrees), new Coord(325,355));
         map.add(new PButton(100,"Clear Hides", 27,clearhides), new Coord(480,355));

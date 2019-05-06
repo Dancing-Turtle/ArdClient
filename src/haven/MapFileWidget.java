@@ -58,7 +58,7 @@ public class MapFileWidget extends Widget {
     public final MapFile file;
     public Location curloc;
     private Locator setloc;
-    private boolean follow;
+    public boolean follow;
     private Area dext;
     private Segment dseg;
     private DisplayGrid[] display;
@@ -205,6 +205,11 @@ public class MapFileWidget extends Widget {
                 g.image(flagfg, ul);
                 g.chcolor();
                 g.image(flagbg, ul);
+                if (Config.mapdrawflags) {
+                   Tex tex = Text.renderstroked(m.nm, Color.white, Color.BLACK, Text.num12boldFnd).tex();
+                   if(tex!=null)
+                     g.image(tex, ul.add(flagfg.sz.x / 2, -20).sub(tex.sz().x / 2, 0));
+                }
             } else if(m instanceof SMarker) {
                 SMarker sm = (SMarker)m;
                 try {

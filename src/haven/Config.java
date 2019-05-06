@@ -61,6 +61,7 @@ public class Config {
     public static boolean hideflocomplete = Utils.getprefb("hideflocomplete", false);
     public static boolean mapdrawparty = Utils.getprefb("mapdrawparty", false);
     public static boolean mapdrawquests = Utils.getprefb("mapdrawquests", true);
+    public static boolean mapdrawflags = Utils.getprefb("mapdrawflags", false);
     public static boolean hideflovisual = Utils.getprefb("hideflovisual", false);
     public static boolean daylight = Utils.getprefb("daylight", false);
     public static boolean longtooltips = Utils.getprefb("longtooltips", true);
@@ -356,14 +357,7 @@ public class Config {
     public static double cleavesoundvol = Utils.getprefd("cleavesoundvol", 0.8);
     public static String attackedsfx = Utils.getpref("attackedsfx","None");
     public static double attackedvol = Utils.getprefd("attackedvol", 0.8);
-
     public static HashMap<String,Boolean> curioslist = null;
-    public static boolean firstrun = Utils.getprefb("firstrun",true); //only exists to see if it's the first time running the client since version 108, if so, loads default alarms.
-    public static boolean firstrunalerts = Utils.getprefb("firstrunalerts",true); //only exists to see if it's the first time running the client since version 108, if so, loads default alarms.
-
-
-
-
 
     public final static String chatfile = "chatlog.txt";
     public static PrintWriter chatlog = null;

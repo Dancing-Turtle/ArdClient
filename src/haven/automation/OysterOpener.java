@@ -30,17 +30,21 @@ public class OysterOpener implements Runnable {
             PBotUtils.sysMsg("No Oysters found.",Color.white);
             return;
         }
+        int startid = PBotAPI.gui.ui.next_predicted_id;
+        int iterations = 0;
         for (WItem item : oysters) {
-            FlowerMenu.setNextSelection("Crack open");
+       //     FlowerMenu.setNextSelection("Crack open");
             item.item.wdgmsg("iact", Coord.z, -1);
-            int timeout = 0;
-            while(PBotUtils.getPlayerInvContentsExact("Oyster").size() == startsize) {
+            PBotAPI.gui.ui.wdgmsg(startid+iterations,"cl", 0,0);
+            iterations = iterations + 2;
+         //   int timeout = 0;
+         /*   while(PBotUtils.getPlayerInvContentsExact("Oyster").size() == startsize) {
                 timeout++;
                 if(timeout > 200)
                     break;
                 PBotUtils.sleep(100);
             }
-            startsize--;
+            startsize--;*/
         }
         PBotUtils.sysMsg("Exited OysterOpener",Color.white);
     }

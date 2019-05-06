@@ -132,6 +132,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     public haven.purus.pathfinder.Pathfinder pastaPathfinder;
     private long lastMove = System.currentTimeMillis();
     private Queue<Coord2d> movequeue = new ArrayDeque<>();
+    private List<Coord2d> questQueue = new ArrayList<>();
     private Gob pathfindGob;
     private int pathfindGobMod = 0;
     private String lasttt = "";
@@ -1771,6 +1772,10 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         movequeue.add(c);
     }
 
+    public void questQueueAdd(final Coord2d c) {
+        questQueue.add(c);
+    }
+
     public boolean los(final Coord2d c) {
         final NBAPathfinder finder = new NBAPathfinder(ui);
         return finder.walk(new Coord(ui.sess.glob.oc.getgob(plgob).getc()), c.floor());
@@ -1839,6 +1844,9 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         return movequeue.iterator();
     }
 
+    public List<Coord2d> questQueue() {
+        return questQueue;
+    }
     public void tick(double dt) {
         camload = null;
         try {

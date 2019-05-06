@@ -136,38 +136,7 @@ public class SeedCropFarmer extends Window implements Runnable {
 				PBotUtils.sleep(10);
 			}
 			PBotUtils.doClick(g,3,0);
-		//	PBotUtils.pfRightClick(g, 0);
-
-			// Wait for harvest menu to appear and harvest the crop
-			retryharvest = 0;
-			while (ui.root.findchild(FlowerMenu.class) == null) {
-				if (stopThread)
-					return;
-				lblProg2.settext("Waiting for flowermenu");
-				retryharvest++;
-				if(retryharvest > 500)
-				{
-					lblProg2.settext("Retry flower menu");
-					PBotUtils.pfRightClick(g,0);
-					retryharvest = 0;
-				}
-				PBotUtils.sleep(10);
-			}
-
-
-
-			if (stopThread)
-				return;
-
-			FlowerMenu menu = ui.root.findchild(FlowerMenu.class);
-			if (menu != null) {
-				for (FlowerMenu.Petal opt : menu.opts) {
-					if (opt.name.equals("Harvest")) {
-						menu.choose(opt);
-						menu.destroy();
-					}
-				}
-			}
+			PBotAPI.gui.ui.wdgmsg(PBotAPI.gui.ui.next_predicted_id,"cl",0,0);
 			retryharvest = 0;
 			while (PBotUtils.findObjectById(g.id) != null) {
 				if (stopThread)
@@ -177,7 +146,9 @@ public class SeedCropFarmer extends Window implements Runnable {
 				if(retryharvest > 500)
 				{
 					lblProg2.settext("Retry harvest");
-					PBotUtils.pfRightClick(g,0);
+					//PBotUtils.pfRightClick(g,0);
+					PBotUtils.doClick(g,3,0);
+					PBotAPI.gui.ui.wdgmsg(PBotAPI.gui.ui.next_predicted_id,"cl",0,0);
 					retryharvest = 0;
 				}
 				PBotUtils.sleep(10);

@@ -1355,7 +1355,8 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public void logout(){
         if(Discord.jdalogin != null)
             DiscordToggle();
-        act("lo");
+      //  act("lo");
+        ui.sess.close();
     }
     public void logoutChar() {
         if(Discord.jdalogin != null)
