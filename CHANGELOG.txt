@@ -1,3 +1,7 @@
+1.00.149
+Health/Stamina/Energy/Hunger/Fep meters are now movable, simply click and drag.
+~
+
 1.00.148
 Added moonmoths to map icon list, should enable Q to capture them.
 Finally remembered to make grid toggle (Ctrl+G) an adjustable keybind. Still Ctrl G by default.

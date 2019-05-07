@@ -642,11 +642,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         }
     }
 
-
-
-
-
-
     private String mapfilename() {
         StringBuilder buf = new StringBuilder();
         buf.append(genus);
@@ -658,7 +653,10 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         return (buf.toString());
     }
     public void addcmeter(Widget meter) {
-        ulpanel.add(meter);
+        int x = (meters.size() % 3) * (IMeter.fsz.x + 5);
+        int y = (meters.size() / 3) * (IMeter.fsz.y + 2);
+        add(meter, portrait.c.x + portrait.sz.x + 10 + x, portrait.c.y + y);
+       // ulpanel.add(meter);
         cmeters.add(meter);
         updcmeters();
     }
@@ -878,9 +876,9 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             chrwdg = add((CharWnd) child, new Coord(300, 50));
             chrwdg.hide();
             if(Config.hungermeter)
-                addcmeter(new HungerMeter(chrwdg.glut));
+                addcmeter(new HungerMeter(chrwdg.glut,"HungerMeter"));
             if(Config.fepmeter)
-            	addcmeter(new FepMeter(chrwdg.feps));
+            	addcmeter(new FepMeter(chrwdg.feps,"FepMeter"));
         } else if (place == "craft") {
             final Widget mkwdg = child;
             if(craftwnd != null) {
@@ -908,7 +906,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         } else if (place == "meter") {
             int x = (meters.size() % 3) * (IMeter.fsz.x + 5);
             int y = (meters.size() / 3) * (IMeter.fsz.y + 2);
-            ulpanel.add(child, portrait.c.x + portrait.sz.x + 10 + x, portrait.c.y + y);
+            add(child, portrait.c.x + portrait.sz.x + 10 + x, portrait.c.y + y);
             meters.add(child);
             updcmeters();
         } else if (place == "buff") {

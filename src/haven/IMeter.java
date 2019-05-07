@@ -25,13 +25,18 @@
  */
 
 package haven;
-
+import haven.MovableWidget;
 import java.awt.Color;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class IMeter extends Widget {
+public class IMeter extends MovableWidget {
     private static final Resource ponysfx = Resource.local().loadwait("sfx/alarmpony");
+    private static final Pattern hppat = Pattern.compile("Health: ([0-9]+)/([0-9]+)/([0-9]+)");
+    private static final Pattern stampat = Pattern.compile("Stamina: ([0-9]+)");
+    private static final Pattern energypat = Pattern.compile("Energy: ([0-9]+)");
     static Coord off = new Coord(22, 7);
     static Coord fsz = new Coord(101, 24);
     static Coord msz = new Coord(75, 10);
@@ -43,15 +48,16 @@ public class IMeter extends Widget {
     public static class $_ implements Factory {
         public Widget create(UI ui, Object[] args) {
             Indir<Resource> bg = ui.sess.getres((Integer) args[0]);
-            List<Meter> meters = new LinkedList<Meter>();
-            for (int i = 1; i < args.length; i += 2)
+            List<Meter> meters = new LinkedList<>();
+            for (int i = 1; i < args.length; i += 2) {
                 meters.add(new Meter((Color) args[i], (Integer) args[i + 1]));
-            return (new IMeter(bg, meters));
+            }
+            return (new IMeter(bg, meters, "meter-" + args[0]));
         }
     }
 
-    public IMeter(Indir<Resource> bg, List<Meter> meters) {
-        super(fsz);
+    private IMeter(Indir<Resource> bg, List<Meter> meters, final String name) {
+        super(fsz, name);
         this.bg = bg;
         this.meters = meters;
     }
@@ -64,6 +70,11 @@ public class IMeter extends Widget {
             this.c = c;
             this.a = a;
         }
+    }
+
+    @Override
+    protected boolean moveHit(Coord c, int btn) {
+        return c.isect(Coord.z, sz);
     }
 
     public void draw(GOut g) {
@@ -81,12 +92,13 @@ public class IMeter extends Widget {
             g.chcolor();
             g.image(bg, Coord.z);
         } catch (Loading l) {
+            //Ignore
         }
     }
 
     public void uimsg(String msg, Object... args) {
         if (msg == "set") {
-            List<Meter> meters = new LinkedList<Meter>();
+            List<Meter> meters = new LinkedList<>();
             for (int i = 0; i < args.length; i += 2)
                 meters.add(new Meter((Color) args[i], (Integer) args[i + 1]));
             this.meters = meters;

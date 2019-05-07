@@ -1,13 +1,18 @@
 package haven;
 
-public class HungerMeter extends Widget {
+public class HungerMeter extends MovableWidget {
     private static final Tex bg = Resource.loadtex("hud/meter/hungermeter");
 
     private final CharWnd.GlutMeter glut;
 
-    public HungerMeter(CharWnd.GlutMeter glut) {
-        super(IMeter.fsz);
+    public HungerMeter(CharWnd.GlutMeter glut, final String name) {
+        super(IMeter.fsz, name);
         this.glut = glut;
+    }
+
+    @Override
+    protected boolean moveHit(Coord c, int btn) {
+        return c.isect(Coord.z, sz);
     }
 
     @Override

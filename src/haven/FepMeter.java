@@ -2,14 +2,19 @@ package haven;
 
 import java.awt.Color;
 
-public class FepMeter extends Widget {
+public class FepMeter extends MovableWidget {
     private static final Tex bg = Resource.loadtex("hud/meter/fepmeter");
 
     private final CharWnd.FoodMeter food;
 
-    public FepMeter(CharWnd.FoodMeter food) {
-        super(IMeter.fsz);
+    public FepMeter(CharWnd.FoodMeter food, String name) {
+        super(IMeter.fsz, name);
         this.food = food;
+    }
+
+    @Override
+    protected boolean moveHit(Coord c, int btn) {
+        return c.isect(Coord.z, sz);
     }
 
     @Override
