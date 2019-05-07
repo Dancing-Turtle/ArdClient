@@ -90,6 +90,7 @@ public class MapWnd extends Window {
             }
 
             public void click() {
+                questlinemap.clear();
                 recenter();
             }
         }, Coord.z);
@@ -418,6 +419,17 @@ public class MapWnd extends Window {
         }
     }
 
+    public void selectMarker(String name){
+        if(markers != null && markers.size() > 0) {
+            for (Marker marker : markers) {
+                if (marker.nm.equals(name)) {
+                    list.change2(marker);
+                    view.center(new SpecLocator(marker.seg, marker.tc));
+                }
+            }
+        }
+    }
+
     public static final Color every = new Color(255, 255, 255, 16), other = new Color(255, 255, 255, 32);
 
     private static final Pair[] filters = new Pair[] {
@@ -610,6 +622,7 @@ public class MapWnd extends Window {
         if (super.keydown(ev))
             return (true);
         if (ev.getKeyCode() == KeyEvent.VK_HOME) {
+            questlinemap.clear();
             recenter();
             return (true);
         }

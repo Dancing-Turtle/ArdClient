@@ -121,6 +121,7 @@ public class KeyBinder {
 	add(KeyEvent.VK_X,ALT,TOGGLE_CRAFTWND);
 	add(KeyEvent.VK_P,0,PEACE_CURRENT);
 	add(KeyEvent.VK_Z,0,MARK_CURRENT);
+	add(KeyEvent.VK_G,CTRL,TOGGLE_GRID);
     }
     
     private static synchronized void store() {

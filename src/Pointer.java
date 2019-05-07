@@ -3,6 +3,8 @@ import haven.*;
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 
+import java.util.List;
+
 import static haven.OCache.posres;
 
 public class Pointer extends Widget {
@@ -191,15 +193,27 @@ public class Pointer extends Widget {
 
     @Override
     public boolean mousedown(Coord c, int button) {
-        if(this.lc != null && this.lc.dist(c) < 20.0) {
-            if(gobid > 0) {
-		ui.gui.map.wdgmsg("click", rootpos().add(c), this.tc.floor(posres), button, ui.modflags(), 0, (int) gobid, this.tc.floor(posres), 0, -1);
-				if(button == 3 && ui.gui.mapfile.visible)//only add to marker map if map open
+  		if(this.lc != null && this.lc.dist(c) < 20.0) {
+            	if(gobid > 0) {
+						ui.gui.map.wdgmsg("click", rootpos().add(c), this.tc.floor(posres), button, ui.modflags(), 0, (int) gobid, this.tc.floor(posres), 0, -1);
+				if(button == 3) {//only add to marker map if map open
+					try {
+					if(!ui.gui.mapfile.visible)
+						ui.gui.toggleMapfile();
+					ui.gui.mapfile.selectMarker(((Text.Line)this.tooltip).text);
 					ui.gui.map.questQueueAdd(this.tc);
+				}catch(Exception e){e.printStackTrace();}
+				}
 	    } else {
                 ui.gui.map.wdgmsg("click", rootpos().add(c), this.tc.floor(posres), button, ui.modflags());
-				if(button == 3 && ui.gui.mapfile.visible)//only add to marker map if map open
-					ui.gui.map.questQueueAdd(this.tc);
+				if(button == 3) {//only add to marker map if map open
+					try {
+						if (!ui.gui.mapfile.visible)
+							ui.gui.toggleMapfile();
+						ui.gui.mapfile.selectMarker(((Text.Line) this.tooltip).text);
+						ui.gui.map.questQueueAdd(this.tc);
+					}catch(Exception e){e.printStackTrace();}
+				}
 	    }
             return true;
 	} else {

@@ -262,7 +262,15 @@ public class Shopbox extends Widget implements SpriteOwner, Owner {
 
     public void wdgmsg(Widget var1, String var2, Object... var3) {
         if(var1 == this.bbtn) {
-            this.wdgmsg("buy", new Object[0]);
+            if(ui.modshift && !ui.modctrl) {
+                for (int i = 0; i <= 5; i++)
+                    this.wdgmsg("buy", new Object[0]);
+            }else if(ui.modshift && ui.modctrl) {
+                for (int i = 0; i <= 20; i++)
+                    this.wdgmsg("buy", new Object[0]);
+            }else {
+                this.wdgmsg("buy", new Object[0]);
+            }
         } else if(var1 == this.spipe) {
             this.wdgmsg("spipe", new Object[0]);
         } else if(var1 == this.bpipe) {
@@ -280,6 +288,7 @@ public class Shopbox extends Widget implements SpriteOwner, Owner {
         boolean var1 = this.price != null && this.pnum > 0;
         if (var1 && this.bbtn == null) {
             this.bbtn = (Button) this.add(new Button(75, "Buy"), buyc);
+            this.bbtn.tooltip = "Left click to buy 1, Shift left click to buy 5, ctrl shift left click to buy 20.";
         } else if (!var1 && this.bbtn != null) {
             this.bbtn.reqdestroy();
             this.bbtn = null;

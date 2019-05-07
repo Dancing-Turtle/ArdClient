@@ -129,7 +129,7 @@ public class TimerWdg extends Widget {
     public void done() {
         stop();
         GameUI gui = ((TimersWnd) parent.parent.parent).gui;
-        gui.add(new TimerDoneWindow(name), new Coord(gui.sz.x / 2 - 150, gui.sz.y / 2 - 75));
+        gui.add(new TimerDoneWindow(name, this), new Coord(gui.sz.x / 2 - 150, gui.sz.y / 2 - 75));
         if (Config.timersalarm)
             Audio.play(timersfx, Config.timersalarmvol);
         Glob.timersThread.save();
@@ -141,8 +141,8 @@ public class TimerWdg extends Widget {
     }
 
     private class TimerDoneWindow extends haven.Window {
-        public TimerDoneWindow(String timername) {
-            super(new Coord(300, 130), "Hooray!");
+        public TimerDoneWindow(String timername, TimerWdg timer) {
+            super(new Coord(300, 130), "Hooray!","Hooray!");
 
             haven.Label lbltimer = new haven.Label(timername, Text.num12boldFnd);
             add(lbltimer, new Coord(300 / 2 - lbltimer.sz.x / 2, 20));
@@ -155,7 +155,14 @@ public class TimerWdg extends Widget {
                 public void click() {
                     parent.reqdestroy();
                 }
-            }, new Coord(300 / 2 - 60 / 2, 90));
+            }, new Coord(150 / 2 - 60 / 2, 90));
+            add(new haven.Button(60, "Close & Restart") {
+                @Override
+                public void click() {
+                    timer.start();
+                    parent.reqdestroy();
+                }
+            }, new Coord(200 - 60 / 2, 90));
         }
 
         @Override

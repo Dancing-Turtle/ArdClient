@@ -1,3 +1,11 @@
+1.00.148
+Added moonmoths to map icon list, should enable Q to capture them.
+Finally remembered to make grid toggle (Ctrl+G) an adjustable keybind. Still Ctrl G by default.
+Converted Timer/Timer done window over to location saving. Also added a button to the timer finished window to close the window and restart the timer.
+Added new functionality to barter stands. Left click will now buy 1, shift left click will buy 5, and ctrl shift left click will buy 20 of a given item.
+Right clicking the quest pointer will now in addition to drawing a location line, open the map window and (if you've already discovered this questgiver) select it's icon and center the map on it. Recentering the map with the home button will now also remove the lines.
+~
+
 1.00.147
 Added additional toggle to map settings to show names above custom marker flags.
 Sped up log splitter greatly, it's quite literally as fast as programatically possible now. 

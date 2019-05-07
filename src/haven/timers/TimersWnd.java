@@ -26,7 +26,7 @@ public class TimersWnd extends Window {
     private int SortTimer = 0;
 
     public TimersWnd(final GameUI gui) {
-        super(Coord.z, "Timers");
+        super(Coord.z, "Timers", "Timers");
         this.gui = gui;
 
         Button btna = new Button(50, "Add") {
