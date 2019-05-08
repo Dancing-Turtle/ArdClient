@@ -42,7 +42,7 @@ public class MinerAlert extends Window {
     private CheckBox SupportsQuarter, SupportsHalf;// quarter is 25% damage, half is 50% damage
 
     public MinerAlert(GameUI gui) {
-        super(new Coord(220, 300), "Miner Alert");
+        super(new Coord(220, 300), "Miner Alert", "Miner Alert");
         this.gui = gui;
         int yvalue = 17;
         int yvalue2 = 8;
@@ -147,8 +147,6 @@ public class MinerAlert extends Window {
         add(mutebtn, new Coord(35, yvalue+=20));
         runbtn.click();
     }
-
-
 
     private class runner implements Runnable {
         @Override
@@ -325,7 +323,6 @@ public class MinerAlert extends Window {
                     countslimes = 0;
                 }catch(Exception lolloadingerrors){
                     lolloadingerrors.printStackTrace();
-                    reqdestroy();
                 }
             }
         }
@@ -339,15 +336,13 @@ public class MinerAlert extends Window {
             super.wdgmsg(sender, msg, args);
     }
 
-    public void close(){
+    public void close() {
         reqdestroy();
     }
 
     @Override
     public boolean type(char key, KeyEvent ev) {
-        if (key == 27) {
-            if (cbtn.visible)
-                reqdestroy();
+        if (key == 27) {//ignore escape key
             return true;
         }
         return super.type(key, ev);

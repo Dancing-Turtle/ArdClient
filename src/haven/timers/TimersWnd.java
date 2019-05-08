@@ -96,6 +96,7 @@ public class TimersWnd extends Window {
         for (int i = 0; i < timers.size(); i++)
             port.cont.add(timers.get(i), new Coord(0, i * TimerWdg.height));
 
+        pack();
         resize();
     }
 

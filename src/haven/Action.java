@@ -59,7 +59,8 @@ public enum Action {
     TOGGLE_HIDDENGOBS(GameUI::toggleHiddenGobs,"Toggles hide on individually hidden objects."),
     PEACE_CURRENT(GameUI::peaceCurrent,"Hits peace button for current target."),
     MARK_CURRENT(GameUI::markTarget,"Marks current combat target for party."),
-    TOGGLE_GRID(GameUI::toggleGridLines,"Toggles tile gridlines.");
+    TOGGLE_GRID(GameUI::toggleGridLines,"Toggles tile gridlines."),
+    TOGGLE_GRIDBINDS(GameUI::toggleGridBinds,"Toggles MenuGrid Keybinds.");
 
 
 

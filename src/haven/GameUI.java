@@ -196,9 +196,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 
         opts = add(new OptWnd());
         opts.hide();
-        timerswnd = new haven.timers.TimersWnd(this);
-        timerswnd.hide();
-        add(timerswnd, new Coord(HavenPanel.w / 2 - timerswnd.sz.x / 2, 100));
+
 
 
 
@@ -299,6 +297,8 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         PBotScriptlist.hide();
         PBotScriptlistold = add(new PBotScriptlistOld());
         PBotScriptlistold.hide();
+        timerswnd = add(new haven.timers.TimersWnd(this));
+        timerswnd.hide();
     }
 
     public void beltPageSwitch1(){
@@ -671,6 +671,14 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             hand.clear();
             updhand();
         }
+    }
+
+    public void toggleGridBinds(){
+        opts.menugridcheckbox.set(!opts.menugridcheckbox.a);
+        if(opts.menugridcheckbox.a)
+        PBotUtils.sysMsg("Menugrid keybinds are now disabled!",Color.white);
+        else
+            PBotUtils.sysMsg("Menugrid keybinds are now enabled!",Color.white);
     }
 
     public void toggleStudy() {

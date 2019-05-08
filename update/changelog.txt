@@ -1,3 +1,9 @@
+1.00.150
+Added keybind to toggle menugrid keybinds, keybindception. Shift T by default.
+Changed miner alert so that hitting escape will no longer close it.
+Fixed timer window not showing up if you started the game with no timers in the list.
+~
+
 1.00.149
 Health/Stamina/Energy/Hunger/Fep meters are now movable, simply click and drag.
 ~

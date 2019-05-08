@@ -59,7 +59,7 @@ public class OptWnd extends Window {
     public static final int VERTICAL_AUDIO_MARGIN = 5;
     public final Panel main, video, audio, display, map, general, combat, control, uis,uip, quality, flowermenus, soundalarms, hidesettings, studydesksettings, keybindsettings, chatsettings, clearboulders, clearbushes, cleartrees, clearhides;
     public Panel current;
-    public CheckBox discordcheckbox;
+    public CheckBox discordcheckbox, menugridcheckbox;
 
     public void chpanel(Panel p) {
         if (current != null)
@@ -2121,7 +2121,7 @@ public class OptWnd extends Window {
         appender.setHorizontalMargin(HORIZONTAL_MARGIN);
 
         appender.addRow(new Label("Language (req. restart):"), langDropdown());
-        appender.add(new CheckBox("Disable all menugrid hotkeys (Bottom Right grid)") {
+        menugridcheckbox = new CheckBox("Disable all menugrid hotkeys (Bottom Right grid)") {
             {
                 a = Config.disablemenugrid;
             }
@@ -2131,7 +2131,8 @@ public class OptWnd extends Window {
                 Config.disablemenugrid = val;
                 a = val;
             }
-        });
+        };
+        appender.add(menugridcheckbox);
         appender.add(new CheckBox("Disable menugrid magic hotkeys") {
             {
                 a = Config.disablemagaicmenugrid;
