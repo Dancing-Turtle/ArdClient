@@ -525,9 +525,14 @@ public class PBotUtils {
 		return inventory.getFreeSlot();
 	}
 
+	public static Coord getFreeInvSlotAlt(InventoryBelt inventory) {
+		return inventory.getFreeSlot();
+	}
+
 	public static java.util.List<Coord> getFreeInvSlots(Inventory inventory) {
 		return inventory.getFreeSlots();
 	}
+
 	public static java.util.List<Coord> getFreeInvSlotsAlt(InventoryBelt inventory) {
 		return inventory.getFreeSlots();
 	}

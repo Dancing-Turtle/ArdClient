@@ -376,7 +376,7 @@ INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/kritter/sheep/ram', (SE
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/kritter/sheep/lamb', (SELECT type_id FROM type WHERE name_key = 'TAMEDANIMAL'));
 
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/kritter/cattle/bull', (SELECT type_id FROM type WHERE name_key = 'TAMEDANIMAL'));
-INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/kritter/cattle/cow', (SELECT type_id FROM type WHERE name_key = 'TAMEDANIMAL'));
+INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/kritter/cattle/cattle', (SELECT type_id FROM type WHERE name_key = 'TAMEDANIMAL'));
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/kritter/cattle/calf', (SELECT type_id FROM type WHERE name_key = 'TAMEDANIMAL'));
 
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/kritter/goat/billy', (SELECT type_id FROM type WHERE name_key = 'TAMEDANIMAL'));

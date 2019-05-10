@@ -13,6 +13,7 @@ import java.util.Map;
 public class InventoryBelt extends Widget implements DTarget {
     private static final Tex invsq = Resource.loadtex("gfx/hud/invsq-opaque");
     private static final Coord sqsz = new Coord(36, 33);
+    private static final Coord sqsz2 = new Coord(33, 33);
     public boolean dropul = true;
     public Coord isz;
     Map<GItem, WItem> wmap = new HashMap<GItem, WItem>();
@@ -109,23 +110,40 @@ public class InventoryBelt extends Widget implements DTarget {
         return null;
     }
 
-    public List<Coord> getFreeSlots() {
-        List<Coord> cordlist = new ArrayList<>();
-        int[][] invTable = new int[isz.x][isz.y];
-        // System.out.println(isz.x +", " + isz.y);
+    // Null if no free slots found
+    public Coord getFreeSlot() {
+        int[][] invTable = new int[isz.x * isz.y][1];
         for (Widget wdg = child; wdg != null; wdg = wdg.next) {
             if (wdg instanceof WItem) {
                 WItem item = (WItem) wdg;
-                for(int i=0; i<item.sz.div(sqsz).y; i++)
-                    for(int j=0; j<item.sz.div(sqsz).x; j++)
-                        invTable[item.c.div(sqsz).x+j][item.c.div(sqsz).y+i] = 1;
+                for(int i=0; i<item.sz.div(sqsz2).y; i++)
+                    for(int j=0; j<item.sz.div(sqsz2).x; j++)
+                        invTable[item.c.div(sqsz).x+j][i] = 1;
             }
         }
-        for(int i=0; i<isz.y; i++) {
-            for(int j=0; j<isz.x; j++) {
-                if(invTable[j][i] == 0)
-                    cordlist.add(new Coord(j,i));
+        for(int i=0; i<(isz.y * isz.x); i++) {
+                if(invTable[i][0] == 0)
+                    return new Coord(i * 36, 0);
+        }
+        return null;
+    }
+
+    public List<Coord> getFreeSlots() {
+        List<Coord> cordlist = new ArrayList<>();
+        int[][] invTable = new int[isz.x * isz.y][1];
+        for (Widget wdg = child; wdg != null; wdg = wdg.next) {
+            if (wdg instanceof WItem) {
+                WItem item = (WItem) wdg;
+               for(int i=0; i<item.sz.div(sqsz2).y; i++)
+                    for(int j=0; j<item.sz.div(sqsz2).x; j++) {
+                        invTable[item.c.div(sqsz).x + j][i] = 1;
+                    }
             }
+        }
+
+        for(int i=0; i<(isz.y * isz.x); i++) {
+                if(invTable[i][0] == 0)
+                    cordlist.add(new Coord(i * 36,0));
         }
         return cordlist;
     }

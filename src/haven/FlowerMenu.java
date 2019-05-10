@@ -33,12 +33,14 @@ import java.util.function.Consumer;
 
 import com.jogamp.opengl.util.packrect.LevelSet;
 import haven.DefSettings;
+import haven.purus.pbot.PBotAPI;
 import haven.purus.pbot.PBotUtils;
 
 import static haven.DefSettings.AMBERMENU;
 import static haven.DefSettings.QUICKERMENU;
 import static java.lang.Math.PI;
 import haven.DefSettings;
+import haven.sloth.gob.HeldBy;
 
 public class FlowerMenu extends Widget {
     public static final Color pink = new Color(255, 0, 128);
@@ -156,11 +158,18 @@ public class FlowerMenu extends Widget {
                     if (itm != null && itm.selected && !ui.modctrl && (!ignoreAutoSetting || p.name.equals("Peer into")) ||
                             p.name.equals(nextAutoSel) && System.currentTimeMillis() - nextAutoSelTimeout < 2000) {
                         nextAutoSel = null;
+                        try {
+                            if (p.name.equals("Cargo") && PBotAPI.gui.map.player() != null && PBotAPI.gui.map.player().getattr(HeldBy.class) != null) {
+                                PBotAPI.gui.ui.root.wdgmsg("gk", 27);
+                            }
+                        }catch(Exception e){e.printStackTrace();}
                         choose(p);
-                        if (p.name.contains("Giddy") && Config.horseautorun) {
-                            horsemounter = new Thread(new FlowerMenu.horsemounter());
-                            horsemounter.start();
-                        }
+                        try {
+                            if (p.name.contains("Giddy") && Config.horseautorun) {
+                                    horsemounter = new Thread(new FlowerMenu.horsemounter());
+                                    horsemounter.start();
+                            }
+                        }catch(Exception e){e.printStackTrace();}
                         break;
                     }
                 }
@@ -173,23 +182,21 @@ public class FlowerMenu extends Widget {
             try {
                 GameUI gui = getGUI();
                 int timeout = 0;
-                while (gui.ui.root.findchild(FlowerMenu.class) != null) {
-                    timeout++;
-                    if (timeout > 500)
-                        return;
-                    PBotUtils.sleep(10);
-                }
-                while (PBotUtils.isMoving()) {
-                }
-                try {
-                    Thread.sleep(50);
-                } catch (InterruptedException idkheh) {
-                }
+               while(gui.map.player() != null && gui.map.player().getattr(HeldBy.class) == null){
+                   timeout++;
+                   if(timeout > 1000) {//if we timeout, break horsemounter
+                       return;
+                   }
+                   PBotUtils.sleep(10);
+               }
+               if(PBotAPI.gui.map.player() == null){
+                   //player now null, exit.
+                   return;
+               }
                 Speedget speedwdg = gui.speedget.get();
                 if(speedwdg != null)
                     speedwdg.set(2);
-            } catch (Exception e) {
-            }
+            } catch (Exception e) { }
         }
     }
 

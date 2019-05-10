@@ -13,6 +13,7 @@ import java.util.List;
 public class EquipSacks implements Runnable {
     private GameUI gui;
     private static final int TIMEOUT = 2000;
+    private static final Coord sqsz = new Coord(36, 33);
 
     public EquipSacks(GameUI gui) {
         this.gui = gui;
@@ -156,11 +157,17 @@ public class EquipSacks implements Runnable {
                             PBotUtils.sleep(100);
                         }
                     } else if (quickBeltInv != null) {
-                        List<Coord> slots = PBotUtils.getFreeInvSlotsAlt(quickBeltInv);
+                        List<Coord> slots = quickBeltInv.getFreeSlots();
                         for (Coord i : slots) {
                             if(PBotUtils.getGItemAtHand() == null)
                                 break;
-                            PBotUtils.dropItemToInventory(i, quickBeltInv);
+                            Coord dc = i.add(sqsz.div(2)).div(sqsz);
+                            // convert single row coordinate into multi-row
+                            if (dc.x >= quickBeltInv.isz.x) {
+                                dc.y = dc.x / quickBeltInv.isz.x;
+                                dc.x = dc.x % quickBeltInv.isz.x;
+                            }
+                            quickBeltInv.wdgmsg("drop",dc);
                             PBotUtils.sleep(100);
                         }
                     }
@@ -174,7 +181,6 @@ public class EquipSacks implements Runnable {
                         PBotUtils.sleep(100);
                     }
                 }
-              //  System.out.println("Iteration done");
                 beltInv = null;
                 quickBeltInv = null;
                 lhand = PBotAPI.gui.getequipory().quickslots[6];

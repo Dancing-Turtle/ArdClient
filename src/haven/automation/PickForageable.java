@@ -10,6 +10,7 @@ import haven.Gob;
 import haven.Loading;
 import haven.Resource;
 import haven.Utils;
+import haven.sloth.gob.Type;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -29,6 +30,8 @@ public class PickForageable implements Runnable {
             if (gui.map.player() == null)
                 return;//player is null, possibly taking a road, don't bother trying to do all of the below.
             for (Gob gob : gui.map.glob.oc) {
+                if (gob.type == Type.TAMEDANIMAL)
+                    continue; //don't evaluate tamed horses
                 Resource res = null;
                 boolean gate = false;
                 boolean cart = false;
@@ -57,7 +60,9 @@ public class PickForageable implements Runnable {
                                 }
                             }
                         }
-                    } catch (NullPointerException fucknulls) { System.out.println("Null on gate open/close"); }
+                    } catch (Exception fucknulls) {
+                        fucknulls.printStackTrace();
+                    }
 
                     if (hidden == null && res.name.startsWith("gfx/terobjs/herbs") || (hidden == Boolean.FALSE && !res.name.startsWith("gfx/terobjs/vehicle") && !cart) || gate || cart) {
                         double distFromPlayer = gob.rc.dist(gui.map.player().rc);

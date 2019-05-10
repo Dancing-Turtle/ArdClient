@@ -16,6 +16,7 @@ import java.util.List;
 public class EquipWeapon implements Runnable {
     private GameUI gui;
     private static final int TIMEOUT = 2000;
+    private static final Coord sqsz = new Coord(36, 33);
 
     public EquipWeapon(GameUI gui) {
         this.gui = gui;
@@ -78,7 +79,6 @@ public class EquipWeapon implements Runnable {
             }
         }
 
-
         if (wepmap.size() == 0) {
             PBotUtils.sysMsg("No weapons found",Color.white);
             return;
@@ -140,6 +140,22 @@ public class EquipWeapon implements Runnable {
                 }
                 if (beltInv != null && PBotUtils.getFreeInvSlots(beltInv).size() > 0)//if not null and at least 1 slot, drop it to belt, otherwise drop to inv.
                     PBotUtils.dropItemToInventory(PBotUtils.getFreeInvSlot(beltInv), beltInv);
+                else if (quickBeltInv != null && quickBeltInv.getFreeSlots().size() > 0) {//if not null and at least 1 slot, drop it to belt, otherwise drop to inv.
+                    List<Coord> slots = quickBeltInv.getFreeSlots();
+                    System.out.println("slots count "+slots.size()+" slots "+slots);
+                    for (Coord i : slots) {
+                        if(PBotUtils.getGItemAtHand() == null)
+                            break;
+                        Coord dc = i.add(sqsz.div(2)).div(sqsz);
+                        // convert single row coordinate into multi-row
+                        if (dc.x >= quickBeltInv.isz.x) {
+                            dc.y = dc.x / quickBeltInv.isz.x;
+                            dc.x = dc.x % quickBeltInv.isz.x;
+                        }
+                        quickBeltInv.wdgmsg("drop",dc);
+                        PBotUtils.sleep(100);
+                    }
+                }
                 else
                     PBotUtils.dropItemToInventory(PBotUtils.getFreeInvSlot(PBotAPI.gui.maininv), PBotAPI.gui.maininv);
                 int timeout = 0;
@@ -173,11 +189,17 @@ public class EquipWeapon implements Runnable {
                     PBotUtils.sleep(100);
                 }
             } else if (quickBeltInv != null) {
-                List<Coord> slots = PBotUtils.getFreeInvSlotsAlt(quickBeltInv);
+                List<Coord> slots = quickBeltInv.getFreeSlots();
                 for (Coord i : slots) {
                     if(PBotUtils.getGItemAtHand() == null)
                         break;
-                    PBotUtils.dropItemToInventory(i, quickBeltInv);
+                    Coord dc = i.add(sqsz.div(2)).div(sqsz);
+                    // convert single row coordinate into multi-row
+                    if (dc.x >= quickBeltInv.isz.x) {
+                        dc.y = dc.x / quickBeltInv.isz.x;
+                        dc.x = dc.x % quickBeltInv.isz.x;
+                    }
+                    quickBeltInv.wdgmsg("drop",dc);
                     PBotUtils.sleep(100);
                 }
             }
@@ -223,6 +245,8 @@ public class EquipWeapon implements Runnable {
             map.put(weapon, priority);
         return map;
     }
+
+
 
     private HashMap<WItem, Integer> getWeaponQuickBelt(InventoryBelt inv) {
         HashMap<WItem, Integer> map = new HashMap<>();
