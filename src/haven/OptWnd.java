@@ -2199,6 +2199,17 @@ public class OptWnd extends Window {
                 }
             }
         });
+        appender.add(new CheckBox("Disable ctrl clicking to drop items from quick hand slots.") {
+            {
+                a = Config.disablequickslotdrop;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("disablequickslotdrop", val);
+                Config.disablequickslotdrop = val;
+                a = val;
+            }
+        });
         appender.add(new IndirCheckBox("Amber flowermenus", AMBERMENU));
         appender.add(new CheckBox("Alternative equipment belt window") {
             {
@@ -2500,7 +2511,9 @@ public class OptWnd extends Window {
             }
         };
         Utils.loadprefchklist("clustersel", Config.autoclusters);
-        clusterlist.items.addAll(Config.autoclusters.values());
+        for (CheckListboxItem itm : Config.autoclusters.values())
+            clusterlist.items.add(itm);
+       // clusterlist.items.addAll(Config.autoclusters.values());
         flowermenus.add(clusterlist, new Coord(150, 20));
 
 
@@ -2513,7 +2526,9 @@ public class OptWnd extends Window {
             }
         };
         Utils.loadprefchklist("flowersel", Config.flowermenus);
-        flowerlist.items.addAll(Config.flowermenus.values());
+        for(CheckListboxItem itm : Config.flowermenus.values())
+            flowerlist.items.add(itm);
+      //  flowerlist.items.addAll(Config.flowermenus.values());
         flowermenus.add(flowerlist, new Coord(0, 20));
 
         flowermenus.add(new PButton(200, "Back", 27, main), new Coord(210, 360));

@@ -49,7 +49,7 @@ public class CheckBox extends Widget {
     }
 
     public CheckBox(String lbl, boolean lg, final Consumer<Boolean> onChange) {
-	this.lbl = Text.std.render(lbl, java.awt.Color.WHITE);
+        this.lbl = Text.std.render(Resource.getLocString(Resource.BUNDLE_LABEL, lbl), java.awt.Color.WHITE);
         if (lg) {
 	    type = "chkbox/large";
         } else {

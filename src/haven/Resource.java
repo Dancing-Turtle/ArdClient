@@ -106,6 +106,7 @@ public class Resource implements Serializable {
 	private final static Map<String, Map<String, String>> l10nBundleMap;
 	public static final boolean L10N_DEBUG = System.getProperty("dumpstr") != null;
 
+
 	private Collection<Layer> layers = new LinkedList<Layer>();
 	public final String name;
 	public int ver;

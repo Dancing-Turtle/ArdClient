@@ -5,14 +5,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import haven.WItem;
+import haven.*;
 import haven.res.ui.tt.q.qbuff.QBuff;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import haven.Glob;
-import haven.Session;
-import haven.Utils;
 
 public class TimersThread extends Thread {
     private List<TimerWdg> timers = new ArrayList<TimerWdg>();
@@ -54,7 +50,8 @@ public class TimersThread extends Thread {
         synchronized (timers) {
             TimerWdg timer = new TimerWdg(name, duration, start);
             timers.add(timer);
-            sort(timers);
+            if(Config.timersort)
+                sort(timers);
             return timer;
         }
     }

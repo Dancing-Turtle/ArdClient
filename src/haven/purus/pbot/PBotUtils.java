@@ -742,6 +742,8 @@ public class PBotUtils {
 		return witems;
 	}
 
+
+
 	// Drops item from  hand to given slot in given inventory
 	public static void dropItemToInventory(Coord coord, Inventory inventory) {
 		inventory.wdgmsg("drop", coord);

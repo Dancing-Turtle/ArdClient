@@ -89,6 +89,7 @@ public class Config {
     public static boolean showprogressperc = Utils.getprefb("showprogressperc", true);
 
     public static boolean quickslots = Utils.getprefb("quickslots", true);
+    public static boolean disablequickslotdrop = Utils.getprefb("disablequickslotdrop", true);
     public static boolean quickbelt = Utils.getprefb("quickbelt", false);
     public static boolean statuswdgvisible = Utils.getprefb("statuswdgvisible", false);
 
@@ -309,7 +310,7 @@ public class Config {
     public static double chatalarmvol = Utils.getprefd("chatalarmvol", 0.8);
     public static boolean timersalarm = Utils.getprefb("timersalarm", false);
     public static boolean alarmonce = Utils.getprefb("alarmonce", false);
-    public static boolean timersort = Utils.getprefb("timersort", true);
+    public static boolean timersort = Utils.getprefb("timersort", false);
     public static double timersalarmvol = Utils.getprefd("timersalarmvol", 0.8);
     public static String alarmunknownplayer = Utils.getpref("alarmunknownplayer", "sfx/OhShitItsAGuy");
     public static double alarmunknownvol = Utils.getprefd("alarmunknownvol", 0.32);
@@ -582,12 +583,12 @@ public class Config {
     }};
 
     public final static HashMap<String, CheckListboxItem> autoclusters = new HashMap<String, CheckListboxItem>(6) {{
-        put("gfx/terobjs/herbs/mussels", new CheckListboxItem("Mussels"));
-        put("gfx/terobjs/herbs/clay-gray", new CheckListboxItem("Gray Clay"));
-        put("gfx/terobjs/herbs/oyster", new CheckListboxItem("Oysters"));
-        put("gfx/terobjs/herbs/goosebarnacle", new CheckListboxItem("Gooseneck Barnacles"));
-        put("gfx/terobjs/herbs/cattail", new CheckListboxItem("Cattails"));
-        put("gfx/kritter/jellyfish/jellyfish", new CheckListboxItem("Jellyfish"));
+        put("gfx/terobjs/herbs/mussels", new CheckListboxItem("Mussels", Resource.BUNDLE_FLOWER));
+        put("gfx/terobjs/herbs/clay-gray", new CheckListboxItem("Gray Clay", Resource.BUNDLE_FLOWER));
+        put("gfx/terobjs/herbs/oyster", new CheckListboxItem("Oysters", Resource.BUNDLE_FLOWER));
+        put("gfx/terobjs/herbs/goosebarnacle", new CheckListboxItem("Gooseneck Barnacles", Resource.BUNDLE_FLOWER));
+        put("gfx/terobjs/herbs/cattail", new CheckListboxItem("Cattails", Resource.BUNDLE_FLOWER));
+        put("gfx/kritter/jellyfish/jellyfish", new CheckListboxItem("Jellyfish", Resource.BUNDLE_FLOWER));
     }};
 
     public final static HashMap<String, CheckListboxItem> curiolist = new HashMap<String, CheckListboxItem>(37) {{

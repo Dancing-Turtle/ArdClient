@@ -138,6 +138,8 @@ public class QuickSlotsWdg extends Widget implements DTarget {
     public boolean mousedown(Coord c, int button) {
        if (ui.modmeta)
             return true;
+       if(ui.modctrl && button == 1 && Config.disablequickslotdrop)
+           return true;
         Equipory e = gameui().getequipory();
         if (e != null) {
             WItem w = e.quickslots[c.x <= 47 ? 6 : 7];
