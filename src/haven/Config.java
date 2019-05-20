@@ -582,13 +582,14 @@ public class Config {
         put("Scale", new CheckListboxItem("Scale",Resource.BUNDLE_FLOWER));
     }};
 
-    public final static HashMap<String, CheckListboxItem> autoclusters = new HashMap<String, CheckListboxItem>(6) {{
+    public final static HashMap<String, CheckListboxItem> autoclusters = new HashMap<String, CheckListboxItem>(7) {{
         put("gfx/terobjs/herbs/mussels", new CheckListboxItem("Mussels", Resource.BUNDLE_FLOWER));
         put("gfx/terobjs/herbs/clay-gray", new CheckListboxItem("Gray Clay", Resource.BUNDLE_FLOWER));
         put("gfx/terobjs/herbs/oyster", new CheckListboxItem("Oysters", Resource.BUNDLE_FLOWER));
         put("gfx/terobjs/herbs/goosebarnacle", new CheckListboxItem("Gooseneck Barnacles", Resource.BUNDLE_FLOWER));
         put("gfx/terobjs/herbs/cattail", new CheckListboxItem("Cattails", Resource.BUNDLE_FLOWER));
         put("gfx/kritter/jellyfish/jellyfish", new CheckListboxItem("Jellyfish", Resource.BUNDLE_FLOWER));
+        put("gfx/terobjs/herbs/lampstalk", new CheckListboxItem("Lamp Stalks", Resource.BUNDLE_FLOWER));
     }};
 
     public final static HashMap<String, CheckListboxItem> curiolist = new HashMap<String, CheckListboxItem>(37) {{

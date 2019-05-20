@@ -1,3 +1,8 @@
+1.00.153
+Added Lamp Stalks to cluster pick list.
+Added "best pirate I've ever seen" to sound alarms.
+~
+
 1.00.152
 Added toggle to ui settings (On by default) to disable dropping items from quick hand slots using ctrl+click. On by default because I don't think anyone ever does this on purpose, if you do, simply disable the option.
 Fixed timers autosorting on login even if autosort was disabled. Timer autosort is off by default now as well.

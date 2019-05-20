@@ -627,6 +627,7 @@ INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/AOE
 INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/AOE1_Select1', (SELECT type_id FROM type WHERE name_key = 'SOUND'), .8);
 INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/AOE1_House', (SELECT type_id FROM type WHERE name_key = 'SOUND'), .8);
 INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/AOE1_PriestConvert2', (SELECT type_id FROM type WHERE name_key = 'SOUND'), .8);
+INSERT OR IGNORE INTO alerts (name, type_id, volume) VALUES('custom/sfx/omni/BestPirate', (SELECT type_id FROM type WHERE name_key = 'SOUND'), .8);
 
 
 CREATE TABLE IF NOT EXISTS growth (

@@ -46,7 +46,8 @@ public class MusselPicker implements Runnable {
                                 res.name.equals("gfx/terobjs/herbs/oyster") ||
                                 res.name.equals("gfx/terobjs/herbs/goosebarnacle") ||
                                 res.name.equals("gfx/terobjs/herbs/cattail") ||
-                                res.name.equals("gfx/kritter/jellyfish/jellyfish"))) {
+                                res.name.equals("gfx/kritter/jellyfish/jellyfish") ||
+                                res.name.equals("gfx/terobjs/herbs/lampstalk"))) {
                             if (closestsMussel == null || gob.rc.dist(initMussel.rc) < closestsMussel.rc.dist(initMussel.rc))
                                 closestsMussel = gob;
                         }
