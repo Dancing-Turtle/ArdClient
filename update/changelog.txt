@@ -1,3 +1,9 @@
+1.00.154
+Added script to equip sword+shield.
+Added Boars/Red Deer/Reindeer to the alarm default availability list. 
+Added toggle, on by default, to split abilities into base and bonus to mirror attributes. Disable to return to Amber-like. 
+~
+
 1.00.153
 Added Lamp Stalks to cluster pick list.
 Added "best pirate I've ever seen" to sound alarms.

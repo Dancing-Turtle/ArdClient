@@ -595,6 +595,14 @@ public class MenuGrid extends Widget {
                         new Thread(new EquipSacks(gui), "EquipSacks").start();
                     }}
         ));
+        addSpecial(new SpecialPagina(this, "paginae::amber::equipswordshield",
+                Resource.local().load("paginae/amber/equipswordshield"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                        new Thread(new EquipSwordShield(gui), "EquipSwordShield").start();
+                    }}
+        ));
         addSpecial(new SpecialPagina(this, "paginae::amber::slicecheese",
                 Resource.local().load("paginae/amber/SliceCheese"),
                 (pag) -> {

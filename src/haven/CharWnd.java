@@ -640,6 +640,7 @@ public class CharWnd extends Window {
                 if (tcv > ccv)
                     c = tbuff;
                 ct = attrf.render(Integer.toString(tcv), c);
+                cbv = tcv;
             }
         }
 
@@ -651,7 +652,38 @@ public class CharWnd extends Window {
             Coord cn = new Coord(0, sz.y / 2);
             g.aimage(img, cn.add(5, 0), 0, 0.5);
             g.aimage(rnm.tex(), cn.add(img.sz().x + 10, 1), 0, 0.5);
-            g.aimage(ct.tex(), cn.add(sz.x - 40, 1), 1, 0.5);
+            if(!Config.splitskills) {
+                g.aimage(ct.tex(), cn.add(sz.x - 40, 1), 1, 0.5);
+            }else {
+                cbv = attr.base;
+                ccv = attr.comp;
+
+                if (ccv > cbv) {
+                    if (tbv > ccv) {
+                        Text buffed = attrf.render(Integer.toString(tbv + (ccv - cbv)), tbuff);
+                        g.aimage(buffed.tex(), cn.add(sz.x - 35, 1), 1, 0.5);
+                    } else {
+                        Text buffed = attrf.render(Integer.toString(ccv), buff);
+                        g.aimage(buffed.tex(), cn.add(sz.x - 35, 1), 1, 0.5);
+                    }
+                } else if (ccv < cbv) {
+                    if (tbv > cbv) {
+                        Text buffed = attrf.render(Integer.toString(tbv + (cbv - ccv)), tbuff);
+                        g.aimage(buffed.tex(), cn.add(sz.x - 35, 1), 1, 0.5);
+                    } else {
+                        Text debuffed = attrf.render(Integer.toString(ccv), debuff);
+                        g.aimage(debuffed.tex(), cn.add(sz.x - 35, 1), 1, 0.5);
+                    }
+                }
+
+                if (tbv > cbv) {
+                    Text base = attrf.render(Integer.toString(tbv), tbuff);
+                    g.aimage(base.tex(), cn.add(sz.x - 65, 1), 1, 0.5);
+                } else {
+                    Text base = attrf.render(Integer.toString(cbv), Color.WHITE);
+                    g.aimage(base.tex(), cn.add(sz.x - 65, 1), 1, 0.5);
+                }
+            }
         }
 
         private void updcost() {
@@ -2111,6 +2143,7 @@ public class CharWnd extends Window {
             y += 35;
             skill = new ArrayList<SAttr>();
             SAttr aw;
+            //            base.add(aw = battr.add(new Attr(glob, "str", every), wbox.btloff().add(x, y)));
             skill.add(aw = sattr.add(new SAttr(glob, "unarmed", every), wbox.btloff().add(x, y)));
             y += aw.sz.y;
             skill.add(aw = sattr.add(new SAttr(glob, "melee", other), wbox.btloff().add(x, y)));

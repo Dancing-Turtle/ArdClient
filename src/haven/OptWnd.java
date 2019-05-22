@@ -2144,6 +2144,17 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
+        appender.add(new CheckBox("Display skills split into base+bonus") {
+            {
+                a = Config.splitskills;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("splitskills", val);
+                Config.splitskills = val;
+                a = val;
+            }
+        });
         appender.add(new CheckBox("Show PBot Menugrid icon (Requires relog)") {
             {
                 a = Config.showPBot;

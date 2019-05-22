@@ -247,6 +247,7 @@ public class Config {
     public static boolean proximityaggro = Utils.getprefb("proximityaggro", false);
     public static boolean proximityaggropvp = Utils.getprefb("proximityaggropvp", false);
     public static boolean disablemenugrid = Utils.getprefb("disablemenugrid", false);
+    public static boolean splitskills = Utils.getprefb("splitskills", true);
     public static boolean pf = false;
     public static String playerposfile;
     public static byte[] authck = null;
@@ -715,7 +716,7 @@ public class Config {
         put("gfx/terobjs/herbs/ladysmantledew", new CheckListboxItem("Dewy Lady's Mantle"));
     }};
 
-    public final static HashMap<String, String> defaultitems = new HashMap<String, String>(90) {{
+    public final static HashMap<String, String> defaultitems = new HashMap<String, String>(93) {{
         put("gfx/terobjs/herbs/flotsam", "Peculiar Flotsam");
         put("gfx/terobjs/herbs/chimingbluebell", "Chiming Bluebell");
         put("gfx/terobjs/herbs/edelweiss", "Edelweiß");
@@ -806,6 +807,9 @@ public class Config {
         put("gfx/terobjs/herbs/lorchel","Morels");
         put("gfx/terobjs/herbs/frogscrown","Frog's Crown");
         put("gfx/terobjs/items/gems/gemstone","Gemstones");
+        put("gfx/kritter/boar/boar","Boars");
+        put("gfx/kritter/reddeer/reddeer","Red Deer");
+        put("gfx/kritter/reindeer/reindeer","Reindeer");
     }};
 
     public final static Set<String> locres = new HashSet<String>(Arrays.asList(
