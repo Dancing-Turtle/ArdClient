@@ -1,3 +1,7 @@
+1.00.155
+Moved all autodrop options to a new page on Options window labeled autodrop settings. List works the same was as the study table list, add the inventory name of items you want to autodrop and check them on to autodrop those items. 
+~
+
 1.00.154
 Added script to equip sword+shield.
 Added Boars/Red Deer/Reindeer to the alarm default availability list. 

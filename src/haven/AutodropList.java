@@ -4,9 +4,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Map;
 
-import static haven.Config.curioslist;
+import static haven.Config.autodroplist;
 
-public class CurioList extends WidgetList<CurioList.Item> {
+public class AutodropList extends WidgetList<AutodropList.Item> {
 
     public static final Comparator<Item> ITEM_COMPARATOR = new Comparator<Item>() {
 	@Override
@@ -15,10 +15,10 @@ public class CurioList extends WidgetList<CurioList.Item> {
 	}
     };
 
-    public CurioList() {
+    public AutodropList() {
 	super(new Coord(200, 25), 10);
 
-	for(Map.Entry<String, Boolean> entry : curioslist.entrySet()) {
+	for(Map.Entry<String, Boolean> entry : autodroplist.entrySet()) {
 	    additem(new Item(entry.getKey()));
 	}
 
@@ -32,18 +32,18 @@ public class CurioList extends WidgetList<CurioList.Item> {
 	    case "changed": {
 		String name = (String) args[0];
 		boolean val = (Boolean) args[1];
-		synchronized(curioslist) {
-			curioslist.put(name, val);
+		synchronized(autodroplist) {
+			autodroplist.put(name, val);
 		}
-			Utils.saveCurioList();
+			Utils.saveAutodropList();
 		break;
 	    }
 	    case "delete": {
 		String name = (String) args[0];
-		synchronized(curioslist) {
-			curioslist.remove(name);
+		synchronized(autodroplist) {
+			autodroplist.remove(name);
 		}
-			Utils.saveCurioList();
+			Utils.saveAutodropList();
 		removeitem((Item) sender, true);
 		update();
 		break;
@@ -56,11 +56,11 @@ public class CurioList extends WidgetList<CurioList.Item> {
 
     @SuppressWarnings("SynchronizeOnNonFinalField")
     public void add(String name) {
-	if(name != null && !name.isEmpty() && !curioslist.containsKey(name)) {
-	    synchronized(curioslist) {
-			curioslist.put(name, true);
+	if(name != null && !name.isEmpty() && !autodroplist.containsKey(name)) {
+	    synchronized(autodroplist) {
+			autodroplist.put(name, true);
 	    }
-		Utils.saveCurioList();
+		Utils.saveAutodropList();
 	    additem(new Item(name));
 	    update();
 	}
@@ -86,11 +86,11 @@ public class CurioList extends WidgetList<CurioList.Item> {
 	    this.name = name;
 
 	    cb = add(new CheckBox(name), 3, 3);
-	    cb.a = curioslist.get(name);
+	    cb.a = autodroplist.get(name);
 	    cb.canactivate = true;
 
 	    add(new Button(24, "X"){
-			@Override
+	    	@Override
 			public void click() {
 				super.wdgmsg("activate",name);
 			}
@@ -99,14 +99,14 @@ public class CurioList extends WidgetList<CurioList.Item> {
 				//FIXME:a little hack, because WidgetList does not pass correct click coordinates if scrolled
 				return super.mouseup(Coord.z, button);
 			}
-		}, 175, 0);
+			}, 175, 0);
 	}
 
 	@Override
 	public boolean mousedown(Coord c, int button) {
-	    if(super.mousedown(c, button)) {
-		return true;
-	    }
+		if(super.mousedown(c, button)) {
+			return true;
+		}
 	    if(button != 1)
 		return (false);
 	    a = true;

@@ -331,6 +331,38 @@ public class Utils {
         }
     }
 
+    @SuppressWarnings("SynchronizeOnNonFinalField")
+    public static void  saveAutodropList() {
+        synchronized (Config.autodroplist) {
+            Gson gson = (new GsonBuilder()).create();
+            Config.saveFile("autodroplist.json", gson.toJson(Config.autodroplist));
+        }
+    }
+
+    public static void loadAutodropList() {
+        String json = Config.loadFile("autodroplist.json");
+        if(json != null){
+            try {
+                Gson gson = (new GsonBuilder()).create();
+                Type collectionType = new TypeToken<HashMap<String, Boolean>>(){}.getType();
+                Config.autodroplist = gson.fromJson(json, collectionType);
+            }catch(Exception ignored){ }
+        }
+        if(Config.autodroplist == null){
+            Config.autodroplist = new HashMap<>();
+            Config.autodroplist.put("Intestines", false);
+            Config.autodroplist.put("Bone Material", false);
+            Config.autodroplist.put("Cat Gold", false);
+            Config.autodroplist.put("Strange Crystal", false);
+            Config.autodroplist.put("Petrified Seashell", false);
+            Config.autodroplist.put("Coal", false);
+            Config.autodroplist.put("Soil", false);
+            Config.autodroplist.put("Entrails", false);
+            Config.autodroplist.put("Cattail Head", false);
+            Config.autodroplist.put("Cattail Roots", false);
+        }
+    }
+
     public static JSONObject[] getprefjsona(String prefname, JSONObject[] def) {
         try {
             String jsonstr = Utils.getpref(prefname, null);

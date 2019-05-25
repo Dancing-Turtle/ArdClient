@@ -284,9 +284,9 @@ public class CoalToSmelters extends Window implements GobSelectCallback {
         add(amberpf, new Coord(40, 245));
 
 if(Config.dropsmelterstones && !autodropperon &&  autodropper == null) {
-    autodropper = new Thread(new CoalToSmelters.autodropper(), "Add Coal To Smelters");
-    autodropper.start();
-    autodropperon = true;
+  //  autodropper = new Thread(new CoalToSmelters.autodropper(), "Add Coal To Smelters");
+  //  autodropper.start();
+  //  autodropperon = true;
 }
 
     }

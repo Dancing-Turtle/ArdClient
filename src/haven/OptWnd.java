@@ -57,7 +57,7 @@ public class OptWnd extends Window {
     public static final int HORIZONTAL_MARGIN = 5;
     private static final Text.Foundry fonttest = new Text.Foundry(Text.sans, 10).aa(true);
     public static final int VERTICAL_AUDIO_MARGIN = 5;
-    public final Panel main, video, audio, display, map, general, combat, control, uis,uip, quality, flowermenus, soundalarms, hidesettings, studydesksettings, keybindsettings, chatsettings, clearboulders, clearbushes, cleartrees, clearhides;
+    public final Panel main, video, audio, display, map, general, combat, control, uis,uip, quality, flowermenus, soundalarms, hidesettings, studydesksettings, autodropsettings, keybindsettings, chatsettings, clearboulders, clearbushes, cleartrees, clearhides;
     public Panel current;
     public CheckBox discordcheckbox, menugridcheckbox;
 
@@ -462,6 +462,7 @@ public class OptWnd extends Window {
         soundalarms = add(new Panel());
         hidesettings = add(new Panel());
         studydesksettings = add(new Panel());
+        autodropsettings = add(new Panel());
         keybindsettings = add(new Panel());
         chatsettings = add(new Panel());
         clearboulders = add(new Panel());
@@ -483,6 +484,7 @@ public class OptWnd extends Window {
         initSoundAlarms();
         initHideMenu();
         initstudydesksettings();
+        initautodropsettings();
         initkeybindsettings();
         initchatsettings();
         
@@ -506,6 +508,7 @@ public class OptWnd extends Window {
         main.add(new PButton(200, "Keybind Options", 'p', keybindsettings), new Coord(210, 120));
         main.add(new PButton(200,"Chat Settings",'c', chatsettings), new Coord(420,120));
         main.add(new PButton(200,"Theme Settings",'t', uip), new Coord(0,150));
+        main.add(new PButton(200, "Autodrop Settings", 's', autodropsettings), new Coord(420, 150));
         if (gopts) {
             main.add(new Button(200, "Disconnect Discord") {
                 public void click() {
@@ -1674,105 +1677,6 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
-        appender.add(new CheckBox("Drop mined stones") {
-            {
-                a = Config.dropMinedStones;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("dropMinedStones", val);
-                Config.dropMinedStones = val;
-                a = val;
-            }
-        });
-        appender.add(new CheckBox("Drop mined ore") {
-            {
-                a = Config.dropMinedOre;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("dropMinedOre", val);
-                Config.dropMinedOre = val;
-                a = val;
-            }
-        });
-        appender.add(new CheckBox("Drop mined silver/gold ore") {
-            {
-                a = Config.dropMinedOrePrecious;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("dropMinedOrePrecious", val);
-                Config.dropMinedOrePrecious = val;
-                a = val;
-            }
-        });
-        appender.add(new CheckBox("Drop mined Cat Gold.") {
-            {
-                a = Config.dropMinedCatGold;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("dropMinedCatGold", val);
-                Config.dropMinedCatGold = val;
-                a = val;
-            }
-        });
-        appender.add(new CheckBox("Drop mined Petrified SeaShells.") {
-            {
-                a = Config.dropMinedSeaShells;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("dropMinedSeaShells", val);
-                Config.dropMinedSeaShells = val;
-                a = val;
-            }
-        });
-        appender.add(new CheckBox("Drop mined Strange Crystals.") {
-            {
-                a = Config.dropMinedCrystals;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("dropMinedCrystals", val);
-                Config.dropMinedCrystals = val;
-                a = val;
-            }
-        });
-        appender.add(new CheckBox("Drop soil") {
-            {
-                a = Config.dropSoil;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("dropSoil", val);
-                Config.dropSoil = val;
-                a = val;
-            }
-        });
-        appender.add(new CheckBox("Drop Gneiss from Ore Smelters Automatically if Coal script window is open.") {
-            {
-                a = Config.dropsmelterstones;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("dropsmelterstones", val);
-                Config.dropsmelterstones = val;
-                a = val;
-            }
-        });
-        appender.add(new CheckBox("Automatically drop Cattail Heads/Roots (Only keep fibres)") {
-            {
-                a = Config.DropCattails;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("DropCattails", val);
-                Config.DropCattails = val;
-                a = val;
-            }
-        });
         appender.add(new CheckBox("Shoo animals with Ctrl+Left Click") {
             {
                 a = Config.shooanimals;
@@ -2573,6 +2477,70 @@ public class OptWnd extends Window {
 
         studydesksettings.add(new PButton(200, "Back", 27, main), 0, my + 35);
         studydesksettings.pack();
+    }
+    private void initautodropsettings() {
+        int x = 0;
+        int y = 0;
+        autodropsettings.add(new Label("Choose/add inventory items to automatically drop:"),x, y);
+        y += 15;
+        final AutodropList list = autodropsettings.add(new AutodropList(),x,y);
+
+        y += list.sz.y + 5;
+        final TextEntry value = autodropsettings.add(new TextEntry(150, "") {
+            @Override
+            public void activate(String text) {
+                list.add(text);
+                settext("");
+            }
+        }, x, y);
+
+        autodropsettings.add(new Button(45, "Add") {
+            @Override
+            public void click() {
+                list.add(value.text);
+                value.settext("");
+            }
+        }, x + 155, y - 2);
+
+
+        y = 15;
+        autodropsettings.add(new CheckBox("Drop mined stones") {
+            {
+                a = Config.dropMinedStones;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("dropMinedStones", val);
+                Config.dropMinedStones = val;
+                a = val;
+            }
+        }, new Coord(list.sz.x + 10,y));
+        y += 20;
+        autodropsettings.add(new CheckBox("Drop mined ore") {
+            {
+                a = Config.dropMinedOre;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("dropMinedOre", val);
+                Config.dropMinedOre = val;
+                a = val;
+            }
+        }, new Coord(list.sz.x + 10,y));
+        y += 20;
+        autodropsettings.add(new CheckBox("Drop mined silver/gold ore") {
+            {
+                a = Config.dropMinedOrePrecious;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("dropMinedOrePrecious", val);
+                Config.dropMinedOrePrecious = val;
+                a = val;
+            }
+        }, new Coord(list.sz.x + 10,y));
+        autodropsettings.add(new PButton(200, "Back", 27, main), new Coord(210, 360));
+        autodropsettings.pack();
     }
     private void initkeybindsettings() {
         WidgetList<KeyBinder.ShortcutWidget> list = keybindsettings.add(new WidgetList<KeyBinder.ShortcutWidget>(new Coord(300, 24), 16){

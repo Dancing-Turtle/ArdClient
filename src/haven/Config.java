@@ -55,6 +55,7 @@ public class Config {
     public static boolean skybox = Utils.getprefb("skybox", true);
     public static boolean savecutlery = Utils.getprefb("savecutlery", true);
     public static boolean dropSoil = Utils.getprefb("dropSoil", false);
+    public static boolean dropCoal = Utils.getprefb("dropCoal", false);
     public static boolean lowerterraindistance = Utils.getprefb("lowerterraindistance", false);
     public static boolean noloadscreen = Utils.getprefb("noloadscreen", false);
     public static URL screenurl = geturl("http://game.havenandhearth.com/mt/ss");
@@ -360,6 +361,7 @@ public class Config {
     public static String attackedsfx = Utils.getpref("attackedsfx","None");
     public static double attackedvol = Utils.getprefd("attackedvol", 0.8);
     public static HashMap<String,Boolean> curioslist = null;
+    public static HashMap<String,Boolean> autodroplist = null;
 
     public final static String chatfile = "chatlog.txt";
     public static PrintWriter chatlog = null;
@@ -1060,6 +1062,7 @@ public class Config {
         Utils.loadprefchklist("alarmitems", Config.alarmitems);
         Utils.loadprefchklist("disableshiftclick", Config.disableshiftclick);
         Utils.loadCurioList();
+        Utils.loadAutodropList();
         String p;
         if ((p = getprop("haven.authck", null)) != null)
             authck = Utils.hex2byte(p);
