@@ -322,7 +322,11 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
                 }
                 if (Config.dropMinedStones && Config.mineablesStone.contains(name) ||
                         Config.dropMinedOre && Config.mineablesOre.contains(name) ||
-                        Config.dropMinedOrePrecious && Config.mineablesOrePrecious.contains(name) )
+                        Config.dropMinedOrePrecious && Config.mineablesOrePrecious.contains(name) ||
+                        Config.dropMinedOrePrecious && Config.mineablesOrePrecious.contains(name) ||
+                        Config.dropMinedCatGold && this.getname().contains("Cat Gold") ||
+                        Config.dropMinedCrystals && this.getname().contains("Strange Crystal") ||
+                        Config.dropMinedSeaShells && this.getname().contains("Petrified Seashell"))
                     this.wdgmsg("drop", Coord.z);
             }
         }catch(Resource.Loading e){e.printStackTrace(); }

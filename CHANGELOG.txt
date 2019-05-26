@@ -1,3 +1,7 @@
+1.00.156
+Restored the other 3 mining specific toggles to autodrop cat gold sea shells and strange crystals.
+~
+
 1.00.155
 Moved all autodrop options to a new page on Options window labeled autodrop settings. List works the same was as the study table list, add the inventory name of items you want to autodrop and check them on to autodrop those items. 
 ~

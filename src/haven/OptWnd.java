@@ -2539,6 +2539,42 @@ public class OptWnd extends Window {
                 a = val;
             }
         }, new Coord(list.sz.x + 10,y));
+        y += 20;
+        autodropsettings.add(new CheckBox("Drop mined Cat Gold.") {
+            {
+                a = Config.dropMinedCatGold;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("dropMinedCatGold", val);
+                Config.dropMinedCatGold = val;
+                a = val;
+            }
+        }, new Coord(list.sz.x + 10,y));
+        y += 20;
+        autodropsettings.add(new CheckBox("Drop mined Petrified SeaShells.") {
+            {
+                a = Config.dropMinedSeaShells;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("dropMinedSeaShells", val);
+                Config.dropMinedSeaShells = val;
+                a = val;
+            }
+        }, new Coord(list.sz.x + 10,y));
+        y += 20;
+        autodropsettings.add(new CheckBox("Drop mined Strange Crystals.") {
+            {
+                a = Config.dropMinedCrystals;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("dropMinedCrystals", val);
+                Config.dropMinedCrystals = val;
+                a = val;
+            }
+        }, new Coord(list.sz.x + 10,y));
         autodropsettings.add(new PButton(200, "Back", 27, main), new Coord(210, 360));
         autodropsettings.pack();
     }
