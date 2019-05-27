@@ -19,7 +19,7 @@ public class LivestockManager extends ResizableWnd {
     private Panel current;
     public static final int COLUMN_TITLE_X = 60;
     public static final int ENTRY_X = 20;
-    private static final int WINDOW_WIDTH = 1100;
+    private static final int WINDOW_WIDTH = 1150;
     public CheckBox DropEntrailsBox, DropIntestinesBox, DropMeatBox, DropBonesBox, InspectBox, SlaughterBox;
     public Animal pendingAnimal;
     private GameUI gui;

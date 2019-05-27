@@ -9,12 +9,14 @@ import haven.Window;
 import haven.purus.pbot.PBotAPI;
 import haven.purus.pbot.PBotGobAPI;
 import haven.purus.pbot.PBotUtils;
+import haven.sloth.gob.Mark;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MinerAlert extends Window {
@@ -38,11 +40,14 @@ public class MinerAlert extends Window {
     private static final Resource goldsfx = Resource.local().loadwait("sfx/Zelda");
     private static final Resource silversfx = Resource.local().loadwait("sfx/gold");
     private static final Resource supportalertsfx = Resource.local().loadwait("custom/sfx/omni/Z_OOT_Navi_WatchOut");
-    private Boolean audiomute, SupportAlertHalf = false, SupportAlertQuarter = false; // quarter is 25% damage, half is 50% damage
-    private CheckBox SupportsQuarter, SupportsHalf;// quarter is 25% damage, half is 50% damage
+    private Boolean audiomute, SupportAlertHalf = false, SupportAlertQuarter = false, MarkTileArrows = true; // quarter is 25% damage, half is 50% damage
+    private CheckBox SupportsQuarter, SupportsHalf, MarkTiles;// quarter is 25% damage, half is 50% damage
+    private List<String> reslist = Arrays.asList("gfx/tiles/rocks/cassiterite","gfx/tiles/rocks/chalcopyrite","gfx/tiles/rocks/malachite","gfx/tiles/rocks/ilmenite","gfx/tiles/rocks/limonite",
+            "gfx/tiles/rocks/hematite","gfx/tiles/rocks/magnetite","gfx/tiles/rocks/galena","gfx/tiles/rocks/argentite","gfx/tiles/rocks/hornsilver","gfx/tiles/rocks/petzite","gfx/tiles/rocks/sylvanite",
+            "gfx/tiles/rocks/nagyagite","gfx/tiles/rocks/cinnabar");
 
     public MinerAlert(GameUI gui) {
-        super(new Coord(220, 300), "Miner Alert", "Miner Alert");
+        super(new Coord(220, 320), "Miner Alert", "Miner Alert");
         this.gui = gui;
         int yvalue = 17;
         int yvalue2 = 8;
@@ -120,6 +125,17 @@ public class MinerAlert extends Window {
             }
         };
         add(SupportsHalf,10,yvalue+=20);
+        MarkTiles = new CheckBox("Mark ore tiles with arrows above them."){
+            {
+                a = MarkTileArrows;
+            }
+
+            public void set(boolean val) {
+                MarkTileArrows = val;
+                a = val;
+            }
+        };
+        add(MarkTiles,10,yvalue+=20);
         runbtn = new Button(100, "Run") {
             @Override
             public void click() {
@@ -206,10 +222,29 @@ public class MinerAlert extends Window {
                         for (int y = -44; y < 44; y++) {
                             int t = g.map.gettile(pltc.sub(x, y));
                             Resource res = g.map.tilesetr(t);
+
                             if (res == null)
                                 continue;
-
                             String name = res.name;
+
+                            if(MarkTileArrows && reslist.contains(name)){
+                                System.out.println("adding arrow to cave tile");
+                                final Coord2d mc = player.rc.sub(new Coord2d((x - 1) * 11,(y - 1) * 11)); //no clue why i have to subtract 1 tile here to get it to line up.
+                               final Coord tc = mc.floor(MCache.tilesz);
+                                final Coord2d tcd = mc.div(MCache.tilesz);
+
+                                ui.sess.glob.map.getgridto(tc).ifPresent(grid -> {
+                                    final Coord2d offset = tcd.sub(new Coord2d(grid.ul));
+                                    ui.sess.glob.map.getgrido(grid.id).ifPresent(grid2 -> {
+                                        final Coord2d mc2 = new Coord2d(grid2.ul).add(offset.x, offset.y).mul(MCache.tilesz);
+                                        synchronized (ui.sess.glob.oc) {
+                                            final Gob g2 = ui.sess.glob.oc.new ModdedGob(mc2, 0);
+                                            g2.addol(new Mark(4000));
+                                        }
+                                    });
+                                });
+                            }
+
                             if (name.equals("gfx/tiles/rocks/cassiterite")) {
                                 counttin = counttin + 1;
                                 countcassiterite = countcassiterite + 1;

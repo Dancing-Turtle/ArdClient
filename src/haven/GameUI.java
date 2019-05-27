@@ -132,6 +132,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public QuestHelper questhelper;
     public Thread DrinkThread;
     public CraftDBWnd craftwnd = null;
+    public long inspectedgobid = 0;//used for attaching inspected qualities to gobs.
 
     @RName("gameui")
     public static class $_ implements Factory {
@@ -1720,6 +1721,17 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         if(Config.temporaryswimming && msg.equals("Swimming is now turned on.")) { //grab it here before we localize the message
             temporarilyswimming = true;
             SwimTimer = System.currentTimeMillis();
+        }
+        if(msg.startsWith("Quality:") && inspectedgobid != 0){
+            Gob gob = ui.sess.glob.oc.getgob(inspectedgobid);
+            if(gob != null) {
+                try {
+                    ui.sess.glob.oc.quality(gob,Integer.valueOf(msg.substring(8).trim()));
+                    inspectedgobid = 0;
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         if(Config.temporaryswimming && temporarilyswimming && msg.equals("Swimming is now turned off.")){//swimming manually toggled back off before the auto-off trigger fired, reset the auto-toggle flags.
             temporarilyswimming = false;

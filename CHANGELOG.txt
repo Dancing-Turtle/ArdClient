@@ -1,3 +1,9 @@
+1.00.157
+Added new toggle to miner alert to display highlight arrows above tiles with ore in them. If it gives you problems disable it, seems to work fine in my limited testing.
+Fixed livestock manager not showing the delete X on horses if the increase font slider was all the way up.
+Added toggle to display settings, on by default, to display the quality of inspected objects as an overlay. Will persist until you leave the area and the object unloads.
+~
+
 1.00.156
 Restored the other 3 mining specific toggles to autodrop cat gold sea shells and strange crystals.
 ~

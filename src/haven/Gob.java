@@ -36,6 +36,7 @@ import haven.sloth.script.pathfinding.Hitbox;
 
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.*;
 import java.util.List;
 import java.util.function.Consumer;
@@ -276,6 +277,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
     public long id;
     public int frame;
     public final Glob glob;
+    public int quality = 0;
     Map<Class<? extends GAttrib>, GAttrib> attr = new HashMap<Class<? extends GAttrib>, GAttrib>();
     private final Set<haven.sloth.gob.Rendered> renderedattrs = new HashSet<>();
     public Collection<Overlay> ols = new LinkedList<Overlay>() {
@@ -816,7 +818,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
 	return 0;
     }
 
-    public void draw(GOut g) {}
+    public void draw(GOut g) { }
 
     public boolean setup(RenderList rl) {
         loc.tick();
@@ -839,6 +841,10 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             final GobHealth hlt = getattr(GobHealth.class);
             if (hlt != null)
                 rl.prepc(hlt.getfx());
+
+            final GobQuality qlty = getattr(GobQuality.class);
+            if (qlty != null)
+                rl.prepc(qlty.getfx());
 
             if(Config.showrackstatus && type == Type.CHEESERACK){
                 if (ols.size() == 3)

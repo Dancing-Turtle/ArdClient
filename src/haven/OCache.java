@@ -708,6 +708,23 @@ public class OCache implements Iterable<Gob> {
             overlay(gob, olid, prs, res, sdt);
     }
 
+
+    public synchronized void quality(Gob g,int quality){
+        g.setattr(new GobQuality(g,quality));
+
+        Gob.Overlay ol = g.findol(Sprite.GOB_QUALITY_ID);
+        if (quality > 0) {
+            if (ol == null)
+                g.addol(new Gob.Overlay(Sprite.GOB_QUALITY_ID, new GobQualitySprite(quality)));
+            else if (((GobQualitySprite) ol.spr).val != quality)
+                ((GobQualitySprite) ol.spr).update(quality);
+        } else {
+            if (ol != null)
+                g.ols.remove(ol);
+        }
+        changed(g);
+    }
+
     public synchronized void health(Gob g, int hp) {
         g.setattr(new GobHealth(g, hp));
 

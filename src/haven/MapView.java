@@ -2257,7 +2257,10 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                     }
                 } else {
                     Gob gob = inf.gob;
-
+                    if(gob != null && !ui.modctrl && !ui.modshift && !ui.modmeta && clickb == 1 && curs.name.equals("gfx/hud/curs/study")){
+                        //we're inspecting an object, prepared to intercept the system message.
+                        gameui().inspectedgobid = gob.id;
+                    }
                     if (ui.modctrl && clickb == 3 && gob != null && gob.type == Type.TAMEDANIMAL){//only highlight on ctrl right clicks if we're clicking on an animal during milking
                         if(!gob.getres().name.contains("horse")) {//cant milk horses, so dont mark, send a right click.
                             if (markedGobs.contains(gob.id))
@@ -3044,6 +3047,22 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                         gob.addol(new Gob.Overlay(Sprite.GOB_HEALTH_ID, new GobHealthSprite(hlt.hp)));
                     else if (((GobHealthSprite)ol.spr).val != hlt.hp)
                         ((GobHealthSprite)ol.spr).update(hlt.hp);
+                    oc.changed(gob);
+                }
+            }
+        }
+    }
+    public void addQualitySprites() {
+        OCache oc = glob.oc;
+        synchronized (oc) {
+            for (Gob gob : oc) {
+                final GobQuality hlt = gob.getattr(GobQuality.class);
+                if (hlt != null && hlt.quality > 0) {
+                    Gob.Overlay ol = gob.findol(Sprite.GOB_QUALITY_ID);
+                    if (ol == null)
+                        gob.addol(new Gob.Overlay(Sprite.GOB_QUALITY_ID, new GobQualitySprite(hlt.quality)));
+                    else if (((GobQualitySprite)ol.spr).val != hlt.quality)
+                        ((GobQualitySprite)ol.spr).update(hlt.quality);
                     oc.changed(gob);
                 }
             }

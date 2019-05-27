@@ -1017,6 +1017,25 @@ public class OptWnd extends Window {
                 }
             }
         });
+        appender.add(new CheckBox("Show inspected qualities of objects - only until the object unloads.") {
+            {
+                a = Config.showgobquality;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showgobquality", val);
+                Config.showgobquality = val;
+                a = val;
+
+                GameUI gui = gameui();
+                if (gui != null && gui.map != null) {
+                    if (val)
+                        gui.map.addQualitySprites();
+                    else
+                        gui.map.removeCustomSprites(Sprite.GOB_QUALITY_ID);
+                }
+            }
+        });
         appender.add(new IndirCheckBox("Show Your Movement Path", SHOWPLAYERPATH));
         appender.add(ColorPreWithLabel("Your path color: ", PLAYERPATHCOL, val ->{
             GobPath.clrst = new States.ColState(val);

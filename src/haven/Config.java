@@ -114,6 +114,7 @@ public class Config {
     public static double sfxdingvol = Utils.getprefd("sfxdingvol", 1.0);
     public static boolean showcraftcap = Utils.getprefb("showcraftcap", true);
     public static boolean showgobhp = Utils.getprefb("showgobhp", false);
+    public static boolean showgobquality = Utils.getprefb("showgobquality", true);
     public static boolean showplantgrowstage = Utils.getprefb("showplantgrowstage", false);
     public static boolean notifykinonline = Utils.getprefb("notifykinonline", true);
     public static boolean showminerad = Utils.getprefb("showminerad", false);
