@@ -229,7 +229,7 @@ public class MinerAlert extends Window {
 
                             if(MarkTileArrows && reslist.contains(name)){
                                 System.out.println("adding arrow to cave tile");
-                                final Coord2d mc = player.rc.sub(new Coord2d((x - 1) * 11,(y - 1) * 11)); //no clue why i have to subtract 1 tile here to get it to line up.
+                                final Coord2d mc = player.rc.sub(new Coord2d((x-1) * 11,(y-1) * 11)); //no clue why i have to subtract 1 tile here to get it to line up.
                                final Coord tc = mc.floor(MCache.tilesz);
                                 final Coord2d tcd = mc.div(MCache.tilesz);
 

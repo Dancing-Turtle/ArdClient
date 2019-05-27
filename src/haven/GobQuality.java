@@ -62,7 +62,7 @@ public class GobQuality extends GAttrib {
     }
 
     public GLState getfx() {
-        if (quality == 0)
+        if (quality > 0)
             return (GLState.nullstate);
         return (fx);
     }
