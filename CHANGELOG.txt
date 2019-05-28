@@ -1,3 +1,8 @@
+1.00.159
+Moved topdown cam to 88 degrees vertical so that mine support circles would show up.
+If you actually read these patch notes, I appreciate you.
+~
+
 1.00.158
 Super small fix with new quality overlay.
 ~

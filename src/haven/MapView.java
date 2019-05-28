@@ -359,7 +359,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         private final float pi2 = (float)(Math.PI * 2);
         private Coord3f cc;
         private float dist = 500.0f;
-        private final float elev = (float)Math.toRadians(90);
+        private final float elev = (float)Math.toRadians(88);
         protected float field = (float)(100 * Math.sqrt(2));
         private float tfield = field;
         private Coord dragorig = null;
