@@ -274,6 +274,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             opts.discordcheckbox.a = Config.discordchat;
         }
         zerg = add(new Zergwnd(), new Coord(187, 50));
+        if(!Config.autowindows.get("Kith & Kin").selected)
         zerg.hide();
 	    questwnd = add(new QuestWnd(), new Coord(0, sz.y-200));
         chatwnd = add(new ChatWnd(chat = new ChatUI(600, 150)), new Coord(20, sz.y-200));
@@ -299,7 +300,8 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         PBotScriptlistold = add(new PBotScriptlistOld());
         PBotScriptlistold.hide();
         timerswnd = add(new haven.timers.TimersWnd(this));
-        timerswnd.hide();
+        if(!Config.autowindows.get("Timers").selected)
+            timerswnd.hide();
     }
 
     public void beltPageSwitch1(){
@@ -849,6 +851,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             npbelt = add(new BeltWnd("np", data, KeyEvent.VK_NUMPAD0, KeyEvent.VK_NUMPAD9,4,100), new Coord(0, 100));
             nbelt = add(new BeltWnd("n", data, KeyEvent.VK_0, KeyEvent.VK_9, 5, 0), new Coord(0, 150));
             menuSearch = add(new MenuSearch("Search..."));
+            if(!Config.autowindows.get("Search...").selected)
             menuSearch.hide();
             filter = add(new FilterWnd("Filter"));
             filter.hide();
@@ -864,7 +867,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             };
             invwnd.add(maininv = (Inventory) child, Coord.z);
             invwnd.pack();
-            invwnd.show(Config.showinvonlogin);
+            invwnd.show(Config.autowindows.get("Inventory").selected);
             add(invwnd, new Coord(100, 100));
         } else if (place == "equ") {
             equwnd = new Hidewnd(Coord.z, "Equipment");
@@ -872,7 +875,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             equwnd.pack();
             equwnd.hide();
             add(equwnd, new Coord(400, 10));
-            equwnd.show(Config.logincharsheet);
+            equwnd.show(Config.autowindows.get("Equipment").selected);
         } else if (place == "hand") {
             GItem g = add((GItem) child);
             Coord lc = (Coord) args[1];
@@ -880,9 +883,10 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             updhand();
         } else if (place == "chr") {
         	studywnd = add(new StudyWnd(), new Coord(400,100));
-        	if(!Config.loginstudywnd)
-        	studywnd.hide();
+        	if(!Config.autowindows.get("Study").selected)
+        	    studywnd.hide();
             chrwdg = add((CharWnd) child, new Coord(300, 50));
+            if(!Config.autowindows.get("Character Sheet").selected)
             chrwdg.hide();
             if(Config.hungermeter)
                 addcmeter(new HungerMeter(chrwdg.glut,"HungerMeter"));

@@ -1,3 +1,12 @@
+1.00.160
+Fixed belt window not saving it's transparency toggle setting.
+Added gabbro boulders to boulder list.
+Fixed corund boulders.
+Added transparency toggle to study, inventory, equipment, character sheet, and chat windows. Yolo.
+Moved windows to open on login to a list at the bottom of ui settings, also added a few things that weren't available before. Select an item on the list to open the window on login.
+Added ore type label to new highlight arrows on miner alert, well tell you the ore type and what it smelts into as well as the percentage chance.
+~
+
 1.00.159
 Moved topdown cam to 88 degrees vertical so that mine support circles would show up.
 If you actually read these patch notes, I appreciate you.

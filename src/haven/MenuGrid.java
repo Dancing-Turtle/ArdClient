@@ -1163,7 +1163,7 @@ public class MenuGrid extends Widget {
                 gui.swimautotgld = true;
                 wdgmsg("act", new Object[]{"swim"});
             }
-            if(Config.loginbelt){
+            if(Config.autowindows.get("Belt").selected){
                 WItem l = gui.getequipory().quickslots[5];
                 if(l != null)
                 l.item.wdgmsg("iact", Coord.z, -1);
@@ -1187,8 +1187,11 @@ public class MenuGrid extends Widget {
                 }
             }
 
-            if(Config.noquests)
+            if(!Config.autowindows.get("Quest Log").selected)
                 gui.questwnd.hide();
+            if(Config.autowindows.get("Craft window").selected)
+                gui.toggleCraftDB();
+
             togglestuff = false;
         }
     }

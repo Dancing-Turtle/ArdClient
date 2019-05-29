@@ -367,7 +367,7 @@ public class Config {
     public final static String chatfile = "chatlog.txt";
     public static PrintWriter chatlog = null;
 
-    public final static HashMap<String, CheckListboxItem> boulders = new HashMap<String, CheckListboxItem>(15) {{
+    public final static HashMap<String, CheckListboxItem> boulders = new HashMap<String, CheckListboxItem>(19) {{
         put("alabaster", new CheckListboxItem("Alabaster"));
         put("basalt", new CheckListboxItem("Basalt"));
         put("schist", new CheckListboxItem("Schist"));
@@ -385,7 +385,8 @@ public class Config {
         put("hornblende", new CheckListboxItem("Hornblende"));
         put("olivine", new CheckListboxItem("Olivine"));
         put("apatite", new CheckListboxItem("Apatite"));
-        put("korund", new CheckListboxItem("Korund"));
+        put("corund", new CheckListboxItem("Korund"));
+        put("gabbro", new CheckListboxItem("Gabbro"));
     }};
 
     public final static HashMap<String, CheckListboxItem> bushes = new HashMap<String, CheckListboxItem>(23) {{
@@ -584,6 +585,19 @@ public class Config {
         put("Pick leaf", new CheckListboxItem("Pick Leaf",Resource.BUNDLE_FLOWER));
         put("Ride", new CheckListboxItem("Ride",Resource.BUNDLE_FLOWER));
         put("Scale", new CheckListboxItem("Scale",Resource.BUNDLE_FLOWER));
+    }};
+
+    public final static HashMap<String, CheckListboxItem> autowindows = new HashMap<String, CheckListboxItem>(10) {{
+        put("Inventory", new CheckListboxItem("Inventory"));
+        put("Belt", new CheckListboxItem("Belt"));
+        put("Quest Log", new CheckListboxItem("Quest Log"));
+        put("Study", new CheckListboxItem("Study"));
+        put("Equipment", new CheckListboxItem("Equipment"));
+        put("Timers", new CheckListboxItem("Timers"));
+        put("Kith & Kin", new CheckListboxItem("Kith & Kin"));
+        put("Character Sheet", new CheckListboxItem("Character Sheet"));
+        put("Search...", new CheckListboxItem("Search..."));
+        put("Craft window", new CheckListboxItem("Craft window"));
     }};
 
     public final static HashMap<String, CheckListboxItem> autoclusters = new HashMap<String, CheckListboxItem>(7) {{

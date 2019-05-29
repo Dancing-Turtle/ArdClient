@@ -291,11 +291,17 @@ INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/bumlings/apatit
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/bumlings/apatite3', (SELECT type_id FROM type WHERE name_key = 'BOULDER'));
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/bumlings/apatite4', (SELECT type_id FROM type WHERE name_key = 'BOULDER'));
 
-INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/bumlings/korund0', (SELECT type_id FROM type WHERE name_key = 'BOULDER'));
-INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/bumlings/korund1', (SELECT type_id FROM type WHERE name_key = 'BOULDER'));
-INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/bumlings/korund2', (SELECT type_id FROM type WHERE name_key = 'BOULDER'));
-INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/bumlings/korund3', (SELECT type_id FROM type WHERE name_key = 'BOULDER'));
-INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/bumlings/korund4', (SELECT type_id FROM type WHERE name_key = 'BOULDER'));
+INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/bumlings/corund0', (SELECT type_id FROM type WHERE name_key = 'BOULDER'));
+INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/bumlings/corund1', (SELECT type_id FROM type WHERE name_key = 'BOULDER'));
+INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/bumlings/corund2', (SELECT type_id FROM type WHERE name_key = 'BOULDER'));
+INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/bumlings/corund3', (SELECT type_id FROM type WHERE name_key = 'BOULDER'));
+INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/bumlings/corund4', (SELECT type_id FROM type WHERE name_key = 'BOULDER'));
+
+INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/bumlings/gabbro0', (SELECT type_id FROM type WHERE name_key = 'BOULDER'));
+INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/bumlings/gabbro1', (SELECT type_id FROM type WHERE name_key = 'BOULDER'));
+INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/bumlings/gabbro2', (SELECT type_id FROM type WHERE name_key = 'BOULDER'));
+INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/bumlings/gabbro3', (SELECT type_id FROM type WHERE name_key = 'BOULDER'));
+INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/bumlings/gabbro4', (SELECT type_id FROM type WHERE name_key = 'BOULDER'));
 -- plants
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/plants/flax', (SELECT type_id FROM type WHERE name_key = 'PLANT'));
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/plants/barley', (SELECT type_id FROM type WHERE name_key = 'PLANT'));

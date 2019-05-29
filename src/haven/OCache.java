@@ -725,6 +725,22 @@ public class OCache implements Iterable<Gob> {
         changed(g);
     }
 
+    public synchronized void customattr(Gob g, String attr, int life){
+        g.setattr(new GobCustomAttr(g, attr));
+
+        Gob.Overlay ol = g.findol(Sprite.GOB_CUSTOM_ID);
+        if (!attr.equals("")) {
+            if (ol == null)
+                g.addol(new Gob.Overlay(Sprite.GOB_CUSTOM_ID, new GobCustomSprite(attr, life)));
+            else if (!((GobCustomSprite) ol.spr).val.equals(attr))
+                ((GobCustomSprite) ol.spr).update(attr);
+        } else {
+            if (ol != null)
+                g.ols.remove(ol);
+        }
+        changed(g);
+    }
+
     public synchronized void health(Gob g, int hp) {
         g.setattr(new GobHealth(g, hp));
 

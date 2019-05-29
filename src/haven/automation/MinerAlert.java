@@ -17,6 +17,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class MinerAlert extends Window {
@@ -45,6 +46,24 @@ public class MinerAlert extends Window {
     private List<String> reslist = Arrays.asList("gfx/tiles/rocks/cassiterite","gfx/tiles/rocks/chalcopyrite","gfx/tiles/rocks/malachite","gfx/tiles/rocks/ilmenite","gfx/tiles/rocks/limonite",
             "gfx/tiles/rocks/hematite","gfx/tiles/rocks/magnetite","gfx/tiles/rocks/galena","gfx/tiles/rocks/argentite","gfx/tiles/rocks/hornsilver","gfx/tiles/rocks/petzite","gfx/tiles/rocks/sylvanite",
             "gfx/tiles/rocks/nagyagite","gfx/tiles/rocks/cinnabar");
+
+    private final HashMap<String,String> smeltchance = new HashMap<String, String>(15) {{
+        put("cassiterite","30% Tin");
+        put("chalcopyrite","8% Copper 4% Iron");
+        put("cinnabar","12% Quicksilver");
+        put("malachite","20% Copper");
+        put("Inventory","Inventory");//needs to be peaccock ore
+        put("ilmenite","6% Iron");
+        put("limonite","12% Iron");
+        put("hematite","20% Iron");
+        put("magnetite","30% Iron");
+        put("galena","10% Silver");
+        put("argentite","20% Silver");
+        put("hornsilver","30% Silver");
+        put("petzite","10% Gold");
+        put("sylvanite","20% Gold");
+        put("nagyagite","25% Gold");
+    }};
 
     public MinerAlert(GameUI gui) {
         super(new Coord(220, 320), "Miner Alert", "Miner Alert");
@@ -228,9 +247,8 @@ public class MinerAlert extends Window {
                             String name = res.name;
 
                             if(MarkTileArrows && reslist.contains(name)){
-                                System.out.println("adding arrow to cave tile");
                                 final Coord2d mc = player.rc.sub(new Coord2d((x-1) * 11,(y-1) * 11)); //no clue why i have to subtract 1 tile here to get it to line up.
-                               final Coord tc = mc.floor(MCache.tilesz);
+                                final Coord tc = mc.floor(MCache.tilesz);
                                 final Coord2d tcd = mc.div(MCache.tilesz);
 
                                 ui.sess.glob.map.getgridto(tc).ifPresent(grid -> {
@@ -240,6 +258,7 @@ public class MinerAlert extends Window {
                                         synchronized (ui.sess.glob.oc) {
                                             final Gob g2 = ui.sess.glob.oc.new ModdedGob(mc2, 0);
                                             g2.addol(new Mark(4000));
+                                            g2.addol(new GobCustomSprite(res.basename().substring(0,1).toUpperCase() + res.basename().substring(1)+" "+smeltchance.get(res.basename()),4000));
                                         }
                                     });
                                 });

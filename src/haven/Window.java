@@ -169,7 +169,7 @@ public class Window extends MovableWidget implements DTarget {
 	on = lbtn.hover;
 	off = lbtn.up;
 	origcap = cap;
-        if(origcap.equals((Resource.getLocString(Resource.BUNDLE_WINDOW, "Belt"))))
+        if(origcap.equals("Belt") || origcap.equals("Inventory") || origcap.equals("Equipment") || origcap.equals("Study") || origcap.equals("Chat") || origcap.equals("Character Sheet") || origcap.equals("Timers"))
             makeHidable();
         chcap(Resource.getLocString(Resource.BUNDLE_WINDOW, cap));
         resize2(sz);
@@ -206,8 +206,9 @@ public class Window extends MovableWidget implements DTarget {
       //  hbtn = add(new IButton("custom/hud/sloth/buttons/hide", "Toggle Transparency", this::toggleHide));
        // hbtn = addBtn("buttons/hide", null, this::toggleHide);
         hbtn = addBtn_other("custom/hud/sloth/buttons/hide", "Toggle Transparency", this::toggleHide);
-        if(cap != null) {
-            hidable = HiddenWndData.shouldHide(cap.text);
+        if(origcap != null) {
+            hidable = HiddenWndData.shouldHide(origcap);
+
             hidden = false;
             if(hidable) {
                 final BufferedImage tmp = hbtn.down;

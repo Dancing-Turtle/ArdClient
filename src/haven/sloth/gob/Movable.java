@@ -83,7 +83,7 @@ public class Movable extends GAttrib implements Rendered {
 				final KinInfo kin = gob.getattr(KinInfo.class);
 				if (kin != null) {
 				    col = buddycol[kin.group];
-				} else if(PBotAPI.gui.map.player() != null && gob.id == PBotAPI.gui.map.player().id){ // this is your path, use your color
+				} else if(PBotAPI.gui != null && PBotAPI.gui.map != null && PBotAPI.gui.map.player() != null && gob.id == PBotAPI.gui.map.player().id){ // this is your path, use your color
 					col = playercol;
 				}
 				else {

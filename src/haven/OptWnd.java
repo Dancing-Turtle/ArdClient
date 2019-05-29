@@ -1586,50 +1586,6 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
-        appender.add(new CheckBox("Character Equipment on Login") {
-            {
-                a = Config.logincharsheet;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("logincharsheet", val);
-                Config.logincharsheet = val;
-                a = val;
-            }
-        });
-        appender.add(new CheckBox("Open Belt on login") {
-            {
-                a = Config.loginbelt;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("loginbelt", val);
-                Config.loginbelt = val;
-                a = val;
-            }
-        });
-        appender.add(new CheckBox("Show inventory on login") {
-            {
-                a = Config.showinvonlogin;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("showinvonlogin", val);
-                Config.showinvonlogin = val;
-                a = val;
-            }
-        });
-        appender.add(new CheckBox("Study Window on Login") {
-            {
-                a = Config.loginstudywnd;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("loginstudywnd", val);
-                Config.loginstudywnd = val;
-                a = val;
-            }
-        });
         appender.add(new CheckBox("Show server time") {
             {
                 a = Config.showservertime;
@@ -2228,24 +2184,6 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
-        appender.add(new CheckBox("Hide quests panel on login") {
-            {
-                a = Config.noquests;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("noquests", val);
-                Config.noquests = val;
-                try {
-                    if (val)
-                        gameui().questwnd.hide();
-                    else
-                        gameui().questwnd.show();
-                } catch (NullPointerException npe) { // ignored
-                }
-                a = val;
-            }
-        });
         appender.add(new CheckBox("Show Craft/Build history toolbar") {
             {
                 a = Config.histbelt;
@@ -2351,6 +2289,19 @@ public class OptWnd extends Window {
                 },
                 fontAdd
         );
+
+        appender.add(new Label("Open selected windows on login."));
+        CheckListbox autoopenlist = new CheckListbox(320, Config.autowindows.values().size(), 18 + Config.fontadd) {
+            @Override
+            protected void itemclick(CheckListboxItem itm, int button) {
+                super.itemclick(itm, button);
+                Utils.setprefchklst("autowindows", Config.autowindows);
+            }
+        };
+        Utils.loadprefchklist("autowindows", Config.autowindows);
+        for (CheckListboxItem itm : Config.autowindows.values())
+            autoopenlist.items.add(itm);
+        appender.add(autoopenlist);
 
 
         Button resetWndBtn = new Button(220, "Reset Windows (req. logout)") {
@@ -2778,22 +2729,6 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
-       /* appender.addRow(new Label("Enter Discord Channel ID"),
-                new TextEntry(150, Config.discordchannel) {
-                    @Override
-                    public boolean type(char c, KeyEvent ev) {
-                        if (!parent.visible)
-                            return false;
-
-                        boolean ret = buf.key(ev);
-                        if (text.length() > 0) {
-                            Utils.setpref("discordchannel", text);
-                        }
-
-                        return ret;
-                    }
-                }
-        );*/
         chatsettings.add(new PButton(200, "Back", 27, main), new Coord(210, 360));
         chatsettings.pack();
     }
