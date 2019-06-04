@@ -95,7 +95,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     private long  DrinkTimer = 0, StarvationAlertDelay = 0, SwimTimer;
     public WItem vhand;
     public ChatUI chat;
-    private ChatWnd chatwnd;
+    public ChatWnd chatwnd;
     private int saferadius = 1;
     private int dangerradius = 1;
     public WeakReference<Speedget> speedget;
@@ -278,6 +278,8 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         zerg.hide();
 	    questwnd = add(new QuestWnd(), new Coord(0, sz.y-200));
         chatwnd = add(new ChatWnd(chat = new ChatUI(600, 150)), new Coord(20, sz.y-200));
+        if(Config.autowindows.get("Chat") != null && Config.autowindows.get("Chat").selected)
+            chatwnd.visible = false;
         syslog = chat.add(new ChatUI.Log("System"));
         opts.c = sz.sub(opts.sz).div(2);
         pointer = add(new MapPointer());
@@ -1757,7 +1759,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 
     private double lasterrsfx = 0;
     public void error(String msg) {
-        msg(msg, new Color(192, 0, 0), new Color(255, 0, 0));
+        msg(msg, DefSettings.ERRORTEXTCOLOR.get(), new Color(255, 0, 0));
         if (errmsgcb != null)
             errmsgcb.notifyErrMsg(msg);
         double now = Utils.rtime();

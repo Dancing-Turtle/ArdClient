@@ -14,6 +14,14 @@ public class PlantStageSprite extends Sprite {
             Text.renderstroked("5", stagecolor, Color.BLACK, Text.num12boldFnd).tex(),
             Text.renderstroked("6", stagecolor, Color.BLACK, Text.num12boldFnd).tex()
     };
+    private static final Tex[] stgtexalt = new Tex[]{
+            Text.renderstroked("1", stagecolor, Color.BLACK, Text.num12boldFnd).tex(),
+            Text.renderstroked("2", stagecolor, Color.BLACK, Text.num12boldFnd).tex(),
+            Text.renderstroked("3", stagecolor, Color.BLACK, Text.num12boldFnd).tex(),
+            Text.renderstroked("4", stagecolor, Color.BLACK, Text.num12boldFnd).tex(),
+            Text.renderstroked("5", stagecolor, Color.BLACK, Text.num12boldFnd).tex(),
+            Text.renderstroked("6", stagecolor, Color.BLACK, Text.num12boldFnd).tex()
+    };
     public int stg;
     private Tex tex;
     private static Matrix4f mv = new Matrix4f();
@@ -21,11 +29,12 @@ public class PlantStageSprite extends Sprite {
     private Coord wndsz;
     private Location.Chain loc;
     private Camera camp;
-    private final boolean multistg;
+    private final boolean multistg, offsetmultisg;
 
-    public PlantStageSprite(int stg, int stgmax, boolean multistg) {
+    public PlantStageSprite(int stg, int stgmax, boolean multistg, boolean offsetmultisg) {
         super(null, null);
         this.multistg = multistg;
+        this.offsetmultisg = offsetmultisg;
         update(stg, stgmax);
     }
 
@@ -51,10 +60,16 @@ public class PlantStageSprite extends Sprite {
         this.stg = stg;
         if (multistg && stg == stgmax - 1)
             tex = stghrvtex;
+        else if(offsetmultisg && stg == stgmax - 2)
+            tex = stghrvtex;
         else if (stg == stgmax)
             tex = stgmaxtex;
-        else
-            tex = stgtex[stg - 1];
+        else {
+            if(Config.showfreshcropstage)
+                tex = stgtexalt[stg];
+            else
+                tex = stgtex[stg - 1];
+        }
     }
 
     public Object staticp() {

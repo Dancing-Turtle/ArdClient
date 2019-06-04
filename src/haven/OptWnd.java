@@ -355,17 +355,6 @@ public class OptWnd extends Window {
                         a = val;
                     }
                 });
-                /*appender.add(new CheckBox("Hide crops") {
-                    {
-                        a = Config.hidecrops;
-                    }
-
-                    public void set(boolean val) {
-                        Utils.setprefb("hidecrops", val);
-                        Config.hidecrops = val;
-                        a = val;
-                    }
-                });*/
                 appender.add(new CheckBox("Show FPS") {
                     {
                         a = Config.showfps;
@@ -512,6 +501,7 @@ public class OptWnd extends Window {
         if (gopts) {
             main.add(new Button(200, "Disconnect Discord") {
                 public void click() {
+                    gameui().discordconnected = false;
                     if(Discord.jdalogin != null) {
                         PBotUtils.sysMsg("Discord Disconnected",Color.white);
                         gameui().discordconnected = false;
@@ -930,6 +920,17 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
+        appender.add(new CheckBox("Display stage 1 (fresh planted) crops when crop stage overlay enabled.") {
+            {
+                a = Config.showfreshcropstage;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showfreshcropstage", val);
+                Config.showfreshcropstage = val;
+                a = val;
+            }
+        });
         appender.add(new CheckBox("Always display long tooltips.") {
             {
                 a = Config.longtooltips;
@@ -1138,6 +1139,7 @@ public class OptWnd extends Window {
                 }
             }
         }));
+        appender.add(ColorPreWithLabel("Error message text color: ", ERRORTEXTCOLOR));
         appender.add(new CheckBox("Highlight empty/finished drying frames and full/empty tanning tubs. Requires restart.") {
             {
                 a = Config.showdframestatus;

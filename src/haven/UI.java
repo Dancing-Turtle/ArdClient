@@ -407,7 +407,7 @@ public class UI {
             Widget wdg = widgets.get(id);
             if(realmchat != null){
                 try{
-                 if(id == realmchat.get().wdgid()) {
+                 if(realmchat.get() != null && id == realmchat.get().wdgid()) {
                      if (msg.contains("msg") && wdg.toString().contains("Realm")) {
                          ((ChatUI.EntryChannel) realmchat.get()).updurgency(1);
                          if (Config.realmchatalerts)

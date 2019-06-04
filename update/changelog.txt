@@ -1,10 +1,20 @@
+1.00.161
+Fixed camera toggle not working if chat window was hidden.
+Added the Chat window to the toggles on ui settings, but with reverse logic. I don't think it'll be that popular, so select to DISABLE chat opening on login. 
+Added option to display settings to change the text color of error messages.
+Added option to display settings to show fresh planted crops as stage 1.
+Made turnips and leeks show the orange dot on seed stage. - Unsure if this works, don't have stage 2 leeks or turnips atm. 
+Added peacock ore to miner alert overlay.
+Various merges with Loftar, seems he added calendar resources for the upcoming seasons system. As well as adding the cost for pursuing a credo. 
+~
+
 1.00.160
 Fixed belt window not saving it's transparency toggle setting.
 Added gabbro boulders to boulder list.
 Fixed corund boulders.
 Added transparency toggle to study, inventory, equipment, character sheet, and chat windows. Yolo.
 Moved windows to open on login to a list at the bottom of ui settings, also added a few things that weren't available before. Select an item on the list to open the window on login.
-Added ore type label to new highlight arrows on miner alert, well tell you the ore type and what it smelts into as well as the percentage chance.
+Added ore type label to new highlight arrows on miner alert, will tell you the ore type and what it smelts into as well as the percentage chance.
 ~
 
 1.00.159

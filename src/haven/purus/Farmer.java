@@ -24,7 +24,7 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 	private boolean areaselected = false;
 
 	public Farmer() {
-		super(new Coord(180, 785), "Farming Bots");
+		super(new Coord(180, 785), "Farming Bots", "Farming Bots");
 		int y = 0;
 		PBotUtils.sysMsg("Hold alt and left click containers to select them.",Color.white);
 		Button carrotBtn = new Button(140, "Carrot") {

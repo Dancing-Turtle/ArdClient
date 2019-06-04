@@ -116,6 +116,7 @@ public class Config {
     public static boolean showgobhp = Utils.getprefb("showgobhp", false);
     public static boolean showgobquality = Utils.getprefb("showgobquality", true);
     public static boolean showplantgrowstage = Utils.getprefb("showplantgrowstage", false);
+    public static boolean showfreshcropstage = Utils.getprefb("showfreshcropstage", false);
     public static boolean notifykinonline = Utils.getprefb("notifykinonline", true);
     public static boolean showminerad = Utils.getprefb("showminerad", false);
     public static boolean showTroughrad = Utils.getprefb("showTroughrad", false);
@@ -170,9 +171,9 @@ public class Config {
     public static boolean dropMinedStones = Utils.getprefb("dropMinedStones", true);
     public static boolean dropMinedOre = Utils.getprefb("dropMinedOre", true);
     public static boolean dropMinedOrePrecious = Utils.getprefb("dropMinedOrePrecious", true);
-    public static boolean dropMinedCatGold = Utils.getprefb("dropMinedCatGold", true);
-    public static boolean dropMinedSeaShells = Utils.getprefb("dropMinedSeaShells", true);
-    public static boolean dropMinedCrystals = Utils.getprefb("dropMinedCrystals", true);
+    public static boolean dropMinedCatGold = Utils.getprefb("dropMinedCatGold", false);
+    public static boolean dropMinedSeaShells = Utils.getprefb("dropMinedSeaShells", false);
+    public static boolean dropMinedCrystals = Utils.getprefb("dropMinedCrystals", false);
     public static boolean dropsmelterstones = Utils.getprefb("dropsmelterstones", true);
     public static boolean showdframestatus = Utils.getprefb("showdframestatus", true);
     public static boolean showcoopstatus = Utils.getprefb("showcoopstatus", true);
@@ -598,6 +599,7 @@ public class Config {
         put("Character Sheet", new CheckListboxItem("Character Sheet"));
         put("Search...", new CheckListboxItem("Search..."));
         put("Craft window", new CheckListboxItem("Craft window"));
+        put("Chat", new CheckListboxItem("Chat Window - Reverse Logic, select to disable."));
     }};
 
     public final static HashMap<String, CheckListboxItem> autoclusters = new HashMap<String, CheckListboxItem>(7) {{

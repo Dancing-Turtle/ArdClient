@@ -1667,7 +1667,7 @@ public class CharWnd extends Window {
         public final Text.Foundry prsf = Text.std;
         public List<Credo> ncr = Collections.emptyList(), ccr = Collections.emptyList();
         public Credo pcr = null;
-        public int pcl, pclt, pcql, pcqlt, pqid;
+        public int pcl, pclt, pcql, pcqlt, pqid, cost;
         public Credo sel = null;
         private final Img pcrc, ncrc, ccrc;
         private final Button pbtn, qbtn;
@@ -1759,6 +1759,8 @@ public class CharWnd extends Window {
                 y = crgrid(y, ncr);
                 if(pcr == null) {
                     cont.add(pbtn, 5, y);
+		    if(cost > 0)
+			cont.adda(new Label(String.format("Cost: %,d LP", cost)), pbtn.c.x + pbtn.sz.x + 10, pbtn.c.y + (pbtn.sz.y / 2), 0, 0.5);
                     y += pbtn.sz.y;
                 }
                 y += 10;
@@ -2620,6 +2622,8 @@ public class CharWnd extends Window {
             credos.ccr(deccrlist(args, 0, true));
         } else if(nm == "ncr") {
             credos.ncr(deccrlist(args, 0, false));
+	} else if(nm == "crcost") {
+	    credos.cost = (Integer)args[0];
         } else if(nm == "pcr") {
             if(args.length > 0) {
                 int a = 0;

@@ -409,11 +409,11 @@ public class Window extends MovableWidget implements DTarget {
                             Map idk2 = getStats();
                             idk2.forEach((k,v) ->{
                                 if((Integer)idk2.get(k) - (Integer)idk.get(k) > 0) {
-                                    System.out.println("Bulk Stats gained : " + k + " value : " + ((Integer) idk2.get(k) - (Integer) idk.get(k)));
+                                   // System.out.println("Bulk Stats gained : " + k + " value : " + ((Integer) idk2.get(k) - (Integer) idk.get(k)));
                                     PBotUtils.sysLogAppend("Bulk Stats gained : " + k + " value : " + ((Integer) idk2.get(k) - (Integer) idk.get(k)),"green");
                                 }
-                                else
-                                    System.out.println("Old : "+idk.get(k)+" new : "+v);
+                               // else
+                                   // System.out.println("Old : "+idk.get(k)+" new : "+v);
                             });
                         }
                         else{
@@ -808,7 +808,7 @@ public class Window extends MovableWidget implements DTarget {
         }
         if(chrwdg != null){
             for (CharWnd.Attr attr2 : chrwdg.base) {
-                System.out.println("name : "+attr2.attr.nm);
+              //  System.out.println("name : "+attr2.attr.nm);
                 if(attr2.attr.nm.contains("str")){
                     statmap.put("str",attr2.attr.comp);
                 }
@@ -839,7 +839,7 @@ public class Window extends MovableWidget implements DTarget {
             }
         }
 
-        statmap.forEach((k, v) -> System.out.println("Key : "+k+" value : "+v));
+      //  statmap.forEach((k, v) -> System.out.println("Key : "+k+" value : "+v));
         return statmap;
     }
 }

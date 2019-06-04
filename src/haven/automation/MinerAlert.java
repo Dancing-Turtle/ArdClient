@@ -52,7 +52,7 @@ public class MinerAlert extends Window {
         put("chalcopyrite","8% Copper 4% Iron");
         put("cinnabar","12% Quicksilver");
         put("malachite","20% Copper");
-        put("Inventory","Inventory");//needs to be peaccock ore
+        put("peacockore","30% Copper");
         put("ilmenite","6% Iron");
         put("limonite","12% Iron");
         put("hematite","20% Iron");

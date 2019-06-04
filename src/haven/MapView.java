@@ -888,7 +888,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
 
 
     public void toggleCamera(){
-        if (camera != null && !ui.gui.chat.hasfocus) {
+        if ((camera != null && !ui.gui.chat.hasfocus) || (camera != null && !ui.gui.chatwnd.visible)) {
             String cam = "";
             if(camera instanceof MapView.FollowCam)
                 curcamera = "follow";
@@ -1693,8 +1693,8 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                     g.chcolor(Color.BLACK);
                     g.frect(Coord.z, sz);
                 } else {
-                    System.out.println(text);
-                    e.printStackTrace();
+                   // System.out.println(text);
+                   // e.printStackTrace();
                 }
                 g.chcolor(Color.WHITE);
                 g.atext(text, sz.div(2), 0.5, 0.5);
@@ -2293,7 +2293,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                             gobselcb.gobselect(gob);
 
                         if (gob == null && gameui().vhand == null) {
-                            System.out.println("adding to move que");
+                         //   System.out.println("adding to move que");
                             //Queued movement
                             movequeue.add(mc);
                         }
@@ -2409,7 +2409,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     }
 
     public void pfRightClick(Gob gob, int meshid, int clickb, int modflags, String action) {
-        System.out.println("pf right click");
+     //   System.out.println("pf right click");
         Gob player = player();
         if (player == null)
             return;
