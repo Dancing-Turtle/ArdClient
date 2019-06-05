@@ -1,3 +1,8 @@
+1.00.162
+Added danger radius to rats.
+Added bluebells to the disable animations list, will work for bluebells in pots as well.
+~
+
 1.00.161
 Fixed camera toggle not working if chat window was hidden.
 Added the Chat window to the toggles on ui settings, but with reverse logic. I don't think it'll be that popular, so select to DISABLE chat opening on login. 

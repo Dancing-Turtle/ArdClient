@@ -916,6 +916,7 @@ public class Config {
         put("gfx/terobjs/smelter",new CheckListboxItem("Smelters"));
         put("gfx/terobjs/arch/visflag", new CheckListboxItem("Visitor Flags"));
         put("gfx/terobjs/flagpole", new CheckListboxItem("Flag Poles"));
+        put("gfx/terobjs/herbs/chimingbluebell",new CheckListboxItem("Bluebells"));
     }};
 
     public final static HashMap<String, CheckListboxItem> disableshiftclick = new HashMap<String, CheckListboxItem>(8){{

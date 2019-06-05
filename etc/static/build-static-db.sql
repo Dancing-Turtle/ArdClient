@@ -73,6 +73,8 @@ INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/kritter/boreworm/borewo
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/kritter/greyseal/greyseal', (SELECT type_id FROM type WHERE name_key = 'DANGANIMAL'));
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/kritter/cavelouse/cavelouse', (SELECT type_id FROM type WHERE name_key = 'DANGANIMAL'));
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/kritter/goat/wildgoat', (SELECT type_id FROM type WHERE name_key = 'DANGANIMAL'));
+INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/kritter/rat/caverat', (SELECT type_id FROM type WHERE name_key = 'DANGANIMAL'));
+
 --Stranglevine
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/tiles/paving/stranglevine', (SELECT type_id FROM type WHERE name_key = 'STRANGLEVINE'));
 --MINE SUPPORTS WOODEN/STONE/METAL LADDER = WOODEN SUPPORT
@@ -680,6 +682,7 @@ INSERT OR IGNORE INTO dangerous VALUES ((SELECT object_id FROM object WHERE name
 INSERT OR IGNORE INTO dangerous VALUES ((SELECT object_id FROM object WHERE name = 'gfx/kritter/wolverine/wolverine'));
 INSERT OR IGNORE INTO dangerous VALUES ((SELECT object_id FROM object WHERE name = 'gfx/kritter/adder/adder'	));
 INSERT OR IGNORE INTO dangerous VALUES ((SELECT object_id FROM object WHERE name = 'gfx/kritter/beaver/beaver'	));
+INSERT OR IGNORE INTO dangerous VALUES ((SELECT object_id FROM object WHERE name = 'gfx/kritter/rat/caverat'	));
 
 CREATE TABLE IF NOT EXISTS range (
     object_id   INTEGER,    -- Objects that have some kind of radius for a reason

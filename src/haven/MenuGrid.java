@@ -493,7 +493,7 @@ public class MenuGrid extends Widget {
                         new Thread(new Coracleslol(gui), "Coracleslol").start();
                     }}
         ));
-        addSpecial(new SpecialPagina(this, "paginae::amber:mineralert",
+        addSpecial(new SpecialPagina(this, "paginae::amber::mineralert",
                 Resource.local().load("paginae/amber/MinerAlert"),
                 (pag) -> {
                     GameUI gui = gameui();
