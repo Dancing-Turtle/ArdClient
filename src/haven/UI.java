@@ -165,7 +165,7 @@ public class UI {
     public int next_predicted_id = 2;
     public void newwidget(int id, String type, int parent, Object[] pargs, Object... cargs) throws InterruptedException {
 
-    //  System.out.println("Widget ID : "+id+" Type : "+type+" Parent : "+parent);
+     // System.out.println("Widget ID : "+id+" Type : "+type+" Parent : "+parent);
         if (Config.quickbelt && type.equals("wnd") && cargs[1].equals("Belt")) {
             // use custom belt window
             type = "alt-wnd-belt";

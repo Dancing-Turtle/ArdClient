@@ -123,6 +123,8 @@ public class KeyBinder {
 	add(KeyEvent.VK_Z,0,MARK_CURRENT);
 	add(KeyEvent.VK_G,CTRL,TOGGLE_GRID);
 	add(KeyEvent.VK_T,SHIFT,TOGGLE_GRIDBINDS);
+	add(KeyEvent.VK_F,CTRL,TOGGLE_FLOWERMENUSETTINGS);
+	add(KeyEvent.VK_M,SHIFT,TOGGLE_MAPSETTINGS);
     }
     
     private static synchronized void store() {

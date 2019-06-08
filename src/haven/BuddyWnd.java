@@ -620,6 +620,8 @@ public class BuddyWnd extends Widget implements Iterable<BuddyWnd.Buddy> {
             find(id).online = online;
             Buddy b = find(id);
             b.online = online;
+            if(Config.autosortkinlist)
+                setcmp(statuscmp);
             if (Config.notifykinonline)
                 gameui().msg(b.name + " is " + (online > 0 ? "ONLINE" : "offline"), new Color(54, 105, 205));
         } else if (msg == "upd") {

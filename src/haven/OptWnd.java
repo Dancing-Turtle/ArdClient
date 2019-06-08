@@ -155,6 +155,17 @@ public class OptWnd extends Window {
                         cf.dirty = true;
                     }
                 });
+                appender.add(new CheckBox("Show Entering/Leaving Messages in Sys Log instead of large Popup - FPS increase?") {
+                    {
+                        a = Config.DivertPolityMessages;
+                    }
+
+                    public void set(boolean val) {
+                        Utils.setprefb("DivertPolityMessages", val);
+                        Config.DivertPolityMessages = val;
+                        a = val;
+                    }
+                });
                 appender.add(new CheckBox("Render shadows") {
                     {
                         a = cf.lshadow.val;
@@ -887,6 +898,7 @@ public class OptWnd extends Window {
     private void initDisplayFirstColumn() {
         final WidgetVerticalAppender appender = new WidgetVerticalAppender(withScrollport(display, new Coord(620, 350)));
         appender.setVerticalMargin(VERTICAL_MARGIN);
+
         appender.add(new CheckBox("Flatten Cupboards - Requires Restart") {
             {
                 a = Config.flatcupboards;
@@ -1422,7 +1434,17 @@ public class OptWnd extends Window {
 
         appender.setVerticalMargin(VERTICAL_MARGIN);
         appender.setHorizontalMargin(HORIZONTAL_MARGIN);
+        appender.add(new CheckBox("Confirmation popup box on game exit.") {
+            {
+                a = Config.confirmclose;
+            }
 
+            public void set(boolean val) {
+                Utils.setprefb("confirmclose", val);
+                Config.confirmclose = val;
+                a = val;
+            }
+        });
         appender.add(new CheckBox("Save chat logs to disk") {
             {
                 a = Config.chatsave;
@@ -1472,6 +1494,17 @@ public class OptWnd extends Window {
             public void set(boolean val) {
                 Utils.setprefb("notifykinonline", val);
                 Config.notifykinonline = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Autosort kin list by online status.") {
+            {
+                a = Config.autosortkinlist;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("autosortkinlist", val);
+                Config.autosortkinlist = val;
                 a = val;
             }
         });
@@ -1565,6 +1598,7 @@ public class OptWnd extends Window {
                 AutodrinkThreshold.settext(String.format("Autodrink Threshold : %d Percent", val));
             }
         });
+        appender.addRow(new Label("Autodrink check frequency (Seconds)"), makeAutoDrinkTimeDropdown());
         appender.add(new CheckBox("Repeat Starvation Alert Warning/Sound") {
             {
                 a = Config.StarveAlert;
@@ -3167,6 +3201,33 @@ public class OptWnd extends Window {
         };
     }
 
+    private static final List<String> AutoDrinkTime = Arrays.asList("1","3","5","10","15","20","25","30","45","60");
+    private Dropbox<String> makeAutoDrinkTimeDropdown() {
+        return new Dropbox<String>(AutoDrinkTime.size(), AutoDrinkTime) {
+            {
+                super.change(Integer.toString(Config.autodrinktime));
+            }
+            @Override
+            protected String listitem(int i) {
+                return AutoDrinkTime.get(i);
+            }
+            @Override
+            protected int listitems() {
+                return AutoDrinkTime.size();
+            }
+            @Override
+            protected void drawitem(GOut g, String item, int i) {
+                g.text(item, Coord.z);
+            }
+            @Override
+            public void change(String item) {
+                super.change(item);
+                Config.autodrinktime = Integer.parseInt(item);
+                Utils.setpref("autodrinktime", item);
+            }
+        };
+    }
+
     static private Scrollport.Scrollcont withScrollport(Widget widget, Coord sz) {
         final Scrollport scroll = new Scrollport(sz);
         widget.add(scroll, new Coord(0, 0));
@@ -3364,557 +3425,6 @@ public class OptWnd extends Window {
                 Utils.setpref("alarmredplayer", item);
                 if(!item.equals("None"))
                     Audio.play(Resource.local().loadwait(item),Config.alarmredvol);
-            }
-        };
-    }
-
-    private Dropbox<String> makeAlarmDropdownForagable() {
-        final List<String> alarms = Config.alarms.values().stream().map(x -> x.toString()).collect(Collectors.toList());
-        return new Dropbox<String>(Config.alarms.size(), alarms) {
-            {
-                super.change(Config.alarmforagable);
-            }
-            @Override
-            protected String listitem(int i) {
-                return alarms.get(i);
-            }
-            @Override
-            protected int listitems() {
-                return alarms.size();
-            }
-            @Override
-            protected void drawitem(GOut g, String item, int i) {
-                g.text(item, Coord.z);
-            }
-            @Override
-            public void change(String item) {
-                super.change(item);
-                Config.alarmforagable = item;
-                Utils.setpref("alarmforagable", item);
-                if(!item.equals("None"))
-                    Audio.play(Resource.local().loadwait(item),Config.alarmonforagablesvol);
-            }
-        };
-    }
-
-    private Dropbox<String> makeAlarmDropdownBear() {
-        final List<String> alarms = Config.alarms.values().stream().map(x -> x.toString()).collect(Collectors.toList());
-        return new Dropbox<String>(Config.alarms.size(), alarms) {
-            {
-                super.change(Config.alarmbear);
-            }
-            @Override
-            protected String listitem(int i) {
-                return alarms.get(i);
-            }
-            @Override
-            protected int listitems() {
-                return alarms.size();
-            }
-            @Override
-            protected void drawitem(GOut g, String item, int i) {
-                g.text(item, Coord.z);
-            }
-            @Override
-            public void change(String item) {
-                super.change(item);
-                Config.alarmbear = item;
-                Utils.setpref("alarmbear", item);
-                if(!item.equals("None"))
-                    Audio.play(Resource.local().loadwait(item),Config.alarmbearsvol);
-            }
-        };
-    }
-
-    private Dropbox<String> makeAlarmDropdownLynx() {
-        final List<String> alarms = Config.alarms.values().stream().map(x -> x.toString()).collect(Collectors.toList());
-        return new Dropbox<String>(Config.alarms.size(), alarms) {
-            {
-                super.change(Config.alarmlynx);
-            }
-            @Override
-            protected String listitem(int i) {
-                return alarms.get(i);
-            }
-            @Override
-            protected int listitems() {
-                return alarms.size();
-            }
-            @Override
-            protected void drawitem(GOut g, String item, int i) {
-                g.text(item, Coord.z);
-            }
-            @Override
-            public void change(String item) {
-                super.change(item);
-                Config.alarmlynx = item;
-                Utils.setpref("alarmlynx", item);
-                if(!item.equals("None"))
-                    Audio.play(Resource.local().loadwait(item),Config.alarmbearsvol);
-            }
-        };
-    }
-
-    private Dropbox<String> makeAlarmDropdownAdder() {
-        final List<String> alarms = Config.alarms.values().stream().map(x -> x.toString()).collect(Collectors.toList());
-        return new Dropbox<String>(Config.alarms.size(), alarms) {
-            {
-                super.change(Config.alarmadder);
-            }
-            @Override
-            protected String listitem(int i) {
-                return alarms.get(i);
-            }
-            @Override
-            protected int listitems() {
-                return alarms.size();
-            }
-            @Override
-            protected void drawitem(GOut g, String item, int i) {
-                g.text(item, Coord.z);
-            }
-            @Override
-            public void change(String item) {
-                super.change(item);
-                Config.alarmadder = item;
-                Utils.setpref("alarmadder", item);
-                if(!item.equals("None"))
-                    Audio.play(Resource.local().loadwait(item),Config.alarmaddervol);
-            }
-        };
-    }
-
-    private Dropbox<String> makeAlarmDropdownHorse() {
-        final List<String> alarms = Config.alarms.values().stream().map(x -> x.toString()).collect(Collectors.toList());
-        return new Dropbox<String>(Config.alarms.size(), alarms) {
-            {
-                super.change(Config.alarmhorse);
-            }
-            @Override
-            protected String listitem(int i) {
-                return alarms.get(i);
-            }
-            @Override
-            protected int listitems() {
-                return alarms.size();
-            }
-            @Override
-            protected void drawitem(GOut g, String item, int i) {
-                g.text(item, Coord.z);
-            }
-            @Override
-            public void change(String item) {
-                super.change(item);
-                Config.alarmhorse = item;
-                Utils.setpref("alarmhorse", item);
-                if(!item.equals("None"))
-                    Audio.play(Resource.local().loadwait(item),Config.alarmhorsevol);
-            }
-        };
-    }
-
-    private Dropbox<String> makeAlarmDropdownMoose() {
-        final List<String> alarms = Config.alarms.values().stream().map(x -> x.toString()).collect(Collectors.toList());
-        return new Dropbox<String>(Config.alarms.size(), alarms) {
-            {
-                super.change(Config.alarmmoose);
-            }
-            @Override
-            protected String listitem(int i) {
-                return alarms.get(i);
-            }
-            @Override
-            protected int listitems() {
-                return alarms.size();
-            }
-            @Override
-            protected void drawitem(GOut g, String item, int i) {
-                g.text(item, Coord.z);
-            }
-            @Override
-            public void change(String item) {
-                super.change(item);
-                Config.alarmmoose = item;
-                Utils.setpref("alarmmoose", item);
-                if(!item.equals("None"))
-                    Audio.play(Resource.local().loadwait(item),Config.alarmmoosevol);
-            }
-        };
-    }
-
-    private Dropbox<String> makeAlarmDropdownWalrus() {
-        final List<String> alarms = Config.alarms.values().stream().map(x -> x.toString()).collect(Collectors.toList());
-        return new Dropbox<String>(Config.alarms.size(), alarms) {
-            {
-                super.change(Config.alarmwalrus);
-            }
-            @Override
-            protected String listitem(int i) {
-                return alarms.get(i);
-            }
-            @Override
-            protected int listitems() {
-                return alarms.size();
-            }
-            @Override
-            protected void drawitem(GOut g, String item, int i) {
-                g.text(item, Coord.z);
-            }
-            @Override
-            public void change(String item) {
-                super.change(item);
-                Config.alarmwalrus = item;
-                Utils.setpref("alarmwalrus", item);
-                if(!item.equals("None"))
-                    Audio.play(Resource.local().loadwait(item),Config.alarmbearsvol);
-            }
-        };
-    }
-
-    private Dropbox<String> makeAlarmDropdownSeal() {
-        final List<String> alarms = Config.alarms.values().stream().map(x -> x.toString()).collect(Collectors.toList());
-        return new Dropbox<String>(Config.alarms.size(), alarms) {
-            {
-                super.change(Config.alarmseal);
-            }
-            @Override
-            protected String listitem(int i) {
-                return alarms.get(i);
-            }
-            @Override
-            protected int listitems() {
-                return alarms.size();
-            }
-            @Override
-            protected void drawitem(GOut g, String item, int i) {
-                g.text(item, Coord.z);
-            }
-            @Override
-            public void change(String item) {
-                super.change(item);
-                Config.alarmseal = item;
-                Utils.setpref("alarmseal", item);
-                if(!item.equals("None"))
-                    Audio.play(Resource.local().loadwait(item),Config.alarmbearsvol);
-            }
-        };
-    }
-
-    private Dropbox<String> makeAlarmDropdownTroll() {
-        final List<String> alarms = Config.alarms.values().stream().map(x -> x.toString()).collect(Collectors.toList());
-        return new Dropbox<String>(Config.alarms.size(), alarms) {
-            {
-                super.change(Config.alarmtroll);
-            }
-            @Override
-            protected String listitem(int i) {
-                return alarms.get(i);
-            }
-            @Override
-            protected int listitems() {
-                return alarms.size();
-            }
-            @Override
-            protected void drawitem(GOut g, String item, int i) {
-                g.text(item, Coord.z);
-            }
-            @Override
-            public void change(String item) {
-                super.change(item);
-                Config.alarmtroll = item;
-                Utils.setpref("alarmtroll", item);
-                if(!item.equals("None"))
-                    Audio.play(Resource.local().loadwait(item),Config.alarmtrollvol);
-            }
-        };
-    }
-
-    private Dropbox<String> makeAlarmDropdownMammoth() {
-        final List<String> alarms = Config.alarms.values().stream().map(x -> x.toString()).collect(Collectors.toList());
-        return new Dropbox<String>(Config.alarms.size(), alarms) {
-            {
-                super.change(Config.alarmmammoth);
-            }
-            @Override
-            protected String listitem(int i) {
-                return alarms.get(i);
-            }
-            @Override
-            protected int listitems() {
-                return alarms.size();
-            }
-            @Override
-            protected void drawitem(GOut g, String item, int i) {
-                g.text(item, Coord.z);
-            }
-            @Override
-            public void change(String item) {
-                super.change(item);
-                Config.alarmmammoth = item;
-                Utils.setpref("alarmmammoth", item);
-                if(!item.equals("None"))
-                    Audio.play(Resource.local().loadwait(item),Config.alarmbearsvol);
-            }
-        };
-    }
-
-    private Dropbox<String> makeAlarmDropdownEagle() {
-        final List<String> alarms = Config.alarms.values().stream().map(x -> x.toString()).collect(Collectors.toList());
-        return new Dropbox<String>(Config.alarms.size(), alarms) {
-            {
-                super.change(Config.alarmeagle);
-            }
-            @Override
-            protected String listitem(int i) {
-                return alarms.get(i);
-            }
-            @Override
-            protected int listitems() {
-                return alarms.size();
-            }
-            @Override
-            protected void drawitem(GOut g, String item, int i) {
-                g.text(item, Coord.z);
-            }
-            @Override
-            public void change(String item) {
-                super.change(item);
-                Config.alarmeagle = item;
-                Utils.setpref("alarmeagle", item);
-                if(!item.equals("None"))
-                    Audio.play(Resource.local().loadwait(item),Config.alarmbearsvol);
-            }
-        };
-    }
-
-    private Dropbox<String> makeAlarmDropdownDoomed() {
-        final List<String> alarms = Config.alarms.values().stream().map(x -> x.toString()).collect(Collectors.toList());
-        return new Dropbox<String>(Config.alarms.size(), alarms) {
-            {
-                super.change(Config.alarmdoomed);
-            }
-            @Override
-            protected String listitem(int i) {
-                return alarms.get(i);
-            }
-            @Override
-            protected int listitems() {
-                return alarms.size();
-            }
-            @Override
-            protected void drawitem(GOut g, String item, int i) {
-                g.text(item, Coord.z);
-            }
-            @Override
-            public void change(String item) {
-                super.change(item);
-                Config.alarmdoomed = item;
-                Utils.setpref("alarmdoomed", item);
-                if(!item.equals("None"))
-                    Audio.play(Resource.local().loadwait(item),Config.alarmbramvol);
-            }
-        };
-    }
-
-    private Dropbox<String> makeAlarmDropdownWBall() {
-        final List<String> alarms = Config.alarms.values().stream().map(x -> x.toString()).collect(Collectors.toList());
-        return new Dropbox<String>(Config.alarms.size(), alarms) {
-            {
-                super.change(Config.alarmwball);
-            }
-            @Override
-            protected String listitem(int i) {
-                return alarms.get(i);
-            }
-            @Override
-            protected int listitems() {
-                return alarms.size();
-            }
-            @Override
-            protected void drawitem(GOut g, String item, int i) {
-                g.text(item, Coord.z);
-            }
-            @Override
-            public void change(String item) {
-                super.change(item);
-                Config.alarmwball = item;
-                Utils.setpref("alarmwball", item);
-                if(!item.equals("None"))
-                    Audio.play(Resource.local().loadwait(item),Config.alarmwballvol);
-            }
-        };
-    }
-
-    private Dropbox<String> makeAlarmDropdownSwag() {
-        final List<String> alarms = Config.alarms.values().stream().map(x -> x.toString()).collect(Collectors.toList());
-        return new Dropbox<String>(Config.alarms.size(), alarms) {
-            {
-                super.change(Config.alarmswag);
-            }
-            @Override
-            protected String listitem(int i) {
-                return alarms.get(i);
-            }
-            @Override
-            protected int listitems() {
-                return alarms.size();
-            }
-            @Override
-            protected void drawitem(GOut g, String item, int i) {
-                g.text(item, Coord.z);
-            }
-            @Override
-            public void change(String item) {
-                super.change(item);
-                Config.alarmswag = item;
-                Utils.setpref("alarmswag", item);
-                if(!item.equals("None"))
-                    Audio.play(Resource.local().loadwait(item),Config.alarmlocresvol);
-            }
-        };
-    }
-
-    private Dropbox<String> makeAlarmDropdownEyeball() {
-        final List<String> alarms = Config.alarms.values().stream().map(x -> x.toString()).collect(Collectors.toList());
-        return new Dropbox<String>(Config.alarms.size(), alarms) {
-            {
-                super.change(Config.alarmeyeball);
-            }
-            @Override
-            protected String listitem(int i) {
-                return alarms.get(i);
-            }
-            @Override
-            protected int listitems() {
-                return alarms.size();
-            }
-            @Override
-            protected void drawitem(GOut g, String item, int i) {
-                g.text(item, Coord.z);
-            }
-            @Override
-            public void change(String item) {
-                super.change(item);
-                Config.alarmeyeball = item;
-                Utils.setpref("alarmeyeball", item);
-                if(!item.equals("None"))
-                    Audio.play(Resource.local().loadwait(item),Config.alarmeyeballvol);
-            }
-        };
-    }
-
-    private Dropbox<String> makeAlarmDropdownNidbane() {
-        final List<String> alarms = Config.alarms.values().stream().map(x -> x.toString()).collect(Collectors.toList());
-        return new Dropbox<String>(Config.alarms.size(), alarms) {
-            {
-                super.change(Config.alarmnidbane);
-            }
-            @Override
-            protected String listitem(int i) {
-                return alarms.get(i);
-            }
-            @Override
-            protected int listitems() {
-                return alarms.size();
-            }
-            @Override
-            protected void drawitem(GOut g, String item, int i) {
-                g.text(item, Coord.z);
-            }
-            @Override
-            public void change(String item) {
-                super.change(item);
-                Config.alarmnidbane = item;
-                Utils.setpref("alarmnidbane", item);
-                if(!item.equals("None"))
-                    Audio.play(Resource.local().loadwait(item),Config.alarmnidbanevol);
-            }
-        };
-    }
-
-    private Dropbox<String> makeAlarmDropdownDungeon() {
-        final List<String> alarms = Config.alarms.values().stream().map(x -> x.toString()).collect(Collectors.toList());
-        return new Dropbox<String>(Config.alarms.size(), alarms) {
-            {
-                super.change(Config.alarmdungeon);
-            }
-            @Override
-            protected String listitem(int i) {
-                return alarms.get(i);
-            }
-            @Override
-            protected int listitems() {
-                return alarms.size();
-            }
-            @Override
-            protected void drawitem(GOut g, String item, int i) {
-                g.text(item, Coord.z);
-            }
-            @Override
-            public void change(String item) {
-                super.change(item);
-                Config.alarmdungeon = item;
-                Utils.setpref("alarmdungeon", item);
-                if(!item.equals("None"))
-                    Audio.play(Resource.local().loadwait(item),Config.alarmdungeonvol);
-            }
-        };
-    }
-
-    private Dropbox<String> makeAlarmDropdownBeaverDungeon() {
-        final List<String> alarms = Config.alarms.values().stream().map(x -> x.toString()).collect(Collectors.toList());
-        return new Dropbox<String>(Config.alarms.size(), alarms) {
-            {
-                super.change(Config.alarmbeaverdungeon);
-            }
-            @Override
-            protected String listitem(int i) {
-                return alarms.get(i);
-            }
-            @Override
-            protected int listitems() {
-                return alarms.size();
-            }
-            @Override
-            protected void drawitem(GOut g, String item, int i) {
-                g.text(item, Coord.z);
-            }
-            @Override
-            public void change(String item) {
-                super.change(item);
-                Config.alarmbeaverdungeon = item;
-                Utils.setpref("alarmbeaverdungeon", item);
-                if(!item.equals("None"))
-                    Audio.play(Resource.local().loadwait(item),Config.alarmdungeonvol);
-            }
-        };
-    }
-
-    private Dropbox<String> makeAlarmDropdownSiege() {
-        final List<String> alarms = Config.alarms.values().stream().map(x -> x.toString()).collect(Collectors.toList());
-        return new Dropbox<String>(Config.alarms.size(), alarms) {
-            {
-                super.change(Config.alarmsiege);
-            }
-            @Override
-            protected String listitem(int i) {
-                return alarms.get(i);
-            }
-            @Override
-            protected int listitems() {
-                return alarms.size();
-            }
-            @Override
-            protected void drawitem(GOut g, String item, int i) {
-                g.text(item, Coord.z);
-            }
-            @Override
-            public void change(String item) {
-                super.change(item);
-                Config.alarmsiege = item;
-                Utils.setpref("alarmsiege", item);
-                if(!item.equals("None"))
-                    Audio.play(Resource.local().loadwait(item),Config.alarmbramvol);
             }
         };
     }

@@ -60,8 +60,9 @@ public enum Action {
     PEACE_CURRENT(GameUI::peaceCurrent,"Hits peace button for current target."),
     MARK_CURRENT(GameUI::markTarget,"Marks current combat target for party."),
     TOGGLE_GRID(GameUI::toggleGridLines,"Toggles tile gridlines."),
-    TOGGLE_GRIDBINDS(GameUI::toggleGridBinds,"Toggles MenuGrid Keybinds.");
-
+    TOGGLE_GRIDBINDS(GameUI::toggleGridBinds,"Toggles MenuGrid Keybinds."),
+    TOGGLE_FLOWERMENUSETTINGS(GameUI::toggleMenuSettings,"Opens Autoselect Options"),
+    TOGGLE_MAPSETTINGS(GameUI::toggleMapSettings,"Opens Map Options");
 
 
     

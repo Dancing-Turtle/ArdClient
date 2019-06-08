@@ -54,8 +54,6 @@ public class Config {
     public static int authport = 1871;
     public static boolean skybox = Utils.getprefb("skybox", true);
     public static boolean savecutlery = Utils.getprefb("savecutlery", true);
-    public static boolean dropSoil = Utils.getprefb("dropSoil", false);
-    public static boolean dropCoal = Utils.getprefb("dropCoal", false);
     public static boolean lowerterraindistance = Utils.getprefb("lowerterraindistance", false);
     public static boolean noloadscreen = Utils.getprefb("noloadscreen", false);
     public static URL screenurl = geturl("http://game.havenandhearth.com/mt/ss");
@@ -64,7 +62,6 @@ public class Config {
     public static boolean mapdrawquests = Utils.getprefb("mapdrawquests", true);
     public static boolean mapdrawflags = Utils.getprefb("mapdrawflags", false);
     public static boolean hideflovisual = Utils.getprefb("hideflovisual", false);
-    public static boolean daylight = Utils.getprefb("daylight", false);
     public static boolean longtooltips = Utils.getprefb("longtooltips", true);
     public static boolean avatooltips = Utils.getprefb("avatooltips", false);
     public static boolean showkinnames = Utils.getprefb("showkinnames", true);
@@ -94,8 +91,6 @@ public class Config {
     public static boolean quickbelt = Utils.getprefb("quickbelt", false);
     public static boolean statuswdgvisible = Utils.getprefb("statuswdgvisible", false);
 
-    public static boolean batcircle = Utils.getprefb("batcircle", true);
-    public static boolean slimecircle = Utils.getprefb("slimecircle", true);
     public static boolean errorsounds = Utils.getprefb("errorsounds", true);
     public static boolean cleavesound = Utils.getprefb("cleavesound", true);
     public static boolean chatsounds = Utils.getprefb("chatsounds", true);
@@ -118,26 +113,19 @@ public class Config {
     public static boolean showplantgrowstage = Utils.getprefb("showplantgrowstage", false);
     public static boolean showfreshcropstage = Utils.getprefb("showfreshcropstage", false);
     public static boolean notifykinonline = Utils.getprefb("notifykinonline", true);
+    public static boolean autosortkinlist = Utils.getprefb("autosortkinlist", true);
     public static boolean showminerad = Utils.getprefb("showminerad", false);
     public static boolean showTroughrad = Utils.getprefb("showTroughrad", false);
     public static boolean showBeehiverad = Utils.getprefb("showBeehiverad", false);
     public static boolean showweather = Utils.getprefb("showweather", true);
     public static boolean simplecrops = Utils.getprefb("simplecrops", false);
-    public static boolean logincharsheet = Utils.getprefb("logincharsheet", false);
-    public static boolean loginstudywnd = Utils.getprefb("loginstudywnd", false);
-    public static boolean loginbelt = Utils.getprefb("loginbelt", true);
     public static boolean escclosewindows = Utils.getprefb("escclosewindows", true);
-    public static boolean afklogout = Utils.getprefb("afklogout", false);
     public static int afklogouttime = Utils.getprefi("afklogouttime", 0);
+    public static int autodrinktime = Utils.getprefi("autodrinktime", 5);
     public static boolean simpleforage = Utils.getprefb("simpleforage", false);
-    //public static boolean hidecrops = Utils.getprefb("hidecrops", false);
     public static boolean showfps = Utils.getprefb("showfps", false);
     public static boolean autohearth = Utils.getprefb("autohearth", false);
-    public static boolean showplayerpaths = Utils.getprefb("showplayerpaths", false);
-    public static boolean showgobpaths = Utils.getprefb("showgobpaths", true);
-    public static boolean showinvonlogin = Utils.getprefb("showinvonlogin", false);
     public static boolean runonlogin = Utils.getprefb("runonlogin", false);
-    public static Coord chatsz = Utils.getprefc("chatsz", new Coord(683, 111));
     public static boolean autostudy = Utils.getprefb("autostudy", false);
     public static boolean showdmgop = Utils.getprefb("showdmgop", true);
     public static boolean showothercombatinfo = Utils.getprefb("showothercombatinfo", true);
@@ -166,7 +154,6 @@ public class Config {
     public static boolean showcooldown = Utils.getprefb("showcooldown", false);
     public static boolean nodropping = Utils.getprefb("nodropping", false);
     public static boolean nodropping_all = Utils.getprefb("nodropping_all", false);
-    public static boolean fbelt = Utils.getprefb("fbelt", false);
     public static boolean histbelt = Utils.getprefb("histbelt", false);
     public static boolean dropMinedStones = Utils.getprefb("dropMinedStones", true);
     public static boolean dropMinedOre = Utils.getprefb("dropMinedOre", true);
@@ -188,12 +175,9 @@ public class Config {
     public static boolean playercircle =  Utils.getprefb("playercircle", false);
     public static boolean stranglevinecircle =  Utils.getprefb("stranglevinecircle", false);
     public static boolean doubleradius =  Utils.getprefb("doubleradius", false);
-    public static boolean noquests =  Utils.getprefb("noquests", false);
     public static boolean dungeonkeyalert =  Utils.getprefb("dungeonkeyalert", true);
     public static double sfxwhipvol = Utils.getprefd("sfxwhipvol", 0.9);
     public static boolean showarchvector =  Utils.getprefb("showarchvector", false);
-    public static boolean alertwounds =  Utils.getprefb("alertwounds", true);
-    //public static boolean showcddelta =  Utils.getprefb("showcddelta", false);
     public static boolean disabledrinkhotkey =  Utils.getprefb("disabledrinkhotkey", false);
     public static boolean disablegatekeybind =  Utils.getprefb("disablegatekeybind", false);
     public static boolean disablecartkeybind =  Utils.getprefb("disablecartkeybind", true);
@@ -204,8 +188,9 @@ public class Config {
     public static boolean autopickclay =  Utils.getprefb("autopickclay", true);
     public static boolean autopickbarnacles =  Utils.getprefb("autopickbarnacles", false);
     public static boolean autopickcattails =  Utils.getprefb("autopickcattails", false);
-    //public static boolean studydeskalerts =  Utils.getprefb("studydeskalerts", false);
+    public static boolean DivertPolityMessages =  Utils.getprefb("DivertPolityMessages", false);
     public static boolean confirmmagic =  Utils.getprefb("confirmmagic", true);
+    public static boolean confirmclose = Utils.getprefb("confirmclose",false);
     public static boolean disablemagaicmenugrid =  Utils.getprefb("disablemagaicmenugrid", false);
     public static boolean altfightui =  Utils.getprefb("altfightui", false);
     public static boolean forcefightfocus =  Utils.getprefb("forcefightfocus", false); //only forces focus if anything besides the chat box has focus
@@ -229,7 +214,6 @@ public class Config {
     public static boolean abandonrightclick = Utils.getprefb("abandonrightclick", false);
     public static boolean DropEntrails = Utils.getprefb("DropEntrails", false);
     public static boolean DropIntestines = Utils.getprefb("DropIntestines", false);
-    public static boolean DropCattails = Utils.getprefb("DropCattails", false);
     public static boolean StarveAlert = Utils.getprefb("StarveAlert", true);
     public static boolean stackwindows = Utils.getprefb("stackwindows", false);
     public static boolean autodrink = Utils.getprefb("autodrink", false);
@@ -268,47 +252,19 @@ public class Config {
     public static boolean hideTrees = Utils.getprefb("hideTrees", true);
     //hideboulders
     public static boolean hideboulders = Utils.getprefb("hideboulders", false);
-    public static boolean hideTarKilns = Utils.getprefb("hideTarKilns", true);
-    public static boolean hideSmelters = Utils.getprefb("hideSmelters", true);
-    public static boolean hidemoths = Utils.getprefb("hidemoths", false);
     public static boolean hideCrops = Utils.getprefb("hideCrops", true);
-    public static boolean hideWalls = Utils.getprefb("hideWalls", true);
-    public static boolean hideanimals = Utils.getprefb("hideanimals", false);
-    public static boolean hidehorses = Utils.getprefb("hidehorses", false);
-    public static boolean hideWagons = Utils.getprefb("hideWagons", false);
-    public static boolean hideHouses = Utils.getprefb("hideHouses", false);
     public static boolean hideBushes = Utils.getprefb("hideBushes", true);
-    public static boolean hideDFrames = Utils.getprefb("hideDFrames", false);
-    public static boolean hideDCatchers = Utils.getprefb("hideDCatchers", false);
     public static boolean showoverlay = Utils.getprefb("showoverlay", true);
     public static boolean disableAllAnimations = Utils.getprefb("disableAllAnimations", false);
     public static boolean hidecalendar = Utils.getprefb("hidecalendar", false);
-    public static int hidered = Utils.getprefi("hidered", 0);
-    public static int hidegreen = Utils.getprefi("hidegreen", 0);
-    public static int hideblue = Utils.getprefi("hideblue", 255);
-    public static int smatdangerred = Utils.getprefi("smatdangerred",255);
-    public static int smatdangergreen= Utils.getprefi("smatdangergreen",0);
-    public static int smatdangerblue = Utils.getprefi("smatdangerblue",0);
     public static int smatSupportsred = Utils.getprefi("smatSupportsred",0);
     public static int smatSupportsgreen= Utils.getprefi("smatSupportsgreen",255);
     public static int smatSupportsblue = Utils.getprefi("smatSupportsblue",0);
-    public static int cRackred = Utils.getprefi("cRackred",255);
-    public static int cRackgreen = Utils.getprefi("cRackgreen",0);
-    public static int cRackblue = Utils.getprefi("cRackblue",255);
     public static String confid = "ArdClient";
     public static final boolean isUpdate;
     private static String username, playername;
     public static boolean showPBot = Utils.getprefb("showPBot",true);
     public static boolean showPBotOld = Utils.getprefb("showPBotOld",true);
-    public static int AmbientRed = Utils.getprefi("AmbientRed",200);
-    public static int AmbientGreen = Utils.getprefi("AmbientGreen",200);
-    public static int AmbientBlue = Utils.getprefi("AmbientBlue",200);
-    public static int DiffuseRed = Utils.getprefi("DiffuseRed",200);
-    public static int DiffuseGreen = Utils.getprefi("DiffuseGreen",200);
-    public static int DiffuseBlue = Utils.getprefi("DiffuseBlue",200);
-    public static int SpecRed = Utils.getprefi("SpecRed",255);
-    public static int SpecGreen = Utils.getprefi("SpecGreen",255);
-    public static int SpecBlue = Utils.getprefi("SpecBlue",255);
     public static double alertsvol = Utils.getprefd("alertsvol", 0.8);
     public static boolean chatalarm = Utils.getprefb("chatalarm", true);
     public static double chatalarmvol = Utils.getprefd("chatalarmvol", 0.8);
@@ -320,42 +276,6 @@ public class Config {
     public static double alarmunknownvol = Utils.getprefd("alarmunknownvol", 0.32);
     public static String alarmredplayer = Utils.getpref("alarmredplayer", "sfx/Siren");
     public static double alarmredvol = Utils.getprefd("alarmredvol", 0.32);
-    public static String alarmforagable = Utils.getpref("alarmforagable", "sfx/awwyeah");
-    public static double alarmonforagablesvol = Utils.getprefd("alarmonforagablesvol", 0.8D);
-    public static String alarmbear = Utils.getpref("alarmbear", "sfx/BearRoar");
-    public static double alarmbearsvol = Utils.getprefd("alarmbearsvol", 0.7D);
-    public static String alarmlynx = Utils.getpref("alarmlynx", "sfx/lynx");
-    public static double alarmlynxvol = Utils.getprefd("alarmlynxvol", 0.32);
-    public static String alarmadder = Utils.getpref("alarmadder", "sfx/DangerNoodle");
-    public static double alarmaddervol = Utils.getprefd("alarmaddervol", 0.32);
-    public static String alarmwalrus = Utils.getpref("alarmwalrus", "sfx/Walrus");
-    public static double alarmwalrusvol = Utils.getprefd("alarmwalrusvol", 0.32);
-    public static String alarmseal = Utils.getpref("alarmseal", "sfx/seal");
-    public static double alarmsealvol = Utils.getprefd("alarmsealvol", 0.32);
-    public static String alarmtroll = Utils.getpref("alarmtroll", "sfx/troll");
-    public static double alarmtrollvol = Utils.getprefd("alarmtrollvol", 0.8D);
-    public static String alarmmammoth = Utils.getpref("alarmmammoth", "sfx/mammoth");
-    public static double alarmmammothvol = Utils.getprefd("alarmmammothvol", 0.32);
-    public static String alarmeagle = Utils.getpref("alarmeagle", "sfx/EagleScreech");
-    public static double alarmeaglevol = Utils.getprefd("alarmeaglevol", 0.32);
-    public static String alarmhorse = Utils.getpref("alarmhorse", "None");
-    public static double alarmhorsevol = Utils.getprefd("alarmhorsevol", 0.32);
-    public static String alarmmoose = Utils.getpref("alarmmoose", "None");
-    public static double alarmmoosevol = Utils.getprefd("alarmmoosevol", 0.32);
-    public static String alarmdoomed = Utils.getpref("alarmdoomed", "sfx/Doomed");
-    public static String alarmwball = Utils.getpref("alarmwball", "sfx/WreckingBall");
-    public static double alarmwballvol = Utils.getprefd("alarmwballvol", 1.0D);
-    public static String alarmswag = Utils.getpref("alarmswag", "sfx/Swag");
-    public static double alarmlocresvol = Utils.getprefd("alarmlocresvol", 0.8D);
-    public static String alarmeyeball = Utils.getpref("alarmeyeball", "sfx/OhShitItsAGuy");
-    public static double alarmeyeballvol = Utils.getprefd("alarmeyeballvol", 1.0D);
-    public static String alarmnidbane = Utils.getpref("alarmnidbane", "sfx/GhostBusters");
-    public static double alarmnidbanevol = Utils.getprefd("alarmnidbanevol", 1.0);
-    public static String alarmdungeon = Utils.getpref("alarmdungeon", "sfx/Zelda");
-    public static double alarmdungeonvol = Utils.getprefd("alarmdungeonvol", 1.0D);
-    public static String alarmbeaverdungeon = Utils.getpref("alarmbeaverdungeon", "sfx/BeaverDungeon");
-    public static String alarmsiege = Utils.getpref("alarmsiege", "sfx/siege");
-    public static double alarmbramvol = Utils.getprefd("alarmbramvol", 1.0D);
     public static String alarmstudy = Utils.getpref("alarmstudy","sfx/Study");
     public static double studyalarmvol = Utils.getprefd("studyalarmvol", 0.8);
     public static String cleavesfx = Utils.getpref("cleavesfx","sfx/oof");
@@ -390,7 +310,7 @@ public class Config {
         put("gabbro", new CheckListboxItem("Gabbro"));
     }};
 
-    public final static HashMap<String, CheckListboxItem> bushes = new HashMap<String, CheckListboxItem>(23) {{
+    public final static HashMap<String, CheckListboxItem> bushes = new HashMap<String, CheckListboxItem>(24) {{
         put("arrowwood", new CheckListboxItem("Arrowwood"));
         put("crampbark", new CheckListboxItem("Crampbark"));
         put("sandthorn", new CheckListboxItem("Sandthorn"));
@@ -414,6 +334,7 @@ public class Config {
         put("caprifole", new CheckListboxItem("Caprifole"));
         put("redcurrant", new CheckListboxItem("Redcurrant"));
         put("gorse", new CheckListboxItem("Gorse"));
+        put("witherstand", new CheckListboxItem("Witherstand"));
     }};
 
     public final static HashMap<String, CheckListboxItem> trees = new HashMap<String, CheckListboxItem>(57) {{
@@ -549,7 +470,7 @@ public class Config {
         put("mare", new CheckListboxItem("Tamed Mares"));
     }};
 
-    public final static HashMap<String, CheckListboxItem> flowermenus = new HashMap<String, CheckListboxItem>(36) {{
+    public final static HashMap<String, CheckListboxItem> flowermenus = new HashMap<String, CheckListboxItem>(37) {{
         put("Pick", new CheckListboxItem("Pick", Resource.BUNDLE_FLOWER));
         put("Drink", new CheckListboxItem("Drink", Resource.BUNDLE_FLOWER));
         put("Harvest", new CheckListboxItem("Harvest", Resource.BUNDLE_FLOWER));
@@ -586,6 +507,7 @@ public class Config {
         put("Pick leaf", new CheckListboxItem("Pick Leaf",Resource.BUNDLE_FLOWER));
         put("Ride", new CheckListboxItem("Ride",Resource.BUNDLE_FLOWER));
         put("Scale", new CheckListboxItem("Scale",Resource.BUNDLE_FLOWER));
+        put("Pick mushrooms", new CheckListboxItem("Pick mushrooms",Resource.BUNDLE_FLOWER));
     }};
 
     public final static HashMap<String, CheckListboxItem> autowindows = new HashMap<String, CheckListboxItem>(10) {{

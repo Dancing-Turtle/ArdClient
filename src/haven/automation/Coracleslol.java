@@ -62,7 +62,16 @@ public class Coracleslol implements Runnable {
                     }
             } else {
                 Tiler tl = gui.ui.sess.glob.map.tiler(gui.ui.sess.glob.map.gettile_safe(gui.map.player().rc.floor(MCache.tilesz)));
-                if (tl instanceof WaterTile) {
+                int timeout = 0;
+                while(tl!= null && !(tl instanceof WaterTile)) {
+                        tl = gui.ui.sess.glob.map.tiler(gui.ui.sess.glob.map.gettile_safe(gui.map.player().rc.floor(MCache.tilesz)));
+                        timeout++;
+                        if (timeout > 250) {
+                            PBotUtils.sysMsg("Timed out waiting for water tile to drop coracle on.", Color.white);
+                            return;
+                        }
+                        PBotUtils.sleep(10);
+                }
                     coracle.item.wdgmsg("drop", Coord.z);
                     //  PBotAPI.gui.map.wdgmsg("gk", 27); //sends escape key to mapview to stop movement so you dont walk away from the coracle
                     PBotAPI.gui.ui.root.wdgmsg("gk", 27);
@@ -88,9 +97,6 @@ public class Coracleslol implements Runnable {
                         PBotAPI.gui.ui.wdgmsg(PBotAPI.gui.ui.next_predicted_id, "cl", 0, 0);
                         // while (gui.ui.root.findchild(FlowerMenu.class) == null) { }
                     }
-                }else{
-                    PBotUtils.sysMsg("Not over water, not dropping coracle.",Color.white);
-                }
                 }
             }catch (Exception e) {
             PBotUtils.sysMsg("Prevented crash, something went wrong dropping and mounting coracle.", Color.white);

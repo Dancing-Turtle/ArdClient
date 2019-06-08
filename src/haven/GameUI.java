@@ -340,6 +340,30 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         }
     }
 
+    public void toggleMenuSettings(){
+        if(!opts.visible) {
+            opts.show();
+            opts.raise();
+            fitwdg(opts);
+            setfocus(opts);
+            opts.chpanel(opts.flowermenus);
+        }else{
+            opts.show(false);
+        }
+    }
+
+    public void toggleMapSettings(){
+        if(!opts.visible) {
+            opts.show();
+            opts.raise();
+            fitwdg(opts);
+            setfocus(opts);
+            opts.chpanel(opts.map);
+        }else{
+            opts.show(false);
+        }
+    }
+
     public void toggleGridLines(){
         if (map != null)
             map.togglegrid();
@@ -1029,8 +1053,8 @@ public class GameUI extends ConsoleHost implements Console.Directory {
                 PBotUtils.doAct("swim");
             }
         }
-        if(Config.autodrink && (DrinkThread == null || !DrinkThread.isAlive()) && stam.a < Config.autodrinkthreshold) {
-            if(System.currentTimeMillis() - DrinkTimer >= 3000) {
+        if(!drinkingWater && Config.autodrink && (DrinkThread == null || !DrinkThread.isAlive()) && stam.a < Config.autodrinkthreshold) {
+            if(System.currentTimeMillis() - DrinkTimer >= Config.autodrinktime * 1000) {
                 DrinkTimer = System.currentTimeMillis();
                 new Thread(new DrinkWater(this)).start();
             }
@@ -1138,9 +1162,15 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             String cur = polowners.get(id);
             if(map != null) {
                 if((o != null) && (cur == null)) {
-                    map.setpoltext(id, "Entering " + o);
+                    if(Config.DivertPolityMessages)
+                        PBotUtils.sysMsg("Entering "+ o,Color.GREEN);
+                    else
+                        map.setpoltext(id, "Entering " + o);
                 } else if((o == null) && (cur != null)) {
-                    map.setpoltext(id, "Leaving " + cur);
+                    if(Config.DivertPolityMessages)
+                        PBotUtils.sysMsg("Leaving "+ cur,Color.GREEN);
+                    else
+                        map.setpoltext(id, "Leaving " + cur);
                 }
             }
             polowners.put(id, o);
@@ -1594,74 +1624,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         if(Config.alarmredplayer.toLowerCase().equals("true") || Config.alarmredplayer.toLowerCase().equals("false")) {
             Utils.setpref("alarmredplayer", "sfx/Siren");
             Config.alarmredplayer = "sfx/Siren";
-        }
-        if(Config.alarmforagable.toLowerCase().equals("true") || Config.alarmforagable.toLowerCase().equals("false")) {
-            Utils.setpref("alarmforagable", "sfx/awwyeah");
-            Config.alarmforagable ="sfx/awwyeah";
-        }
-        if(Config.alarmbear.toLowerCase().equals("true") || Config.alarmbear.toLowerCase().equals("false")) {
-            Utils.setpref("alarmbear", "sfx/BearRoar");
-            Config.alarmbear = "sfx/BearRoar";
-        }
-        if(Config.alarmlynx.toLowerCase().equals("true") || Config.alarmlynx.toLowerCase().equals("false")) {
-            Utils.setpref("alarmlynx", "sfx/lynx");
-            Config.alarmlynx = "sfx/lynx";
-        }
-        if(Config.alarmadder.toLowerCase().equals("true") || Config.alarmadder.toLowerCase().equals("false")) {
-            Utils.setpref("alarmadder", "sfx/DangerNoodle");
-            Config.alarmadder  ="sfx/DangerNoodle";
-        }
-        if(Config.alarmwalrus.toLowerCase().equals("true") || Config.alarmwalrus.toLowerCase().equals("false")) {
-            Utils.setpref("alarmwalrus", "sfx/Walrus");
-            Config.alarmwalrus = "sfx/Walrus";
-        }
-        if(Config.alarmseal.toLowerCase().equals("true") || Config.alarmseal.toLowerCase().equals("false")) {
-            Utils.setpref("alarmseal", "sfx/seal");
-            Config.alarmseal  ="sfx/seal";
-        }
-        if(Config.alarmtroll.toLowerCase().equals("true") || Config.alarmtroll.toLowerCase().equals("false")) {
-            Utils.setpref("alarmtroll", "sfx/troll");
-            Config.alarmtroll = "sfx/troll";
-        }
-        if(Config.alarmmammoth.toLowerCase().equals("true") || Config.alarmmammoth.toLowerCase().equals("false")) {
-            Utils.setpref("alarmmammoth", "sfx/mammoth");
-            Config.alarmmammoth = "sfx/mammoth";
-        }
-        if(Config.alarmeagle.toLowerCase().equals("true") || Config.alarmeagle.toLowerCase().equals("false")) {
-            Utils.setpref("alarmeagle", "sfx/EagleScreech");
-            Config.alarmeagle = "sfx/EagleScreech";
-        }
-        if(Config.alarmdoomed.toLowerCase().equals("true") || Config.alarmdoomed.toLowerCase().equals("false")) {
-            Utils.setpref("alarmdoomed", "sfx/Doomed");
-            Config.alarmdoomed = "sfx/Doomed";
-        }
-        if(Config.alarmwball.toLowerCase().equals("true") || Config.alarmwball.toLowerCase().equals("false")) {
-            Utils.setpref("alarmwball", "sfx/WreckingBall");
-            Config.alarmwball  ="sfx/WreckingBall";
-        }
-        if(Config.alarmswag.toLowerCase().equals("true") || Config.alarmswag.toLowerCase().equals("false")) {
-            Utils.setpref("alarmswag", "sfx/Swag");
-            Config.alarmswag = "sfx/Swag";
-        }
-        if(Config.alarmeyeball.toLowerCase().equals("true") || Config.alarmeyeball.toLowerCase().equals("false")) {
-            Utils.setpref("alarmeyeball", "sfx/OhShitItsAGuy");
-            Config.alarmeyeball = "sfx/OhShitItsAGuy";
-        }
-        if(Config.alarmnidbane.toLowerCase().equals("true") || Config.alarmnidbane.toLowerCase().equals("false")) {
-            Utils.setpref("alarmnidbane", "sfx/GhostBusters");
-            Config.alarmnidbane = "sfx/GhostBusters";
-        }
-        if(Config.alarmdungeon.toLowerCase().equals("true") || Config.alarmdungeon.toLowerCase().equals("false")) {
-            Utils.setpref("alarmdungeon", "sfx/Zelda");
-            Config.alarmdungeon = "sfx/Zelda";
-        }
-        if(Config.alarmbeaverdungeon.toLowerCase().equals("true") || Config.alarmbeaverdungeon.toLowerCase().equals("false")) {
-            Utils.setpref("alarmbeaverdungeon", "sfx/BeaverDungeon");
-            Config.alarmbeaverdungeon = "sfx/BeaverDungeon";
-        }
-        if(Config.alarmsiege.toLowerCase().equals("true") || Config.alarmsiege.toLowerCase().equals("false")) {
-            Utils.setpref("alarmsiege", "sfx/siege");
-            Config.alarmsiege = "sfx/siege";
         }
         if(Config.alarmstudy.toLowerCase().equals("true") || Config.alarmstudy.toLowerCase().equals("false")) {
             Utils.setpref("alarmstudy", "sfx/Study");
