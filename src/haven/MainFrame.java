@@ -226,6 +226,9 @@ public class MainFrame extends java.awt.Frame implements Runnable, Console.Direc
         p.init();
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
+                GameUI gui = PBotAPI.gui;
+                if(gui == null || gui.ui == null || gui.ui.sess == null || !gui.ui.sess.alive())
+                    g.interrupt();
                 if (Config.confirmclose) {
                     Window confirmwnd = new Window(Coord.z, "Confirm","Confirm") {
                         @Override
@@ -268,9 +271,6 @@ public class MainFrame extends java.awt.Frame implements Runnable, Console.Direc
                     confirmwnd.add(nobtn, new Coord(confirmwnd.sz.x / 2 + 20, 60));
                     confirmwnd.pack();
 
-                   // confirmwnd.pack();
-
-                    GameUI gui = PBotAPI.gui;
                     if(gui != null) {
                         gui.add(confirmwnd, new Coord(gui.sz.x / 2 - confirmwnd.sz.x / 2, gui.sz.y / 2 - 200));
                         confirmwnd.show();

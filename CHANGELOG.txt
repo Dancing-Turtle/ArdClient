@@ -1,6 +1,13 @@
+1.00.165
+Small fix for game exit confirmation window not working if you logged out first before trying to close.
+Fixed a miner alert change where I wasn't synchronizing with ocache causing write conflicts.
+Set a max of 50 marked tiles on miner alert to cut down on lag in big areas. Might make this variable in the future.
+Also changed the low mine support alerts over to orange so they don't ding, should still be obvious since they now highlight the low support.
+~
+
 1.00.164
 Fixed skill buy button not resetting the cost to buy.
-Changed some miner alert logic, the warning sound will only play now if you're in the process of mining when it alert goes off. Also will now mark the mine support that's low.
+Changed some miner alert logic, the warning sound will only play now if you're in the process of mining when the alert goes off. Also will now mark the mine support that's low.
 ~
 
 1.00.163

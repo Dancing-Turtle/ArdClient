@@ -31,7 +31,7 @@ public class MinerAlert extends Window {
     private static final int HAND_DELAY = 8;
     private Thread runner;
     public Boolean terminate = false;
-    public static int delay = 5000;
+    public static int delay = 5000, maxmarks = 50;
     public Gob gob;
     private Button runbtn, stopbtn, mutebtn;
     private final Label labelcountiron, labelcountgold, labelcountcinnabar, labelcountsilver, labelcounttin, labelcountcopper, labelcountmagnetite, labelcounthematite,labelcountslimes,labelcountslimestotal;
@@ -191,7 +191,7 @@ public class MinerAlert extends Window {
                 try {
                     if(PBotAPI.gui == null || PBotAPI.gui.ui == null)
                         break;
-
+                    maxmarks = 50;
                     countiron = 0;
                     countgold = 0;
                     countsilver = 0;
@@ -223,19 +223,23 @@ public class MinerAlert extends Window {
                             double distFromPlayer = support.rc.dist(PBotUtils.player().rc);
                             if (distFromPlayer <= 13 * 11) {    //support is less than or equal to 13 tiles from current player position, check it's HP
                                 if(support.getattr(GobHealth.class) != null && support.getattr(GobHealth.class).hp <= 2 && SupportAlertHalf){
-                                    PBotUtils.sysMsg("Detected mine support at 50% or less HP",Color.white);
-                                    support.addol(new Mark(4000));
-                                    support.delattr(GobHighlight.class);
-                                    support.setattr(new GobHighlight(support));
+                                    PBotUtils.sysMsg("Detected mine support at 50% or less HP",Color.ORANGE);
+                                    synchronized (gui.map.glob.oc) {
+                                        support.addol(new Mark(4000));
+                                        support.delattr(GobHighlight.class);
+                                        support.setattr(new GobHighlight(support));
+                                    }
                                     if(PBotGobAPI.player().getPoses().contains("gfx/borka/choppan") || PBotGobAPI.player().getPoses().contains("gfx/borka/pickan")) {
                                         PBotAPI.gui.ui.root.wdgmsg("gk", 27);
                                         Audio.play(supportalertsfx);
                                     }
                                 }else if(support.getattr(GobHealth.class) != null && support.getattr(GobHealth.class).hp <= 1 && SupportAlertQuarter){
-                                    PBotUtils.sysMsg("Detected mine support at 25% or less HP less than 13 tiles away",Color.white);
-                                    support.addol(new Mark(4000));
-                                    support.delattr(GobHighlight.class);
-                                    support.setattr(new GobHighlight(support));
+                                    PBotUtils.sysMsg("Detected mine support at 25% or less HP less than 13 tiles away",Color.RED);
+                                    synchronized (gui.map.glob.oc) {
+                                        support.addol(new Mark(4000));
+                                        support.delattr(GobHighlight.class);
+                                        support.setattr(new GobHighlight(support));
+                                    }
                                     if(PBotGobAPI.player().getPoses().contains("gfx/borka/choppan") || PBotGobAPI.player().getPoses().contains("gfx/borka/pickan")) {
                                         PBotAPI.gui.ui.root.wdgmsg("gk", 27);
                                         Audio.play(supportalertsfx);
@@ -254,7 +258,7 @@ public class MinerAlert extends Window {
                                 continue;
                             String name = res.name;
 
-                            if(MarkTileArrows && reslist.contains(name)){
+                            if(MarkTileArrows && reslist.contains(name) && maxmarks != 0){
                                 final Coord2d mc = player.rc.sub(new Coord2d((x-1) * 11,(y-1) * 11)); //no clue why i have to subtract 1 tile here to get it to line up.
                                 final Coord tc = mc.floor(MCache.tilesz);
                                 final Coord2d tcd = mc.div(MCache.tilesz);
@@ -264,6 +268,7 @@ public class MinerAlert extends Window {
                                     ui.sess.glob.map.getgrido(grid.id).ifPresent(grid2 -> {
                                         final Coord2d mc2 = new Coord2d(grid2.ul).add(offset.x, offset.y).mul(MCache.tilesz);
                                         synchronized (ui.sess.glob.oc) {
+                                            maxmarks--;
                                             final Gob g2 = ui.sess.glob.oc.new ModdedGob(mc2, 0);
                                             g2.addol(new Mark(4000));
                                             g2.addol(new GobCustomSprite(res.basename().substring(0,1).toUpperCase() + res.basename().substring(1)+" "+smeltchance.get(res.basename()),4000));
