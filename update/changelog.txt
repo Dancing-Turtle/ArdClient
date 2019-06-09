@@ -1,3 +1,19 @@
+1.00.164
+Fixed skill buy button not resetting the cost to buy.
+Changed some miner alert logic, the warning sound will only play now if you're in the process of mining when it alert goes off. Also will now mark the mine support that's low.
+~
+
+1.00.163
+Small change to coracle script, you can now "Queue" coracle script up to 3 seconds before entering the water and it will drop the coracle as soon as possible. (Still latency depdendent) 
+Added toggle to general settings, on by default, to autosort the kin list by status whenever a kin goes online/offline.
+Added "pick mushrooms" to auto flowermenu options.
+Added witherstand bushes to bush category. 
+Added dropdown to general settings to select the frequency at which auto-drink will check stamina.
+Added option to general settings to add a "close game" confirmation when logged in. Off by default, fringe option someone asked for. 
+Added two new keybinds, CTRL F and SHIFT M that will open directly to flowermenu autoselection options and map options. Feel free to rebind them.
+Added toggle to video settings to divert the large "Entering/Leaving" messages into the system log instead. I'm told this is an FPS increase, so, video settings it is. Off by default. 
+~
+
 1.00.162
 Added danger radius to rats.
 Added bluebells to the disable animations list, will work for bluebells in pots as well.

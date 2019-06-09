@@ -2207,6 +2207,8 @@ public class CharWnd extends Window {
                         }
                     }
                     CharWnd.this.wdgmsg("sattr", args.toArray(new Object[0]));
+                    for (SAttr attr : skill)
+                        attr.reset();
                 }
             }, new Coord(rx - 75, y + 70));
             sattr.add(new Button(75, "Reset") {
