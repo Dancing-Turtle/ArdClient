@@ -134,6 +134,34 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public CraftDBWnd craftwnd = null;
     public long inspectedgobid = 0;//used for attaching inspected qualities to gobs.
 
+    private static final OwnerContext.ClassResolver<BeltSlot> beltctxr = new OwnerContext.ClassResolver<BeltSlot>()
+            .add(Glob.class, slot -> slot.wdg().ui.sess.glob)
+            .add(Session.class, slot -> slot.wdg().ui.sess);
+    public class BeltSlot implements GSprite.Owner {
+        public final int idx;
+        public final Indir<Resource> res;
+        public final Message sdt;
+
+        public BeltSlot(int idx, Indir<Resource> res, Message sdt) {
+            this.idx = idx;
+            this.res = res;
+            this.sdt = sdt;
+        }
+
+        private GSprite spr = null;
+        public GSprite spr() {
+            GSprite ret = this.spr;
+            if(ret == null)
+                ret = this.spr = GSprite.create(this, res.get(), Message.nil);
+            return(ret);
+        }
+
+        public Resource getres() {return(res.get());}
+        public Random mkrandoom() {return(new Random(System.identityHashCode(this)));}
+        public <T> T context(Class<T> cl) {return(beltctxr.context(cl, this));}
+        private GameUI wdg() {return(GameUI.this);}
+    }
+
     @RName("gameui")
     public static class $_ implements Factory {
         public Widget create(UI ui, Object[] args) {
