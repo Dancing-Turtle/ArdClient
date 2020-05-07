@@ -35,15 +35,15 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Fightview extends Widget {
-    static Tex bg = Theme.tex("bosq");
-    static int height = 5;
-    static int ymarg = 5;
-    static int width = 165;
+    public static Tex bg = Theme.tex("bosq");
+    public static int height = 5;
+    public static int ymarg = 5;
+    public static int width = 165;
     static int oldblue, lastactopening, unarmed;
     private int damage = 0;
-    static Coord avasz = new Coord(27, 27);
-    static Coord cavac = new Coord(width - Avaview.dasz.x - 10, 10);
-    static Coord cgivec = new Coord(cavac.x - 35, cavac.y);
+    public static Coord avasz = new Coord(27, 27);
+    public static Coord cavac = new Coord(width - Avaview.dasz.x - 10, 10);
+    public static Coord cgivec = new Coord(cavac.x - 35, cavac.y);
     static Coord cpursc = new Coord(cavac.x - 75, cgivec.y + 35);
     public LinkedList<Relation> lsrel = new LinkedList<Relation>();
     public Relation current = null;
