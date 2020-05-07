@@ -152,16 +152,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         this.genus = genus;
         setcanfocus(true);
         setfocusctl(true);
-        ulpanel = add(new Hidepanel("gui-ul", null, new Coord(-1, -1)));
-        umpanel = add(new Hidepanel("gui-um", null, new Coord(0, -1)) {
-            @Override
-            public Coord base() {
-                if (base != null)
-                    return base.get();
-                return new Coord(parent.sz.x / 2 - this.sz.x / 2, 0);
-            }
-        });
-        urpanel = add(new Hidepanel("gui-ur", null, new Coord(1, -1)));
         brpanel = add(new Hidepanel("gui-br", null, new Coord(1, 1)) {
             public void move(double a) {
                 super.move(a);
@@ -173,7 +163,16 @@ public class GameUI extends ConsoleHost implements Console.Directory {
                 return (new Coord(GameUI.this.sz.x, Math.min(brpanel.c.y - 79, GameUI.this.sz.y - menupanel.sz.y)));
             }
         }, new Coord(1, 0)));
-
+        ulpanel = add(new Hidepanel("gui-ul", null, new Coord(-1, -1)));
+        umpanel = add(new Hidepanel("gui-um", null, new Coord(0, -1)) {
+            @Override
+            public Coord base() {
+                if (base != null)
+                    return base.get();
+                return new Coord(parent.sz.x / 2 - this.sz.x / 2, 0);
+            }
+        });
+        urpanel = add(new Hidepanel("gui-ur", null, new Coord(1, -1)));
         brpanel.add(new Img(Resource.loadtex("gfx/hud/brframe")), 0, 0);
         menupanel.add(new MainMenu(), 0, 0);
         portrait = ulpanel.add(new Avaview(Avaview.dasz, plid, "avacam") {
