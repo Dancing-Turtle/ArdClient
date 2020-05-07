@@ -220,7 +220,6 @@ public class Config {
     public static int autodrinkthreshold = Utils.getprefi("autodrinkthreshold", 80);
     public static boolean DropMeat = Utils.getprefb("DropMeat", false);
     public static boolean DropBones = Utils.getprefb("DropBones", false);
-    public static boolean bonsai = Utils.getprefb("bonsai", false);
     public static int fontsizechat = Utils.getprefi("fontsizechat", 14);
     public static int curiotimetarget = Utils.getprefi("curiotimetarget", 1440);
     public static int statgainsize = Utils.getprefi("statgainsize", 1);
