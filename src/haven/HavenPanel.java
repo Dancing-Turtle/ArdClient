@@ -54,6 +54,7 @@ public class HavenPanel extends GLCanvas implements Runnable, Console.Directory 
     boolean inited = false;
     public static int w, h;
     public boolean bgmode = false;
+    boolean iswap = true, aswap;
     public static long bgfd = Utils.getprefi("bghz", 200);
     public static long fd = Utils.getprefi("hz", 10);
     long fps = 0;
@@ -168,7 +169,7 @@ public class HavenPanel extends GLCanvas implements Runnable, Console.Directory 
                             BGL gl = g.gl;
                             gl.glColor3f(1, 1, 1);
                             gl.glPointSize(4);
-                            gl.joglSetSwapInterval(1);
+                            gl.joglSetSwapInterval((aswap = iswap) ? 1 : 0);
                             gl.glEnable(GL.GL_BLEND);
                             //gl.glEnable(GL.GL_LINE_SMOOTH);
                             gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
@@ -495,6 +496,8 @@ public class HavenPanel extends GLCanvas implements Runnable, Console.Directory 
             DefSettings.checkForDirty();
             f.doneat = System.currentTimeMillis();
         }
+        if(iswap != aswap)
+            gl.setSwapInterval((aswap = iswap) ? 1 : 0);
     }
 
     void dispatch() {
@@ -693,6 +696,9 @@ public class HavenPanel extends GLCanvas implements Runnable, Console.Directory 
                 bgfd = 1000 / Integer.parseInt(args[1]);
                 Utils.setprefi("bghz", (int) bgfd);
             }
+        });
+        cmdmap.put("vsync", (cons, args) -> {
+            iswap = Utils.parsebool(args[1]);
         });
     }
 
