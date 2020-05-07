@@ -11,7 +11,7 @@ public class CharacterInfo {
     public static class Constipation {
 	public final List<Data> els = new ArrayList<Data>();
 
-	public void update(Indir<Resource> t, double a) {
+	public void update(ResData t, double a) {
 	    prev:
 	    {
 		for (Iterator<Data> i = els.iterator(); i.hasNext(); ) {
@@ -35,10 +35,10 @@ public class CharacterInfo {
 
 	public static class Data {
 	    private final Map<Class, BufferedImage> renders = new HashMap<>();
-	    public final Indir<Resource> res;
+	    public final ResData res;
 	    public double value;
 
-	    public Data(Indir<Resource> res, double value) {
+	    public Data(ResData res, double value) {
 		this.res = res;
 		this.value = value;
 	    }
