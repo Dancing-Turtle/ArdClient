@@ -550,6 +550,25 @@ public class Fightsess extends Widget {
     private int last_button = -1;
     private long last_sent = System.currentTimeMillis();
 
+    /* XXX: This is a bit ugly, but release message do need to be
+     * properly sequenced with use messages in some way. */
+    private class Release implements MapView.Delayed, BGL.Request {
+        final int n;
+
+        Release(int n) {this.n = n;}
+
+        public void run(GOut g) {
+            g.gl.bglSubmit(this);
+        }
+
+        public void run(javax.media.opengl.GL2 gl) {
+            wdgmsg("rel", n);
+        }
+    }
+
+    private UI.Grab holdgrab = null;
+    private int held = -1;
+
     public boolean globtype(char key, KeyEvent ev) {
         int n = -1;
         if (Config.combatkeys == 0) {
@@ -661,4 +680,6 @@ public class Fightsess extends Widget {
         else
         return(super.globtype(key, ev));
     }
+
+
 }
