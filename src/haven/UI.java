@@ -559,6 +559,8 @@ public class UI {
 
     public Resource getcurs(Coord c) {
         for(Grab g : mousegrab) {
+            if (g.wdg == null)
+                continue;
             Resource ret = g.wdg.getcurs(wdgxlate(c, g.wdg));
             if(ret != null)
                 return(ret);
