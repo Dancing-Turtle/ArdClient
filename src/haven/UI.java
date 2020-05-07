@@ -557,6 +557,15 @@ public class UI {
         root.mousewheel(c, amount);
     }
 
+    public Resource getcurs(Coord c) {
+        for(Grab g : mousegrab) {
+            Resource ret = g.wdg.getcurs(wdgxlate(c, g.wdg));
+            if(ret != null)
+                return(ret);
+        }
+        return(root.getcurs(c));
+    }
+
     public static int modflags(InputEvent ev) {
         int mod = ev.getModifiersEx();
         return((((mod & InputEvent.SHIFT_DOWN_MASK) != 0) ? MOD_SHIFT : 0) |
