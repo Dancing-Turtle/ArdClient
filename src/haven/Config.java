@@ -47,6 +47,7 @@ public class Config {
     public static String defserv = null;
     public static URL resurl = null;
     public static boolean dbtext = false;
+    public static boolean bonsai = Utils.getprefb("bonsai", false);
     public static boolean profile = false;
     public static boolean profilegpu = false;
     public static boolean nopreload = false;
