@@ -553,7 +553,7 @@ public class Fightsess extends Widget {
     public boolean globtype(char key, KeyEvent ev) {
         int n = -1;
         if (Config.combatkeys == 0) {
-            if ((key == 0) && (ev.getModifiersEx() & (InputEvent.CTRL_DOWN_MASK | KeyEvent.META_DOWN_MASK | KeyEvent.ALT_DOWN_MASK)) == 0) {
+            if((ev.getModifiersEx() & (InputEvent.CTRL_DOWN_MASK | KeyEvent.META_DOWN_MASK | KeyEvent.ALT_DOWN_MASK)) == 0) {
 
                 switch (ev.getKeyCode()) {
                     case KeyEvent.VK_1:
