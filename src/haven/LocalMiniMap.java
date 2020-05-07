@@ -576,6 +576,7 @@ public class LocalMiniMap extends Widget {
         }
         if(MinimapWnd.biometex!=null)
             g.image(MinimapWnd.biometex, Coord.z);
+        //Improve minimap player markers slightly commit skip
     }
 
     public void center() {
