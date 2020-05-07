@@ -144,7 +144,9 @@ public class ISlots extends Tip implements NumberInfo {
             int var6 = var1.cmp.sz.y;
             var1.cmp.add(var2, new Coord(var5, var6));
             var1.cmp.add(var3, new Coord(var5 + 16 + 3, var6 + (16 - var3.getHeight()) / 2));
-            var1.cmp.add(var4, new Coord(var5 + 16, var6 + 16));
+            if (var4 != null) {
+                var1.cmp.add(var4, new Coord(var5 + 16, var6 + 16));
+            }
         }
     }
 }
