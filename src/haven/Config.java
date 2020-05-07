@@ -27,6 +27,7 @@
 package haven;
 
 import haven.error.ErrorHandler;
+import haven.purus.Iconfinder;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -38,6 +39,7 @@ import java.util.*;
 import static haven.Utils.getprop;
 
 public class Config {
+    public static String revVersion = "1.0";
     public static final File HOMEDIR = new File("").getAbsoluteFile();
     public static boolean dumpcode = getprop("haven.dumpcode", "off").equals("on");
     public static final boolean iswindows = System.getProperty("os.name").startsWith("Windows");
@@ -45,11 +47,8 @@ public class Config {
     public static String authuser = null;
     public static String authserv = null;
     public static String defserv = null;
-    public static String resdir = getprop("haven.resdir", System.getenv("HAFEN_RESDIR"));
     public static URL resurl = null;
     public static boolean dbtext = false;
-    public static boolean bonsai = Utils.getprefb("bonsai", false);
-    public static boolean lockedmainmenu = Utils.getprefb("lockedmainmenu", true);
     public static boolean profile = false;
     public static boolean profilegpu = false;
     public static boolean nopreload = false;
@@ -168,6 +167,7 @@ public class Config {
     public static boolean showdframestatus = Utils.getprefb("showdframestatus", true);
     public static boolean showcoopstatus = Utils.getprefb("showcoopstatus", true);
     public static boolean hideallicons = Utils.getprefb("hideallicons", false);
+    public static boolean stopmapupdate = Utils.getprefb("stopmapupdate", false);
     public static boolean showhutchstatus = Utils.getprefb("showhutchstatus", true);
     public static boolean showrackstatus = Utils.getprefb("showrackstatus", true);
     public static boolean showcupboardstatus = Utils.getprefb("showcupboardstatus", true);
@@ -223,6 +223,7 @@ public class Config {
     public static int autodrinkthreshold = Utils.getprefi("autodrinkthreshold", 80);
     public static boolean DropMeat = Utils.getprefb("DropMeat", false);
     public static boolean DropBones = Utils.getprefb("DropBones", false);
+    public static boolean bonsai = Utils.getprefb("bonsai", false);
     public static int fontsizechat = Utils.getprefi("fontsizechat", 14);
     public static int curiotimetarget = Utils.getprefi("curiotimetarget", 1440);
     public static int statgainsize = Utils.getprefi("statgainsize", 1);
@@ -236,6 +237,7 @@ public class Config {
     public static boolean proximityaggro = Utils.getprefb("proximityaggro", false);
     public static boolean proximityaggropvp = Utils.getprefb("proximityaggropvp", false);
     public static boolean disablemenugrid = Utils.getprefb("disablemenugrid", false);
+    public static boolean lockedmainmenu = Utils.getprefb("lockedmainmenu", true);
     public static boolean splitskills = Utils.getprefb("splitskills", true);
     public static boolean pf = false;
     public static String playerposfile;
@@ -263,7 +265,7 @@ public class Config {
     public static int smatSupportsgreen= Utils.getprefi("smatSupportsgreen",255);
     public static int smatSupportsblue = Utils.getprefi("smatSupportsblue",0);
     public static String confid = "ArdClient";
-    public static final boolean isUpdate;
+    // public static final boolean isUpdate;
     private static String username, playername;
     public static boolean showPBot = Utils.getprefb("showPBot",true);
     public static boolean showPBotOld = Utils.getprefb("showPBotOld",true);
@@ -399,7 +401,8 @@ public class Config {
         put("gnomeshat", new CheckListboxItem("Gnomes Hat"));
     }};
 
-    public final static HashMap<String, CheckListboxItem> icons = new HashMap<String, CheckListboxItem>(71) {{
+    public final static HashMap<String, CheckListboxItem> icons = new HashMap<String, CheckListboxItem>(72) {{
+        put("mandrakespirited", new CheckListboxItem("Spirited Mandrake"));
         put("dandelion", new CheckListboxItem("Dandelion"));
         put("chantrelle", new CheckListboxItem("Chantrelle"));
         put("blueberry", new CheckListboxItem("Blueberry"));
@@ -417,6 +420,7 @@ public class Config {
         put("rowboat", new CheckListboxItem("Rowboat"));
         put("dugout", new CheckListboxItem("Dugout"));
         put("knarr", new CheckListboxItem("Knarr"));
+        put("snekkja", new CheckListboxItem("Snekkja"));
         put("arrow", new CheckListboxItem("Arrow"));
         put("boarspear", new CheckListboxItem("Boar Spear"));
         put("cavemoth", new CheckListboxItem("Cave Moth"));
@@ -436,6 +440,7 @@ public class Config {
         put("lingon", new CheckListboxItem("Lingonberries"));
         put("grub", new CheckListboxItem("Grub"));
         put("yellowfoot", new CheckListboxItem("Yellowfoot"));
+        put("coltsfoot", new CheckListboxItem("Coltsfoot"));
         put("chives", new CheckListboxItem("Chives"));
         put("rustroot", new CheckListboxItem("Rustroot"));
         put("boostspeed", new CheckListboxItem("Speed Boost"));
@@ -459,7 +464,6 @@ public class Config {
         put("bat", new CheckListboxItem("Bats"));
         put("stagbeetle", new CheckListboxItem("Stagbeetles"));
         put("monarchbutterfly", new CheckListboxItem("Monarch Butterfly"));
-        put("irrbloss", new CheckListboxItem("Irrlight"));
         put("cavecentipede", new CheckListboxItem("Cave Centipede"));
         put("mole", new CheckListboxItem("Moles"));
         put("lorchel", new CheckListboxItem("Morels"));
@@ -577,12 +581,14 @@ public class Config {
         put("Easter Egg", new CheckListboxItem("Easter Egg"));
     }};
 
-    public final static Map<String, Tex> additonalicons = new HashMap<String, Tex>(24) {{
+    public final static Map<String, Tex> additonalicons = new HashMap<String, Tex>(26) {{
+        put("gfx/terobjs/items/mandrakespirited", Resource.loadtex("gfx/icons/mandrakespirited"));
         put("gfx/terobjs/vehicle/bram", Resource.loadtex("gfx/icons/bram"));
         put("gfx/kritter/toad/toad", Resource.loadtex("gfx/icons/toad"));
         put("gfx/terobjs/vehicle/rowboat", Resource.loadtex("gfx/icons/rowboat"));
         put("gfx/terobjs/vehicle/dugout",Resource.loadtex("gfx/icons/dugout"));
         put("gfx/terobjs/vehicle/knarr", Resource.loadtex("gfx/icons/knarr"));
+        put("gfx/terobjs/vehicle/snekkja", Resource.loadtex("gfx/icons/snekkja"));
         put("gfx/kritter/chicken/chicken", Resource.loadtex("gfx/icons/deadhen"));
         put("gfx/kritter/chicken/rooster", Resource.loadtex("gfx/icons/deadrooster"));
         put("gfx/kritter/rabbit/rabbit", Resource.loadtex("gfx/icons/deadrabbit"));
@@ -674,6 +680,7 @@ public class Config {
         put("gfx/terobjs/herbs/blueberry", "Blueberry");
         put("gfx/terobjs/herbs/strawberry", "Strawberry");
         put("gfx/kritter/rat/rat", "Rat");
+        put("gfx/terobs/villageidol", "Village Idol");
         put("gfx/kritter/chicken/chicken", "Chicken");
         put("gfx/kritter/chicken/chick", "Chick");
         put("gfx/terobjs/herbs/spindlytaproot", "Spindly Taproot");
@@ -692,6 +699,7 @@ public class Config {
         put("gfx/terobjs/herbs/lingon", "Lingonberries");
         put("gfx/kritter/grub/grub", "Grub");
         put("gfx/terobjs/herbs/yellowfoot", "Yellowfoot");
+        put("gfx/terobjs/herbs/coltsfoot", "Coltsfoot");
         put("gfx/terobjs/herbs/chives", "Chives");
         put("gfx/terobjs/herbs/rustroot", "Rustroot");
         put("gfx/kritter/crab/crab", "Crab");
@@ -798,7 +806,12 @@ public class Config {
             "soapstone",
             "orthoclase",
             "alabaster",
-            "korund"
+            "corund",
+            "diorite",
+            "breccia",
+            "diabase",
+            "slate",
+            "arkose"
     ));
 
     public final static Set<String> mineablesOre = new HashSet<String>(Arrays.asList(
@@ -844,7 +857,7 @@ public class Config {
     }};
 
     public final static HashMap<String, CheckListboxItem> disableshiftclick = new HashMap<String, CheckListboxItem>(8){{
-       put("steelcrucible", new CheckListboxItem("Steel Crucibles"));
+        put("steelcrucible", new CheckListboxItem("Steel Crucibles"));
         put("ttub", new CheckListboxItem("Tanning Tub"));
         put("smelter", new CheckListboxItem("Smelters"));
         put("oven", new CheckListboxItem("Ovens"));
@@ -893,8 +906,11 @@ public class Config {
         put("Bruh","sfx/bruh");
     }};
 
-    public final static HashMap<String, String[]> cures = new HashMap<String, String[]>(25) {{
+    public final static HashMap<String, String[]> cures = new HashMap<String, String[]>(23) {{
         put("paginae/wound/antburn", new String[]{
+                "gfx/invobjs/herbs/yarrow"
+        });
+        put("paginae/wound/sandfleabites", new String[]{
                 "gfx/invobjs/herbs/yarrow"
         });
         put("paginae/wound/blunttrauma", new String[]{
@@ -907,6 +923,9 @@ public class Config {
         });
         put("paginae/wound/bruise", new String[]{
                 "gfx/invobjs/leech"
+        });
+        put("paginae/wound/midgebite", new String[]{
+                "gfx/invobjs/herbs/yarrow"
         });
         put("paginae/wound/concussion", new String[]{
                 "gfx/invobjs/coldcompress",
@@ -989,15 +1008,6 @@ public class Config {
         put("paginae/wound/beesting", new String[]{
                 "gfx/invobjs/kelpcream"
         });
-        put("paginae/wound/leechburns", new String[]{
-                "gfx/invobjs/toadbutter"
-        });
-        put("paginae/wound/midgebite", new String[]{
-                "gfx/invobjs/herbs/yarrow"
-        });
-        put("paginae/wound/sandfleabites", new String[]{
-                "gfx/invobjs/herbs/yarrow"
-        });
     }};
 
     public static final Map<Long, Pair<String, String>> gridIdsMap = new HashMap<>(58000);
@@ -1025,12 +1035,16 @@ public class Config {
             }
         } catch (Exception e) {}*/
         loadBuildVersion();
+        /*
         isUpdate = (!version.equals(newversion)) || !getFile("changelog.txt").exists();
         if (isUpdate) {
          //   Config.version = newversion;
             Utils.setpref("version",newversion);
             Config.version = newversion;
         }
+        */
+
+        /*
         try {
             InputStream in = ErrorHandler.class.getResourceAsStream("/CHANGELOG");
             try {
@@ -1048,6 +1062,7 @@ public class Config {
                 in.close();
             }
         } catch (Exception e) {}
+        */
 
         // populate grid ids map
         BufferedReader reader = null;
@@ -1071,27 +1086,27 @@ public class Config {
                 }
             }
         }
-
         loadLogins();
+        Iconfinder.loadConfig();
     }
 
-        private static void loadBuildVersion() {
-            InputStream in = Config.class.getResourceAsStream("/buildinfo");
+    private static void loadBuildVersion() {
+        InputStream in = Config.class.getResourceAsStream("/buildinfo");
+        try {
             try {
-                try {
-                    if(in != null) {
-                        Properties info = new Properties();
-                        info.load(in);
-                        newversion = info.getProperty("version");
-                        gitrev = info.getProperty("git-rev");
-                    }
-                } finally {
-                    if (in != null) { in.close(); }
+                if(in != null) {
+                    Properties info = new Properties();
+                    info.load(in);
+                    newversion = info.getProperty("version");
+                    gitrev = info.getProperty("git-rev");
                 }
-            } catch(IOException e) {
-                throw(new Error(e));
+            } finally {
+                if (in != null) { in.close(); }
             }
+        } catch(IOException e) {
+            throw(new Error(e));
         }
+    }
     public static File getFile(String name) {
         return new File(HOMEDIR, name);
     }

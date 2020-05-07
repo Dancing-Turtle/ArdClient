@@ -26,6 +26,7 @@
 
 package haven;
 
+import haven.purus.Iconfinder;
 import haven.purus.pbot.PBotUtils;
 import haven.resutil.Ridges;
 import haven.sloth.gob.Type;
@@ -219,16 +220,45 @@ public class LocalMiniMap extends Widget {
                     String basename = res.basename();
                     if (gob.type == Type.BOULDER) {
                         CheckListboxItem itm = Config.boulders.get(basename.substring(0, basename.length() - 1));
-                        if (itm != null && itm.selected)
-                            g.image(bldricn, p2c(gob.rc).add(delta).sub(bldricn.sz().div(2)));
+                        if (itm != null && itm.selected) {
+                            if(Iconfinder.icons.containsKey(basename.substring(0, basename.length() - 1))) {
+                                try {
+                                    Tex tex = Resource.remote().loadwait(Iconfinder.icons.get(basename.substring(0, basename.length() - 1))).layer(Resource.imgc).tex();
+                                    g.image(tex, p2c(gob.rc).sub(tex.sz().mul(iconZoom).div(4)).add(delta), tex.dim.mul(iconZoom/2));
+                                } catch(Resource.Loading l) {
+                                }
+                            } else {
+                                g.image(bldricn, p2c(gob.rc).add(delta).sub(bldricn.sz().div(2)));
+                            }
+                        }
                     } else if (gob.type == Type.BUSH) {
                         CheckListboxItem itm = Config.bushes.get(basename);
-                        if (itm != null && itm.selected)
-                            g.image(bushicn, p2c(gob.rc).add(delta).sub(bushicn.sz().div(2)));
+                        if (itm != null && itm.selected) {
+                            if(Iconfinder.icons.containsKey(basename)) {
+                                try {
+                                    Tex tex = Resource.remote().loadwait(Iconfinder.icons.get(basename)).layer(Resource.imgc).tex();
+                                    g.image(tex, p2c(gob.rc).sub(tex.sz().mul(iconZoom).div(4)).add(delta), tex.dim.mul(iconZoom/2));
+                                } catch(Resource.Loading l) {
+
+                                }
+                            } else {
+                                g.image(bushicn, p2c(gob.rc).add(delta).sub(bldricn.sz().div(2)));
+                            }
+                        }
                     } else if (gob.type == Type.TREE) {
                         CheckListboxItem itm = Config.trees.get(basename);
-                        if (itm != null && itm.selected)
-                            g.image(treeicn, p2c(gob.rc).add(delta).sub(treeicn.sz().div(2)));
+                        if (itm != null && itm.selected) {
+                            if(Iconfinder.icons.containsKey(basename)) {
+                                try {
+                                    Tex tex = Resource.remote().loadwait(Iconfinder.icons.get(basename)).layer(Resource.imgc).tex();
+                                    g.image(tex, p2c(gob.rc).sub(tex.sz().mul(iconZoom).div(4)).add(delta), tex.dim.mul(iconZoom/2));
+                                } catch(Resource.Loading l) {
+
+                                }
+                            } else {
+                                g.image(treeicn, p2c(gob.rc).add(delta).sub(bldricn.sz().div(2)));
+                            }
+                        }
                     }
                     else if(gob.type == Type.ROAD && Config.showroadmidpoint){
                         g.image(roadicn, p2c(gob.rc).sub(roadicn.sz().div(2)).add(delta));
