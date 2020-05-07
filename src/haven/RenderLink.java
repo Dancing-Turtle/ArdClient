@@ -104,6 +104,7 @@ public interface RenderLink {
                 int ver = buf.uint16();
                 final Indir<Resource> lres = res.pool.load(nm, ver);
                 final int meshid = buf.int16();
+                final int meshmask = buf.eom() ? -1 : buf.int16();
                 l = new RenderLink() {
                     Rendered res = null;
 
@@ -111,7 +112,7 @@ public interface RenderLink {
                         if (res == null) {
 				ArrayList<Rendered> cl = new ArrayList<>();
                             for (FastMesh.MeshRes mr : lres.get().layers(FastMesh.MeshRes.class)) {
-                                if (((meshid >= 0) && (mr.id < 0)) || (mr.id == meshid))
+                                if(((meshid >= 0) && (mr.id < 0)) || ((mr.id & meshmask) == meshid))
                                     cl.add(mr.mat.get().apply(mr.m));
                             }
                             final Rendered[] ca = cl.toArray(new Rendered[0]);

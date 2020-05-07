@@ -30,6 +30,7 @@ import java.lang.reflect.Constructor;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.function.*;
 
 public abstract class Sprite implements Rendered {
     public static final int GOB_HEALTH_ID = -1001;
@@ -59,6 +60,14 @@ public abstract class Sprite implements Rendered {
         public Factory make(Class<?> cl) throws InstantiationException, IllegalAccessException {
             if (Factory.class.isAssignableFrom(cl))
                 return (cl.asSubclass(Factory.class).newInstance());
+            try {
+                Function<Object[], Sprite> make = Utils.smthfun(cl, "mksprite", Sprite.class, Owner.class, Resource.class, Message.class);
+                return(new Factory() {
+                    public Sprite create(Owner owner, Resource res, Message sdt) {
+                        return(make.apply(new Object[] {owner, res, sdt}));
+                    }
+                });
+            } catch(NoSuchMethodException e) {}
             if (Sprite.class.isAssignableFrom(cl))
                 return (mkdynfact(cl.asSubclass(Sprite.class)));
             return (null);
