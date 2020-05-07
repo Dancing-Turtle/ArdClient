@@ -73,6 +73,14 @@ public class Glob {
     public Tex servertimetex;
     public int moonid = 0;
     public boolean night =false; //true is night
+    public String mservertime;
+    public String lservertime;
+    public String rservertime;
+    public String bservertime;
+    public Tex mservertimetex;
+    public Tex lservertimetex;
+    public Tex rservertimetex;
+    public Tex bservertimetex;
 
     static {
         timersThread = new haven.timers.TimersThread();
@@ -209,6 +217,17 @@ public class Glob {
     private static final long secinday = 60 * 60 * 24;
     private static final long dewyladysmantletimemin = 4 * 60 * 60 + 45 * 60;
     private static final long dewyladysmantletimemax = 7 * 60 * 60 + 15 * 60;
+    private static final String[] seasonNames = {"Spring", "Summer", "Autumn", "Winter"};
+    private static final String[] mPhaseNames = {
+            "New",
+            "Waxing Crescent",
+            "First Quarter",
+            "Waxing Gibbous",
+            "Full",
+            "Waning Gibbous",
+            "Last Quarter",
+            "Waning Crescent"
+    };
 
     private void servertimecalc() {
         long secs = (long)globtime();
@@ -216,9 +235,28 @@ public class Glob {
         long secintoday = secs % secinday;
         long hours = secintoday / 3600;
         long mins = (secintoday % 3600) / 60;
-        servertime = String.format(Resource.getLocString(Resource.BUNDLE_LABEL, "Day %d, %02d:%02d"), day, hours, mins);
+
+        bservertime = " ";
+        String dayOfMonth = "";
+        String phaseOfMoon = " ";
+        if (ast != null) {
+            int sdt = (ast.is == 1 ? 90 : 30); //days of season total
+            int sdp = (int)(ast.sp * (sdt)); //days of season passed
+            int sdl = (int)Math.floor((1 - ast.sp) * (sdt));
+            if (sdl >= 1)
+                dayOfMonth = String.format(Resource.getLocString(Resource.BUNDLE_LABEL, ", %s %d (%d left)"), seasonNames[ast.is], (sdp + 1), sdl);
+            else
+                dayOfMonth = String.format(Resource.getLocString(Resource.BUNDLE_LABEL, ", last day of %s"), seasonNames[ast.is]);
+            int mp = (int)Math.round(ast.mp * mPhaseNames.length) % mPhaseNames.length;
+            phaseOfMoon = String.format(Resource.getLocString(Resource.BUNDLE_LABEL, " %s Moon"), mPhaseNames[mp]);
+        }
+
+        lservertime = String.format(Resource.getLocString(Resource.BUNDLE_LABEL, "Day %d%s"), day, dayOfMonth);
+        mservertime = String.format(Resource.getLocString(Resource.BUNDLE_LABEL, "%02d:%02d"), hours, mins);
+        rservertime = phaseOfMoon;
         if (secintoday >= dewyladysmantletimemin && secintoday <= dewyladysmantletimemax)
-            servertime += Resource.getLocString(Resource.BUNDLE_LABEL, " (Dewy Lady's Mantle)");
+            bservertime = Resource.getLocString(Resource.BUNDLE_LABEL, "(Dewy Lady's Mantle)");
+        /*
         if(night) {
             if (moonid == 128)
                 servertime += Resource.getLocString(Resource.BUNDLE_LABEL, " (New Moon)");
@@ -238,7 +276,11 @@ public class Glob {
                 servertime += Resource.getLocString(Resource.BUNDLE_LABEL, " (Waning Crescent)");
         }else
             servertime += Resource.getLocString(Resource.BUNDLE_LABEL, " (Daytime)");
-        servertimetex = Text.render(servertime).tex();
+        */
+        mservertimetex = Text.render(mservertime).tex();
+        lservertimetex = Text.render(lservertime).tex();
+        rservertimetex = Text.render(rservertime).tex();
+        bservertimetex = Text.render(bservertime).tex();
     }
 
     public void blob(Message msg) {
