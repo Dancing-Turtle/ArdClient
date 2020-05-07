@@ -53,6 +53,7 @@ public class Fightview extends Widget {
     public double atkcs, atkct;
     public Indir<Resource> lastact = null;
     public double lastuse = 0;
+    public boolean invalid = false;
     public double atkcd;
     public GiveButton curgive;
     private Avaview curava;
@@ -102,6 +103,9 @@ public class Fightview extends Widget {
             ui.destroy(ava);
             ui.destroy(give);
             ui.destroy(purs);
+            ui.destroy(buffs);
+            ui.destroy(relbuffs);
+            invalid = true;
         }
 
         public void use(Indir<Resource> act) {
