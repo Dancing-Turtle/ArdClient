@@ -424,8 +424,10 @@ public class WItem extends Widget implements DTarget {
 				} else if (ui.modshift && !ui.modmeta) {
 					// server side transfer all identical: pass third argument -1 (or 1 for single item)
 					item.wdgmsg("transfer", c);
-				} else if (ui.modctrl)
-					item.wdgmsg("drop", c);
+				} else if (ui.modctrl) {
+					int n = ui.modmeta ? -1 : 1;
+					item.wdgmsg("drop", c, n);
+				}
 				else if (ui.modmeta)
 					wdgmsg("transfer-identical", this.item);
 				else
