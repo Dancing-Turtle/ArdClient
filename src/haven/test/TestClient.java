@@ -38,7 +38,7 @@ import haven.Session;
 import haven.UI;
 import haven.Widget;
 
-public class TestClient implements Runnable {
+public class TestClient implements Runnable, UI.Context {
     public Session sess;
     public InetSocketAddress addr;
     public String user;
@@ -92,9 +92,14 @@ public class TestClient implements Runnable {
         }
     }
 
+    @Override
+    public void setmousepos(Coord c) {
+
+    }
+
     public class TestUI extends UI {
         public TestUI(Coord sz, Session sess) {
-            super(sz, sess);
+            super(TestClient.this, sz, sess);
         }
 
         public void newwidget(int id, String type, int parent, Object[] pargs, Object... cargs) throws InterruptedException {
