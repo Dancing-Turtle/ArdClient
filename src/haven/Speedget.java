@@ -35,6 +35,8 @@ public class Speedget extends Widget {
     public int cur, max;
     public boolean runonloginset;
 
+    //Skipped Speedget
+
     static {
         String[] names = {"crawl", "walk", "run", "sprint"};
         String[] vars = {"dis", "off", "on"};
