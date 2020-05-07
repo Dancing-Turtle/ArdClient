@@ -93,4 +93,8 @@ public interface OwnerContext {
             });
         }
     }
+
+    public static final ClassResolver<UI> uictx = new ClassResolver<UI>()
+            .add(Glob.class, ui -> ui.sess.glob)
+            .add(Session.class, ui -> ui.sess);
 }
