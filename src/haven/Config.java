@@ -891,11 +891,8 @@ public class Config {
         put("Bruh","sfx/bruh");
     }};
 
-    public final static HashMap<String, String[]> cures = new HashMap<String, String[]>(23) {{
+    public final static HashMap<String, String[]> cures = new HashMap<String, String[]>(26) {{
         put("paginae/wound/antburn", new String[]{
-                "gfx/invobjs/herbs/yarrow"
-        });
-        put("paginae/wound/sandfleabites", new String[]{
                 "gfx/invobjs/herbs/yarrow"
         });
         put("paginae/wound/blunttrauma", new String[]{
@@ -908,9 +905,6 @@ public class Config {
         });
         put("paginae/wound/bruise", new String[]{
                 "gfx/invobjs/leech"
-        });
-        put("paginae/wound/midgebite", new String[]{
-                "gfx/invobjs/herbs/yarrow"
         });
         put("paginae/wound/concussion", new String[]{
                 "gfx/invobjs/coldcompress",
@@ -992,6 +986,18 @@ public class Config {
         });
         put("paginae/wound/beesting", new String[]{
                 "gfx/invobjs/kelpcream"
+        });
+        put("paginae/wound/leechburns", new String[]{
+                "gfx/invobjs/toadbutter"
+        });
+        put("paginae/wound/midgebite", new String[]{
+                "gfx/invobjs/herbs/yarrow"
+        });
+        put("paginae/wound/jellysting", new String[]{
+                "gfx/invobjs/herbs/yarrow"
+        });
+        put("paginae/wound/sandfleabites", new String[]{
+                "gfx/invobjs/herbs/yarrow"
         });
     }};
 
