@@ -1,4 +1,4 @@
-package haven.res.lib.globfx;
+package haven.res.globfx;
 
 import haven.Rendered;
 

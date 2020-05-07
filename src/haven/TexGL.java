@@ -26,16 +26,12 @@
 
 package haven;
 
+import haven.glsl.*;
+
+import java.util.*;
+import javax.media.opengl.*;
+
 import static haven.GOut.checkerr;
-
-import java.util.Collection;
-
-import javax.media.opengl.GL;
-import javax.media.opengl.GL2;
-
-import haven.glsl.ShaderMacro;
-import haven.glsl.Tex2D;
-import haven.glsl.Varying;
 
 public abstract class TexGL extends Tex {
     public static boolean disableall = false;
@@ -53,7 +49,7 @@ public abstract class TexGL extends Tex {
 
         public TexOb(GOut g) {
             super(g);
-	        g.gl.bglCreate(this);
+            g.gl.bglCreate(this);
         }
 
         public void create(GL2 gl) {
@@ -121,7 +117,7 @@ public abstract class TexGL extends Tex {
         }
 
         public ShaderMacro shader() {
-        /* XXX: This combinatorial stuff does not seem quite right. */
+            /* XXX: This combinatorial stuff does not seem quite right. */
             if (tex.centroid)
                 return (cshaders);
             else
@@ -404,7 +400,6 @@ public abstract class TexGL extends Tex {
 	WritableRaster raster = Raster.createInterleavedRaster(new DataBufferByte(buf, buf.length), tdim.x, tdim.y, 4 * tdim.x, 4, new int[] {0, 1, 2, 3}, null);
 	return(new BufferedImage(TexI.glcm, raster, false, null));
     }
-
     public BufferedImage get(GOut g) {
 	return(get(g, true));
     }
@@ -412,45 +407,57 @@ public abstract class TexGL extends Tex {
 
     @Material.ResName("tex")
     public static class $tex implements Material.ResCons2 {
+        public static final boolean defclip = true;
+
         public Material.Res.Resolver cons(final Resource res, Object... args) {
             final Indir<Resource> tres;
             final int tid;
             int a = 0;
-            if (args[a] instanceof String) {
-                tres = res.pool.load((String) args[a], (Integer) args[a + 1]);
-                tid = (Integer) args[a + 2];
+            if(args[a] instanceof String) {
+                tres = res.pool.load((String)args[a], (Integer)args[a + 1]);
+                tid = (Integer)args[a + 2];
                 a += 3;
             } else {
                 tres = res.indir();
-                tid = (Integer) args[a];
+                tid = (Integer)args[a];
                 a += 1;
             }
-            boolean tclip = true;
-            while (a < args.length) {
-                String f = (String) args[a++];
-                if (f.equals("a"))
+            boolean tclip = defclip;
+            while(a < args.length) {
+                String f = (String)args[a++];
+                if(f.equals("a"))
                     tclip = false;
+                else if(f.equals("c"))
+                    tclip = true;
             }
             final boolean clip = tclip; /* ¦] */
-            return (new Material.Res.Resolver() {
+            return(new Material.Res.Resolver() {
                 public void resolve(Collection<GLState> buf) {
                     Tex tex;
                     TexR rt = tres.get().layer(TexR.class, tid);
-                    if (rt != null) {
+                    if(rt != null) {
                         tex = rt.tex();
                     } else {
                         Resource.Image img = tres.get().layer(Resource.imgc, tid);
-                        if (img != null) {
+                        if(img != null) {
                             tex = img.tex();
                         } else {
-                            throw (new RuntimeException(String.format("Specified texture %d for %s not found in %s", tid, res, tres)));
+                            throw(new RuntimeException(String.format("Specified texture %d for %s not found in %s", tid, res, tres)));
                         }
                     }
                     buf.add(tex.draw());
-                    if (clip)
+                    if(clip)
                         buf.add(tex.clip());
                 }
             });
         }
+    }
+
+    static {
+        Console.setscmd("texdis", new Console.Command() {
+            public void run(Console cons, String[] args) {
+                disableall = (Integer.parseInt(args[1]) != 0);
+            }
+        });
     }
 }

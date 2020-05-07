@@ -1,6 +1,8 @@
-package haven.res.lib.globfx;
+package haven.res.globfx;
 
 import haven.*;
+import haven.res.lib.globfx.Datum;
+import haven.res.lib.globfx.Effect;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -12,13 +14,13 @@ public class GlobEffector extends Drawable {
     /* Keep weak references to the glob-effectors themselves, or
      * GlobEffector.glob (and GlobEffector.gob.glob) will keep the
      * globs alive through the strong value references forever. */
-    static Map<Glob, Reference<GlobEffector>> cur = new WeakHashMap<Glob, Reference<GlobEffector>>();
+    static Map<Glob, Reference<haven.res.lib.globfx.GlobEffector>> cur = new WeakHashMap<Glob, Reference<haven.res.lib.globfx.GlobEffector>>();
     public final Glob glob;
-    public Collection<Gob> holder = null;
+    Collection<Gob> holder = null;
     Map<Effect, Effect> effects = new HashMap<Effect, Effect>();
     Map<Datum, Datum> data = new HashMap<Datum, Datum>();
     
-    public GlobEffector(Gob gob) {
+    private GlobEffector(Gob gob) {
     	super(gob);
     	this.glob = gob.glob;
     }
@@ -101,19 +103,19 @@ public class GlobEffector extends Drawable {
     	}
     }
     
-    private static GlobEffector get(Glob glob) {
+    private static haven.res.lib.globfx.GlobEffector get(Glob glob) {
     	synchronized(cur) {
-    		Reference<GlobEffector> ref = cur.get(glob);
+    		Reference<haven.res.lib.globfx.GlobEffector> ref = cur.get(glob);
     		if(ref == null) {
     			Gob hgob = new Gob(glob, Coord2d.z) {
     				public Coord3f getc() {
     					return(Coord3f.o);
     				}
     			};
-    			GlobEffector ne = new GlobEffector(hgob);
+    			haven.res.lib.globfx.GlobEffector ne = new haven.res.lib.globfx.GlobEffector(hgob);
     			hgob.setattr(ne);
     			glob.oc.ladd(ne.holder = Collections.singleton(hgob));
-    			cur.put(glob, ref = new WeakReference<GlobEffector>(ne));
+    			cur.put(glob, ref = new WeakReference<haven.res.lib.globfx.GlobEffector>(ne));
     		}
     		return(ref.get());
     	}

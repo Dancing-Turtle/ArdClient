@@ -737,16 +737,23 @@ public class Resource implements Serializable {
 	private static Pool _local = null;
 
 	public static Pool local() {
-		if (_local == null) {
-			synchronized (Resource.class) {
-				if (_local == null) {
-					Pool local = new Pool(new FileSource(new File("res")));
-					local.add(new JarSource());
+		if(_local == null) {
+			synchronized(Resource.class) {
+				if(_local == null) {
+					Pool local = new Pool(new JarSource());
+					try {
+						if(Config.resdir != null)
+							local.add(new FileSource(new File(Config.resdir)));
+					} catch(Exception e) {
+						/* Ignore these. We don't want to be crashing the client
+						 * for users just because of errors in development
+						 * aids. */
+					}
 					_local = local;
 				}
 			}
 		}
-		return (_local);
+		return(_local);
 	}
 
 	private static Pool _remote = null;

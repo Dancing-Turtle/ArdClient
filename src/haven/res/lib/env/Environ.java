@@ -1,69 +1,52 @@
-
 package haven.res.lib.env;
-
-import java.util.Random;
 
 import haven.Coord3f;
 import haven.Glob;
 import haven.res.lib.globfx.GlobData;
 import haven.res.lib.globfx.GlobEffector;
 
+import java.util.Random;
+
 public class Environ extends GlobData {
     private final Random rnd = new Random();
-    float wdir;
-    float wvel;
-    Coord3f gust;
-    Coord3f wind;
-
-    public Environ() {
-        this.wdir = this.rnd.nextFloat() * 3.1415927F * 2.0F;
-        this.wvel = this.rnd.nextFloat() * 3.0F;
-        this.gust = new Coord3f(0.0F, 0.0F, 0.0F);
-        this.wind = Coord3f.o;
+    
+    float wdir = rnd.nextFloat() * (float)Math.PI * 2;
+    float wvel = rnd.nextFloat() * 3;
+    Coord3f gust = new Coord3f(0, 0, 0);
+    Coord3f wind = Coord3f.o;
+    private void wind(float dt) {
+	Coord3f base = Coord3f.o.sadd(0, wdir, wvel);
+	wdir += ((rnd.nextFloat() * 2) - 1) * 0.005;
+	if(wdir < 0)
+	    wdir += (float)Math.PI * 2;
+	if(wdir > Math.PI * 2)
+	    wdir -= (float)Math.PI * 2;
+	wvel += rnd.nextFloat() * 0.005;
+	if(wvel < 0)
+	    wvel = 0;
+	if(wvel > 20)
+	    wvel = 20;
+	if(rnd.nextInt(2000) == 0) {
+	    gust.x = rnd.nextFloat() * 200 - 100;
+	    gust.y = rnd.nextFloat() * 200 - 100;
+	}
+	float df = (float)Math.pow(0.2, dt);
+	gust.x *= df;
+	gust.y *= df;
+	gust.z *= df;
+	wind = base.add(gust);
     }
-
-    private void wind(float var1) {
-        Coord3f var2 = Coord3f.o.sadd(0.0F, this.wdir, this.wvel);
-        this.wdir = (float)((double)this.wdir + (double)this.rnd.nextFloat() * 0.005D);
-        if(this.wdir < 0.0F) {
-            this.wdir += 6.2831855F;
-        }
-
-        if((double)this.wdir > 6.283185307179586D) {
-            this.wdir -= 6.2831855F;
-        }
-
-        this.wvel = (float)((double)this.wvel + (double)this.rnd.nextFloat() * 0.005D);
-        if(this.wvel < 0.0F) {
-            this.wvel = 0.0F;
-        }
-
-        if(this.wvel > 20.0F) {
-            this.wvel = 20.0F;
-        }
-
-        if(this.rnd.nextInt(2000) == 0) {
-            this.gust.x = this.rnd.nextFloat() * 200.0F - 100.0F;
-            this.gust.y = this.rnd.nextFloat() * 200.0F - 100.0F;
-        }
-
-        float var3 = (float)Math.pow(0.2D, (double)var1);
-        this.gust.x *= var3;
-        this.gust.y *= var3;
-        this.gust.z *= var3;
-        this.wind = var2.add(this.gust);
-    }
-
+    
     public Coord3f wind() {
-        return this.wind;
+	return(wind);
     }
 
-    public boolean tick(float var1) {
-        this.wind(var1);
-        return false;
+    public boolean tick(float dt) {
+	wind(dt);
+	return(false);
     }
 
-    public static Environ get(Glob var0) {
-        return GlobEffector.getdata(var0, new Environ());
+    public static Environ get(Glob glob) {
+	return(GlobEffector.getdata(glob, new Environ()));
     }
 }

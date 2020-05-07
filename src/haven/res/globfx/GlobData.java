@@ -1,4 +1,6 @@
-package haven.res.lib.globfx;
+package haven.res.globfx;
+
+import haven.res.lib.globfx.Datum;
 
 public abstract class GlobData implements Datum {
     public int hashCode() {

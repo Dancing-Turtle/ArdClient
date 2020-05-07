@@ -1,6 +1,8 @@
-package haven.res.lib.globfx;
+package haven.res.globfx;
 
-public abstract class GlobData implements Datum {
+import haven.res.lib.globfx.Effect;
+
+public abstract class GlobEffect implements Effect {
     public int hashCode() {
 	return(this.getClass().hashCode());
     }

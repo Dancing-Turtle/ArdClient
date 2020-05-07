@@ -133,8 +133,8 @@ public class FoodInfo extends ItemInfo.Tip {
 
     private static BufferedImage renderConstipation(CharacterInfo.Constipation.Data data) {
 	int h = 14;
-	BufferedImage img = data.res.get().layer(Resource.imgc).img;
-	String nm = data.res.get().layer(Resource.tooltip).t;
+	BufferedImage img = data.res.res.get().layer(Resource.imgc).img;
+	String nm = data.res.res.get().layer(Resource.tooltip).t;
 	Color col = color(data.value);
 	Text rnm = RichText.render(String.format("%s: $col[%d,%d,%d]{%d%%}", nm, col.getRed(), col.getGreen(), col.getBlue(), (int) (100 * data.value)), 0);
 	BufferedImage tip = TexI.mkbuf(new Coord(h + 5 + rnm.sz().x, h));

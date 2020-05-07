@@ -45,9 +45,11 @@ public class Config {
     public static String authuser = null;
     public static String authserv = null;
     public static String defserv = null;
+    public static String resdir = getprop("haven.resdir", System.getenv("HAFEN_RESDIR"));
     public static URL resurl = null;
     public static boolean dbtext = false;
     public static boolean bonsai = Utils.getprefb("bonsai", false);
+    public static boolean lockedmainmenu = Utils.getprefb("lockedmainmenu", true);
     public static boolean profile = false;
     public static boolean profilegpu = false;
     public static boolean nopreload = false;

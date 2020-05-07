@@ -26,29 +26,17 @@
 
 package haven.resutil;
 
-import static haven.Utils.clip;
+import java.util.*;
 
-import java.util.Arrays;
-import java.util.Random;
-
-import haven.Config;
-import haven.Coord;
-import haven.Coord3f;
-import haven.GLState;
-import haven.Light;
-import haven.MCache;
-import haven.MapMesh;
-import haven.MapMesh.Model;
+import haven.*;
 import haven.MapMesh.Scan;
-import haven.Material;
-import haven.MeshBuf;
-import haven.States;
-import haven.Surface;
-import haven.Surface.MeshVertex;
+import haven.MapMesh.Model;
 import haven.Surface.Vertex;
-import haven.Tiler;
 import haven.Tiler.MPart;
-import haven.Utils;
+import haven.Tiler.SModel;
+import haven.Tiler.VertFactory;
+import haven.Surface.MeshVertex;
+import static haven.Utils.clip;
 
 public class Ridges extends MapMesh.Hooks {
     public static final MapMesh.DataID<Ridges> id = MapMesh.makeid(Ridges.class);
@@ -216,10 +204,7 @@ public class Ridges extends MapMesh.Hooks {
                 hi = 10;
             } else {
                 lo = Math.min(z1, z2);
-                if(Config.obviousridges)
-                    hi = Math.max(z1, z2) + 15;
-                else
-                    hi = Math.max(z1, z2);
+                hi = Math.max(z1, z2);
             }
         }
         int nseg = Math.max((hi - lo + (segh / 2)) / segh, 2) - 1;
@@ -576,7 +561,7 @@ public class Ridges extends MapMesh.Hooks {
             for (int i = 0; i < n; i++) {
                 col[i] = new Coord3f(tcx + ((rnd.nextFloat() - 0.5f) * 5.0f),
                         tcy + ((rnd.nextFloat() - 0.5f) * 5.0f),
-                        Config.disableelev ? 10 : (Config.obviousridges ? (zs[i] + 15) : zs[i]));
+                        Config.disableelev ? 10 : zs[i]);
             }
         }
 
@@ -652,13 +637,13 @@ public class Ridges extends MapMesh.Hooks {
             modeldiag2(tc, d);
             return (true);
         } else {
-	    try {
-		modelcomplex(tc, b);
-	    } catch(ArrayIndexOutOfBoundsException e) {
-		/* XXX: Just ignore for now, until I can find the
-		 * cause of this. */
-	    } catch(NegativeArraySizeException e) {
-	    }
+            try {
+                modelcomplex(tc, b);
+            } catch(ArrayIndexOutOfBoundsException e) {
+                /* XXX: Just ignore for now, until I can find the
+                 * cause of this. */
+            } catch(NegativeArraySizeException e) {
+            }
             return (true);
         }
     }
@@ -691,21 +676,25 @@ public class Ridges extends MapMesh.Hooks {
         }
 
         public void faces(MapMesh m, MPart mdesc) {
-            RPart desc = (RPart) mdesc;
+            RPart desc = (RPart)mdesc;
             Model mod = Model.get(m, mat);
             MeshBuf.Tex tex = mod.layer(MeshBuf.tex);
+            MeshBuf.Vec3Layer tan = mod.layer(BumpMap.ltan);
+            MeshBuf.Vec3Layer bit = mod.layer(BumpMap.lbit);
             int[] trn = new int[desc.rh.length];
             float zf = 1.0f / texh;
-            for (int i = 0; i < trn.length; i++)
-                trn[i] = Math.max((int) ((desc.rh[i] + (texh * 0.5f)) * zf), 1);
+            for(int i = 0; i < trn.length; i++)
+                trn[i] = Math.max((int)((desc.rh[i] + (texh * 0.5f)) * zf), 1);
             MeshVertex[] v = new MeshVertex[desc.v.length];
-            for (int i = 0; i < desc.v.length; i++) {
+            for(int i = 0; i < desc.v.length; i++) {
                 v[i] = new MeshVertex(mod, desc.v[i]);
-        /* tex.set(v[i], new Coord3f(desc.rcx[i], desc.v[i].z * zf, 0)); */
+                /* tex.set(v[i], new Coord3f(desc.rcx[i], desc.v[i].z * zf, 0)); */
                 tex.set(v[i], new Coord3f(desc.rcx[i], desc.rcy[i] * trn[desc.rn[i]], 0));
+                tan.set(v[i], Coord3f.zu.cmul(v[i].nrm).norm());
+                bit.set(v[i], Coord3f.zu);
             }
             int[] f = desc.f;
-            for (int i = 0; i < f.length; i += 3)
+            for(int i = 0; i < f.length; i += 3)
                 mod.new Face(v[f[i]], v[f[i + 1]], v[f[i + 2]]);
         }
     }
@@ -744,17 +733,17 @@ public class Ridges extends MapMesh.Hooks {
     }
 
     public static boolean brokenp(MCache map, Coord tc) {
-        Tiler t = map.tiler(map.gettile_safe(tc));
+        Tiler t = map.tiler(map.gettile(tc));
         if (!(t instanceof RidgeTile))
             return (false);
         int bz = ((RidgeTile) t).breakz();
         for (Coord ec : tecs) {
-            t = map.tiler(map.gettile_safe(tc.add(ec)));
+            t = map.tiler(map.gettile(tc.add(ec)));
             if (t instanceof RidgeTile)
                 bz = Math.min(bz, ((RidgeTile) t).breakz());
         }
         for (int i = 0; i < 4; i++) {
-            if (Math.abs(map.getz_safe(tc.add(tccs[(i + 1) % 4])) - map.getz_safe(tc.add(tccs[i]))) > bz)
+            if (Math.abs(map.getz(tc.add(tccs[(i + 1) % 4])) - map.getz(tc.add(tccs[i]))) > bz)
                 return (true);
         }
         return (false);

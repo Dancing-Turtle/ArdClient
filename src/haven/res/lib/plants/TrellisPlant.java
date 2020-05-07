@@ -1,19 +1,15 @@
 package haven.res.lib.plants;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Random;
-
-import haven.Config;
+import haven.*;
 import haven.FastMesh.MeshRes;
-import haven.Gob;
-import haven.Message;
-import haven.Resource;
-import haven.Sprite;
 import haven.Sprite.Factory;
 import haven.Sprite.Owner;
 import haven.Sprite.ResourceException;
 import haven.resutil.CSprite;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Random;
 
 public class TrellisPlant implements Factory {
     public final int num;
