@@ -11,10 +11,17 @@ public class TileOutline implements Rendered {
     private final MCache map;
     private final FloatBuffer[] vertexBuffers;
     private final int area;
-    private final States.ColState color;
+    public static States.ColState color = new States.ColState(
+            DefSettings.GUIDESCOLOR.get().getRed(),
+            DefSettings.GUIDESCOLOR.get().getGreen(),
+            DefSettings.GUIDESCOLOR.get().getBlue(),
+            (int)(DefSettings.GUIDESCOLOR.get().getAlpha() * 0.7)
+    );
     private Location location;
     private Coord ul;
     private int curIndex;
+
+
 
     public TileOutline(MCache map) {
         this.map = map;

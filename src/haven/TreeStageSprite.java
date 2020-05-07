@@ -4,8 +4,8 @@ import java.awt.Color;
 
 
 public class TreeStageSprite extends Sprite {
-    private static final Tex[] treestg = new Tex[90];
-    private static final Color stagecolor = new Color(255, 227, 168);//new Color(235, 235, 235);
+    private static final Tex[] treestg = new Tex[100];
+    private static final Color stagecolor = new Color(120, 255, 255);
     public int val;
     private Tex tex;
     private static Matrix4f mv = new Matrix4f();
@@ -15,8 +15,8 @@ public class TreeStageSprite extends Sprite {
     private Camera camp;
 
     static {
-        for (int i = 10; i < 100; i++) {
-            treestg[i - 10] = Text.renderstroked(i + "", stagecolor, Color.BLACK, Text.num12boldFnd).tex();
+        for (int i = 0; i < 100; i++) {
+            treestg[i] = Text.renderstroked(i + "", stagecolor, Color.BLACK, Text.num12boldFnd).tex();
         }
     }
 
@@ -29,7 +29,7 @@ public class TreeStageSprite extends Sprite {
         float[] c = mv.load(camp.fin(Matrix4f.id)).mul1(loc.fin(Matrix4f.id)).homoc();
         Coord sc = proj.get2dCoord(c, wndsz);
         sc.x -= 8;
-        sc.y -= 20;
+        sc.y -= 10;
         g.image(tex, sc);
     }
 
@@ -45,7 +45,7 @@ public class TreeStageSprite extends Sprite {
 
     public void update(int val) {
         this.val = val;
-        tex = treestg[val - 10];
+        tex = treestg[val];
     }
 
     public Object staticp() {

@@ -6,7 +6,7 @@ import javax.media.opengl.GL2;
 
 public class GobHitbox extends Sprite {
     public static States.ColState fillclrstate = new States.ColState(DefSettings.HIDDENCOLOR.get());
-    private static final States.ColState bbclrstate = new States.ColState(new Color(255, 255, 255, 255));
+    public static States.ColState bbclrstate = new States.ColState(new Color(255, 255, 255, 255));
     private Coordf a, b, c, d;
     private int mode;
     private States.ColState clrstate;

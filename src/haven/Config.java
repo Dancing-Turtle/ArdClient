@@ -44,6 +44,7 @@ public class Config {
     public static boolean dumpcode = getprop("haven.dumpcode", "off").equals("on");
     public static final boolean iswindows = System.getProperty("os.name").startsWith("Windows");
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
+    public static String resdir = getprop("haven.resdir", System.getenv("HAFEN_RESDIR"));
     public static String authuser = null;
     public static String authserv = null;
     public static String defserv = null;
