@@ -466,8 +466,12 @@ public class UI {
                 return;
         }
         }
-        if (!root.keydown(ev))
-            root.globtype((char) 0, ev);
+        if(!root.keydown(ev)) {
+            char key = ev.getKeyChar();
+            if(key == ev.CHAR_UNDEFINED)
+                key = 0;
+            root.globtype(key, ev);
+        }
     }
 
     public void keyup(KeyEvent ev) {
