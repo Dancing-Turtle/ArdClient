@@ -193,7 +193,7 @@ public abstract class MiscLib {
         Expression p = code.local(VEC3, abs(sub(mul(fract(add(pick(c, "xxx"), vec3(1.0, 2.0 / 3.0, 1.0 / 3.0))), l(6.0)), l(3.0)))).ref();
         code.add(new Return(mul(pick(c, "z"), mix(vec3(l(1.0)), clamp(sub(p, l(1.0)), l(0.0), l(1.0)), pick(c, "y")))));
     }};
-    
+
     public static final Function olblend = new Function.Def(VEC4) {{
         Expression base = param(IN, VEC4).ref();
         Expression blend = param(IN, VEC4).ref();
