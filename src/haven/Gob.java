@@ -1055,14 +1055,14 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
 
                 if (type == Type.TREE || type == Type.BUSH) {
                     ResDrawable rd = getattr(ResDrawable.class);
-                    if (rd != null && !rd.sdt.eom()) {
-                        final int stage = rd.sdt.peekrbuf(0);
-                        if (stage >= 0 && stage < 100) {
+                    if (rd != null) {
+                        int fscale = rd.sdt.peekrbuf(1);
+                        if (fscale != -1) {
                             Overlay ol = findol(Sprite.GROWTH_STAGE_ID);
                             if (ol == null) {
-                                addol(new Gob.Overlay(Sprite.GROWTH_STAGE_ID, new TreeStageSprite(stage)));
-                            } else if (((TreeStageSprite)ol.spr).val != stage) {
-                                ((TreeStageSprite)ol.spr).update(stage);
+                                addol(new Gob.Overlay(Sprite.GROWTH_STAGE_ID, new TreeStageSprite(fscale)));
+                            } else if (((TreeStageSprite) ol.spr).val != fscale) {
+                                ((TreeStageSprite) ol.spr).update(fscale);
                             }
                         }
                     }
