@@ -8,11 +8,6 @@ const PBotGobAPI = Java.type("haven.purus.pbot.PBotGobAPI");
 const PBotWindowAPI = Java.type("haven.purus.pbot.PBotWindowAPI");
 const window = PBotUtils.PBotWindow("Clay Digger", 50, 110, ScriptID);
 const startBtn = window.addButton("startBtnCb", "Start", 100, 5, 5);
-let stop = false;
-const shouldStop = () => {
-	return (stop || window.closed());
-};
-
 
 startBtn.changeColor(255, 200, 255);
 
@@ -48,23 +43,21 @@ const startBtnCb = () => {
 
 	let stop = false;
 	PBotUtils.sysMsg("Close window to stop bot.");
-	while(!stop) {
+	while(PBotUtils.getWindow("Clay Digger") != null && !stop) {
 		// Dig until inventory full or out of claytiles
-		if(shouldStop()) return;
 		if(clayTiles.length === 0) {
 			PBotUtils.sysMsg("Out of tiles to dig clay from!");
 			stop = true;
 			break;
 		}
 		while(clayTiles.length > 0 && PBotUtils.playerInventory().freeSlotsInv() > 1) {
-		if(shouldStop()) return;
 			if(PBotUtils.getWindow("Clay Digger") == null){
 				PBotUtils.sysMsg("Window closed, exiting.");
 				stop = true;
 				break;
 			}
 			if(PBotCharacterAPI.getStamina() < 70)
-				PBotUtils.drink(true);
+				PBotUtils.drink();
 			PBotUtils.pfLeftClick(clayTiles[0].x, clayTiles[0].y);
 			PBotCharacterAPI.doAct("dig");
 			PBotUtils.mapClick(clayTiles[0].x, clayTiles[0].y, 1, 0);
@@ -84,13 +77,11 @@ const startBtnCb = () => {
 		}
 		if(stop)
 			break;
-			if(shouldStop()) return;
 		PBotUtils.sleep(100); // Wait a moment for all the clay to appear into the inventory
 		let clayInInv = PBotUtils.playerInventory().getInventoryItemsByNames(["Ball Clay"]).size();
 		console.log(clayInInv);
 		// Put clay in stockpiles or out of stockpiles
 		while(clayInInv > 0) {
-		if(shouldStop()) return;
 			if(stockpiles.length == 0) {
 				stop = true;
 				PBotUtils.sysMsg("Ran out of free clay stockpiles!");
@@ -108,7 +99,6 @@ const startBtnCb = () => {
 				stockpiles.shift();
 			clayInInv -= count;
 			while(PBotUtils.playerInventory().getInventoryItemsByNames(["Ball Clay"]).size() != clayInInv) {
-			if(shouldStop()) return;
 				PBotUtils.sleep(25);
 			}
 		}

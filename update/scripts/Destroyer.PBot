@@ -1,4 +1,5 @@
-// Destroys gobs from an area
+// Destroy-drink-repeat
+// Do not use this, very broken
 // Made by Purus Cor to demonstrate usage of PBot API
 // For more information about API, join Purus Pasta discord
 // To suggest features into API, suggest them in discord
@@ -8,56 +9,22 @@ const PBotGobAPI = Java.type('haven.purus.pbot.PBotGobAPI');
 const window = PBotUtils.PBotWindow("Destroyer", 70, 200, ScriptID);
 window.addLabel("Drinks and destroys", 10, 10);
 const btn = window.addButton("btnClick", "Start", 180, 10, 30);
-let stop = false;
-
-const javaListToArray = (javalist) => {
-	const ret = [];
-	for(let i=0; i<javalist.size(); i++)
-		ret.push(javalist.get(i));
-	return ret;
-};
-
-const shouldStop = () => {
-	return (stop || window.closed());
-};
 
 const btnClick = () => {
-	btn.destroy();
-	btn.changeText("Select an area with gobs!");
-	PBotUtils.selectArea();
-	const gobs = javaListToArray(PBotUtils.gobsInArea(PBotUtils.getSelectedAreaA(), PBotUtils.getSelectedAreaB()));
-	gobs.forEach((gob) => {
-		if(shouldStop()) return;
-		if(gob.getResname().includes("terobjs")) {
-			if(PBotGobAPI.findGobById(gob.getGobId()) == null) {
-				return;
-			}
-			gob.pfClick(1, 0);
-			while(true) {
-			if(shouldStop()) return;
-				if(PBotUtils.getStamina() < 60){
-				if(!PBotUtils.drink(true)) {
-					stop = true;
-					PBotUtils.sysMsg("Ran out of water!");
-					break;
-				}
-				}
-				if(shouldStop()) return;
-				PBotCharacterAPI.doAct("destroy");
-				gob.doClick(1, 0);
-				PBotCharacterAPI.cancelAct();
-				PBotUtils.sleep(2000);
-				if(PBotGobAPI.findGobById(gob.getGobId()) == null) {
-					break;
-				}
-				while(PBotGobAPI.player().getPoses().contains('gfx/borka/treechop') || PBotGobAPI.player().getPoses().contains('gfx/borka/shoveldig'))
-					PBotUtils.sleep(25);
-			}
+	btn.changeText("Click a gob");
+	PBotUtils.sysMsg("Alt+Click gob to destroy it!");
+	const gob = PBotGobAPI.selectGob();
+	gob.doClick(0, 4);
+	PBotUtils.sysMsg("Gob chosen! Beginning to destroy!");
+	PBotUtils.drink();
+	PBotCharacterAPI.doAct("destroy");
+	gob.doClick(1, 0);
+	while(PBotGobAPI.findGobById(gob.id) != null) {
+		if(PBotCharacterAPI.getStamina() < 80) {
+			PBotUtils.drink();
 		}
-	});
-	if(shouldStop())
-	PBotUtils.sysMsg("Stopped due to window closure.")
-	else
-	PBotUtils.sysMsg("Destroying of gobs finished");
-	window.closeWindow();
+		PBotUtils.sleep(5000);
+	}
+	PBotUtils.sysMsg("Gob destroyed succesfully!");
 };
+

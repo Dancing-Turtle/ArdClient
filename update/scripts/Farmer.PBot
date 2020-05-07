@@ -30,7 +30,7 @@ const startFarmingBtn = () => {
 	for(let i=0; i<areaCrops.length; i++) {
 		// Harvest
 		if(PBotCharacterAPI.getStamina() <= 60)
-			PBotUtils.drink(true);
+			PBotUtils.drink();
 		PBotUtils.pfRightClick(areaCrops[i], 0);
 		PBotUtils.waitForFlowerMenu();
 		PBotUtils.choosePetal("Harvest");

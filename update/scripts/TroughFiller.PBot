@@ -5,10 +5,6 @@
 const PBotUtils = Java.type('haven.purus.pbot.PBotUtils');
 const PBotGobAPI = Java.type('haven.purus.pbot.PBotGobAPI');
 const PBotWindowAPI = Java.type('haven.purus.pbot.PBotWindowAPI');
-let stop = false;
-const shouldStop = () => {
-	return (stop || window.closed());
-};
 
 const fodderItems = ['Carrot', 'Beetroot', 'Beetroot Leaves'];
 const fodderGobs = ['gfx/terobjs/items/carrot', 'gfx/terobjs/items/beetleaves', 'gfx/terobjs/items/beet'];
@@ -26,7 +22,6 @@ const main = () => {
 		return;
 	}
 	while(!stop) {
-		if(shouldStop()) return;
 		let gob = PBotGobAPI.findGobByNames(1000, fodderGobs);
 		if(gob == null) {
 			stop = true; 
@@ -34,7 +29,6 @@ const main = () => {
 		}
 		let freeSpace = PBotUtils.playerInventory().freeSlotsInv();
 		do {
-			if(shouldStop()) return;
 			if(freeSpace === 0)
 				break;
 			PBotUtils.pfRightClick(gob, 0);
@@ -47,7 +41,6 @@ const main = () => {
 		PBotWindowAPI.waitForWindow("Trough");
 		let fodder = PBotUtils.playerInventory().getInventoryItemsByNames(fodderItems);
 		for(let i=0; i<fodder.length; i++) {
-			if(shouldStop()) return;
 			const amount = PBotWindowAPI.getAmount(PBotWindowAPI.getWindow("Trough"));
 			if(amount === 100) {
 				PBotUtils.sysMsg("Trough full!!");
