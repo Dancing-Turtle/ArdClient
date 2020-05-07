@@ -1601,6 +1601,9 @@ try {
         }
     }
 
+    public static final KeyBinding kb_chat = KeyBinding.get("chat-toggle", KeyMatch.forchar('C', KeyMatch.C));
+    public static final KeyBinding kb_quick = KeyBinding.get("chat-quick", KeyMatch.forcode(KeyEvent.VK_ENTER, 0));
+
     public boolean globtype(char key, KeyEvent ev) {
         if (key == 10) {
             if (!visible && (sel instanceof EntryChannel)) {
