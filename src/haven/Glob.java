@@ -79,6 +79,7 @@ public class Glob {
     public Tex mservertimetex;
     public Tex lservertimetex;
     public Tex rservertimetex;
+    public boolean night =false; //true is night
     public Tex bservertimetex;
 
     static {
@@ -238,52 +239,49 @@ public class Glob {
         long hours = secintoday / 3600;
         long mins = (secintoday % 3600) / 60;
         int nextseason = (int)Math.ceil((1 - ast.sp) * (ast.is == 1 ? 30 : 10));
-        if (ast != null) {
-            String fmt;
-            switch (ast.is) {
-                case 0:
-                    fmt = nextseason == 1 ? "Day %d, %02d:%02d. Spring (%d RL day left)." : "Day %d, %02d:%02d. Spring (%d RL days left).";
-                    break;
-                case 1:
-                    fmt = nextseason == 1 ? "Day %d, %02d:%02d. Summer (%d RL day left)." : "Day %d, %02d:%02d. Summer (%d RL days left).";
-                    break;
-                case 2:
-                    fmt = nextseason == 1 ? "Day %d, %02d:%02d. Autumn (%d RL day left)." : "Day %d, %02d:%02d. Autumn (%d RL days left).";
-                    break;
-                case 3:
-                    fmt = nextseason == 1 ? "Day %d, %02d:%02d. Winter (%d RL day left)." : "Day %d, %02d:%02d. Winter (%d RL days left).";
-                    break;
-                default:
-                    fmt = "Unknown Season";
-            }
-            servertime = String.format(Resource.getLocString(Resource.BUNDLE_LABEL, fmt), day, hours, mins, nextseason);
 
-            if(ast.night) {
-                if (moonid == 128)
-                    servertime += Resource.getLocString(Resource.BUNDLE_LABEL, " (New Moon)");
-                else if (moonid == 129)
-                    servertime += Resource.getLocString(Resource.BUNDLE_LABEL, " (Waxing Crescent)");
-                else if (moonid == 130)
-                    servertime += Resource.getLocString(Resource.BUNDLE_LABEL, " (First Quarter)");
-                else if (moonid == 131)
-                    servertime += Resource.getLocString(Resource.BUNDLE_LABEL, " (Waxing Gibbous)");
-                else if (moonid == 132)
-                    servertime += Resource.getLocString(Resource.BUNDLE_LABEL, " (Full Moon)");
-                else if (moonid == 133)
-                    servertime += Resource.getLocString(Resource.BUNDLE_LABEL, " (Waning Gibbous)");
-                else if (moonid == 134)
-                    servertime += Resource.getLocString(Resource.BUNDLE_LABEL, " (Last Quarter)");
-                else if (moonid == 135)
-                    servertime += Resource.getLocString(Resource.BUNDLE_LABEL, " (Waning Crescent)");
-            }else
-                servertime += Resource.getLocString(Resource.BUNDLE_LABEL, " (Daytime)");
-
-            if (secintoday >= dewyladysmantletimemin && secintoday <= dewyladysmantletimemax)
-                servertime += Resource.getLocString(Resource.BUNDLE_LABEL, " (Dewy Lady's Mantle)");
-
-            servertimetex = Text.render(servertime).tex();
+        String fmt;
+        switch (ast.is) {
+            case 0:
+                fmt = nextseason == 1 ? "Day %d, %02d:%02d. Spring (%d RL day left)." : "Day %d, %02d:%02d. Spring (%d RL days left).";
+                break;
+            case 1:
+                fmt = nextseason == 1 ? "Day %d, %02d:%02d. Summer (%d RL day left)." : "Day %d, %02d:%02d. Summer (%d RL days left).";
+                break;
+            case 2:
+                fmt = nextseason == 1 ? "Day %d, %02d:%02d. Autumn (%d RL day left)." : "Day %d, %02d:%02d. Autumn (%d RL days left).";
+                break;
+            case 3:
+                fmt = nextseason == 1 ? "Day %d, %02d:%02d. Winter (%d RL day left)." : "Day %d, %02d:%02d. Winter (%d RL days left).";
+                break;
+            default:
+                fmt = "Unknown Season";
         }
 
+        servertime = String.format(Resource.getLocString(Resource.BUNDLE_LABEL, fmt), day, hours, mins, nextseason);
+
+        if (secintoday >= dewyladysmantletimemin && secintoday <= dewyladysmantletimemax)
+            servertime += Resource.getLocString(Resource.BUNDLE_LABEL, " (Dewy Lady's Mantle)");
+        if(night) {
+            if (moonid == 128)
+                servertime += Resource.getLocString(Resource.BUNDLE_LABEL, " (New Moon)");
+            else if (moonid == 129)
+                servertime += Resource.getLocString(Resource.BUNDLE_LABEL, " (Waxing Crescent)");
+            else if (moonid == 130)
+                servertime += Resource.getLocString(Resource.BUNDLE_LABEL, " (First Quarter)");
+            else if (moonid == 131)
+                servertime += Resource.getLocString(Resource.BUNDLE_LABEL, " (Waxing Gibbous)");
+            else if (moonid == 132)
+                servertime += Resource.getLocString(Resource.BUNDLE_LABEL, " (Full Moon)");
+            else if (moonid == 133)
+                servertime += Resource.getLocString(Resource.BUNDLE_LABEL, " (Waning Gibbous)");
+            else if (moonid == 134)
+                servertime += Resource.getLocString(Resource.BUNDLE_LABEL, " (Last Quarter)");
+            else if (moonid == 135)
+                servertime += Resource.getLocString(Resource.BUNDLE_LABEL, " (Waning Crescent)");
+        }else
+            servertime += Resource.getLocString(Resource.BUNDLE_LABEL, " (Daytime)");
+        servertimetex = Text.render(servertime).tex();
     }
 
     public void blob(Message msg) {

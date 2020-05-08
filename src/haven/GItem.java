@@ -233,8 +233,10 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
     }
 
     public List<ItemInfo> info() {
-        if (info == null)
+        if (info == null && rawinfo != null) {
             info = ItemInfo.buildinfo(this, rawinfo);
+            info.add(new ItemInfo.AdHoc(this, (Config.resinfo ? ("\n" + this.getres().name) : "")));
+        }
         return (info);
     }
 
