@@ -413,6 +413,7 @@ public class Config {
         put("rat", new CheckListboxItem("Rat"));
         put("chicken", new CheckListboxItem("Chicken"));
         put("chick", new CheckListboxItem("Chick"));
+        put("duskfern", new CheckListboxItem("Dusk Fern"));
         put("spindlytaproot", new CheckListboxItem("Spindly Taproot"));
         put("stingingnettle", new CheckListboxItem("Stinging Nettle"));
         put("dragonfly", new CheckListboxItem("Dragonfly"));

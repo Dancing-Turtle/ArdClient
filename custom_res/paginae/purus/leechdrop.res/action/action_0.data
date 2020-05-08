@@ -1,10 +1,10 @@
-#ABUTTON LAYER FOR RES dout//leechdrop.res
+#ABUTTON LAYER FOR RES dout//fill-smelter.res
 #String pr
 paginae/amber/amber
 #uint16 pver
 1
 #String name
-leechdrop
+Farmer
 #String preq
 
 #uint16 hk
@@ -14,4 +14,4 @@ leechdrop
 #String ad[0]
 @
 #String ad[1]
-leechdrop
+farmbot
