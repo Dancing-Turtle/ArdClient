@@ -225,8 +225,7 @@ LocalMiniMap extends Widget {
                     }
                 }
             }
-        } else if (!Config.rawrzmap && !Config.simplemap){
-
+        } else {
             for (c.y = 0; c.y < sz.y; c.y++) {
                 for (c.x = 0; c.x < sz.x; c.x++) {
                     int t = m.gettile(ul.add(c));
