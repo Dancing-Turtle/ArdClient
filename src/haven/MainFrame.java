@@ -52,7 +52,7 @@ public class MainFrame extends java.awt.Frame implements Runnable, Console.Direc
     private final ThreadGroup g;
     public final Thread mt;
     DisplayMode fsmode = null, prefs = null;
-    private static final String TITLE = "Ardennes Hafen Client | Based On Amber Ender and Purus v" + Config.version + "";
+    private static final String TITLE = "Ardennes Hafen Revived " + "1.00";
 
     static {
         try {
