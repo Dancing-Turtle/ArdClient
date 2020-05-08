@@ -2461,6 +2461,7 @@ public class OptWnd extends Window {
         appender.setHorizontalMargin(HORIZONTAL_MARGIN);
 
         appender.add(new Label("Additional Client Features"));
+        //Test
 
         appender.add(new CheckBox("Straight cave wall (requires new chunk render)") {
             {
