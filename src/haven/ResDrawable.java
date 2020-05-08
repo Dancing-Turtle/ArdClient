@@ -50,6 +50,20 @@ public class ResDrawable extends Drawable {
         if (spr != null)
             return;
         MessageBuf stdCopy = sdt.clone();
+        if (Config.bonsai && (gob.type == haven.sloth.gob.Type.TREE || gob.type == haven.sloth.gob.Type.BUSH) && !stdCopy.eom()) {
+            byte[] args = new byte[2];
+            args[0] = (byte)stdCopy.uint8();
+            int fscale = 25;
+            if (!stdCopy.eom()) {
+                fscale = stdCopy.uint8();
+                if (fscale > 25)
+                    fscale = 25;
+
+            }
+            args[1] = (byte)fscale;
+            stdCopy = new MessageBuf(args);
+        }
+
         spr = Sprite.create(gob, res.get(), stdCopy);
         //May throw, come back here possibly
     }
