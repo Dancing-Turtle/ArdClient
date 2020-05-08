@@ -393,22 +393,22 @@ public class CharWnd extends Window {
 
         public void draw(GOut g) {
             WItem.ItemTip tip = null;
-            if (ui.lasttip instanceof WItem.ItemTip)
-                tip = (WItem.ItemTip) ui.lasttip;
-            if (tip != lasttip) {
-                for (El el : els)
+            if(ui.lasttip instanceof WItem.ItemTip)
+                tip = (WItem.ItemTip)ui.lasttip;
+            if(tip != lasttip) {
+                for(El el : els)
                     el.hl = false;
                 FoodInfo finf;
                 try {
-                    finf = (tip == null) ? null : ItemInfo.find(FoodInfo.class, tip.item().info());
-                } catch (Loading l) {
+                    finf = (tip == null)?null:ItemInfo.find(FoodInfo.class, tip.item().info());
+                } catch(Loading l) {
                     finf = null;
                 }
-                if (finf != null) {
-                    for (int i = 0; i < els.size(); i++) {
+                if(finf != null) {
+                    for(int i = 0; i < els.size(); i++) {
                         El el = els.get(i);
-                        for (int o = 0; o < finf.types.length; o++) {
-                            if (finf.types[o] == i) {
+                        for(int o = 0; o < finf.types.length; o++) {
+                            if(finf.types[o] == i) {
                                 el.hl = true;
                                 break;
                             }
@@ -419,6 +419,7 @@ public class CharWnd extends Window {
             }
             super.draw(g);
         }
+
 
         public static final Comparator<El> ecmp = new Comparator<El>() {
             public int compare(El a, El b) {
@@ -446,37 +447,36 @@ public class CharWnd extends Window {
         }
 
         protected void drawitem(GOut g, El el, int idx) {
-            g.chcolor(el.hl ? hilit : (((idx % 2) == 0) ? every : other));
+            g.chcolor(el.hl?hilit:(((idx % 2) == 0)?every:other));
             g.frect(Coord.z, g.sz);
             g.chcolor();
             try {
                 g.image(el.tt(), Coord.z);
-            } catch (Loading e) {
-            }
+            } catch(Loading e) {}
             Tex at = el.at();
             g.image(at, new Coord(sz.x - at.sz().x - sb.sz.x, (elh - at.sz().y) / 2));
         }
 
+
         private void order() {
             int n = els.size();
             order = new Integer[n];
-            for (int i = 0; i < n; i++)
+            for(int i = 0; i < n; i++)
                 order[i] = i;
             Arrays.sort(order, new Comparator<Integer>() {
                 public int compare(Integer a, Integer b) {
-                    return (ecmp.compare(els.get(a), els.get(b)));
+                    return(ecmp.compare(els.get(a), els.get(b)));
                 }
             });
         }
 
         public void update(ResData t, double a) {
-            prev:
-            {
-                for (Iterator<El> i = els.iterator(); i.hasNext(); ) {
+            prev: {
+                for(Iterator<El> i = els.iterator(); i.hasNext();) {
                     El el = i.next();
-                    if (el.t != t)
+                    if(!Utils.eq(el.t, t))
                         continue;
-                    if (a == 1.0)
+                    if(a == 1.0)
                         i.remove();
                     else
                         el.update(a);
@@ -486,6 +486,7 @@ public class CharWnd extends Window {
             }
             order();
         }
+
 
         protected void itemclick(El item, int button) {
         }
