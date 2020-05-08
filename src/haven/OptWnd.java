@@ -34,14 +34,14 @@ import haven.purus.pbot.PBotUtils;
 import haven.resutil.BPRadSprite;
 import haven.sloth.gfx.HitboxMesh;
 
-import java.awt.Color;
-import java.awt.GraphicsEnvironment;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.*;
 import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -62,6 +62,7 @@ public class OptWnd extends Window {
     public final Panel main, video, audio, display, map, general, combat, control, uis,uip, quality, flowermenus, soundalarms, hidesettings, studydesksettings, autodropsettings, keybindsettings, chatsettings, clearboulders, clearbushes, cleartrees, clearhides, additions;
     public Panel current;
     public CheckBox discordcheckbox, menugridcheckbox;
+    CheckBox sm = null, rm = null;
 
     public void chpanel(Panel p) {
         if (current != null)
@@ -2478,7 +2479,7 @@ public class OptWnd extends Window {
         appender.add(new Label(""));
         appender.add(new Label("One map at a time."));
 
-        appender.add(new CheckBox("Rawrz Simple Map") {
+        rm = new CheckBox("Rawrz Simple Map") {
             {
                 a = Config.rawrzmap;
             }
@@ -2487,8 +2488,25 @@ public class OptWnd extends Window {
                 Utils.setprefb("rawrzmap", val);
                 Config.rawrzmap = val;
                 a = val;
+                Config.simplemap = false;
+                sm.a = false;
             }
-        });
+        };
+
+        sm = new CheckBox("Simple Map") {
+            {
+                a = Config.simplemap;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("simplemap", val);
+                Config.simplemap = val;
+                a = val;
+                Config.rawrzmap = false;
+                rm.a = false;
+            }
+        };
+        appender.add(rm);
 
         appender.add(new CheckBox("Rawrz Simple Map disable black lines") {
             {
@@ -2502,17 +2520,7 @@ public class OptWnd extends Window {
             }
         });
 
-        appender.add(new CheckBox("Simple Map") {
-            {
-                a = Config.simplemap;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("simplemap", val);
-                Config.simplemap = val;
-                a = val;
-            }
-        });
+        appender.add(sm);
 
         appender.add(new CheckBox("Map Scale") {
             {

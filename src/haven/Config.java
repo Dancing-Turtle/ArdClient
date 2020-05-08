@@ -412,7 +412,7 @@ public class Config {
         put("gnomeshat", new CheckListboxItem("Gnomes Hat"));
     }};
 
-    public final static HashMap<String, CheckListboxItem> icons = new HashMap<String, CheckListboxItem>(72) {{
+    public final static HashMap<String, CheckListboxItem> icons = new HashMap<String, CheckListboxItem>(73) {{
         put("mandrakespirited", new CheckListboxItem("Spirited Mandrake"));
         put("dandelion", new CheckListboxItem("Dandelion"));
         put("chantrelle", new CheckListboxItem("Chantrelle"));
