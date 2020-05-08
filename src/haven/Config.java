@@ -52,6 +52,8 @@ public class Config {
     public static boolean dbtext = false;
     public static boolean profile = false;
     public static boolean simplemap = Utils.getprefb("simplemap", false);
+    public static boolean rawrzmap = Utils.getprefb("rawrzmap", false);
+    public static boolean disableBlackOutLinesOnMap = Utils.getprefb("disableBlackOutLinesOnMap", false);
     public static boolean mapscale = Utils.getprefb("mapscale", false);
     public static boolean profilegpu = false;
     public static boolean nopreload = false;

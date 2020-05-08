@@ -2475,6 +2475,35 @@ public class OptWnd extends Window {
             }
         });
 
+        appender.add(new Label(""));
+        appender.add(new Label("One map at a time."));
+
+        appender.add(new CheckBox("Rawrz Simple Map") {
+            {
+                a = Config.rawrzmap;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("rawrzmap", val);
+                Config.rawrzmap = val;
+                a = val;
+                System.out.println(a);
+            }
+        });
+
+        appender.add(new CheckBox("Rawrz Simple Map disable black lines") {
+            {
+                a = Config.disableBlackOutLinesOnMap;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("disableBlackOutLinesOnMap", val);
+                Config.disableBlackOutLinesOnMap = val;
+                a = val;
+                System.out.println(a);
+            }
+        });
+
         appender.add(new CheckBox("Simple Map") {
             {
                 a = Config.simplemap;
@@ -2484,6 +2513,7 @@ public class OptWnd extends Window {
                 Utils.setprefb("simplemap", val);
                 Config.simplemap = val;
                 a = val;
+                System.out.println(a);
             }
         });
 

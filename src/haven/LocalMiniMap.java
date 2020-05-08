@@ -45,6 +45,7 @@ LocalMiniMap extends Widget {
     private static final Tex resize = Resource.loadtex("gfx/hud/wndmap/lg/resize");
     private static final Tex gridblue = Resource.loadtex("gfx/hud/mmap/gridblue");
     private static final Tex gridred = Resource.loadtex("gfx/hud/mmap/gridred");
+    private HashMap<BufferedImage, Color> simple_textures = new HashMap<>();
     private String biome;
    // public Tex biometex;
     public final MapView mv;
@@ -172,40 +173,36 @@ LocalMiniMap extends Widget {
                     }
                 }
             }
-        } else {
+        } if(Config.rawrzmap && !Config.simplemap){
             for (c.y = 0; c.y < sz.y; c.y++) {
                 for (c.x = 0; c.x < sz.x; c.x++) {
                     int t = m.gettile(ul.add(c));
-                    BufferedImage tex = tileimg(t, texes);
-                    int rgb = 0xFF000000;
-                    if (tex != null)
-                    {
-                        rgb = tex.getRGB(Utils.floormod(c.x + ul.x, tex.getWidth()),
-                                Utils.floormod(c.y + ul.y, tex.getHeight()));
-                        int mixrgb = tex.getRGB(20, 45);
+                    if (Config.rawrzmap){
+                        Color simple_color = simple_tile_img(t, texes);
 
-                        //color post-processing
-                        Color mixtempColor = new Color(mixrgb, true);
-                        Color tempColor = new Color(rgb, true);
+                        if(simple_color != null)
+                            buf.setRGB(c.x, c.y, simple_color.getRGB());
+                        else
+                            buf.setRGB(c.x, c.y, 0);
+                    } else {
+                        BufferedImage tex = tileimg(t, texes);
+                        int rgb = 0;
+                        if (tex != null)
+                            rgb = tex.getRGB(Utils.floormod(c.x + ul.x, tex.getWidth()),
+                                    Utils.floormod(c.y + ul.y, tex.getHeight()));
+                        buf.setRGB(c.x, c.y, rgb);
+                    }
 
-                        tempColor = Utils.blendcol(tempColor, mixtempColor, 0.75f);
-                        try {
+                    try {
+                        if (!Config.disableBlackOutLinesOnMap) {
                             if ((m.gettile(ul.add(c).add(-1, 0)) > t) ||
                                     (m.gettile(ul.add(c).add(1, 0)) > t) ||
                                     (m.gettile(ul.add(c).add(0, -1)) > t) ||
-                                    (m.gettile(ul.add(c).add(0, 1)) > t)) {
-                                tempColor = Utils.blendcol(tempColor, Color.BLACK, 0.25f);
-                            }
-                            else if ((m.gettile(ul.add(c).add(-1, -1)) > t) ||
-                                    (m.gettile(ul.add(c).add(-1, 1)) > t) ||
-                                    (m.gettile(ul.add(c).add(1, -1)) > t) ||
-                                    (m.gettile(ul.add(c).add(1, 1)) > t)) {
-                                tempColor = Utils.blendcol(tempColor, Color.BLACK, 0.12f);
-                            }
-                        } catch (Exception e) { }
-                        rgb = tempColor.getRGB();
+                                    (m.gettile(ul.add(c).add(0, 1)) > t))
+                                buf.setRGB(c.x, c.y, Color.BLACK.getRGB());
+                        }
+                    } catch (Exception e) {
                     }
-                    buf.setRGB(c.x, c.y, rgb);
                 }
             }
 
@@ -219,7 +216,7 @@ LocalMiniMap extends Widget {
                                 for (int y = c.y - 1; y <= c.y + 1; y++) {
                                     for (int x = c.x - 1; x <= c.x + 1; x++) {
                                         Color cc = new Color(buf.getRGB(x, y));
-                                        buf.setRGB(x, y, Utils.blendcol(cc, Color.BLACK, ((x == c.x) && (y == c.y)) ? 0.85f : 0.2f).getRGB());
+                                        buf.setRGB(x, y, Utils.blendcol(cc, Color.BLACK, ((x == c.x) && (y == c.y)) ? 1 : 0.1).getRGB());
                                     }
                                 }
                             }
@@ -228,9 +225,97 @@ LocalMiniMap extends Widget {
                     }
                 }
             }
+        } else if (!Config.rawrzmap && !Config.simplemap){
+
+            for (c.y = 0; c.y < sz.y; c.y++) {
+                for (c.x = 0; c.x < sz.x; c.x++) {
+                    int t = m.gettile(ul.add(c));
+                    BufferedImage tex = tileimg(t, texes);
+                    int rgb = 0;
+                    if (tex != null)
+                        rgb = tex.getRGB(Utils.floormod(c.x + ul.x, tex.getWidth()),
+                                Utils.floormod(c.y + ul.y, tex.getHeight()));
+                    buf.setRGB(c.x, c.y, rgb);
+
+                    try {
+                        if ((m.gettile(ul.add(c).add(-1, 0)) > t) ||
+                                (m.gettile(ul.add(c).add(1, 0)) > t) ||
+                                (m.gettile(ul.add(c).add(0, -1)) > t) ||
+                                (m.gettile(ul.add(c).add(0, 1)) > t))
+                            buf.setRGB(c.x, c.y, Color.BLACK.getRGB());
+                    } catch (Exception e) {
+                    }
+                }
+            }
+
+            for (c.y = 1; c.y < sz.y - 1; c.y++) {
+                for (c.x = 1; c.x < sz.x - 1; c.x++) {
+                    try {
+                        int t = m.gettile(ul.add(c));
+                        Tiler tl = m.tiler(t);
+                        if (tl instanceof Ridges.RidgeTile) {
+                            if (Ridges.brokenp(m, ul.add(c))) {
+                                for (int y = c.y - 1; y <= c.y + 1; y++) {
+                                    for (int x = c.x - 1; x <= c.x + 1; x++) {
+                                        Color cc = new Color(buf.getRGB(x, y));
+                                        buf.setRGB(x, y, Utils.blendcol(cc, Color.BLACK, ((x == c.x) && (y == c.y)) ? 1 : 0.1).getRGB());
+                                    }
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                    }
+                }
+            } //Laziest implementation Ardennes would be proud
         }
 
         return new TexI(buf);
+    }
+
+    @SuppressWarnings("Duplicates")
+    private Color simple_tile_img(int t, BufferedImage[] texes) {
+        int sumr = 0, sumg = 0, sumb = 0;
+
+        BufferedImage img = texes[t];
+
+        if (!simple_textures.containsKey(img)){
+            Resource r = ui.sess.glob.map.tilesetr(t);
+            if (r == null)
+                return (null);
+            Resource.Image ir = r.layer(Resource.imgc);
+            if (ir == null)
+                return (null);
+            img = ir.img;
+            texes[t] = img;
+
+            for(int x = 0; x < img.getWidth(); x++){
+                for(int y = 0; y < img.getHeight(); y++){
+                    int rgb = img.getRGB(x, y);
+
+                    int red = (rgb >> 16) & 0xFF;
+                    int green = (rgb >> 8) & 0xFF;
+                    int blue = rgb & 0xFF;
+
+                    sumr += red;
+                    sumg += green;
+                    sumb += blue;
+                }
+            }
+
+            int num = img.getWidth() * img.getHeight();
+            simple_textures.put(img, new Color(sumr / num, sumg / num, sumb / num));
+        }
+
+
+//        int t = m.gettile(ul.add(c));
+//        BufferedImage tex = tileimg(t, texes);
+//        int rgb = 0;
+//        if (tex != null)
+//            rgb = tex.getRGB(Utils.floormod(c.x + ul.x, tex.getWidth()),
+//                    Utils.floormod(c.y + ul.y, tex.getHeight()));
+//        buf.setRGB(c.x, c.y, rgb);
+
+        return simple_textures.get(img);
     }
 
 
