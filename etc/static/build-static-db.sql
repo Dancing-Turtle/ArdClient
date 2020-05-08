@@ -111,6 +111,8 @@ INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/trees/sycamore'
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/trees/alder', (SELECT type_id FROM type WHERE name_key = 'TREE'));
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/trees/lemontree', (SELECT type_id FROM type WHERE name_key = 'TREE'));
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/trees/chastetree', (SELECT type_id FROM type WHERE name_key = 'TREE'));
+INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/trees/carobtree', (SELECT type_id FROM type WHERE name_key = 'TREE'));
+INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/trees/gloomcap', (SELECT type_id FROM type WHERE name_key = 'TREE'));
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/trees/silverfir', (SELECT type_id FROM type WHERE name_key = 'TREE'));
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/trees/treeheath', (SELECT type_id FROM type WHERE name_key = 'TREE'));
 INSERT OR IGNORE INTO object (name, type_id) VALUES('gfx/terobjs/trees/terebinth', (SELECT type_id FROM type WHERE name_key = 'TREE'));
