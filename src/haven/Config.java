@@ -51,6 +51,8 @@ public class Config {
     public static URL resurl = null;
     public static boolean dbtext = false;
     public static boolean profile = false;
+    public static boolean simplemap = Utils.getprefb("simplemap", false);
+    public static boolean mapscale = Utils.getprefb("mapscale", false);
     public static boolean profilegpu = false;
     public static boolean nopreload = false;
     public static int mainport = 1870;
@@ -66,6 +68,7 @@ public class Config {
     public static boolean mapdrawflags = Utils.getprefb("mapdrawflags", false);
     public static boolean hideflovisual = Utils.getprefb("hideflovisual", false);
     public static boolean longtooltips = Utils.getprefb("longtooltips", true);
+    public static boolean straightcavewall = Utils.getprefb("straightcavewall", false);
     public static boolean avatooltips = Utils.getprefb("avatooltips", false);
     public static boolean showkinnames = Utils.getprefb("showkinnames", true);
     public static boolean savemmap = Utils.getprefb("savemmap", false);

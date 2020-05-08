@@ -53,6 +53,9 @@ public class LocalMiniMap extends Widget {
     private UI.Grab dragging;
     private Coord doff = Coord.z;
     private Coord delta = Coord.z;
+    private static float[] zArray = {.5f, .75f, 1f, 2f, 3f, 4f};
+    private static float[] ziArray = {.8f, .9f, 1f, 1f, 1f, 1f};
+    private int zIndex = 2;
     private boolean showGrid = DefSettings.MMSHOWGRID.get();
     private boolean showView = DefSettings.MMSHOWVIEW.get();
 
@@ -127,44 +130,101 @@ public class LocalMiniMap extends Widget {
         MCache m = ui.sess.glob.map;
         BufferedImage buf = TexI.mkbuf(sz);
         Coord c = new Coord();
-        for (c.y = 0; c.y < sz.y; c.y++) {
-            for (c.x = 0; c.x < sz.x; c.x++) {
-                int t = m.gettile(ul.add(c));
+        if(!Config.simplemap){
+            for (c.y = 0; c.y < sz.y; c.y++) {
+                for (c.x = 0; c.x < sz.x; c.x++) {
+                    int t = m.gettile(ul.add(c));
+                    BufferedImage tex = tileimg(t, texes);
+                    int rgb = 0;
+                    if (tex != null)
+                        rgb = tex.getRGB(Utils.floormod(c.x + ul.x, tex.getWidth()),
+                                Utils.floormod(c.y + ul.y, tex.getHeight()));
+                    buf.setRGB(c.x, c.y, rgb);
 
-                BufferedImage tex = tileimg(t, texes);
-                int rgb = 0;
-                if (tex != null)
-                    rgb = tex.getRGB(Utils.floormod(c.x + ul.x, tex.getWidth()),
-                            Utils.floormod(c.y + ul.y, tex.getHeight()));
-                buf.setRGB(c.x, c.y, rgb);
-
-                try {
-                    if ((m.gettile(ul.add(c).add(-1, 0)) > t) ||
-                            (m.gettile(ul.add(c).add(1, 0)) > t) ||
-                            (m.gettile(ul.add(c).add(0, -1)) > t) ||
-                            (m.gettile(ul.add(c).add(0, 1)) > t))
-                        buf.setRGB(c.x, c.y, Color.BLACK.getRGB());
-                } catch (Exception e) {
+                    try {
+                        if ((m.gettile(ul.add(c).add(-1, 0)) > t) ||
+                                (m.gettile(ul.add(c).add(1, 0)) > t) ||
+                                (m.gettile(ul.add(c).add(0, -1)) > t) ||
+                                (m.gettile(ul.add(c).add(0, 1)) > t))
+                            buf.setRGB(c.x, c.y, Color.BLACK.getRGB());
+                    } catch (Exception e) {
+                    }
                 }
             }
-        }
 
-        for (c.y = 1; c.y < sz.y - 1; c.y++) {
-            for (c.x = 1; c.x < sz.x - 1; c.x++) {
-                try {
-                    int t = m.gettile(ul.add(c));
-                    Tiler tl = m.tiler(t);
-                    if (tl instanceof Ridges.RidgeTile) {
-                        if (Ridges.brokenp(m, ul.add(c))) {
-                            for (int y = c.y - 1; y <= c.y + 1; y++) {
-                                for (int x = c.x - 1; x <= c.x + 1; x++) {
-                                    Color cc = new Color(buf.getRGB(x, y));
-                                    buf.setRGB(x, y, Utils.blendcol(cc, Color.BLACK, ((x == c.x) && (y == c.y)) ? 1 : 0.1).getRGB());
+            for (c.y = 1; c.y < sz.y - 1; c.y++) {
+                for (c.x = 1; c.x < sz.x - 1; c.x++) {
+                    try {
+                        int t = m.gettile(ul.add(c));
+                        Tiler tl = m.tiler(t);
+                        if (tl instanceof Ridges.RidgeTile) {
+                            if (Ridges.brokenp(m, ul.add(c))) {
+                                for (int y = c.y - 1; y <= c.y + 1; y++) {
+                                    for (int x = c.x - 1; x <= c.x + 1; x++) {
+                                        Color cc = new Color(buf.getRGB(x, y));
+                                        buf.setRGB(x, y, Utils.blendcol(cc, Color.BLACK, ((x == c.x) && (y == c.y)) ? 1 : 0.1).getRGB());
+                                    }
                                 }
                             }
                         }
+                    } catch (Exception e) {
                     }
-                } catch (Exception e) {
+                }
+            }
+        } else {
+            for (c.y = 0; c.y < sz.y; c.y++) {
+                for (c.x = 0; c.x < sz.x; c.x++) {
+                    int t = m.gettile(ul.add(c));
+                    BufferedImage tex = tileimg(t, texes);
+                    int rgb = 0xFF000000;
+                    if (tex != null)
+                    {
+                        rgb = tex.getRGB(Utils.floormod(c.x + ul.x, tex.getWidth()),
+                                Utils.floormod(c.y + ul.y, tex.getHeight()));
+                        int mixrgb = tex.getRGB(20, 45);
+
+                        //color post-processing
+                        Color mixtempColor = new Color(mixrgb, true);
+                        Color tempColor = new Color(rgb, true);
+
+                        tempColor = Utils.blendcol(tempColor, mixtempColor, 0.75f);
+                        try {
+                            if ((m.gettile(ul.add(c).add(-1, 0)) > t) ||
+                                    (m.gettile(ul.add(c).add(1, 0)) > t) ||
+                                    (m.gettile(ul.add(c).add(0, -1)) > t) ||
+                                    (m.gettile(ul.add(c).add(0, 1)) > t)) {
+                                tempColor = Utils.blendcol(tempColor, Color.BLACK, 0.25f);
+                            }
+                            else if ((m.gettile(ul.add(c).add(-1, -1)) > t) ||
+                                    (m.gettile(ul.add(c).add(-1, 1)) > t) ||
+                                    (m.gettile(ul.add(c).add(1, -1)) > t) ||
+                                    (m.gettile(ul.add(c).add(1, 1)) > t)) {
+                                tempColor = Utils.blendcol(tempColor, Color.BLACK, 0.12f);
+                            }
+                        } catch (Exception e) { }
+                        rgb = tempColor.getRGB();
+                    }
+                    buf.setRGB(c.x, c.y, rgb);
+                }
+            }
+
+            for (c.y = 1; c.y < sz.y - 1; c.y++) {
+                for (c.x = 1; c.x < sz.x - 1; c.x++) {
+                    try {
+                        int t = m.gettile(ul.add(c));
+                        Tiler tl = m.tiler(t);
+                        if (tl instanceof Ridges.RidgeTile) {
+                            if (Ridges.brokenp(m, ul.add(c))) {
+                                for (int y = c.y - 1; y <= c.y + 1; y++) {
+                                    for (int x = c.x - 1; x <= c.x + 1; x++) {
+                                        Color cc = new Color(buf.getRGB(x, y));
+                                        buf.setRGB(x, y, Utils.blendcol(cc, Color.BLACK, ((x == c.x) && (y == c.y)) ? 0.85f : 0.2f).getRGB());
+                                    }
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                    }
                 }
             }
         }
@@ -674,12 +734,23 @@ public class LocalMiniMap extends Widget {
     }
 
     public boolean mousewheel(Coord c, int amount) {
-    	if (amount > 0 && zoom > 1)
-    		zoom = Math.round(zoom * 100 - 20) / 100f;
-    	else if (amount < 0 && zoom < 3)
-    		zoom = Math.round(zoom * 100 + 20) / 100f;
+        if(!Config.mapscale){
+            if (amount > 0 && zoom > 1)
+                zoom = Math.round(zoom * 100 - 20) / 100f;
+            else if (amount < 0 && zoom < 3)
+                zoom = Math.round(zoom * 100 + 20) / 100f;
 
-    	iconZoom = Math.round((zoom - 1) * 100 / 2) / 100f + 1;
-    	return true;
+            iconZoom = Math.round((zoom - 1) * 100 / 2) / 100f + 1;
+
+        } else {
+            if (amount == 0) {
+                return false;
+            } else {
+                zIndex = Math.max(0, Math.min(zIndex - amount, zArray.length-1));
+            }
+            zoom = zArray[zIndex];
+            iconZoom = ziArray[zIndex];
+        }
+        return true;
     }
 }

@@ -26,6 +26,8 @@
 
 package haven;
 
+import haven.sloth.gob.Type;
+
 public class ResDrawable extends Drawable {
     public final Indir<Resource> res;
     public Sprite spr = null;
@@ -49,8 +51,12 @@ public class ResDrawable extends Drawable {
     public void init() {
         if (spr != null)
             return;
+        Resource res = this.res.get();
+        if (gob.type == null)
+            gob.type = Type.getType(res.name);
+
         MessageBuf stdCopy = sdt.clone();
-        if (Config.bonsai && (gob.type == haven.sloth.gob.Type.TREE || gob.type == haven.sloth.gob.Type.BUSH) && !stdCopy.eom()) {
+        if (Config.bonsai && (gob.type == Type.TREE || gob.type == Type.BUSH) && !stdCopy.eom()) {
             byte[] args = new byte[2];
             args[0] = (byte)stdCopy.uint8();
             int fscale = 25;
@@ -64,8 +70,7 @@ public class ResDrawable extends Drawable {
             stdCopy = new MessageBuf(args);
         }
 
-        spr = Sprite.create(gob, res.get(), stdCopy);
-        //May throw, come back here possibly
+        spr = Sprite.create(gob, res, stdCopy);
     }
 
     public void setup(RenderList rl) {

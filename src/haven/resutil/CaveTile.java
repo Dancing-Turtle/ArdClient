@@ -57,14 +57,21 @@ public class CaveTile extends Tiler {
                     buf[0] = ms.fortile(tc);
                     buf[1] = ms.new Vertex(buf[0].x, buf[0].y, buf[0].z + 7F);
                 }else {
-                    Random rnd = m.grnd(tc.add(m.ul));
                     Vertex[] buf = wv[cs.o(tc)] = new Vertex[4];
                     buf[0] = ms.new Vertex(ms.fortile(tc));
-                    for (int i = 1; i < buf.length; i++) {
-                        buf[i] = ms.new Vertex(buf[0].x, buf[0].y, buf[0].z + (i * h / (buf.length - 1)));
-                        buf[i].x += (rnd.nextFloat() - 0.5f) * 3.0f;
-                        buf[i].y += (rnd.nextFloat() - 0.5f) * 3.0f;
-                        buf[i].z += (rnd.nextFloat() - 0.5f) * 3.5f;
+                    if (Config.straightcavewall) {
+                        for (int i = 1; i < buf.length; i++) {
+                            buf[i] = ms.new Vertex(buf[0].x, buf[0].y, buf[0].z + (i * h / (buf.length - 1)));
+                        }
+                    } else {
+                        Random rnd = MapMesh.grnd(tc.add(m.ul));
+                        for (int i = 1; i < buf.length; i++) {
+                            buf[i] = ms.new Vertex(buf[0].x, buf[0].y, buf[0].z + (i * h / (buf.length - 1)));
+                            buf[i].x += (rnd.nextFloat() - 0.5f) * 3.0f;
+                            buf[i].y += (rnd.nextFloat() - 0.5f) * 3.0f;
+                            buf[i].z += (rnd.nextFloat() - 0.5f) * 3.5f;
+                        }
+
                     }
                 }
             }

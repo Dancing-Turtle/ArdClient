@@ -59,7 +59,7 @@ public class OptWnd extends Window {
     public static final int HORIZONTAL_MARGIN = 5;
     private static final Text.Foundry fonttest = new Text.Foundry(Text.sans, 10).aa(true);
     public static final int VERTICAL_AUDIO_MARGIN = 5;
-    public final Panel main, video, audio, display, map, general, combat, control, uis,uip, quality, flowermenus, soundalarms, hidesettings, studydesksettings, autodropsettings, keybindsettings, chatsettings, clearboulders, clearbushes, cleartrees, clearhides;
+    public final Panel main, video, audio, display, map, general, combat, control, uis,uip, quality, flowermenus, soundalarms, hidesettings, studydesksettings, autodropsettings, keybindsettings, chatsettings, clearboulders, clearbushes, cleartrees, clearhides, additions;
     public Panel current;
     public CheckBox discordcheckbox, menugridcheckbox;
 
@@ -471,6 +471,7 @@ public class OptWnd extends Window {
         clearbushes = add(new Panel());
         cleartrees = add(new Panel());
         clearhides = add(new Panel());
+        additions = add(new Panel());
 
         initMain(gopts);
         initAudio();
@@ -489,6 +490,7 @@ public class OptWnd extends Window {
         initautodropsettings();
         initkeybindsettings();
         initchatsettings();
+        initAdditions();
 
         chpanel(main);
     }
@@ -511,6 +513,7 @@ public class OptWnd extends Window {
         main.add(new PButton(200, "Chat",'c', chatsettings), new Coord(420,120));
         main.add(new PButton(200, "Theme",'t', uip), new Coord(0,150));
         main.add(new PButton(200, "Autodrop", 's', autodropsettings), new Coord(420, 150));
+        main.add(new PButton(200, "Additional settings", 'z', additions), new Coord(0, 180));
         if (gopts) {
             main.add(new Button(200, "Disconnect Discord") {
                 public void click() {
@@ -2449,6 +2452,54 @@ public class OptWnd extends Window {
 
         quality.add(new PButton(200, "Back", 27, main), new Coord(210, 360));
         quality.pack();
+    }
+
+    private void initAdditions() {
+        final WidgetVerticalAppender appender = new WidgetVerticalAppender(withScrollport(additions, new Coord(620, 350)));
+
+        appender.setVerticalMargin(VERTICAL_MARGIN);
+        appender.setHorizontalMargin(HORIZONTAL_MARGIN);
+
+        appender.add(new Label("Additional Client Features"));
+
+        appender.add(new CheckBox("Straight cave wall (requires new chunk render)") {
+            {
+                a = Config.straightcavewall;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("straightcavewall (requires new chunk render)", val);
+                Config.straightcavewall = val;
+                a = val;
+            }
+        });
+
+        appender.add(new CheckBox("Simple Map") {
+            {
+                a = Config.simplemap;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("simplemap", val);
+                Config.simplemap = val;
+                a = val;
+            }
+        });
+
+        appender.add(new CheckBox("Map Scale") {
+            {
+                a = Config.mapscale;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("mapscale", val);
+                Config.mapscale = val;
+                a = val;
+            }
+        });
+
+        additions.add(new PButton(200, "Back", 27, main), new Coord(210, 360));
+        additions.pack();
     }
 
     private void initFlowermenus() {
