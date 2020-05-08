@@ -347,8 +347,13 @@ public class Config {
 
     public final static HashMap<String, CheckListboxItem> trees = new HashMap<String, CheckListboxItem>(57) {{
         put("chastetree", new CheckListboxItem("Chaste Tree"));
+        put("dogwood", new CheckListboxItem("Dogwood"));
+        put("strawberrytree", new CheckListboxItem("Strawberry Tree"));
+        put("stonepine", new CheckListboxItem("Stone Pine"));
+        put("blackpine", new CheckListboxItem("Black Pine"));
         put("silverfir", new CheckListboxItem("Silver Fir"));
         put("treeheath", new CheckListboxItem("Heath Tree"));
+        put("sycamore", new CheckListboxItem("Sycamore"));
         put("terebinth", new CheckListboxItem("Terebinth"));
         put("lotetree", new CheckListboxItem("Lote Tree"));
         put("sorbtree", new CheckListboxItem("Sorb Tree"));
