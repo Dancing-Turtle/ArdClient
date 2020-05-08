@@ -28,10 +28,7 @@ package haven;
 
 import com.jogamp.opengl.util.awt.Screenshot;
 
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.GraphicsConfiguration;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -225,9 +222,19 @@ public class HavenPanel extends GLCanvas implements Runnable, Console.Directory,
         });
     }
 
-    @Override
+    private Robot awtrobot;
     public void setmousepos(Coord c) {
-
+        java.awt.EventQueue.invokeLater(() -> {
+            if(awtrobot == null) {
+                try {
+                    awtrobot = new Robot(getGraphicsConfiguration().getDevice());
+                } catch(java.awt.AWTException e) {
+                    return;
+                }
+            }
+            Point rp = getLocationOnScreen();
+            awtrobot.mouseMove(rp.x + c.x, rp.y + c.y);
+        });
     }
 
     public static abstract class OrthoState extends GLState {
@@ -317,6 +324,8 @@ public class HavenPanel extends GLCanvas implements Runnable, Console.Directory,
         });
         inited = true;
     }
+
+
 
     UI newui(Session sess) {
         if (ui != null)
