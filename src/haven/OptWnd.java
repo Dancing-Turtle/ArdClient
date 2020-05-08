@@ -2487,7 +2487,6 @@ public class OptWnd extends Window {
                 Utils.setprefb("rawrzmap", val);
                 Config.rawrzmap = val;
                 a = val;
-                System.out.println(a);
             }
         });
 
@@ -2500,7 +2499,6 @@ public class OptWnd extends Window {
                 Utils.setprefb("disableBlackOutLinesOnMap", val);
                 Config.disableBlackOutLinesOnMap = val;
                 a = val;
-                System.out.println(a);
             }
         });
 
@@ -2513,7 +2511,6 @@ public class OptWnd extends Window {
                 Utils.setprefb("simplemap", val);
                 Config.simplemap = val;
                 a = val;
-                System.out.println(a);
             }
         });
 
