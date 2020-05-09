@@ -59,7 +59,7 @@ public class OptWnd extends Window {
     public final Panel main, video, audio, display, map, general, combat, control, uis,uip, quality, flowermenus, soundalarms, hidesettings, studydesksettings, autodropsettings, keybindsettings, chatsettings, clearboulders, clearbushes, cleartrees, clearhides, additions;
     public Panel current;
     public CheckBox discordcheckbox, menugridcheckbox;
-    CheckBox sm = null, rm = null, lt = null, bt = null;
+    CheckBox sm = null, rm = null, lt = null, bt = null, ltl;
 
     public void chpanel(Panel p) {
         if (current != null)
@@ -1329,6 +1329,8 @@ public class OptWnd extends Window {
                 a = val;
                 lt.a = false;
                 Config.largetree = false;
+                ltl.a = false;
+                Config.largetreeleaves = false;
             }
         };
 
@@ -1343,10 +1345,29 @@ public class OptWnd extends Window {
                 a = val;
                 bt.a = false;
                 Config.bonsai = false;
+                ltl.a = false;
+                Config.largetreeleaves = false;
+            }
+        };
+
+        ltl = new CheckBox("LARP trees w/ leaves (req. logout)") {
+            {
+                a = Config.largetreeleaves;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("largetreeleaves", val);
+                Config.largetreeleaves = val;
+                a = val;
+                bt.a = false;
+                Config.bonsai = false;
+                lt.a = false;
+                Config.largetree = false;
             }
         };
         appender.add(lt);
         appender.add(bt);
+        appender.add(ltl);
 
         Button OutputSettings = new Button(220, "Output Light Settings to System Tab") {
             @Override

@@ -230,6 +230,7 @@ public class Config {
     public static boolean DropBones = Utils.getprefb("DropBones", false);
     public static boolean bonsai = Utils.getprefb("bonsai", false);
     public static boolean largetree = Utils.getprefb("largetree", false);
+    public static boolean largetreeleaves = Utils.getprefb("largetree", false);
     public static int fontsizechat = Utils.getprefi("fontsizechat", 14);
     public static int curiotimetarget = Utils.getprefi("curiotimetarget", 1440);
     public static int statgainsize = Utils.getprefi("statgainsize", 1);

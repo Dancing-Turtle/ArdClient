@@ -56,39 +56,35 @@ public class ResDrawable extends Drawable {
             gob.type = Type.getType(res.name);
 
         MessageBuf stdCopy = sdt.clone();
-        if (Config.bonsai && (gob.type == Type.TREE || gob.type == Type.BUSH) && !stdCopy.eom()) {
-            System.out.println(res.name);
-            byte[] args = new byte[2];
-            args[0] = (byte)stdCopy.uint8();
-            System.out.println("args0: " + args[0]);
-            int fscale = 25;
-            if (!stdCopy.eom()) {
-                fscale = stdCopy.uint8();
-                if (fscale > 25)
-                    fscale = 25;
+        if(Config.largetree || Config.largetreeleaves || Config.bonsai){
+            if(res.name.contains("tree") && !stdCopy.eom()){
+                byte[] args = new byte[2];
+                if(Config.largetree){
+                    args[0] = -100;
+                    args[1] = -5;
+                    stdCopy = new MessageBuf(args);
+                } else if(Config.largetreeleaves){
+                    args[0] = (byte)stdCopy.uint8();
+                    args[1] = -5;
+                    stdCopy = new MessageBuf(args);
+                } else if (Config.bonsai) {
+                    args[0] = (byte)stdCopy.uint8();
+                    System.out.println("args0: " + args[0]);
+                    int fscale = 25;
+                    if (!stdCopy.eom()) {
+                        fscale = stdCopy.uint8();
+                        if (fscale > 25)
+                            fscale = 25;
 
+                    }
+                    System.out.println("fscale: " + fscale);
+                    System.out.println("args1: " + args[1]);
+                    args[1] = (byte)fscale;
+                    stdCopy = new MessageBuf(args);
+                    System.out.println(stdCopy);
+                    System.out.println("--------");
+                }
             }
-            System.out.println("fscale: " + fscale);
-            System.out.println("args1: " + args[1]);
-            args[1] = (byte)fscale;
-            stdCopy = new MessageBuf(args);
-            System.out.println(stdCopy);
-            System.out.println("--------");
-        } else if(Config.largetree && res.name.contains("tree") && !stdCopy.eom()){
-            System.out.println(res.name);
-            byte[] args = new byte[2];
-            args[0] = -100;
-            //System.out.println("args0: " + args[0]);
-            int fscale = -100;
-            if (!stdCopy.eom()) {
-                    fscale = -100;
-            }
-            args[1] = -5;
-            //System.out.println("fscale: " + fscale);
-            //System.out.println("args1: " + args[1]);
-            stdCopy = new MessageBuf(args);
-            //System.out.println(stdCopy);
-            //System.out.println("--------");
         }
         //System.out.println(res.name);
 
