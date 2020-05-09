@@ -56,9 +56,10 @@ public class ResDrawable extends Drawable {
             gob.type = Type.getType(res.name);
 
         MessageBuf stdCopy = sdt.clone();
+        byte[] args = new byte[2];
         if(Config.largetree || Config.largetreeleaves || Config.bonsai){
             if(res.name.contains("tree") && !stdCopy.eom()){
-                byte[] args = new byte[2];
+
                 if(Config.largetree){
                     args[0] = -100;
                     args[1] = -5;
@@ -86,7 +87,9 @@ public class ResDrawable extends Drawable {
                 }
             }
         }
-        //System.out.println(res.name);
+        //Dump Name/Type of non-gob
+        //System.out.println(this.res.get().name);
+        //System.out.println(gob.type);
 
         spr = Sprite.create(gob, res, stdCopy);
     }

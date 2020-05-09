@@ -15,3 +15,4 @@ amber-*.zip
 *.rar
 etc/res/*.exe
 /scripts/Destroyer.PBot
+/scripts/
