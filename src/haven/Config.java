@@ -26,7 +26,6 @@
 
 package haven;
 
-import haven.error.ErrorHandler;
 import haven.purus.Iconfinder;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -230,6 +229,7 @@ public class Config {
     public static boolean DropMeat = Utils.getprefb("DropMeat", false);
     public static boolean DropBones = Utils.getprefb("DropBones", false);
     public static boolean bonsai = Utils.getprefb("bonsai", false);
+    public static boolean largetree = Utils.getprefb("largetree", false);
     public static int fontsizechat = Utils.getprefi("fontsizechat", 14);
     public static int curiotimetarget = Utils.getprefi("curiotimetarget", 1440);
     public static int statgainsize = Utils.getprefi("statgainsize", 1);
@@ -271,6 +271,7 @@ public class Config {
     public static int smatSupportsgreen= Utils.getprefi("smatSupportsgreen",255);
     public static int smatSupportsblue = Utils.getprefi("smatSupportsblue",0);
     public static String confid = "ArdClient";
+    public static boolean elitecombatanimal = Utils.getprefb("disableAllAnimations", true);
     // public static final boolean isUpdate;
     private static String username, playername;
     public static boolean showPBot = Utils.getprefb("showPBot",true);

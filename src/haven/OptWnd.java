@@ -33,25 +33,22 @@ import haven.purus.pbot.PBotAPI;
 import haven.purus.pbot.PBotUtils;
 import haven.resutil.BPRadSprite;
 import haven.sloth.gfx.HitboxMesh;
+import haven.sloth.gob.Movable;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.io.*;
+import java.io.IOException;
 import java.net.JarURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.prefs.BackingStoreException;
 import java.util.stream.Collectors;
 
-import haven.sloth.gob.Movable;
-
 import static haven.DefSettings.*;
-import static haven.DefSettings.GUIDESCOLOR;
 
 
 public class OptWnd extends Window {
@@ -62,7 +59,7 @@ public class OptWnd extends Window {
     public final Panel main, video, audio, display, map, general, combat, control, uis,uip, quality, flowermenus, soundalarms, hidesettings, studydesksettings, autodropsettings, keybindsettings, chatsettings, clearboulders, clearbushes, cleartrees, clearhides, additions;
     public Panel current;
     public CheckBox discordcheckbox, menugridcheckbox;
-    CheckBox sm = null, rm = null;
+    CheckBox sm = null, rm = null, lt = null, bt = null;
 
     public void chpanel(Panel p) {
         if (current != null)
@@ -1320,7 +1317,8 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
-        appender.add(new CheckBox("Miniature trees (req. logout)") {
+
+        bt = new CheckBox("Miniature trees (req. logout)") {
             {
                 a = Config.bonsai;
             }
@@ -1329,8 +1327,27 @@ public class OptWnd extends Window {
                 Utils.setprefb("bonsai", val);
                 Config.bonsai = val;
                 a = val;
+                lt.a = false;
+                Config.largetree = false;
             }
-        });
+        };
+
+        lt = new CheckBox("LARP trees (req. logout)") {
+            {
+                a = Config.largetree;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("largetree", val);
+                Config.largetree = val;
+                a = val;
+                bt.a = false;
+                Config.bonsai = false;
+            }
+        };
+        appender.add(lt);
+        appender.add(bt);
+
         Button OutputSettings = new Button(220, "Output Light Settings to System Tab") {
             @Override
             public void click() {
