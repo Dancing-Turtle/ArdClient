@@ -26,8 +26,11 @@
 
 package haven;
 
-import static haven.MCache.cmaps;
+import haven.MapFile.*;
+import haven.purus.pbot.PBotAPI;
+import haven.purus.pbot.PBotUtils;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
@@ -35,24 +38,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
-import javax.imageio.ImageIO;
-
-import haven.MapFile.Grid;
-import haven.MapFile.GridInfo;
-import haven.MapFile.Marker;
-import haven.MapFile.PMarker;
-import haven.MapFile.SMarker;
-import haven.MapFile.Segment;
-import haven.purus.pbot.PBotAPI;
-import haven.purus.pbot.PBotUtils;
+import static haven.MCache.cmaps;
 
 public class MapFileWidget extends Widget {
     public final MapFile file;
@@ -67,6 +55,7 @@ public class MapFileWidget extends Widget {
     private UI.Grab drag;
     private boolean dragging;
     private Coord dsc, dmc;
+    private String biome;
     public static int zoom = 0;
     private static final double[] scaleFactors = new double[]{1, 100 / 75.0, 100 / 50.0, 100 / 25.0, 100 / 15.0, 100 / 8.0};
 
@@ -507,12 +496,16 @@ public class MapFileWidget extends Widget {
         return(true);
     }
 
+    //All Ardennes's code
+
     public Object tooltip(Coord c, Widget prev) {
         if(curloc != null) {
             Coord tc = c.sub(sz.div(2)).add(curloc.tc);
             DisplayMarker mark = markerat(tc);
             if(mark != null) {
                 return(mark.tip);
+            }else{
+                return (biomeat(c));
             }
         }
         return(super.tooltip(c, prev));
@@ -521,4 +514,30 @@ public class MapFileWidget extends Widget {
     public static double scalef() {
         return scaleFactors[zoom];
     }
+
+
+
+    private Object biomeat(Coord c){
+        final Coord tc = c.sub(sz.div(2)).mul(zoom == 0 ? 1 : scalef()).add(curloc.tc.mul(zoom == 0 ? 1 : scalef()));
+        final Coord gc = tc.div(cmaps);
+        String newbiome;
+        try{
+            newbiome = prettybiome(curloc.seg.gridtilename(tc,gc));
+        }catch(Exception e){
+            newbiome = "Void";
+        }
+        if(!newbiome.equals(biome)) {
+            biome = newbiome;
+            return Text.render(newbiome);
+        }
+        return Text.render(biome);
+    }
+
+    private static String prettybiome(String biome) {
+        int k = biome.lastIndexOf("/");
+        biome = biome.substring(k + 1);
+        biome = biome.substring(0, 1).toUpperCase() + biome.substring(1);
+        return biome;
+    }
+
 }

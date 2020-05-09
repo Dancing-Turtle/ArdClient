@@ -26,26 +26,21 @@
 
 package haven;
 
-import static haven.MCache.cmaps;
+import haven.Defer.Future;
 
-import java.awt.Color;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import haven.Defer.Future;
+import static haven.MCache.cmaps;
 
 public class MapFile {
     public static boolean debug = false;
@@ -705,6 +700,19 @@ public class MapFile {
                 Cached cur = cache.get(grid.id);
                 if (cur != null)
                     cur.loaded = grid;
+            }
+        }
+
+        public String gridtilename(final Coord tc, final Coord gc) {
+            if (map.containsKey(gc)) {
+                if (cache.containsKey(map.get(gc))) {
+                    final Grid g = cache.get(map.get(gc)).loaded;
+                    return g.tilesets[g.gettile(tc.sub(gc.mul(cmaps)))].res.name;
+                } else {
+                    return "Unknown";
+                }
+            } else {
+                return "Unknown";
             }
         }
     }
