@@ -34,6 +34,7 @@ import haven.purus.pbot.PBotUtils;
 import haven.resutil.BPRadSprite;
 import haven.sloth.gfx.HitboxMesh;
 import haven.sloth.gob.Movable;
+import integrations.mapv4.MappingClient;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -56,7 +57,7 @@ public class OptWnd extends Window {
     public static final int HORIZONTAL_MARGIN = 5;
     private static final Text.Foundry fonttest = new Text.Foundry(Text.sans, 10).aa(true);
     public static final int VERTICAL_AUDIO_MARGIN = 5;
-    public final Panel main, video, audio, display, map, general, combat, control, uis,uip, quality, flowermenus, soundalarms, hidesettings, studydesksettings, autodropsettings, keybindsettings, chatsettings, clearboulders, clearbushes, cleartrees, clearhides, additions;
+    public final Panel main, video, audio, display, map, general, combat, control, uis,uip, quality, mapping, flowermenus, soundalarms, hidesettings, studydesksettings, autodropsettings, keybindsettings, chatsettings, clearboulders, clearbushes, cleartrees, clearhides, additions;
     public Panel current;
     public CheckBox discordcheckbox, menugridcheckbox;
     CheckBox sm = null, rm = null, lt = null, bt = null, ltl;
@@ -470,6 +471,7 @@ public class OptWnd extends Window {
         cleartrees = add(new Panel());
         clearhides = add(new Panel());
         additions = add(new Panel());
+        mapping = add(new Panel());
 
         initMain(gopts);
         initAudio();
@@ -489,8 +491,78 @@ public class OptWnd extends Window {
         initkeybindsettings();
         initchatsettings();
         initAdditions();
+        initMapping();
 
         chpanel(main);
+    }
+
+    private void initMapping() {
+        final WidgetVerticalAppender appender = new WidgetVerticalAppender(withScrollport(mapping, new Coord(620, 350)));
+        appender.setVerticalMargin(VERTICAL_MARGIN);
+        appender.setHorizontalMargin(HORIZONTAL_MARGIN);
+        appender.add(new Label("Online Auto-Mapper Service:"));
+
+        appender.addRow(new Label("Mapping server URL (req. restart):"),
+                new TextEntry(240, Config.mapperUrl) {
+                    @Override
+                    public boolean keydown(KeyEvent ev) {
+                        if (!parent.visible)
+                            return false;
+                        Utils.setpref("mapperUrl", text);
+                        return buf.key(ev);
+                    }
+                }
+        );
+
+        appender.add(new CheckBox("Enable mapping service") {
+            {
+                a = Config.mapperEnabled;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("mapperEnabled", val);
+                Config.mapperEnabled = val;
+                MappingClient.getInstance().EnableGridUploads(Config.vendanMapv4);
+                MappingClient.getInstance().EnableTracking(Config.vendanMapv4);
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Hide character name") {
+            {
+                a = Config.mapperHashName;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("mapperHashName", val);
+                Config.mapperHashName = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Enable navigation tracking") {
+            {
+                a = Config.enableNavigationTracking;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("enableNavigationTracking", val);
+                Config.enableNavigationTracking = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Upload custom GREEN markers to map") {
+            {
+                a = Config.sendCustomMarkers;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("sendCustomMarkers", val);
+                Config.sendCustomMarkers = val;
+                a = val;
+            }
+        });
+
+        mapping.add(new PButton(200, "Back", 27, main), new Coord(210, 360));
+        mapping.pack();
     }
 
     private void initMain(boolean gopts) {
@@ -512,6 +584,7 @@ public class OptWnd extends Window {
         main.add(new PButton(200, "Theme",'t', uip), new Coord(0,150));
         main.add(new PButton(200, "Autodrop", 's', autodropsettings), new Coord(420, 150));
         main.add(new PButton(200, "Additional settings", 'z', additions), new Coord(0, 180));
+        main.add(new PButton(200, "Mapping", 'z', mapping), new Coord(420, 180));
         if (gopts) {
             main.add(new Button(200, "Disconnect Discord") {
                 public void click() {

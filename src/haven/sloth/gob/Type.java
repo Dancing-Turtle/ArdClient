@@ -15,6 +15,7 @@ public enum Type {
     TAMEDANIMAL,
     SMALLANIMAL,
     WATERVEHICLE,
+    PLAYER,
     VEHICLE,
     TILE,
     SOUND,

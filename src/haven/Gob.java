@@ -30,15 +30,14 @@ import haven.resutil.BPRadSprite;
 import haven.resutil.WaterTile;
 import haven.sloth.gfx.HitboxMesh;
 import haven.sloth.gob.*;
-import haven.sloth.gob.Type;
 import haven.sloth.io.HighlightData;
 import haven.sloth.script.pathfinding.Hitbox;
-
+import integrations.map.Navigation;
+import integrations.mapv4.MappingClient;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
@@ -627,6 +626,12 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
                 hitboxcoords = null;
             }
             this.rc = c;
+
+            if(isplayer()){
+                if(Config.mapperEnabled)
+                    Navigation.setPlayerCoordinates(c);
+                if(Config.vendanMapv4) MappingClient.getInstance().CheckGridCoord(c);
+            }
             this.a = a;
             if(glob.ui != null) {
                 final UI ui = glob.ui.get();

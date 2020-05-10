@@ -26,7 +26,11 @@
 
 package haven;
 
-import java.util.*;
+import integrations.map.Navigation;
+import integrations.mapv4.MappingClient;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Charlist extends Widget {
     public static final Tex bg = Resource.loadtex("gfx/hud/avakort");
@@ -133,18 +137,21 @@ public class Charlist extends Widget {
     }
 
     public void wdgmsg(Widget sender, String msg, Object... args) {
-	if(sender instanceof Button) {
-	    synchronized(chars) {
-		for(Char c : chars) {
-		    if(sender == c.plb)
-			wdgmsg("play", c.name);
-			Config.setPlayerName(c.name);
+		if (sender instanceof Button) {
+			synchronized (chars) {
+				for (Char c : chars) {
+					if (sender == c.plb) {
+						wdgmsg("play", c.name);
+						Navigation.setCharacterName(c.name);
+						if(Config.vendanMapv4)
+							MappingClient.getInstance().SetPlayerName(c.name);
+					}
+				}
+			}
+		} else if (sender instanceof Avaview) {
+		} else {
+			super.wdgmsg(sender, msg, args);
 		}
-	    }
-	} else if(sender instanceof Avaview) {
-	} else {
-	    super.wdgmsg(sender, msg, args);
-	}
     }
 
     public void uimsg(String msg, Object... args) {

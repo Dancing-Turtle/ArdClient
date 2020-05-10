@@ -30,17 +30,9 @@ package haven;
 
 import haven.sloth.script.pathfinding.GobHitmap;
 
+import java.awt.*;
 import java.lang.ref.WeakReference;
 import java.util.*;
-import java.awt.Color;
-import java.lang.ref.WeakReference;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Observable;
 
 public class Glob {
     //TODO: Glob should honestly make the ui, not have the UI attach onto it.
@@ -82,6 +74,12 @@ public class Glob {
     public boolean night =false; //true is night
     public Tex bservertimetex;
 
+    private static WeakReference<Glob> reference = new WeakReference<>(null);
+
+    public static Glob getByReference() {
+        return reference.get();
+    }
+
     static {
         timersThread = new haven.timers.TimersThread();
         timersThread.start();
@@ -92,6 +90,7 @@ public class Glob {
         gobhitmap = new GobHitmap();
         map = new MCache(sess);
         party = new Party(this);
+        reference = new WeakReference<>(this);
     }
 
     @Resource.PublishedCode(name = "wtr")

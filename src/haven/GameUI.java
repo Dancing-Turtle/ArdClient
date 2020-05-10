@@ -26,12 +26,10 @@
 
 package haven;
 
-import static haven.Action.*;
-import static haven.Action.TOGGLE_KIN_LIST;
-import static haven.Action.TOGGLE_OPTIONS;
-
-import haven.automation.*;
 import haven.automation.Discord;
+import haven.automation.ErrorSysMsgCallback;
+import haven.automation.PickForageable;
+import haven.automation.Traverse;
 import haven.livestock.LivestockManager;
 import haven.purus.DrinkWater;
 import haven.purus.ItemClickCallback;
@@ -40,19 +38,23 @@ import haven.purus.pbot.PBotScriptlist;
 import haven.purus.pbot.PBotScriptlistOld;
 import haven.purus.pbot.PBotUtils;
 import haven.resutil.FoodInfo;
-import static haven.KeyBinder.*;
-import java.awt.*;
-import java.lang.ref.WeakReference;
-import java.util.*;
-import java.awt.event.KeyEvent;
-import java.awt.image.WritableRaster;
-import java.util.List;
-
 import haven.sloth.gob.Mark;
 import haven.sloth.gui.DeletedManager;
 import haven.sloth.gui.HiddenManager;
 import haven.sloth.gui.HighlightManager;
 import haven.sloth.gui.SoundManager;
+import integrations.map.RemoteNavigation;
+import integrations.mapv4.MappingClient;
+
+import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.image.WritableRaster;
+import java.lang.ref.WeakReference;
+import java.util.List;
+import java.util.*;
+
+import static haven.Action.*;
+import static haven.KeyBinder.KeyBind;
 
 public class GameUI extends ConsoleHost implements Console.Directory {
     public static final Text.Foundry msgfoundry = new Text.Foundry(Text.dfont, Text.cfg.msg);
@@ -848,6 +850,16 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             mmapwnd = adda(new MinimapWnd(mmap), new Coord(sz.x, 0), 1, 0);
             if(ResCache.global != null) {
                 MapFile file = MapFile.load(ResCache.global, mapfilename());
+                if(Config.mapperEnabled)
+                    RemoteNavigation.getInstance().uploadMarkerData(file);
+                if(Config.vendanMapv4) {
+                    MappingClient.getInstance().ProcessMap(file, (m) -> {
+                        if(m instanceof MapFile.PMarker && Config.vendanGreenMarkers) {
+                            return ((MapFile.PMarker)m).color.equals(Color.GREEN);
+                        }
+                        return true;
+                    });
+                }
                 mmap.save(file);
                 mapfile = new MapWnd(mmap.save, map, Utils.getprefc("wndsz-map",new Coord(700, 500)), "Map");
                 mapfile.hide();
