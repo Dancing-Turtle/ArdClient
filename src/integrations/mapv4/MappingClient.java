@@ -348,7 +348,7 @@ public class MappingClient {
                     }
                     for(Gob gob : g.oc) {
                         try {
-                            if(gob.type == Type.PLAYER){
+                            if(gob.type == Type.HUMAN){
                                 JSONObject j = new JSONObject();
                                 if(gob.isplayer()){
                                     j.put("name", playerName);
