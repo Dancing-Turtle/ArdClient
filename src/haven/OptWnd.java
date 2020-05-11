@@ -502,17 +502,19 @@ public class OptWnd extends Window {
         appender.setHorizontalMargin(HORIZONTAL_MARGIN);
         appender.add(new Label("Online Auto-Mapper Service:"));
 
-        appender.addRow(new Label("Mapping server URL (req. restart):"),
-                new TextEntry(240, Config.mapperUrl) {
-                    @Override
-                    public boolean keydown(KeyEvent ev) {
-                        if (!parent.visible)
-                            return false;
-                        Utils.setpref("mapperUrl", text);
-                        return buf.key(ev);
-                    }
-                }
-        );
+        appender.add(new CheckBox("Enable mapv4 mapper") {
+            {
+                a = Config.vendanMapv4;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("vendan-mapv4", val);
+                Config.vendanMapv4 = val;
+                MappingClient.getInstance().EnableGridUploads(Config.vendanMapv4);
+                MappingClient.getInstance().EnableTracking(Config.vendanMapv4);
+                a = val;
+            }
+        });
 
         appender.add(new CheckBox("Enable mapping service") {
             {
