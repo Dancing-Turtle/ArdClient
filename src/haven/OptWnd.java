@@ -502,6 +502,22 @@ public class OptWnd extends Window {
         appender.setHorizontalMargin(HORIZONTAL_MARGIN);
         appender.add(new Label("Online Auto-Mapper Service:"));
 
+        appender.addRow(new Label("Server URL:"),
+                new TextEntry(240, Utils.getpref("vendan-mapv4-endpoint", "")) {
+                    @Override
+                    public boolean keydown(KeyEvent ev) {
+                        if (!parent.visible)
+                            return false;
+                        Utils.setpref("vendan-mapv4-endpoint", text);
+                        System.out.println(text);
+                        MappingClient.getInstance().SetEndpoint(text);
+                        System.out.println(Utils.getpref("vendan-mapv4-endpoint", ""));
+
+                        return buf.key(ev);
+                    }
+                }
+        );
+
         appender.add(new CheckBox("Enable mapv4 mapper") {
             {
                 a = Config.vendanMapv4;
@@ -516,19 +532,6 @@ public class OptWnd extends Window {
             }
         });
 
-        appender.add(new CheckBox("Enable mapping service") {
-            {
-                a = Config.mapperEnabled;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("mapperEnabled", val);
-                Config.mapperEnabled = val;
-                MappingClient.getInstance().EnableGridUploads(Config.vendanMapv4);
-                MappingClient.getInstance().EnableTracking(Config.vendanMapv4);
-                a = val;
-            }
-        });
         appender.add(new CheckBox("Hide character name") {
             {
                 a = Config.mapperHashName;
