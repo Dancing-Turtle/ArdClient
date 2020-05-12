@@ -647,6 +647,8 @@ public class Config {
         put("gfx/terobjs/herbs/blueberry", new CheckListboxItem("Blueberry"));
         put("gfx/terobjs/herbs/strawberry", new CheckListboxItem("Strawberry"));
         put("gfx/kritter/rat/rat", new CheckListboxItem("Rat"));
+        put("gfx/kritter/spermwhale/spermwhale",new CheckListboxItem("Whale"));
+        put("gfx/kritter/orca/orca",new CheckListboxItem("Orca"));
         put("gfx/kritter/chicken/chicken", new CheckListboxItem("Chicken"));
         put("gfx/kritter/chicken/chick", new CheckListboxItem("Chick"));
         put("gfx/terobjs/herbs/spindlytaproot", new CheckListboxItem("Spindly Taproot"));
@@ -757,6 +759,7 @@ public class Config {
         put("gfx/terobjs/crystalpatch","Rock Crystal");
         put("gfx/kritter/bear/bear","Bear");
         put("gfx/kritter/orca/orca","Orca");
+        put("gfx/kritter/spermwhale/spermwhale","Whale");
         put("gfx/kritter/adder/adder","Snake");
         put("gfx/terobjs/vehicle/bram","Battering Ram");
         put("gfx/terobjs/vehicle/catapult","Catapult");
