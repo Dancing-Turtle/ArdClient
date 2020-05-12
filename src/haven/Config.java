@@ -756,6 +756,7 @@ public class Config {
         put("gfx/terobjs/caveorgan","Cave Organ");
         put("gfx/terobjs/crystalpatch","Rock Crystal");
         put("gfx/kritter/bear/bear","Bear");
+        put("gfx/kritter/orca/orca","Orca");
         put("gfx/kritter/adder/adder","Snake");
         put("gfx/terobjs/vehicle/bram","Battering Ram");
         put("gfx/terobjs/vehicle/catapult","Catapult");
