@@ -207,6 +207,66 @@ public class OptWnd extends Window {
                         cf.dirty = true;
                     }
                 });
+
+                Label fpsBackgroundLimitLbl = new Label("Background FPS limit: " + (Config.fpsBackgroundLimit == -1 ? "unlimited" : Config.fpsBackgroundLimit));
+                appender.add(fpsBackgroundLimitLbl);
+                appender.add(new HSlider(200, 0, 49, 0) {
+                    protected void attach(UI ui) {
+                        super.attach(ui);
+                        if(Config.fpsBackgroundLimit == -1) {
+                            val = 49;
+                        } else {
+                            val = Config.fpsBackgroundLimit / 5;
+                        }
+                    }
+
+                    public void changed() {
+                        if(val == 0) {
+                            Config.fpsBackgroundLimit = 1;
+                        } else if(val == 49) {
+                            Config.fpsBackgroundLimit = -1; // Unlimited
+                        } else {
+                            Config.fpsBackgroundLimit = val * 5;
+                        }
+                        Utils.setprefi("fpsBackgroundLimit", Config.fpsBackgroundLimit);
+                        HavenPanel.bgfd = 1000 / Config.fpsBackgroundLimit;
+                        if(Config.fpsBackgroundLimit == -1) {
+                            fpsBackgroundLimitLbl.settext("Background FPS limit: unlimited");
+                        } else {
+                            fpsBackgroundLimitLbl.settext("Background FPS limit: " + Config.fpsBackgroundLimit);
+                        }
+                    }
+                });
+
+                Label fpsLimitLbl = new Label("FPS limit: " + (Config.fpsLimit == -1 ? "unlimited" : Config.fpsLimit));
+                appender.add(fpsLimitLbl);
+                appender.add(new HSlider(200, 0, 49, 0) {
+                    protected void attach(UI ui) {
+                        super.attach(ui);
+                        if(Config.fpsLimit == -1) {
+                            val = 49;
+                        } else {
+                            val = Config.fpsLimit / 5;
+                        }
+                    }
+
+                    public void changed() {
+                        if(val == 0) {
+                            Config.fpsLimit = 1;
+                        } else if (val == 49) {
+                            Config.fpsLimit = -1; // Unlimited
+                        } else {
+                            Config.fpsLimit = val * 5;
+                        }
+                        Utils.setprefi("fpsLimit", Config.fpsLimit);
+                        HavenPanel.fd = 1000 / Config.fpsLimit;
+                        if(Config.fpsLimit == -1) {
+                            fpsLimitLbl.settext("FPS limit: unlimited");
+                        } else {
+                            fpsLimitLbl.settext("FPS limit: " + Config.fpsLimit);
+                        }
+                    }
+                });
                 appender.add(new Label("Anisotropic filtering"));
                 if (cf.anisotex.max() <= 1) {
                     appender.add(new Label("(Not supported)"));

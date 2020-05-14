@@ -100,6 +100,8 @@ public class Config {
     public static boolean disabletiletrans = Utils.getprefb("disabletiletrans", false);
     public static boolean itemmeterbar = Utils.getprefb("itemmeterbar", false);
     public static boolean showprogressperc = Utils.getprefb("showprogressperc", true);
+    public static int fpsLimit = Utils.getprefi("fpsLimit", 200);
+    public static int fpsBackgroundLimit = Utils.getprefi("fpsBackgroundLimit", 200);
 
     public static boolean quickslots = Utils.getprefb("quickslots", true);
     public static boolean disablequickslotdrop = Utils.getprefb("disablequickslotdrop", true);
