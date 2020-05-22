@@ -218,10 +218,15 @@ public class MappingClient {
                 List<MarkerData> markers;
                 try {
                     markers = mapfile.markers.stream().filter(uploadCheck).map(m -> {
-                        Coord mgc = new Coord(Math.floorDiv(m.tc.x, 100), Math.floorDiv(m.tc.y, 100));
-                        long gridid = mapfile.segments.get(m.seg).map.get(mgc);
+                        long gridid;
+                        try {
+                            Coord mgc = new Coord(Math.floorDiv(m.tc.x, 100), Math.floorDiv(m.tc.y, 100));
+                            gridid = mapfile.segments.get(m.seg).map.get(mgc);
+                        } catch (Exception ex) {
+                            return null;
+                        }
                         return new MarkerData(m, gridid);
-                    }).collect(Collectors.toList());
+                    }).filter(m -> m != null).collect(Collectors.toList());
                 } catch(Exception ex) {
                     if(retries-- > 0) {
                         System.out.println("rescheduling upload");
