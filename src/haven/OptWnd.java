@@ -1251,8 +1251,8 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
-        // appender.add(ColorPreWithLabel("Deep Ocean Color: (requires relog)", DEEPWATERCOL));
-        // appender.add(ColorPreWithLabel("All Other Water Color: (requires relog)", ALLWATERCOL));
+        appender.add(ColorPreWithLabel("Deep Ocean Color: (requires relog)", DEEPWATERCOL));
+        appender.add(ColorPreWithLabel("All Other Water Color: (requires relog)", ALLWATERCOL));
         appender.add(ColorPreWithLabel("Beehive radius color: ", BEEHIVECOLOR, val ->{
             BPRadSprite.smatBeehive = new States.ColState(val);
             GameUI gui = gameui();

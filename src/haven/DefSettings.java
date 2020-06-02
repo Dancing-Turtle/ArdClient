@@ -1,19 +1,19 @@
 package haven;
 
 import com.google.common.flogger.FluentLogger;
-import haven.sloth.gob.*;
+import haven.sloth.gob.Alerted;
+import haven.sloth.gob.Deleted;
+import haven.sloth.gob.Hidden;
+import haven.sloth.gob.Movable;
 import haven.sloth.io.HighlightData;
-import haven.Storage;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Optional;
+
 //import haven.sloth.gob.*;
 //import haven.sloth.io.HighlightData;
 //import haven.sloth.io.Storage;
-import haven.Storage;
-
-import java.awt.*;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Optional;
 
 /**
  * A global view of all our settings. This should at some point cover all of Ape.
@@ -67,8 +67,8 @@ public class DefSettings {
 	public static final IndirSetting<Color> NVAMBIENTCOL = new IndirSetting<>(global, "graphics.nightvision-ambient");       //[RBGA] Nightvision ambient color
 	public static final IndirSetting<Color> NVDIFFUSECOL = new IndirSetting<>(global, "graphics.diffuse-color");             //[RGBA] Nightvision diffuse color
 	public static final IndirSetting<Color> NVSPECCOC = new IndirSetting<>(global, "graphics.specular-color");               //[RGBA] Nightvision specular color
-	// public static final IndirSetting<Color> DEEPWATERCOL = new IndirSetting<>(global, "graphics.deepwater-color");           //[RGBA] Deep Ocean Water Color
-	// public static final IndirSetting<Color> ALLWATERCOL = new IndirSetting<>(global, "graphics.watercol-color");             //[RGBA] Color of all other water color
+	public static final IndirSetting<Color> DEEPWATERCOL = new IndirSetting<>(global, "graphics.deepwater-color");           //[RGBA] Deep Ocean Water Color
+	public static final IndirSetting<Color> ALLWATERCOL = new IndirSetting<>(global, "graphics.watercol-color");             //[RGBA] Color of all other water color
 	public static final IndirSetting<Color> CURIOTARGET = new IndirSetting<>(global, "graphics.curiotarget-color");             //[RGBA] Color of all other water color
 	public static final IndirSetting<Color> CURIOHIGH = new IndirSetting<>(global, "graphics.curiohigh-color");             //[RGBA] Color of all other water color
 	public static final IndirSetting<Color> CURIOLOW = new IndirSetting<>(global, "graphics.curiolow-color");             //[RGBA] Color of all other water color
@@ -205,8 +205,8 @@ public class DefSettings {
 		NVAMBIENTCOL.ensure(new Color(200,200,200));
 		NVDIFFUSECOL.ensure(new Color(200,200,200));
 		NVSPECCOC.ensure(new Color(255,255,255));
-		// DEEPWATERCOL.ensure(new Color(0, 0, 0));
-		// ALLWATERCOL.ensure(new Color(0, 16, 48));
+		DEEPWATERCOL.ensure(new Color(0, 0, 0));
+		ALLWATERCOL.ensure(new Color(0, 16, 48));
 		CURIOTARGET.ensure(new Color(0,255,0));
 		CURIOHIGH.ensure(new Color(255,0,0));
 		CURIOLOW.ensure(new Color(255,182,193));
