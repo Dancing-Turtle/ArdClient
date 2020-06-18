@@ -15,6 +15,7 @@ public class PBotGob {
 		this.gob = gob;
 	}
 
+
 	/**
 	 * Check if stockpile is full
 	 * @return True if stockpile is full, else false

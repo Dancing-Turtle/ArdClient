@@ -1,8 +1,7 @@
 package haven.purus.pbot;
 
-import haven.*;
-import haven.Button;
 import haven.Window;
+import haven.*;
 import haven.automation.Discord;
 import haven.purus.DrinkWater;
 import haven.purus.ItemClickCallback;
@@ -10,7 +9,6 @@ import haven.purus.pbot.gui.PBotWindow;
 import net.dv8tion.jda.core.entities.TextChannel;
 
 import java.awt.*;
-import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -76,6 +74,15 @@ public class PBotUtils {
 					return true;
 				}
 			}
+		}
+		return false;
+	}
+
+
+	public static boolean petalExists() {
+		FlowerMenu menu = PBotAPI.gui.ui.root.findchild(FlowerMenu.class);
+		if(menu != null) {
+			return true;
 		}
 		return false;
 	}
@@ -163,6 +170,19 @@ public class PBotUtils {
 	public static void waitForFlowerMenu() {
 		while(PBotAPI.gui.ui.root.findchild(FlowerMenu.class) == null) {
 			sleep(15);
+		}
+	}
+
+	public static void waitForFlowerMenu(int limit) {
+		int cycles = 0;
+		while(PBotAPI.gui.ui.root.findchild(FlowerMenu.class) == null) {
+			if(cycles == limit){
+				break;
+			} else {
+				sleep(1000);
+				cycles++;
+				PBotUtils.sysMsg("Cycles: " + cycles);
+			}
 		}
 	}
 	/**
@@ -509,6 +529,10 @@ public class PBotUtils {
 	public static void doClick(Gob gob, int button, int mod) {
 		PBotAPI.gui.map.wdgmsg("click", Coord.z, gob.rc.floor(posres), button, 0, mod, (int) gob.id, gob.rc.floor(posres), 0,
 				-1);
+	}
+
+	public static void doClickCrop(Gob gob){
+		PBotAPI.gui.map.wdgmsg("click", gob.sc, gob.rc.floor(posres), 3, 0, 0, (int) gob.id, gob.rc.floor(posres), 0, -1);
 	}
 
 	public static int getAmount(GItem item) {
@@ -1273,6 +1297,24 @@ public class PBotUtils {
 	 */
 	public static void transferItem(WItem item) {
 		item.item.wdgmsg("transfer", Coord.z);
+	}
+
+	public static void pfmove(int x, int y){
+		PBotAPI.gui.map.pathto(new Coord2d(x, y));
+	}
+
+	public static void pfmovegob(PBotGob gob){
+		PBotAPI.gui.map.pathto(gob.gob);
+	}
+
+	public static String getRes(PBotGob gob){
+		return gob.gob.getres().name;
+	}
+
+	public static boolean checkName(PBotGob gob, String s){
+		if(gob.gob.getres().name.contains(s)){
+			return true;
+		} else return false;
 	}
 
 }
