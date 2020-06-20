@@ -587,6 +587,32 @@ public class PBotUtils {
 		return nearest;
 	}
 
+	// Finds nearest objects and returns closest one
+	public static Gob findObjectContains(int radius, String... names) {
+		Coord2d plc = player().rc;
+		double min = radius;
+		Gob nearest = null;
+		synchronized (PBotAPI.gui.ui.sess.glob.oc) {
+			for (Gob gob : PBotAPI.gui.ui.sess.glob.oc) {
+				double dist = gob.rc.dist(plc);
+				if (dist < min) {
+					boolean matches = false;
+					for (String name : names) {
+						if (gob.getres() != null && gob.getres().name.contains(name)) {
+							matches = true;
+							break;
+						}
+					}
+					if (matches) {
+						min = dist;
+						nearest = gob;
+					}
+				}
+			}
+		}
+		return nearest;
+	}
+
 	public static Gob findNearestBarrel(int radius, java.util.List<Gob> blacklist){
 		Coord2d plc = player().rc;
 		double min = radius;
@@ -1306,6 +1332,9 @@ public class PBotUtils {
 	public static void pfmovegob(PBotGob gob){
 		PBotAPI.gui.map.pathto(gob.gob);
 	}
+	public static void pfmovegob(Gob gob){
+		PBotAPI.gui.map.pathto(gob);
+	}
 
 	public static String getRes(PBotGob gob){
 		return gob.gob.getres().name;
@@ -1315,6 +1344,14 @@ public class PBotUtils {
 		if(gob.gob.getres().name.contains(s)){
 			return true;
 		} else return false;
+	}
+
+	static double returnX(PBotGob a){
+		return a.gob.rc.x;
+	}
+
+	static double returnY(PBotGob a){
+		return a.gob.rc.y;
 	}
 
 }
