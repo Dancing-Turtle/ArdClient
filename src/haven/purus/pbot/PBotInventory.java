@@ -62,6 +62,18 @@ public class PBotInventory {
 		return items;
 	}
 
+	public List<PBotItem> getInventoryContainsResnames(List<String> resnames) {
+		List<PBotItem> items = new ArrayList<>();
+		for(PBotItem item : getInventoryContents()) {
+			String name = item.getResname();
+			for(String s : resnames) {
+				if(s.contains(name))
+					items.add(item);
+			}
+		}
+		return items;
+	}
+
 	/**
 	 * Finds an item with certain location from the inventory
 	 * @param xLoc x-coordinate of the item location in inventory

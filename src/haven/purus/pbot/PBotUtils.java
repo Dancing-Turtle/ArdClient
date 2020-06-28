@@ -37,6 +37,17 @@ public class PBotUtils {
 	}
 
 	/**
+	 * Kills thread
+	 */
+	public static void stop() {
+		try {
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
 	 * Right click a gob with pathfinder, wait until pathfinder is finished
 	 * @param gob Gob to right click
 	 * @param mod 1 = shift, 2 = ctrl, 4 = alt
