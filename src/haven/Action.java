@@ -63,7 +63,9 @@ public enum Action {
     TOGGLE_GRID(GameUI::toggleGridLines,"Toggles tile gridlines"),
     TOGGLE_GRIDBINDS(GameUI::toggleGridBinds,"Toggles MenuGrid Keybinds"),
     TOGGLE_FLOWERMENUSETTINGS(GameUI::toggleMenuSettings,"Opens Autoselect Options"),
-    TOGGLE_MAPSETTINGS(GameUI::toggleMapSettings,"Opens Map Options");
+    TOGGLE_MAPSETTINGS(GameUI::toggleMapSettings,"Opens Map Options"),
+    ATTACK(GameUI::attack,"Attack Cursor"),
+    CLOSEST_TARGET(GameUI::closestTarget,"Target Closest Target");
 
 
 

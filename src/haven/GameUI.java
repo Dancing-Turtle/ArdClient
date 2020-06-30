@@ -385,6 +385,12 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         }catch(Exception e){e.printStackTrace();}
     }
 
+    public void closestTarget(){
+        try {
+            fv.targetClosestCombat();
+        }catch(Exception e){e.printStackTrace();}
+    }
+
     public void peaceCurrent(){
         try {
             if (fv != null && fv.current != null && fv.curgive != null) {
@@ -1571,6 +1577,14 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public void aggroClosest(){
         if (map != null)
             map.aggroclosest();
+    }
+
+    public void attack(){
+        try {
+            this.act("aggro");
+        } catch (Exception e){
+
+        }
     }
 
 

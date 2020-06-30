@@ -9,8 +9,11 @@ import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.lang.reflect.Type;
-import java.util.*;
 import java.util.List;
+import java.util.*;
+
+import static haven.Action.*;
+import static haven.WidgetList.BOX;
 
 //import static haven.Action.FILTER;
 //import static haven.Action.OPEN_CRAFT_DB;
@@ -18,9 +21,6 @@ import java.util.List;
 //import static haven.Action.OPEN_QUICK_BUILD;
 //import static haven.Action.OPEN_QUICK_CRAFT;
 //import static haven.Action.TOGGLE_TILE_GRID;
-import static haven.Action.*;
-import static haven.WidgetList.*;
-import static haven.WidgetList.BOX;
 
 public class KeyBinder {
 	private static final String CONFIG_JSON = "keybindings.json";
@@ -116,6 +116,8 @@ public class KeyBinder {
 		add(KeyEvent.VK_T,SHIFT,TOGGLE_GRIDBINDS);
 		add(KeyEvent.VK_F,CTRL,TOGGLE_FLOWERMENUSETTINGS);
 		add(KeyEvent.VK_M,SHIFT,TOGGLE_MAPSETTINGS);
+		add(KeyEvent.VK_V,CTRL,ATTACK);
+		add(KeyEvent.VK_C,CTRL,CLOSEST_TARGET);
 	}
 
 	private static synchronized void store() {

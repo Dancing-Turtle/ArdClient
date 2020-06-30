@@ -57,6 +57,8 @@ public class Fightview extends Widget {
     private Avaview curava;
     private Button curpurs;
     public final Bufflist buffs = add(new Bufflist());
+    public Fightview.Relation lastTarget;
+
     private static final Gob.Overlay curol = new Gob.Overlay(new FightCurrentOpp());
     {
         buffs.hide();
@@ -238,6 +240,7 @@ public class Fightview extends Widget {
 
     public Fightview() {
         super(new Coord(width, (bg.sz().y + ymarg) * height));
+        this.lastTarget = null;
     }
 
     public void addchild(Widget child, Object... args) {
@@ -471,5 +474,52 @@ public class Fightview extends Widget {
             return;
         }
         super.uimsg(msg, args);
+    }
+
+    public void targetClosestCombat() {
+        try {
+            Fightview.Relation closest = null;
+            Gob closestGob = null;
+            Gob rGob = null;
+            double distanceRange = 0.0D;
+            Gob player;
+            synchronized(this.ui.sess.glob.oc) {
+                player = this.ui.sess.glob.oc.getgob(MapView.plgob);
+            }
+
+            Iterator var7 = this.lsrel.iterator();
+
+            while(var7.hasNext()) {
+                Fightview.Relation r = (Fightview.Relation)var7.next();
+                if (r != null) {
+                    synchronized(this.ui.sess.glob.oc) {
+                        rGob = this.ui.sess.glob.oc.getgob(r.gobid);
+                    }
+
+                    if (closestGob == null && rGob != null) {
+                        closestGob = rGob;
+                    }
+
+                    if (closestGob != null && rGob != null) {
+                        double closestDist = (double)player.getc().dist(closestGob.getc());
+                        double rDist = (double)player.getc().dist(rGob.getc());
+                        if (rDist < closestDist) {
+                            closestGob = rGob;
+                        }
+                    }
+                }
+            }
+
+            if (closestGob != null) {
+                if (this.current.gobid != closestGob.id) {
+                    this.lastTarget = this.current;
+                }
+
+                this.wdgmsg("bump", new Object[]{(int)closestGob.id});
+            }
+        } catch (NullPointerException var15) {
+            System.out.println(var15.toString());
+        }
+
     }
 }
