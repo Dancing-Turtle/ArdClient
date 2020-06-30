@@ -27,13 +27,10 @@
 package haven;
 
 import haven.purus.pbot.PBotAPI;
-import haven.purus.pbot.PBotUtils;
 
-import java.awt.Color;
-import java.awt.Desktop;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.*;
-import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -60,7 +57,8 @@ public class LoginScreen extends Widget {
     }
 
     public LoginScreen() {
-        super(bg.sz());
+        //super(bg.sz());
+        super(new Coord(800, 600));
         setfocustab(true);
         add(new Img(bg), Coord.z);
         optbtn = adda(new Button(100, "Options"), sz.x-110, 40, 0, 1);
