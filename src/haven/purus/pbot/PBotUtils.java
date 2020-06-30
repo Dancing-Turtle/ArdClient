@@ -118,6 +118,17 @@ public class PBotUtils {
 	}
 
 	/**
+	 * Click some place on map
+	 * @param x x-coordinate
+	 * @param y y-coordinate
+	 * @param btn 1 = left click, 3 = right click
+	 * @param mod 1 = shift, 2 = ctrl, 4 = alt
+	 */
+	public static void mapClick(double x, double y, int btn, int mod) {
+		PBotAPI.gui.map.wdgmsg("click", getCenterScreenCoord(), new Coord2d(x, y).floor(posres), btn, mod);
+	}
+
+	/**
 	 * Use item in hand to ground below player, for example, to plant carrot
 	 */
 /*	public static void mapInteractClick() {
