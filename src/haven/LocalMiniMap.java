@@ -602,7 +602,7 @@ LocalMiniMap extends Widget {
         if (Config.playerposfile != null && MapGridSave.gul != null) {
             try {
                 // instead of synchronizing MapGridSave.gul we just handle NPE
-             //   plcrel = pl.rc.sub((MapGridSave.gul.x + 50) * tilesz.x, (MapGridSave.gul.y + 50) * tilesz.y);
+                //   plcrel = pl.rc.sub((MapGridSave.gul.x + 50) * tilesz.x, (MapGridSave.gul.y + 50) * tilesz.y);
             } catch (NullPointerException npe) {
             }
         }

@@ -430,7 +430,7 @@ public class Fightview extends Widget {
             rel.remove();
             lsrel.remove(rel);
             if (lsrel.size() == 0) {
-                oc.removedmgoverlay(MapView.plgob);
+                oc.removedmgoverlay(ui.gui.map.plgob);
                 oc.isfight = false;
             }
             if (rel == current)
@@ -484,7 +484,7 @@ public class Fightview extends Widget {
             double distanceRange = 0.0D;
             Gob player;
             synchronized(this.ui.sess.glob.oc) {
-                player = this.ui.sess.glob.oc.getgob(MapView.plgob);
+                player = this.ui.sess.glob.oc.getgob(ui.gui.map.plgob);
             }
 
             Iterator var7 = this.lsrel.iterator();

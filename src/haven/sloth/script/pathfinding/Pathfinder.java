@@ -129,9 +129,11 @@ public abstract class Pathfinder {
 
         Coord xy = new Coord(0, 0);
         for (xy.x = c.x; xy.x < br.x; ++xy.x)
-            for (xy.y = c.y; xy.y < br.y; ++xy.y)
-                if (ui.sess.glob.map.gethitmap(xy.div(MCache.tilesz2)) != null)
+            for (xy.y = c.y; xy.y < br.y; ++xy.y) {
+                final Tile t = ui.sess.glob.map.gethitmap(xy.div(MCache.tilesz2));
+                if (t != Tile.SHALLOWWATER && t != null)
                     return true;
+            }
         return false;
     }
 

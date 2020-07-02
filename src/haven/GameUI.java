@@ -412,6 +412,68 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         }
     }
 
+    public void nextSess(){
+        HashMap<Integer, UI> sessmap = new HashMap<Integer, UI>();
+        int sess = 0;
+        int activesess = 1;
+        int sesscount = MainFrame.instance.p.sessionCount();
+        try {
+            if (sesscount > 1) {
+                for (UI uiwdg : MainFrame.instance.p.sessions) {
+                    sess++;
+                    if (uiwdg == ui) {
+                        activesess = sess;
+                    }
+                    sessmap.put(sess, uiwdg);
+                }
+                System.out.println("active : "+activesess+" count : "+sesscount+" sess : "+sess);
+                if (activesess == sess) {//if we're the last sess in the list, loop around
+                    MainFrame.instance.p.setActiveUI(sessmap.get(1));
+                } else {
+                    MainFrame.instance.p.setActiveUI(sessmap.get(activesess + 1));
+                }
+            } else {
+                msg("There appears to only be 1 active session currently, cannot switch.", Color.WHITE);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+            sessmap = null;
+            msg("Error trying to switch to next session.",Color.WHITE);
+        }
+        sessmap = null;
+    }
+
+    public void prevSess(){
+        HashMap<Integer, UI> sessmap = new HashMap<Integer, UI>();
+        int sess = 0;
+        int activesess = 1;
+        int sesscount = MainFrame.instance.p.sessionCount();
+        try {
+            if (sesscount > 1) {
+                for (UI uiwdg : MainFrame.instance.p.sessions) {
+                    sess++;
+                    if (uiwdg == ui) {
+                        activesess = sess;
+                    }
+                    sessmap.put(sess, uiwdg);
+                }
+                System.out.println("active : "+activesess+" count : "+sesscount+" sess : "+sess);
+                if (activesess == 1) {//if we're the first sess in the list, loop around
+                    MainFrame.instance.p.setActiveUI(sessmap.get(sesscount));
+                } else {
+                    MainFrame.instance.p.setActiveUI(sessmap.get(activesess - 1));
+                }
+            } else {
+                msg("There appears to only be 1 active session currently, cannot switch.", Color.WHITE);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+            sessmap = null;
+            msg("Error trying to switch to next session.",Color.WHITE);
+        }
+        sessmap = null;
+    }
+
     public void toggleCharacter() {
         if((chrwdg != null) && chrwdg.show(!chrwdg.visible)) {
             chrwdg.raise();

@@ -1,19 +1,27 @@
 package haven.sloth.script.pathfinding;
 
 import haven.Coord;
-import haven.UI;
 import haven.DefSettings;
+import haven.UI;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 public class NBAPathfinder extends Pathfinder {
+    enum Side {
+        SOURCE,
+        GOAL;
+    }
+
     private final int level;
     private double best = Double.MAX_VALUE;
     private Coord touched = null;
+
+    private double estbest = Double.MAX_VALUE;
+    private Coord estbestc = null;
 
     public NBAPathfinder(final UI ui) {
         super(ui);
@@ -75,10 +83,10 @@ public class NBAPathfinder extends Pathfinder {
         final boolean earlyexit = DefSettings.PATHFINDINGTIER.get() == 2;
 
         //10: while any v ∈ M has g(v) < ∞ do //While we have verts that have g(v) defined
-        while (!startpq.isEmpty() && !goalpq.isEmpty()) {
+        while (!startpq.isEmpty() && (!goalpq.isEmpty())) {
             //Do it in lock step to simulate it being simultaneous.
-            fs = expand(startpq, goal, start, fs, ft, startNodes, endNodes, ignore);
-            ft = expand(goalpq, start, goal, ft, fs, endNodes, startNodes, ignore);
+            fs = expand(startpq, goal, start, start, fs, ft, startNodes, endNodes, ignore, Side.SOURCE);
+            ft = expand(goalpq, start, goal, start, ft, fs, endNodes, startNodes, ignore, Side.GOAL);
 
             if (!earlyexit || touched == null)
                 continue;
@@ -98,6 +106,11 @@ public class NBAPathfinder extends Pathfinder {
             if (DefSettings.DEBUG.get())
                 dump(startNodes, endNodes);
             return combined;
+        } else if (estbestc != null) {
+            final List<Coord> ipath = collect(startNodes.get(estbestc));
+            if (DefSettings.DEBUG.get())
+                dump(startNodes, endNodes);
+            return ipath;
         } else {
             if (DefSettings.DEBUG.get())
                 dump(startNodes, endNodes);
@@ -105,10 +118,10 @@ public class NBAPathfinder extends Pathfinder {
         }
     }
 
-    private double expand(final PriorityQueue<Node> M, final Coord target, final Coord source,
+    private double expand(final PriorityQueue<Node> M, final Coord target, final Coord source, final Coord start,
                           final double f, final double ftilda,
                           final Map<Coord, Node> myNodes, final Map<Coord, Node> otherNodes,
-                          final Set<Coord> rejected) {
+                          final Set<Coord> rejected, final Side side) {
         if (!M.isEmpty()) {
             //11:   u0 = arg min{g(v) + h(v) | v ∈ M}; // u0 is selected by taking the min vert with g(v) + h(v)
             final Node node = M.poll();
@@ -127,8 +140,14 @@ public class NBAPathfinder extends Pathfinder {
                         if (!checkHit(nc)) {
                             //18:       g(v) = min(g(v), g(u0) + d(u0, v));
                             final Node child = new Node(node, nc, node.g + 1, heuristic.distance(nc, target));
-                            M.add(child);
-                            myNodes.put(nc, child);
+                            if (heuristic.distance(nc, start) < 440) {
+                                M.add(child);
+                                myNodes.put(nc, child);
+                                if (side == Side.SOURCE && child.h < estbest) {
+                                    estbest = child.h;
+                                    estbestc = nc;
+                                }
+                            }
                         }
                     } else if (otherNodes.containsKey(nc)) { //19:       L = min(L, g(v) + ˜g(v));
                         final Node child = new Node(node, nc, node.g + 1, heuristic.distance(nc, target));

@@ -692,14 +692,19 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
         Class<? extends GAttrib> ac = attrclass(a.getClass());
         attr.put(ac, a);
         if (DefSettings.SHOWPLAYERPATH.get() && gobpath == null && a instanceof LinMove) {
-            Gob pl = glob.oc.getgob(MapView.plgob);
-            if (pl != null) {
-                Following follow = pl.getattr(Following.class);
-                if (pl == this ||
-                        (follow != null && follow.tgt() == this)) {
-                    gobpath = new Overlay(new GobPath(this));
-                    ols.add(gobpath);
-                }
+            final UI ui = glob.ui.get();
+            if (ui != null) {
+                try {
+                    Gob pl = glob.oc.getgob(ui.gui.map.plgob);
+                    if (pl != null) {
+                        Following follow = pl.getattr(Following.class);
+                        if (pl == this ||
+                                (follow != null && follow.tgt() == this)) {
+                            gobpath = new Overlay(new GobPath(this));
+                            ols.add(gobpath);
+                        }
+                    }
+                }catch(Exception e){}//ignore, this is just a draw a line on player movement. Not critical.
             }
         }
     }
@@ -1224,7 +1229,12 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
     }
 
     public boolean isplayer() {
-        return MapView.plgob == id;
+        try { //not clean but when multi-sessioning client can crash here when second client is booting.
+            final UI ui = glob.ui.get();
+            return ui.gui.map.plgob == id;
+        }catch(Exception e){
+            return false;
+        }
     }
 
     public boolean isMoving() {

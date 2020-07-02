@@ -137,7 +137,7 @@ public class MappingClient {
      */
     public MapRef GetMapRef(boolean remote) {
         try {
-            Gob player = Glob.getByReference().oc.getgob(MapView.plgob);
+            Gob player = Glob.getByReference().oc.getGUI().map.player();
             Coord gc = toGC(player.rc);
             synchronized(cache) {
                 long id = Glob.getByReference().map.getgrid(gc).id;

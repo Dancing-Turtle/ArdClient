@@ -25,8 +25,6 @@
  */
 
 package haven;
-import static haven.MCache.tilesz;
-import static haven.OCache.posres;
 import haven.GLProgram.VarID;
 import haven.automation.*;
 import haven.pathfinder.PFListener;
@@ -34,13 +32,11 @@ import haven.pathfinder.Pathfinder;
 import haven.purus.Farmer;
 import haven.purus.pbot.PBotUtils;
 import haven.resutil.BPRadSprite;
-import haven.sloth.gob.Alerted;
-import haven.sloth.gob.Deleted;
-import haven.sloth.gob.Hidden;
-import haven.sloth.gob.Mark;
-import haven.sloth.gob.Type;
+import haven.sloth.gob.*;
 import haven.sloth.gui.SoundSelector;
 import haven.sloth.io.HighlightData;
+import haven.sloth.script.pathfinding.Move;
+import haven.sloth.script.pathfinding.NBAPathfinder;
 
 import javax.media.opengl.GL;
 import java.awt.*;
@@ -49,30 +45,19 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
 import java.util.List;
+import java.util.Queue;
+import java.util.*;
 
-import com.jogamp.opengl.*;
-import haven.DefSettings;
-import haven.sloth.gob.*;
-import haven.sloth.gui.SoundSelector;
-import haven.sloth.io.HighlightData;
-import haven.sloth.script.Context;
-import haven.sloth.script.pathfinding.Move;
-import haven.sloth.script.pathfinding.NBAPathfinder;
 import static haven.DefSettings.*;
 import static haven.MCache.tilesz;
 import static haven.OCache.posres;
-import static haven.DefSettings.NIGHTVISION;
-import static haven.DefSettings.NVAMBIENTCOL;
-import static haven.DefSettings.NVDIFFUSECOL;
-import static haven.DefSettings.NVSPECCOC;
 
 public class MapView extends PView implements DTarget, Console.Directory, PFListener {
     public static long plgobid;
     public static boolean clickdb = false;
     public boolean foundPath = false;
-    public static long plgob = -1;
+    public long plgob = -1;
     public static Coord2d pllastcc;
     public Coord2d cc;
     public String curcamera;

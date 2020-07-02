@@ -118,6 +118,8 @@ public class KeyBinder {
 		add(KeyEvent.VK_M,SHIFT,TOGGLE_MAPSETTINGS);
 		add(KeyEvent.VK_V,CTRL,ATTACK);
 		add(KeyEvent.VK_C,CTRL,CLOSEST_TARGET);
+		add(KeyEvent.VK_ADD,0,NEXT_SESS);
+		add(KeyEvent.VK_SUBTRACT,0,PREV_SESS);
 	}
 
 	private static synchronized void store() {
