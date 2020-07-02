@@ -140,7 +140,12 @@ public class IMeter extends MovableWidget {
                     }
                 }
                 if(Config.showmetertext){
-                    meterinfo = args[0].toString().split(" ")[1];
+                    meterinfo = tt;
+                    if(meterinfo.contains("ow")){
+                        meterinfo = args[0].toString().split(" ")[2];
+                    } else{
+                        meterinfo = args[0].toString().split(" ")[1];
+                    }
                     if(meterinfo.contains("/")){
                         meterinfo = Integer.toString(ui.sess.details.shp);
                     }

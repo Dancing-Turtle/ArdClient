@@ -26,25 +26,20 @@
 
 package haven;
 
-import static haven.DefSettings.*;
-import static haven.PUtils.blurmask2;
-import static haven.PUtils.rasterimg;
-import static haven.Resource.BUNDLE_WINDOW;
-import static haven.Resource.cdec;
-import haven.HiddenWndData;
-
-import haven.MovableWidget;
-import haven.Theme;
-import haven.DefSettings;
 import haven.purus.pbot.PBotUtils;
 import haven.res.ui.tt.Wear;
 import haven.resutil.Curiosity;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static haven.DefSettings.*;
+import static haven.PUtils.blurmask2;
+import static haven.PUtils.rasterimg;
+import static haven.Resource.cdec;
 
 public class Window extends MovableWidget implements DTarget {
     @Resource.LayerName("windowconfig")
@@ -409,15 +404,15 @@ public class Window extends MovableWidget implements DTarget {
                             Map idk2 = getStats();
                             idk2.forEach((k,v) ->{
                                 if((Integer)idk2.get(k) - (Integer)idk.get(k) > 0) {
-                                   // System.out.println("Bulk Stats gained : " + k + " value : " + ((Integer) idk2.get(k) - (Integer) idk.get(k)));
+                                    // System.out.println("Bulk Stats gained : " + k + " value : " + ((Integer) idk2.get(k) - (Integer) idk.get(k)));
                                     PBotUtils.sysLogAppend("Bulk Stats gained : " + k + " value : " + ((Integer) idk2.get(k) - (Integer) idk.get(k)),"green");
                                 }
-                               // else
-                                   // System.out.println("Old : "+idk.get(k)+" new : "+v);
+                                // else
+                                // System.out.println("Old : "+idk.get(k)+" new : "+v);
                             });
                         }
                         else{
-                            PBotUtils.sysMsg("Click Feast First!",Color.white);
+                            ui.gui.msg("Click Feast First!",Color.white);
                         }
 
                     }
