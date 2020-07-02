@@ -60,6 +60,7 @@ public class Config {
     public static int mainport = 1870;
     public static int authport = 1871;
     public static boolean skybox = Utils.getprefb("skybox", true);
+    public static boolean showmetertext = Utils.getprefb("showmetertext", true);
     public static boolean savecutlery = Utils.getprefb("savecutlery", true);
     public static boolean lowerterraindistance = Utils.getprefb("lowerterraindistance", false);
     public static boolean noloadscreen = Utils.getprefb("noloadscreen", false);

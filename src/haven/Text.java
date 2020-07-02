@@ -26,17 +26,13 @@
 
 package haven;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.text.Format;
 
 public class Text {
     // Following block of fonts and foundries should not be removed even if unused,
@@ -50,6 +46,7 @@ public class Text {
 
     public static final Font latin;
     public static final Foundry labelFnd;
+    public static final Foundry num8Fnd;
     public static final Foundry num10Fnd;
     public static final Foundry num11Fnd;
     public static final Foundry num12boldFnd;
@@ -134,6 +131,7 @@ public class Text {
         num20Fnd = new Foundry(serif, 20);
 
         latin = new Font("Dialog", Font.PLAIN, 10);
+        num8Fnd = new Text.Foundry(latin, 8);
         num10Fnd = new Foundry(latin);
         num11Fnd = new Text.Foundry(latin, 11);
         num12boldFnd = new Text.Foundry(latin.deriveFont(Font.BOLD), 12).aa(true);
