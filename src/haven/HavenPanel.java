@@ -51,9 +51,9 @@ public class HavenPanel extends GLCanvas implements Runnable, Console.Directory,
     boolean inited = false;
     public static int w, h;
     public boolean bgmode = false;
-    public static long bgfd = Utils.getprefi("bghz", 200);
+    long fps = 0;
+    public static long bgfd = 1000 / Config.fpsBackgroundLimit, fd = 1000 / Config.fpsLimit;
     boolean iswap = true, aswap;
-    long fd = 10, fps = 0;
     long last_sess_upd = System.currentTimeMillis();
     long ssent = 0, srecv = 0, sretran = 0;
     long sent = 0, recv = 0, retran = 0;

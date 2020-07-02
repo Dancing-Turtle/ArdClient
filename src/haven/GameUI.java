@@ -1540,7 +1540,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 
     public void toggleDangerRadius(){
         Config.showminerad = !Config.showminerad;
-        PBotUtils.sysMsg("Mine support radii are now : "+Config.showminerad,Color.white);
+        msg("Mine support radii are now : "+Config.showminerad,Color.white);
         Utils.setprefb("showminerad", Config.showminerad);
     }
 
