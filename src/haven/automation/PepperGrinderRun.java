@@ -1,15 +1,16 @@
 package haven.automation;
 
 import haven.Button;
-import haven.*;
 import haven.Label;
 import haven.Window;
-import haven.purus.pbot.PBotAPI;
+import haven.*;
 import haven.purus.pbot.PBotUtils;
 
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 
 import static haven.OCache.posres;
 
@@ -79,7 +80,7 @@ public class PepperGrinderRun extends Window implements Runnable {
 
 			while (tables.size() > 0 && !stopThread) {
 				// Check if stamina is under 30%, drink if needed
-				gui = HavenPanel.lui.root.findchild(GameUI.class);
+				gui = this.parent.findchild(GameUI.class);
 				IMeter.Meter stam = gui.getmeter("stam", 0);
 				if (stam.a <= 60) {
 					lblProg.settext("Drinking");

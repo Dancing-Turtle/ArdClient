@@ -27,20 +27,15 @@
 package haven;
 
 
-import java.awt.*;
-import java.util.ConcurrentModificationException;
-import java.util.function.Consumer;
-
-import com.jogamp.opengl.util.packrect.LevelSet;
-import haven.DefSettings;
 import haven.purus.pbot.PBotAPI;
 import haven.purus.pbot.PBotUtils;
+import haven.sloth.gob.HeldBy;
+
+import java.awt.*;
+import java.util.function.Consumer;
 
 import static haven.DefSettings.AMBERMENU;
-import static haven.DefSettings.QUICKERMENU;
 import static java.lang.Math.PI;
-import haven.DefSettings;
-import haven.sloth.gob.HeldBy;
 
 public class FlowerMenu extends Widget {
     public static final Color pink = new Color(255, 0, 128);
@@ -201,7 +196,7 @@ public class FlowerMenu extends Widget {
     }
 
     public GameUI getGUI() {
-        return HavenPanel.lui.root.findchild(GameUI.class);
+        return this.parent.findchild(GameUI.class);
     }
 
     public class Chosen extends NormAnim {

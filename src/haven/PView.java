@@ -1,3 +1,4 @@
+
 /*
  *  This file is part of the Haven & Hearth game client.
  *  Copyright (C) 2009 Fredrik Tolf <fredrik@dolda2000.com>, and
@@ -26,11 +27,10 @@
 
 package haven;
 
-import java.awt.Color;
-import java.util.Map;
-
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
+import java.awt.*;
+import java.util.Map;
 
 public abstract class PView extends Widget {
     public RenderList rls;
@@ -118,9 +118,9 @@ public abstract class PView extends Widget {
         public void apply(GOut g) {
             BGL gl = g.gl;
             gl.glScissor(g.ul.x, g.root().sz.y - g.ul.y - g.sz.y, g.sz.x, g.sz.y);
-        /* For the viewport, use the renderstate's indicated size
-         * and offset explicitly, so as to not fail on partially
-	     * clipped GOuts. */
+            /* For the viewport, use the renderstate's indicated size
+             * and offset explicitly, so as to not fail on partially
+             * clipped GOuts. */
             Coord ul = ul();
             Coord sz = sz();
             gl.glViewport(ul.x, g.root().sz.y - ul.y - sz.y, sz.x, sz.y);
@@ -226,43 +226,49 @@ public abstract class PView extends Widget {
         try {
             lm.prep(def);
             new Light.LightList().prep(def);
-            rls.setup(scene, def);
-            if (curf != null)
-                curf.tick("setup");
-            rls.fin();
-            if (curf != null)
-                curf.tick("sort");
-            GOut rg;
-            if (cstate.cur.fb != null) {
-                GLState.Buffer gb = g.basicstate();
-                HavenPanel.OrthoState.fixed(cstate.cur.fb.sz()).prep(gb);
-                cstate.cur.fb.prep(gb);
-                cstate.cur.fb.prep(def);
-                rg = new GOut(g.gl, g.curgl, g.gc, g.st, gb, cstate.cur.fb.sz());
-            } else {
-                rg = g;
-            }
-            rg.st.set(def);
-            Color cc = clearcolor();
-            if ((cc == null) && (cstate.cur.fb != null))
-                cc = new Color(0, 0, 0, 0);
-            rg.apply();
-            BGL gl = rg.gl;
-            if (cc == null) {
-                gl.glClear(GL.GL_DEPTH_BUFFER_BIT);
-            } else {
-                gl.glClearColor((float) cc.getRed() / 255f, (float) cc.getGreen() / 255f, (float) cc.getBlue() / 255f, (float) cc.getAlpha() / 255f);
-                gl.glClear(GL.GL_DEPTH_BUFFER_BIT | GL.GL_COLOR_BUFFER_BIT);
-            }
-            if (curf != null)
-                curf.tick("cls");
-            g.st.time = 0;
-            rls.render(rg);
-            if (cstate.cur.fb != null)
-                cstate.cur.resolve(g);
-            if (curf != null) {
-                curf.add("apply", g.st.time);
-                curf.tick("render", g.st.time);
+            try{
+                rls.setup(scene, def);
+                if (curf != null)
+                    curf.tick("setup");
+                rls.fin();
+                if (curf != null)
+                    curf.tick("sort");
+                GOut rg;
+                if (cstate.cur.fb != null) {
+                    GLState.Buffer gb = g.basicstate();
+                    HavenPanel.OrthoState.fixed(cstate.cur.fb.sz()).prep(gb);
+                    cstate.cur.fb.prep(gb);
+                    cstate.cur.fb.prep(def);
+                    rg = new GOut(g.gl, g.curgl, g.gc, g.st, gb, cstate.cur.fb.sz());
+                } else {
+                    rg = g;
+                }
+                rg.st.set(def);
+                Color cc = clearcolor();
+                if ((cc == null) && (cstate.cur.fb != null))
+                    cc = new Color(0, 0, 0, 0);
+                rg.apply();
+                if (curf != null)
+                    curf.add("apply", g.st.time);
+                BGL gl = rg.gl;
+                if (cc == null) {
+                    gl.glClear(GL.GL_DEPTH_BUFFER_BIT);
+                } else {
+                    gl.glClearColor((float) cc.getRed() / 255f, (float) cc.getGreen() / 255f, (float) cc.getBlue() / 255f, (float) cc.getAlpha() / 255f);
+                    gl.glClear(GL.GL_DEPTH_BUFFER_BIT | GL.GL_COLOR_BUFFER_BIT);
+                }
+                if (curf != null)
+                    curf.tick("cls");
+                g.st.time = 0;
+                rls.render(rg);
+                if (cstate.cur.fb != null)
+                    cstate.cur.resolve(g);
+                if (curf != null) {
+                    curf.add("apply", g.st.time);
+                    curf.tick("render", g.st.time);
+                }
+            } catch (Exception e) {
+                //    System.out.println("Skipped a frame due to error");
             }
         } finally {
             g.st.set(bk);

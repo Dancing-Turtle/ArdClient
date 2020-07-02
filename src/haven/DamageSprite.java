@@ -94,6 +94,6 @@ public class DamageSprite extends Sprite implements PView.Render2D {
         }
     public GameUI getGUI()
     {
-        return HavenPanel.lui.root.findchild(GameUI.class);
+        return this.gui;
     }
 }

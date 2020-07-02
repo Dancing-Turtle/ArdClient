@@ -1,16 +1,20 @@
 package haven.purus;
 
-import static haven.OCache.posres;
-
-import java.awt.Color;
-import java.util.*;
-
+import haven.Button;
+import haven.Label;
+import haven.Window;
 import haven.*;
 import haven.purus.pbot.PBotAPI;
 import haven.purus.pbot.PBotGobAPI;
 import haven.purus.pbot.PBotItem;
 import haven.purus.pbot.PBotUtils;
 import haven.res.ui.tt.q.qbuff.QBuff;
+
+import java.awt.*;
+import java.util.List;
+import java.util.*;
+
+import static haven.OCache.posres;
 
 public class SeedCropFarmer extends Window implements Runnable {
 
@@ -87,7 +91,7 @@ public class SeedCropFarmer extends Window implements Runnable {
 				if (stopThread)
 					return;
 				// Check if stamina is under 30%, drink if so
-				GameUI gui = HavenPanel.lui.root.findchild(GameUI.class);
+				GameUI gui = this.parent.findchild(GameUI.class);
 				IMeter.Meter stam = gui.getmeter("stam", 0);
 				if (stam.a <= 60) {
 					lblProg2.settext("Drinking");

@@ -1,13 +1,11 @@
 package haven.automation;
 
 import haven.Button;
-import haven.*;
 import haven.Label;
 import haven.Window;
-
+import haven.*;
 import haven.purus.pbot.PBotAPI;
 import haven.purus.pbot.PBotUtils;
-import net.dv8tion.jda.client.entities.Application;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -110,7 +108,7 @@ public class PepperBotRun extends Window implements Runnable {
 
 
 				// Check if stamina is under 30%, drink if needed
-				gui = HavenPanel.lui.root.findchild(GameUI.class);
+				gui = this.parent.findchild(GameUI.class);
 				IMeter.Meter stam = gui.getmeter("stam", 0);
 				if (stam.a <= 60) {
 					if (stopThread)

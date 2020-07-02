@@ -1,21 +1,17 @@
 package haven.automation;
 
 
-import haven.*;
 import haven.Button;
 import haven.Label;
 import haven.Window;
-import haven.purus.SeedCropFarmer;
-
+import haven.*;
 import haven.purus.pbot.PBotAPI;
 import haven.purus.pbot.PBotUtils;
 import haven.res.ui.tt.q.qbuff.QBuff;
-import net.dv8tion.jda.client.entities.Application;
 
-import javax.swing.text.Highlighter;
 import java.awt.*;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 import static haven.OCache.posres;
 public class FlaxBot extends Window {
@@ -67,7 +63,7 @@ public class FlaxBot extends Window {
             PBotUtils.sysMsg("Flax Bot Started!", Color.white);
             lblProg.settext(cropsHarvested + " Units Harvested");
             lblProg2.settext(cropsHarvested + "Starting");
-            GameUI gui = HavenPanel.lui.root.findchild(GameUI.class);
+            GameUI gui = ui.gui;
             while (!stopThread || gui.getwnd("Flax Farmer") != null) {
                 try {
                     lblProg.settext(cropsHarvested + " Units Harvested");
