@@ -28,7 +28,6 @@ package haven;
 
 import haven.MapFile.*;
 import haven.purus.pbot.PBotAPI;
-import haven.purus.pbot.PBotUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -414,10 +413,10 @@ public class MapFileWidget extends Widget {
                 return (true);
             if (clickloc(new Location(curloc.seg, tc.mul(scalef())), button))
                 return (true);
-            if (button == 1 && (ui.modctrl || ui.modmeta)) {
+            if (button == 1 && (ui.modctrl || ui.modmeta || ui.modshift)) {
                 //Only works if we're on the same map segment as our player
                 try {
-                 //   tc = c.sub(sz.div(2)).add(curloc.tc);
+                    //   tc = c.sub(sz.div(2)).add(curloc.tc);
                     final Location pl = resolve(new MapLocator(ui.gui.map));
                     if (curloc != null && curloc.seg == pl.seg) {
                         final Coord2d plc = new Coord2d(ui.sess.glob.oc.getgob(ui.gui.map.plgob).getc());
@@ -426,31 +425,34 @@ public class MapFileWidget extends Widget {
                         final Coord2d offset = new Coord2d(pl.tc.sub(tc));
                         //Translate this to real map units and add to current map position
                         final Coord2d mc = plc.sub(offset.mul(MCache.tilesz).mul(scalef()));
-                        if (ui.modmeta) {
+                        if (ui.modmeta && !ui.modshift && !ui.modctrl) {
+                            // ui.gui.map.queuemove(mc);
                             ui.gui.map.queuemove(mc);
-                        } else {
+                        } else if (ui.modshift && !ui.modmeta && !ui.modctrl)
+                            ui.gui.map.pathto(mc);
+                        else if(ui.modctrl && !ui.modmeta && !ui.modshift){
                             ui.gui.map.moveto(mc);
                         }
                     }
                 } catch (Exception e) {
-                    PBotUtils.sysLogAppend("Failed to resolve player location with map move", "white");
+                    ui.gui.syslog.append("Failed to resolve player location with map move", Color.white);
                 }
                 return true;
             }
-	}
-	if(button == 1 && ui.modflags() == 0) {
-                Location loc = curloc;
-                if ((drag == null) && (loc != null)) {
-                    drag = ui.grabmouse(this);
-                    dsc = c;
-                    dmc = loc.tc;
-                    dragging = false;
-                }
-                return (true);
+        }
+        if(button == 1 && ui.modflags() == 0) {
+            Location loc = curloc;
+            if ((drag == null) && (loc != null)) {
+                drag = ui.grabmouse(this);
+                dsc = c;
+                dmc = loc.tc;
+                dragging = false;
+            }
+            return (true);
 
         }
-            return (super.mousedown(c, button));
-        }
+        return (super.mousedown(c, button));
+    }
 
     public void mousemove(Coord c) {
         if(drag != null) {
