@@ -26,6 +26,8 @@
 
 package haven;
 
+import haven.sloth.script.SessionDetails;
+
 import java.net.*;
 import java.util.*;
 import java.io.*;
@@ -33,7 +35,6 @@ import java.lang.ref.*;
 
 public class Session implements Resource.Resolver {
     public static final int PVER = 23;
-
 
     public static final int MSG_SESS = 0;
     public static final int MSG_REL = 1;
@@ -70,12 +71,14 @@ public class Session implements Resource.Resolver {
     Map<Integer, PMessage> waiting = new TreeMap<Integer, PMessage>();
     LinkedList<RMessage> pending = new LinkedList<RMessage>();
     Map<Long, ObjAck> objacks = new TreeMap<Long, ObjAck>();
+    public final SessionDetails details;
     public String username;
     byte[] cookie;
     final Map<Integer, CachedRes> rescache = new TreeMap<Integer, CachedRes>();
     public final Glob glob;
     public byte[] sesskey;
     private int localCacheId = -1;
+    long sent = 0, recv = 0, pend = 0, retran = 0;
 
     @SuppressWarnings("serial")
     public static class MessageException extends RuntimeException {
@@ -143,11 +146,11 @@ public class Session implements Resource.Resolver {
             }
         }
 
-	private class SRef extends Ref {
-	    public SRef(Resource res) {
-		this.res = res;
-	    }
-	}
+        private class SRef extends Ref {
+            public SRef(Resource res) {
+                this.res = res;
+            }
+        }
 
         private Ref get() {
             Ref ind = (this.ind == null) ? null : (this.ind.get());
@@ -166,14 +169,14 @@ public class Session implements Resource.Resolver {
             }
         }
 
-	public void set(Resource res){
-	    synchronized(this) {
-		this.resnm = res.name;
-		this.resver = res.ver;
-		ind = new WeakReference<Ref>(new SRef(res));
-		notifyAll();
-	    }
-	}
+        public void set(Resource res){
+            synchronized(this) {
+                this.resnm = res.name;
+                this.resver = res.ver;
+                ind = new WeakReference<Ref>(new SRef(res));
+                notifyAll();
+            }
+        }
     }
 
     private CachedRes cachedres(int id) {
@@ -357,7 +360,7 @@ public class Session implements Resource.Resolver {
                 } catch(Exception e) {
                     e.printStackTrace();
                 }
-             //   cachedres(resid).set(resname, resver);
+                //   cachedres(resid).set(resname, resver);
             } else if (msg.type == RMessage.RMSG_PARTY) {
                 glob.party.msg(msg);
             } else if (msg.type == RMessage.RMSG_SFX) {
@@ -419,7 +422,7 @@ public class Session implements Resource.Resolver {
                     try {
                         sk.receive(p);
                     } catch (java.nio.channels.ClosedByInterruptException e) {
-            /* Except apparently Sun's J2SE doesn't throw this when interrupted :P*/
+                        /* Except apparently Sun's J2SE doesn't throw this when interrupted :P*/
                         break;
                     } catch (SocketTimeoutException e) {
                         continue;
@@ -429,6 +432,7 @@ public class Session implements Resource.Resolver {
                     if (!p.getSocketAddress().equals(server))
                         continue;
                     PMessage msg = new PMessage(p.getData()[0], p.getData(), 1, p.getLength() - 1);
+                    recv += p.getLength();
                     if (msg.type == MSG_SESS) {
                         if (state == "conn") {
                             int error = msg.uint8();
@@ -513,7 +517,7 @@ public class Session implements Resource.Resolver {
                             }
                             PMessage msg = new PMessage(MSG_SESS);
                             msg.adduint16(2);
-                            msg.addstring("Hafen/ArdClientRevived");
+                            msg.addstring("Hafen/ArdClient");
                             msg.adduint16(PVER);
                             msg.addstring(username);
                             msg.adduint16(cookie.length);
@@ -550,6 +554,7 @@ public class Session implements Resource.Resolver {
 			  getThreadGroup().interrupt();
 			  }
 			*/
+                        pend = pending.size();
                         synchronized (pending) {
                             if (pending.size() > 0) {
                                 for (RMessage msg : pending) {
@@ -571,6 +576,8 @@ public class Session implements Resource.Resolver {
                                         rmsg.adduint16(msg.seq);
                                         rmsg.adduint8(msg.type);
                                         rmsg.addbytes(msg.fin());
+                                        if (msg.retx > 1)
+                                            retran++;
                                         sendmsg(rmsg);
                                     }
                                 }
@@ -651,6 +658,7 @@ public class Session implements Resource.Resolver {
 
     public Session(SocketAddress server, String username, byte[] cookie, Object... args) {
         this.server = server;
+        this.details = new SessionDetails(this);
         this.username = username;
         this.cookie = cookie;
         this.args = args;
@@ -667,7 +675,6 @@ public class Session implements Resource.Resolver {
         sworker.start();
         ticker = new Ticker();
         ticker.start();
-
         Arrays.stream(LOCAL_CACHED).forEach(this::cacheres);
         Config.setUserName(username);
     }
@@ -713,12 +720,14 @@ public class Session implements Resource.Resolver {
         byte[] buf = new byte[msg.size() + 1];
         buf[0] = (byte) msg.type;
         msg.fin(buf, 1);
+        //  System.out.println(msg.type + " "+msg.size());
         sendmsg(buf);
     }
 
     public void sendmsg(byte[] msg) {
         try {
             sk.send(new DatagramPacket(msg, msg.length, server));
+            sent += msg.length;
         } catch (IOException e) {
         }
     }

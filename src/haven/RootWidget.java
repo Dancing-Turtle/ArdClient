@@ -26,7 +26,8 @@
 
 package haven;
 
-import java.awt.*;
+import haven.sloth.gui.SessionDisplay;
+
 import java.awt.event.KeyEvent;
 
 public class RootWidget extends ConsoleHost {
@@ -35,12 +36,14 @@ public class RootWidget extends ConsoleHost {
     boolean afk = false;
     private char last_gk;
     private long last_gk_time;
+    public SessionDisplay sessionDisplay = new SessionDisplay();
 
     public RootWidget(UI ui, Coord sz) {
         super(ui, new Coord(0, 0), sz);
         setfocusctl(true);
         hasfocus = true;
         cursor = defcurs.indir();
+        add(sessionDisplay = new SessionDisplay());
     }
 
     public boolean globtype(char key, KeyEvent ev) {

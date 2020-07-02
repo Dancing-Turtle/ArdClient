@@ -58,7 +58,6 @@ public class OCache implements Iterable<Gob> {
     public static final int OD_ICON = 19;
     public static final int OD_RESATTR = 20;
     public static final int OD_END = 255;
-   public GameUI gui = getGUI();
     public static final Coord2d posres = new Coord2d(0x1.0p-10, 0x1.0p-10).mul(11, 11);
     /* XXX: Use weak refs */
     private Collection<Collection<Gob>> local = new LinkedList<Collection<Gob>>();
@@ -98,7 +97,7 @@ public class OCache implements Iterable<Gob> {
     synchronized void refreshalloverlays(){
         for(final Gob g: this){
             if(g.ols.size() > 0)
-              g.ols.clear();
+                g.ols.clear();
         }
     }
 
@@ -185,6 +184,14 @@ public class OCache implements Iterable<Gob> {
         }
     }
 
+    /**
+     * For the Scripting API
+     */
+    @SuppressWarnings("unused")
+    public synchronized Gob[] getallgobs() {
+        return objs.values().toArray(new Gob[0]);
+    }
+
     public synchronized Gob getgob(long id) {
         return (objs.get(id));
     }
@@ -212,7 +219,7 @@ public class OCache implements Iterable<Gob> {
             else
                 return (ret);
         }
-    /* XXX: Clean up in deleted */
+        /* XXX: Clean up in deleted */
     }
 
     private long nextvirt = -1;
@@ -360,14 +367,14 @@ public class OCache implements Iterable<Gob> {
         Composite cmp = (Composite) g.getattr(Drawable.class);
         if (cmp != null) {
             if (cmp.pseq != pseq) {
-            cmp.pseq = pseq;
-            if (poses != null)
-                cmp.chposes(poses, interp);
-            if (tposes != null)
-                cmp.tposes(tposes, WrapMode.ONCE, ttime);
+                cmp.pseq = pseq;
+                if (poses != null)
+                    cmp.chposes(poses, interp);
+                if (tposes != null)
+                    cmp.tposes(tposes, WrapMode.ONCE, ttime);
+            }
+            changed(g);
         }
-        changed(g);
-    }
     }
 
     public void cmppose(Gob gob, Message msg) {
@@ -673,12 +680,12 @@ public class OCache implements Iterable<Gob> {
                                         PBotUtils.sysLogAppend("Hit " + g.getres().basename() + " For " + dmg + " Damage.", "green");
                                 }
                                 gobdmgs.put(g.id, new DamageSprite(dmg, clr == 36751, g));
-                                }
+                            }
                             else
                                 dmgspr.update(dmg, clr == 36751);
-                            }
                         }
-                    } catch (Loading le) {
+                    }
+                } catch (Loading le) {
                     Defer.later(this);
                 }
                 return null;
@@ -687,7 +694,9 @@ public class OCache implements Iterable<Gob> {
     }
     public GameUI getGUI()
     {
-        return HavenPanel.lui.root.findchild(GameUI.class);
+        final GameUI gui = glob.ui.get().gui;
+        return gui;
+        //return HavenPanel.lui.root.findchild(GameUI.class);
     }
 
     public void removedmgoverlay(long gobid) {
@@ -794,7 +803,7 @@ public class OCache implements Iterable<Gob> {
         }
     }
 
-    synchronized void hideAll(final String name) {
+    public synchronized void hideAll(final String name) {
         for(final Gob g : this) {
             g.resname().ifPresent(gname -> {
                 if(gname.equals(name)) {
@@ -816,7 +825,7 @@ public class OCache implements Iterable<Gob> {
         }
     }
 
-    synchronized void removeAll(final String name) {
+    public synchronized void removeAll(final String name) {
         //TODO: I2 iterator doesn't support remove and I should fix that later on, for now this is a two step process
         final List<Long> rem = new ArrayList<>();
         for(final Gob g : this) {

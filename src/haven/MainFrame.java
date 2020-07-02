@@ -26,29 +26,25 @@
 
 package haven;
 
+import com.google.common.flogger.FluentLogger;
 import haven.purus.pbot.PBotAPI;
 
-import java.awt.Dimension;
-import java.awt.DisplayMode;
-import java.awt.GraphicsDevice;
-import java.awt.Image;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintStream;
-import java.io.Writer;
+import java.io.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.List;
 
 
 public class MainFrame extends java.awt.Frame implements Runnable, Console.Directory {
-    HavenPanel p;
+    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
+    public static MainFrame instance;
+    public final HavenPanel p;
     private final ThreadGroup g;
     public final Thread mt;
     DisplayMode fsmode = null, prefs = null;
@@ -310,6 +306,40 @@ public class MainFrame extends java.awt.Frame implements Runnable, Console.Direc
             Utils.setprefb("wndmax", (getExtendedState() & MAXIMIZED_BOTH) != 0);
         }
     }
+    private final List<Thread> sessionThreads = new ArrayList<>();
+
+    public void makeNewSession() {
+        final Thread rui = new HackThread(() -> {
+            final UI lui = p.newui(null);
+            try {
+                UI.Runner fun;
+                //Login first
+                Bootstrap bill = new Bootstrap(Config.defserv, Config.mainport);
+                if ((Config.authuser != null) && (Config.authck != null)) {
+                    bill.setinitcookie(Config.authuser, Config.authck);
+                    Config.authck = null;
+                }
+                final Session sess = bill.run(lui);
+                //reset UI and play game
+                lui.reset(new Coord(p.w, p.h));
+                lui.setSession(sess);
+                new RemoteUI(sess).run(lui);
+                //Remove this UI once done
+                p.removeUI(lui);
+            } catch (InterruptedException e) {
+            } finally {
+                p.removeUI(lui);
+                synchronized (sessionThreads) {
+                    sessionThreads.remove(Thread.currentThread());
+                }
+            }
+        }, "Remote UI Session thread");
+        rui.start();
+        synchronized (sessionThreads) {
+            sessionThreads.add(rui);
+        }
+    }
+
 
     public void run() {
         if (Thread.currentThread() != this.mt)
@@ -317,10 +347,12 @@ public class MainFrame extends java.awt.Frame implements Runnable, Console.Direc
         Thread ui = new HackThread(p, "Haven UI thread");
         ui.start();
         try {
+            final UI lui = p.newui(null);
             try {
                 Session sess = null;
                 while (true) {
                     UI.Runner fun;
+                    lui.reset(new Coord(p.w, p.h));
                     if (sess == null) {
                         Bootstrap bill = new Bootstrap(Config.defserv, Config.mainport);
                         if ((Config.authuser != null) && (Config.authck != null)) {
@@ -331,18 +363,27 @@ public class MainFrame extends java.awt.Frame implements Runnable, Console.Direc
                         setTitle(TITLE);
                     } else {
                         fun = new RemoteUI(sess);
+                        lui.setSession(sess);
                         setTitle(TITLE + " \u2013 " + sess.username);
                     }
-                    sess = fun.run(p.newui(sess));
+                    sess = fun.run(lui);
                 }
             } catch (InterruptedException e) {
+            } finally {
+                p.removeUI(lui);
             }
             savewndstate();
         } finally {
             ui.interrupt();
+            synchronized (sessionThreads) {
+                for (final Thread thr : sessionThreads) {
+                    thr.interrupt();
+                }
+            }
             dispose();
         }
     }
+
 
     public static void setupres() {
         if (ResCache.global != null)
@@ -403,7 +444,7 @@ public class MainFrame extends java.awt.Frame implements Runnable, Console.Direc
         }
         setupres();
         DefSettings.init(); //init after res has been setup...
-        MainFrame f = new MainFrame(null);
+        MainFrame f = (instance = new MainFrame(null));
         if (Utils.getprefb("fullscreen", false))
             f.setfs();
         f.mt.start();

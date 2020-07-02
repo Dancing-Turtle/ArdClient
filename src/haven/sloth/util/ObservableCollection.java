@@ -31,6 +31,11 @@ public class ObservableCollection<T> implements Iterable<T> {
 	}
     }
 
+    public int size() {
+        return base.size();
+    }
+
+
     public boolean contains(T other) {
         return base.contains(other);
     }

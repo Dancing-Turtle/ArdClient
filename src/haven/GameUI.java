@@ -39,10 +39,7 @@ import haven.purus.pbot.PBotScriptlistOld;
 import haven.purus.pbot.PBotUtils;
 import haven.resutil.FoodInfo;
 import haven.sloth.gob.Mark;
-import haven.sloth.gui.DeletedManager;
-import haven.sloth.gui.HiddenManager;
-import haven.sloth.gui.HighlightManager;
-import haven.sloth.gui.SoundManager;
+import haven.sloth.gui.*;
 import integrations.map.RemoteNavigation;
 import integrations.mapv4.MappingClient;
 
@@ -303,6 +300,8 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         timerswnd = add(new haven.timers.TimersWnd(this));
         if(!Config.autowindows.get("Timers").selected)
             timerswnd.hide();
+        ui.root.sessionDisplay.unlink();
+        add(ui.root.sessionDisplay);
     }
 
     public void beltPageSwitch1(){

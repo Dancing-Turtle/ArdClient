@@ -26,13 +26,11 @@
 
 package haven;
 
-import java.awt.*;
-import java.lang.ref.WeakReference;
-import java.util.*;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.awt.event.InputEvent;
-import java.util.List;
+import java.lang.ref.WeakReference;
+import java.util.*;
 
 
 public class UI {
@@ -44,7 +42,6 @@ public class UI {
     Receiver rcvr;
     public Coord mc = Coord.z, lcc = Coord.z;
     public Session sess;
-    public int questid;
     public boolean modshift, modctrl, modmeta, modsuper;
     public int keycode;
     public boolean readytodrop = false;
@@ -53,12 +50,12 @@ public class UI {
     public Widget mouseon;
     public Console cons = new WidgetConsole();
     private Collection<AfterDraw> afterdraws = new LinkedList<AfterDraw>();
-    private final Context uictx;
-    public final ActAudio audio = new ActAudio();
     public int beltWndId = -1;
-	public GameUI gui;
-	public WeakReference<Widget> realmchat;
+    public GameUI gui;
+    public WeakReference<Widget> realmchat;
     public WeakReference<FightWnd> fightwnd;
+    private final Context uictx;
+    public ActAudio audio = new ActAudio();
 
     {
         lastevent = lasttick = Utils.rtime();
@@ -75,6 +72,7 @@ public class UI {
     public interface Context {
         void setmousepos(Coord c);
     }
+
 
     public interface AfterDraw {
         public void draw(GOut g);
@@ -125,9 +123,29 @@ public class UI {
         root = new RootWidget(this, sz);
         widgets.put(0, root);
         rwidgets.put(root, 0);
+        setSession(sess);
+    }
+
+    public UI(Context uictx, Coord sz) {
+        this(uictx, sz, null);
+    }
+
+    public void setSession(final Session sess) {
         this.sess = sess;
-        if(sess != null)
+        if (this.sess != null)
             this.sess.glob.ui = new WeakReference<>(this);
+    }
+
+    public void reset(final Coord sz) {
+        final RootWidget oldroot = root;
+        destroy();
+        root = new RootWidget(this, sz);
+        widgets.put(0, root);
+        rwidgets.put(root, 0);
+        root.ggprof = oldroot.ggprof;
+        root.grprof = oldroot.grprof;
+        root.guprof = oldroot.guprof;
+        audio = new ActAudio();
     }
 
     public void setreceiver(Receiver rcvr) {
@@ -137,11 +155,6 @@ public class UI {
     public void bind(Widget w, int id) {
         widgets.put(id, w);
         rwidgets.put(w, id);
-        if(id == questid && CharWnd.abandonquest){
-            w.wdgmsg("opt","rm");
-            readytodrop = true;
-            CharWnd.abandonquest = false;
-        }
         w.binded();
     }
 
@@ -171,7 +184,7 @@ public class UI {
     public int next_predicted_id = 2;
     public void newwidget(int id, String type, int parent, Object[] pargs, Object... cargs) throws InterruptedException {
 
-     // System.out.println("Widget ID : "+id+" Type : "+type+" Parent : "+parent);
+        // System.out.println("Widget ID : "+id+" Type : "+type+" Parent : "+parent);
         if (Config.quickbelt && type.equals("wnd") && cargs[1].equals("Belt")) {
             // use custom belt window
             type = "alt-wnd-belt";
@@ -188,11 +201,6 @@ public class UI {
 
             Widget wdg = f.create(this, cargs);
             wdg.attach(this);
-            if(type.equals("quest")) {
-                if(CharWnd.abandonquest) {
-                  questid = id;
-                }
-            }
             if (parent != 65535) {
                 Widget pwdg = widgets.get(parent);
                 if(pwdg == null)
@@ -225,9 +233,7 @@ public class UI {
             }
             bind(wdg, id);
             if(type.contains("rchan"))
-                 realmchat = new WeakReference<>(wdg);
-            if(type.contains("speedget"))
-                gui.speedget = new WeakReference<>((Speedget)wdg);
+                realmchat = new WeakReference<>(wdg);
             if(wdg instanceof FightWnd){
                 fightwnd = new WeakReference<>((FightWnd)wdg);
             }
@@ -342,6 +348,7 @@ public class UI {
     }
 
     private void removeid(Widget wdg) {
+        System.out.println("Removing widget "+wdg.toString());
         wdg.removed();
         if (rwidgets.containsKey(wdg)) {
             int id = rwidgets.get(wdg);
@@ -363,8 +370,14 @@ public class UI {
             if (g.wdg.hasparent(wdg))
                 i.remove();
         }
-        removeid(wdg);
-        wdg.reqdestroy();
+        if(wdg != null) {
+            removeid(wdg);
+            wdg.reqdestroy();
+        }
+        if (cons.out != null) {
+            cons.out.close();
+            cons.out = null;
+        }
     }
 
     public void destroy(int id) {
@@ -387,9 +400,11 @@ public class UI {
     public void wdgmsg(Widget sender, String msg, Object... args) {
         int id;
         synchronized(this) {
-     //  try { for(Object obj:args) if(!sender.toString().contains("Camera")) System.out.println("Sender : " + sender + " msg = " + msg + " arg 1 : " + obj); }catch(ArrayIndexOutOfBoundsException q){}
+
             if (msg.endsWith("-identical"))
                 return;
+
+            //  try { for(Object obj:args) if(!sender.toString().contains("Camera")) System.out.println("Sender : " + sender + " msg = " + msg + " arg 1 : " + obj); }catch(ArrayIndexOutOfBoundsException q){}
 
             if(!rwidgets.containsKey(sender)) {
                 if(msg.equals("close")) {
@@ -397,9 +412,9 @@ public class UI {
                     return;
                 }
                 else
-                System.err.printf("Wdgmsg sender (%s) is not in rwidgets, message is %s\n", sender.getClass().getName(), msg);
-                 //   System.out.println("Args:"+args[0]);
-              // System.out.println("Sender is : "+sender);
+                    System.err.printf("Wdgmsg sender (%s) is not in rwidgets, message is %s\n", sender.getClass().getName(), msg);
+                //   System.out.println("Args:"+args[0]);
+                // System.out.println("Sender is : "+sender);
                 return;
             }
             id = rwidgets.get(sender);
@@ -413,20 +428,20 @@ public class UI {
             Widget wdg = widgets.get(id);
             if(realmchat != null){
                 try{
-                 if(realmchat.get() != null && id == realmchat.get().wdgid()) {
-                     if (msg.contains("msg") && wdg.toString().contains("Realm")) {
-                         ((ChatUI.EntryChannel) realmchat.get()).updurgency(1);
-                         if (Config.realmchatalerts)
-                             Audio.play(ChatUI.notifsfx);
-                     }
-                 }
-            }catch(NullPointerException e){e.printStackTrace();}
+                    if(realmchat.get() != null && id == realmchat.get().wdgid()) {
+                        if (msg.contains("msg") && wdg.toString().contains("Realm")) {
+                            ((ChatUI.EntryChannel) realmchat.get()).updurgency(1);
+                            if (Config.realmchatalerts)
+                                Audio.play(ChatUI.notifsfx);
+                        }
+                    }
+                }catch(NullPointerException e){e.printStackTrace();}
             }
-                if (wdg != null) {
-             // try { for(Object obj:args) if(!wdg.toString().contains("CharWnd")) System.out.println("UI Wdg : " + wdg + " msg : "+msg+" id = " + id + " arg 1 : " + obj); }catch(ArrayIndexOutOfBoundsException qq){}
+            if (wdg != null) {
+                // try { for(Object obj:args) if(!wdg.toString().contains("CharWnd")) System.out.println("UI Wdg : " + wdg + " msg : "+msg+" id = " + id + " arg 1 : " + obj); }catch(ArrayIndexOutOfBoundsException qq){}
                 wdg.uimsg(msg.intern(), args); }
-                    else throw (new UIException("Uimsg to non-existent widget " + id, msg, args));
-            }
+            else throw (new UIException("Uimsg to non-existent widget " + id, msg, args));
+        }
     }
 
     private void setmods(InputEvent ev) {
@@ -448,9 +463,9 @@ public class UI {
         for (Grab g : c(keygrab)) {
             //Make sure this wdg is visible the entire way up
             if (g.wdg.tvisible()) {
-            if (g.wdg.type(ev.getKeyChar(), ev))
-                return;
-        }
+                if (g.wdg.type(ev.getKeyChar(), ev))
+                    return;
+            }
         }
         if (!root.type(ev.getKeyChar(), ev))
             root.globtype(ev.getKeyChar(), ev);
@@ -462,9 +477,9 @@ public class UI {
         for (Grab g : c(keygrab)) {
             //Make sure this wdg is visible the entire way up
             if (g.wdg.tvisible()) {
-            if (g.wdg.keydown(ev))
-                return;
-        }
+                if (g.wdg.keydown(ev))
+                    return;
+            }
         }
         if (!root.keydown(ev))
             root.globtype((char) 0, ev);
@@ -476,9 +491,9 @@ public class UI {
         for (Grab g : c(keygrab)) {
             //Make sure this wdg is visible the entire way up
             if (g.wdg.tvisible()) {
-            if (g.wdg.keyup(ev))
-                return;
-        }
+                if (g.wdg.keyup(ev))
+                    return;
+            }
         }
         root.keyup(ev);
     }
@@ -501,9 +516,9 @@ public class UI {
         }
         return (false);
     }
-  //  public void mousedown(Coord c, int button){
-   //     mousedown(new MouseEvent(panel, 0, 0, 0, c.x, c.y, 1, false, button), c, button);
-   // }
+    //  public void mousedown(Coord c, int button){
+    //     mousedown(new MouseEvent(panel, 0, 0, 0, c.x, c.y, 1, false, button), c, button);
+    // }
 
     public void mousedown(MouseEvent ev, Coord c, int button) {
         setmods(ev);
@@ -511,9 +526,9 @@ public class UI {
         for (Grab g : c(mousegrab)) {
             //Make sure this wdg is visible the entire way up
             if (g.wdg.tvisible()) {
-            if (g.wdg.mousedown(wdgxlate(c, g.wdg), button))
-                return;
-        }
+                if (g.wdg.mousedown(wdgxlate(c, g.wdg), button))
+                    return;
+            }
         }
         root.mousedown(c, button);
     }
@@ -524,9 +539,9 @@ public class UI {
         for (Grab g : c(mousegrab)) {
             //Make sure this wdg is visible the entire way up
             if (g.wdg.tvisible()) {
-            if (g.wdg.mouseup(wdgxlate(c, g.wdg), button))
-                return;
-        }
+                if (g.wdg.mouseup(wdgxlate(c, g.wdg), button))
+                    return;
+            }
         }
         root.mouseup(c, button);
     }
@@ -541,14 +556,15 @@ public class UI {
         uictx.setmousepos(c);
     }
 
+
     public void mousewheel(MouseEvent ev, Coord c, int amount) {
         setmods(ev);
         lcc = mc = c;
         for (Grab g : c(mousegrab)) {
             if (g.wdg.tvisible()) {
-            if (g.wdg.mousewheel(wdgxlate(c, g.wdg), amount))
-                return;
-        }
+                if (g.wdg.mousewheel(wdgxlate(c, g.wdg), amount))
+                    return;
+            }
         }
         root.mousewheel(c, amount);
     }
@@ -558,7 +574,7 @@ public class UI {
         // thus, just iterate over an array copy to avoid concurrent modification exception
         Grab[] mousegrabCopy = mousegrab.toArray(new Grab[mousegrab.size()]);
         for(Grab g : mousegrabCopy) {
-            if (g.wdg == null)
+            if (g == null || g.wdg == null)
                 continue;
             Resource ret = g.wdg.getcurs(wdgxlate(c, g.wdg));
             if(ret != null)

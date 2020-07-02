@@ -27,7 +27,8 @@
 package haven;
 
 import com.jogamp.opengl.util.awt.Screenshot;
-import integrations.map.RemoteNavigation;
+import haven.sloth.util.ObservableCollection;
+import integrations.mapv4.MappingClient;
 
 import javax.media.opengl.*;
 import javax.media.opengl.awt.GLCanvas;
@@ -40,14 +41,22 @@ import java.util.Queue;
 import java.util.*;
 
 public class HavenPanel extends GLCanvas implements Runnable, Console.Directory, UI.Context {
+    //All of our UIs
+    public final ObservableCollection<UI> sessions = new ObservableCollection<>(new ArrayList<>());
+    //The UI for the next frame, or null of no change
+    private UI nextUI;
+    //The current active UI
     UI ui;
-    public static UI lui;
+
     boolean inited = false;
     public static int w, h;
     public boolean bgmode = false;
+    public static long bgfd = Utils.getprefi("bghz", 200);
     boolean iswap = true, aswap;
-    public static long bgfd = 1000 / Config.fpsBackgroundLimit, fd = 1000 / Config.fpsLimit;
-    long fps = 0;
+    long fd = 10, fps = 0;
+    long last_sess_upd = System.currentTimeMillis();
+    long ssent = 0, srecv = 0, sretran = 0;
+    long sent = 0, recv = 0, retran = 0;
     double uidle = 0.0, ridle = 0.0;
     Queue<InputEvent> events = new LinkedList<InputEvent>();
     private String cursmode = "tex";
@@ -75,25 +84,21 @@ public class HavenPanel extends GLCanvas implements Runnable, Console.Directory,
         cap.setRedBits(8);
         cap.setGreenBits(8);
         cap.setBlueBits(8);
+        cap.setStencilBits(8);
         cap.setSampleBuffers(true);
         cap.setNumSamples(4);
         return (cap);
     }
 
-    public HavenPanel(int w, int h, GLCapabilitiesChooser cc) {
-        super(stdcaps(), cc, null, null);
+    public HavenPanel(int w, int h) {
+        super(stdcaps());
         if (gldebug)
             setContextCreationFlags(getContextCreationFlags() | GLContext.CTX_OPTION_DEBUG);
         setSize(this.w = w, this.h = h);
-        newui(null);
-        RemoteNavigation.getInstance();
+        MappingClient.getInstance();
         initgl();
         if (Toolkit.getDefaultToolkit().getMaximumCursorColors() >= 256 || Config.hwcursor)
             cursmode = "awt";
-    }
-
-    public HavenPanel(int w, int h) {
-        this(w, h, null);
     }
 
     private void initgl() {
@@ -154,13 +159,14 @@ public class HavenPanel extends GLCanvas implements Runnable, Console.Directory,
                         ((GL2) gl).glDebugMessageControl(GL.GL_DONT_CARE, GL.GL_DONT_CARE, GL.GL_DONT_CARE, 0, null, true);
                     }
                     glconf.pref = GLSettings.load(glconf, true);
-                    ui.cons.add(glconf);
+                    if (ui!= null) {
+                        ui.cons.add(glconf);
+                    }
                     gstate = new GLState() {
                         public void apply(GOut g) {
                             BGL gl = g.gl;
                             gl.glColor3f(1, 1, 1);
                             gl.glPointSize(4);
-                            // gl.joglSetSwapInterval(1);
                             gl.joglSetSwapInterval((aswap = iswap) ? 1 : 0);
                             gl.glEnable(GL.GL_BLEND);
                             //gl.glEnable(GL.GL_LINE_SMOOTH);
@@ -216,11 +222,6 @@ public class HavenPanel extends GLCanvas implements Runnable, Console.Directory,
         });
     }
 
-    @Override
-    public void setmousepos(Coord c) {
-
-    }
-
     public static abstract class OrthoState extends GLState {
         protected abstract Coord sz();
 
@@ -247,7 +248,6 @@ public class HavenPanel extends GLCanvas implements Runnable, Console.Directory,
 
     public void init() {
         setFocusTraversalKeysEnabled(false);
-        newui(null);
         addKeyListener(new KeyAdapter() {
             public void keyTyped(KeyEvent e) {
                 synchronized (events) {
@@ -309,20 +309,77 @@ public class HavenPanel extends GLCanvas implements Runnable, Console.Directory,
         inited = true;
     }
 
-    UI newui(Session sess) {
-        if (ui != null)
-            ui.destroy();
-        ui = new UI(this, new Coord(w, h), sess);
-        ui.root.guprof = uprof;
-        ui.root.grprof = rprof;
-        ui.root.ggprof = gprof;
+    public UI newui(Session sess) {
+        final UI lui = new UI(this, new Coord(w, h), sess);
+        lui.root.guprof = uprof;
+        lui.root.grprof = rprof;
+        lui.root.ggprof = gprof;
         if (getParent() instanceof Console.Directory)
-            ui.cons.add((Console.Directory) getParent());
-        ui.cons.add(this);
+            lui.cons.add((Console.Directory) getParent());
+        lui.cons.add(this);
         if (glconf != null)
-            ui.cons.add(glconf);
-        lui = ui;
-        return (ui);
+            lui.cons.add(glconf);
+        synchronized (sessions) {
+            sessions.add(lui);
+        }
+        if (this.ui == null) {
+            //set default UI if first one
+            this.ui = lui;
+        }
+        return (lui);
+    }
+
+    public boolean isActiveUI(final UI lui) {
+        return this.ui == lui;
+    }
+
+    //Set the UI for the next frame
+    public void setActiveUI(final UI lui) {
+        if (this.ui != lui)
+            nextUI = lui;
+    }
+
+    public int sessionCount() {
+        synchronized (sessions) {
+            return sessions.size();
+        }
+    }
+
+    public boolean isMasterUIActive() {
+        synchronized (sessions) {
+            Iterator<UI> itr = sessions.iterator();
+            if (itr.hasNext())
+                return itr.next() == this.ui;
+            else
+                return false;
+        }
+    }
+
+    public void closeCurrentSession() {
+        if (this.ui.gui != null) {
+            this.ui.gui.act("lo");
+        } else {
+            if (this.ui.sess != null) {
+                this.ui.sess.close();
+            } //TODO: should be a way to close a session that's not logged in
+        }
+    }
+
+    //Remove a UI
+    public void removeUI(final UI lui) {
+        lui.destroy();
+        synchronized (sessions) {
+            sessions.remove(lui);
+        }
+
+        //Update the next active UI if we have any others currently.
+        if (this.ui == lui) {
+            synchronized (sessions) {
+                Iterator<UI> itr = sessions.iterator();
+                if (itr.hasNext())
+                    setActiveUI(itr.next());
+            }
+        }
     }
 
     private static Cursor makeawtcurs(BufferedImage img, Coord hs) {
@@ -349,15 +406,9 @@ public class HavenPanel extends GLCanvas implements Runnable, Console.Directory,
             ui.draw(g);
         }
 
-        if (Config.showfps) {
-            FastText.aprint(g, new Coord(HavenPanel.w - 50, 15), 0, 1, "FPS: " + fps);
-            if(ui.gui != null && ui.gui.map != null) {
-                FastText.aprintf(g, new Coord(w, 30), 1, 0, "%.2f units/s", ui.gui.map.speed());
-            }
-        }
+
 
         if (Config.dbtext) {
-            // int y = h - 165;
             int y = h - 190;
             FastText.aprintf(g, new Coord(10, y -= 15), 0, 1, "FPS: %d (%d%%, %d%% idle)", fps, (int)(uidle * 100.0), (int)(ridle * 100.0));
             Runtime rt = Runtime.getRuntime();
@@ -378,6 +429,27 @@ public class HavenPanel extends GLCanvas implements Runnable, Console.Directory,
             if (Resource.remote().qdepth() > 0)
                 FastText.aprintf(g, new Coord(10, y -= 15), 0, 1, "RQ depth: %d (%d)", Resource.remote().qdepth(), Resource.remote().numloaded());
         }
+
+        //Update session stats
+        if (ui.sess != null) {
+            if ((System.currentTimeMillis() - last_sess_upd) >= 1000) {
+                sent = ui.sess.sent - ssent;
+                recv = ui.sess.recv - srecv;
+                retran = ui.sess.retran - sretran;
+                ssent = ui.sess.sent;
+                srecv = ui.sess.recv;
+                sretran = ui.sess.retran;
+                last_sess_upd = System.currentTimeMillis();
+            }
+            if (Config.showfps) {
+                FastText.aprintf(g, new Coord(w, 0), 1, 0, "FPS: %d (%d%%, %d%% idle)", fps, (int) (uidle * 100.0), (int) (ridle * 100.0));
+                FastText.aprintf(g, new Coord(w, 15), 1, 0, "S: %d | R: %d | P: %d | RT: %d", sent, recv, ui.sess.pend, retran);
+                if (ui.gui != null && ui.gui.map != null) {
+                    FastText.aprintf(g, new Coord(w, 30), 1, 0, "%.2f units/s", ui.gui.map.speed());
+                }
+            }
+        }
+
         Object tooltip;
         try {
             synchronized (ui) {
@@ -400,15 +472,17 @@ public class HavenPanel extends GLCanvas implements Runnable, Console.Directory,
             } else if (tooltip instanceof String) {
                 if (((String) tooltip).length() > 0)
                     tt = (Text.render((String) tooltip)).tex();
+            } else if (tooltip instanceof BufferedImage) {
+                tt = new TexI((BufferedImage) tooltip);
             }
         }
         if (tt != null) {
             Coord sz = tt.sz();
             Coord pos = mousepos.add(sz.inv());
-            if (pos.x < 10)
-                pos.x = 10;
-            if (pos.y < 10)
-                pos.y = 10;
+            if (pos.x < 0)
+                pos.x = 0;
+            if (pos.y < 0)
+                pos.y = 0;
             g.chcolor(244, 247, 21, 192);
             g.rect(pos.add(-3, -3), sz.add(6, 6));
             g.chcolor(35, 35, 35, 192);
@@ -417,7 +491,10 @@ public class HavenPanel extends GLCanvas implements Runnable, Console.Directory,
             g.image(tt, pos);
         }
         ui.lasttip = tooltip;
-        Resource curs = ui.root.getcurs(mousepos);
+        Resource curs;
+        synchronized (ui) {
+            curs = ui.getcurs(mousepos);
+        }
         if (cursmode == "awt") {
             if (curs != lastcursor) {
                 try {
@@ -449,8 +526,8 @@ public class HavenPanel extends GLCanvas implements Runnable, Console.Directory,
 
     private static class Frame {
         BufferBGL buf;
-        CPUProfile.Frame pf;
         CurrentGL on;
+        CPUProfile.Frame pf;
         long doneat;
 
         Frame(BufferBGL buf, CurrentGL on) {
@@ -494,6 +571,7 @@ public class HavenPanel extends GLCanvas implements Runnable, Console.Directory,
             DefSettings.checkForDirty();
             f.doneat = System.currentTimeMillis();
         }
+
         if(iswap != aswap)
             gl.setSwapInterval((aswap = iswap) ? 1 : 0);
     }
@@ -599,82 +677,109 @@ public class HavenPanel extends GLCanvas implements Runnable, Console.Directory,
                 long frames[] = new long[128];
                 int framep = 0, waited[] = new int[128];
                 while (true) {
-                    int fwaited = 0;
-                    Debug.cycle();
-                    UI ui = this.ui;
-                    then = System.currentTimeMillis();
-                    CPUProfile.Frame curf = null;
-                    if (Config.profile)
-                        curf = uprof.new Frame();
-                    synchronized (ui) {
-                        if (ui.sess != null)
-                            ui.sess.glob.ctick();
-                        dispatch();
-                        ui.tick();
-                        if ((ui.root.sz.x != w) || (ui.root.sz.y != h))
-                            ui.root.resize(new Coord(w, h));
-                    }
-                    if (curf != null)
-                        curf.tick("dsp");
+                    if (nextUI != null)
+                        ui = nextUI;
+                    if (ui != null) {
+                        if (!DefSettings.PAUSED.get()) {
+                            int fwaited = 0;
+                            Debug.cycle();
+                            UI ui = this.ui;
+                            then = System.currentTimeMillis();
+                            CPUProfile.Frame curf = null;
+                            if (Config.profile)
+                                curf = uprof.new Frame();
+                            synchronized (ui) {
+                                if (ui.sess != null)
+                                    ui.sess.glob.ctick();
+                                dispatch();
+                                ui.tick();
+                                if ((ui.root.sz.x != w) || (ui.root.sz.y != h))
+                                    ui.root.resize(new Coord(w, h));
+                            }
+                            if (curf != null)
+                                curf.tick("dsp");
 
-                    BufferBGL buf = new BufferBGL();
-                    GLState.Applier state = this.state;
-                    rootdraw(state, ui, buf);
-                    if (curf != null)
-                        curf.tick("draw");
-                    synchronized (drawfun) {
-                        now = System.currentTimeMillis();
-                        while (bufdraw != null)
-                            drawfun.wait();
-                        bufdraw = new Frame(buf, state.cgl);
-                        drawfun.notifyAll();
-                        fwaited += System.currentTimeMillis() - now;
-                    }
+                            BufferBGL buf = new BufferBGL();
+                            GLState.Applier state = this.state;
+                            rootdraw(state, ui, buf);
+                            if (curf != null)
+                                curf.tick("draw");
+                            synchronized (drawfun) {
+                                now = System.currentTimeMillis();
+                                while (bufdraw != null)
+                                    drawfun.wait();
+                                bufdraw = new Frame(buf, state.cgl);
+                                drawfun.notifyAll();
+                                fwaited += System.currentTimeMillis() - now;
+                            }
 
-                    ui.audio.cycle();
-                    if (curf != null)
-                        curf.tick("aux");
+                            ui.audio.cycle();
+                            if (curf != null)
+                                curf.tick("aux");
 
-                    now = System.currentTimeMillis();
-                    long fd = bgmode ? this.bgfd : this.fd;
-                    if (now - then < fd) {
-                        synchronized (events) {
-                            events.wait(fd - (now - then));
+                            now = System.currentTimeMillis();
+                            long fd = bgmode ? this.bgfd : this.fd;
+                            if (now - then < fd) {
+                                synchronized (events) {
+                                    events.wait(fd - (now - then));
+                                }
+                                fwaited += System.currentTimeMillis() - now;
+                            }
+
+                            frames[framep] = now;
+                            waited[framep] = fwaited;
+                            {
+                                int i = 0, ckf = framep, twait = 0;
+                                for(; i < frames.length - 1; i++) {
+                                    ckf = (ckf - 1 + frames.length) % frames.length;
+                                    twait += waited[ckf];
+                                    if(now - frames[ckf] > 1000)
+                                        break;
+                                }
+                                fps = (i * 1000) / (now - frames[ckf]);
+                                uidle = ((double) twait) / ((double) (now - frames[ckf]));
+                            }
+                            framep = (framep + 1) % frames.length;
+
+                            if (curf != null)
+                                curf.tick("wait");
+                            if (curf != null)
+                                curf.fin();
+                            if (Thread.interrupted())
+                                throw (new InterruptedException());
+                        } else {
+                            //Things that must run each frame, even when paused
+                            Debug.cycle();
+                            synchronized (ui) {
+                                if (ui.sess != null)
+                                    ui.sess.glob.ctick();
+                                dispatch();
+                                ui.tick();
+                                if ((ui.root.sz.x != w) || (ui.root.sz.y != h))
+                                    ui.root.resize(new Coord(w, h));
+                            }
+                            ui.audio.cycle();
+                            //This is for scripts doing queued movements
+                            //TODO: Fix this once scripting is added back in
+                            // if(haven.Context.map != null)
+                            //    haven.Context.map.try_move();
+                            Thread.sleep(100);
                         }
-                        fwaited += System.currentTimeMillis() - now;
                     }
 
-                    frames[framep] = now;
-                    waited[framep] = fwaited;
-                    /*
-                    for (int i = 0, ckf = framep, twait = 0; i < frames.length; i++) {
-                        ckf = (ckf - 1 + frames.length) % frames.length;
-                        twait += waited[ckf];
-                        if (now - frames[ckf] > 1000) {
-                            fps = i;
-                            uidle = ((double) twait) / ((double) (now - frames[ckf]));
-                            break;
-                            */
-                    {
-                        int i = 0, ckf = framep, twait = 0;
-                        for(; i < frames.length - 1; i++) {
-                            ckf = (ckf - 1 + frames.length) % frames.length;
-                            twait += waited[ckf];
-                            if(now - frames[ckf] > 1000)
-                                break;
+                    //Update all other UIs as well, just don't render
+                    synchronized (sessions) {
+                        for (final UI lui : sessions) {
+                            if (lui != ui) {
+                                if (lui.sess != null)
+                                    lui.sess.glob.ctick();
+                                lui.tick();
+                                if ((lui.root.sz.x != w) || (lui.root.sz.y != h))
+                                    lui.root.resize(new Coord(w, h));
+                                lui.audio.cycle();
+                            }
                         }
-                        fps = (i * 1000) / (now - frames[ckf]);
-                        uidle = ((double)twait) / ((double)(now - frames[ckf]));
                     }
-
-                    framep = (framep + 1) % frames.length;
-
-                    if (curf != null)
-                        curf.tick("wait");
-                    if (curf != null)
-                        curf.fin();
-                    if (Thread.interrupted())
-                        throw (new InterruptedException());
                 }
             } finally {
                 drawthread.interrupt();
@@ -682,12 +787,29 @@ public class HavenPanel extends GLCanvas implements Runnable, Console.Directory,
             }
         } catch (InterruptedException e) {
         } finally {
-            ui.destroy();
+            if (ui != null)
+                ui.destroy();
         }
     }
 
     public GraphicsConfiguration getconf() {
         return (getGraphicsConfiguration());
+    }
+
+    private java.awt.Robot awtrobot;
+
+    public void setmousepos(Coord c) {
+        java.awt.EventQueue.invokeLater(() -> {
+            if (awtrobot == null) {
+                try {
+                    awtrobot = new Robot(getGraphicsConfiguration().getDevice());
+                } catch (java.awt.AWTException e) {
+                    return;
+                }
+            }
+            Point rp = getLocationOnScreen();
+            awtrobot.mouseMove(rp.x + c.x, rp.y + c.y);
+        });
     }
 
     private Map<String, Console.Command> cmdmap = new TreeMap<String, Console.Command>();
