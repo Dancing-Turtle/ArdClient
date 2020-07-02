@@ -728,7 +728,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     }
     public void DiscordToggle(){
         if(Discord.jdalogin != null) {
-            PBotUtils.sysMsg("Discord Disconnected",Color.white);
+            msg("Discord Disconnected",Color.white);
             discordconnected = false;
             Discord.jdalogin.shutdownNow();
             Discord.jdalogin = null;
@@ -775,9 +775,9 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public void toggleGridBinds(){
         opts.menugridcheckbox.set(!opts.menugridcheckbox.a);
         if(opts.menugridcheckbox.a)
-            PBotUtils.sysMsg("Menugrid keybinds are now disabled!",Color.white);
+            msg("Menugrid keybinds are now disabled!",Color.white);
         else
-            PBotUtils.sysMsg("Menugrid keybinds are now enabled!",Color.white);
+            msg("Menugrid keybinds are now enabled!",Color.white);
     }
 
     public void toggleStudy() {
@@ -1607,9 +1607,9 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         if (map != null)
             map.refreshGobsAll();
         if(Config.hidegobs)
-            PBotUtils.sysMsg("Gobs are now hidden.",Color.white);
+            msg("Gobs are now hidden.",Color.white);
         else
-            PBotUtils.sysMsg("Gobs are now NOT hidden.",Color.white);
+            msg("Gobs are now NOT hidden.",Color.white);
     }
 
     public void toggleHiddenGobs(){
@@ -1618,9 +1618,9 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         if (map != null)
             map.refreshGobsAll();
         if(Config.hideuniquegobs)
-            PBotUtils.sysMsg("Unique gobs are now hidden.",Color.white);
+            msg("Unique gobs are now hidden.",Color.white);
         else
-            PBotUtils.sysMsg("Unique gobs are now NOT hidden.",Color.white);
+            msg("Unique gobs are now NOT hidden.",Color.white);
     }
 
     public void toggleGridCentering(){
