@@ -26,10 +26,10 @@
 
 package haven;
 
+import haven.Audio.CS;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import haven.Audio.CS;
 
 public class AudioSprite {
     public static List<Resource.Audio> clips(Resource res, String id)
@@ -55,6 +55,17 @@ public class AudioSprite {
 
     public static final Sprite.Factory fact = new Sprite.Factory() {
         public Sprite create(Sprite.Owner owner, Resource res, Message sdt) {
+            final UI ui;
+            if (owner instanceof Gob) {
+                ui = ((Gob) owner).glob.ui.get();
+            } else {
+                ui = null;
+            }
+
+            if (DefSettings.PAUSED.get() || DefSettings.NOGOBAUDIO.get() ||
+                    (ui != null && !MainFrame.instance.p.isActiveUI(ui))) {
+                return new IgnoreSprite(owner, res);
+            }
             {
                 Resource.Audio clip = randoom(res, "cl");
                 if (clip != null)
@@ -72,6 +83,25 @@ public class AudioSprite {
             return (null);
         }
     };
+
+    public static class IgnoreSprite extends Sprite {
+        public IgnoreSprite(Owner owner, Resource res) {
+            super(owner, res);
+        }
+
+        public boolean setup(RenderList r) {
+            return false;
+        }
+
+        public boolean tick(int dt) {
+            return true;
+        }
+
+        public Object staticp() {
+            return (CONSTANS);
+        }
+    }
+
 
     public static class ClipSprite extends Sprite {
         public final ActAudio.PosClip clip;
