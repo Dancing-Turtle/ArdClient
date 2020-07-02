@@ -75,6 +75,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     public Inventory maininv;
     private Boolean temporarilyswimming = false;
     public CharWnd chrwdg;
+    public Speedget speed;
     public MapWnd mapfile;
     public Widget qqview;
     public QuestWnd questwnd;
@@ -1671,39 +1672,34 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 
 
     public void crawlSpeed(){
-        Speedget speedwdg = speedget.get();
-        if (speedwdg != null)
-            speedwdg.set(0);
+        if (speed != null)
+            speed.set(0);
     }
 
     public void walkSpeed(){
-        Speedget speedwdg = speedget.get();
-        if (speedwdg != null)
-            speedwdg.set(1);
+        if (speed != null)
+            speed.set(1);
     }
 
     public void runSpeed(){
-        Speedget speedwdg = speedget.get();
-        if (speedwdg != null)
-            speedwdg.set(2);
+        if (speed != null)
+            speed.set(2);
     }
 
     public void sprintSpeed(){
-        Speedget speedwdg = speedget.get();
-        if (speedwdg != null)
-            speedwdg.set(3);
+        if (speed != null)
+            speed.set(3);
     }
 
     public void cycleSpeed(){
-        Speedget speedwdg = speedget.get();
-        if (speedwdg != null){
-            if (speedwdg.max >= 0) {
+        if (speed != null){
+            if (speed.max >= 0) {
                 int n;
-                if (speedwdg.cur > speedwdg.max)
+                if (speed.cur > speed.max)
                     n = 0;
                 else
-                    n = (speedwdg.cur + 1) % (speedwdg.max + 1);
-                speedwdg.set(n);
+                    n = (speed.cur + 1) % (speed.max + 1);
+                speed.set(n);
             }
         }
     }

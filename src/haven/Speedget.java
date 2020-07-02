@@ -26,16 +26,28 @@
 
 package haven;
 
-import java.awt.event.KeyEvent;
+import haven.sloth.gui.MovableWidget;
 
-public class Speedget extends Widget {
+public class Speedget extends MovableWidget {
     public static final Tex imgs[][];
     public static final String tips[];
     public static final Coord tsz;
+
+    public enum Speed {
+        CRAWL(0),
+        WALK(1),
+        RUN(2),
+        SPRINT(3);
+
+        final int id;
+
+        Speed(final int id) {
+            this.id = id;
+        }
+    }
+
     public int cur, max;
     public boolean runonloginset;
-
-    //Skipped Speedget
 
     static {
         String[] names = {"crawl", "walk", "run", "sprint"};
@@ -64,9 +76,26 @@ public class Speedget extends Widget {
     }
 
     public Speedget(int cur, int max) {
-        super(tsz);
+        super(tsz, "Speedget");
         this.cur = cur;
         this.max = max;
+    }
+
+    @Override
+    protected void added() {
+        super.added();
+        ui.gui.speed = this;
+    }
+
+    @Override
+    protected void binded() {
+        ui.sess.details.attachSpeedget(this);
+    }
+
+    @Override
+    protected void removed() {
+        ui.gui.speed = null;
+        ui.sess.details.removeSpeedget();
     }
 
     public void draw(GOut g) {
@@ -96,25 +125,34 @@ public class Speedget extends Widget {
             max = (Integer) args[0];
     }
 
+    @Override
+    protected boolean moveHit(Coord c, int btn) {
+        return btn == 3 && c.isect(Coord.z, sz);
+    }
+
     public void set(int s) {
         wdgmsg("set", s);
     }
 
     public boolean mousedown(Coord c, int button) {
-        int x = 0;
-        for (int i = 0; i < 4; i++) {
-            x += imgs[i][0].sz().x;
-            if (c.x < x) {
-                set(i);
-                break;
+        if (button == 1) {
+            int x = 0;
+            for (int i = 0; i < 4; i++) {
+                x += imgs[i][0].sz().x;
+                if (c.x < x) {
+                    set(i);
+                    break;
+                }
             }
+            return (true);
+        } else {
+            return super.mousedown(c, button);
         }
-        return (true);
     }
 
     public boolean mousewheel(Coord c, int amount) {
         if (max >= 0)
-            set((cur + max + 1 + amount) % (max + 1));
+            set(Utils.clip(cur + amount, 0, max));
         return (true);
     }
 
@@ -124,42 +162,20 @@ public class Speedget extends Widget {
         return (null);
     }
 
-    /*public boolean globtype(char key, KeyEvent ev) {
-        if (key == 18) {
-            if (max >= 0) {
-                int n;
-                if ((ev.getModifiersEx() & KeyEvent.SHIFT_DOWN_MASK) == 0) {
-                    if (cur > max)
-                        n = 0;
-                    else
-                        n = (cur + 1) % (max + 1);
-                } else {
-                    if (cur > max)
-                        n = max;
-                    else
-                        n = (cur + max) % (max + 1);
-                }
-                set(n);
-            }
-            return (true);
-        } else if (ev.isShiftDown()) {
-            int c = ev.getKeyCode();
-            if (c == KeyEvent.VK_Q) {
-                set(0);
-                return true;
-            } else if (c == KeyEvent.VK_W) {
-                set(1);
-                return true;
-            } else if (c == KeyEvent.VK_E) {
-                set(2);
-                return true;
-            } else if (c == KeyEvent.VK_R) {
-                set(3);
-                return true;
-            }
+    public void cyclespeed() {
+        if (max >= 0) {
+            int n;
+            if (cur > max)
+                n = max;
+            else
+                n = (cur + 1) % (max + 1);
+            set(n);
         }
-        return (super.globtype(key, ev));
-    }*/
+    }
 
-
+    public void setSpeed(final Speed spd) {
+        if (max >= 0 && spd.id <= max) {
+            set(spd.id);
+        }
+    }
 }
