@@ -88,8 +88,8 @@ public class IMeter extends MovableWidget {
                 w = (w * m.a) / 100;
                 g.chcolor(m.c);
                 g.frect(off, new Coord(w, msz.y));
-                g.chcolor();
                 if(Config.showmetertext){
+                    g.chcolor();
                     g.atextstroked(meterinfo,new Coord(msz.x/2 + 10, msz.y/2 - 1), 0, 0, Color.WHITE, Color.BLACK, Text.num10Fnd);
                 }
             }
@@ -123,7 +123,6 @@ public class IMeter extends MovableWidget {
             super.uimsg(msg, args);
             if(msg.equals("tip")) {
                 final String tt = (String)args[0];
-                meterinfo = args[0].toString().split(" ")[1];
                 Matcher matcher = hppat.matcher(tt);
                 if(matcher.find()) {
                     ui.sess.details.shp = Integer.parseInt(matcher.group(1));
@@ -140,8 +139,11 @@ public class IMeter extends MovableWidget {
                         }
                     }
                 }
-                if(meterinfo.contains("/")){
-                    meterinfo = Integer.toString(ui.sess.details.shp);
+                if(Config.showmetertext){
+                    meterinfo = args[0].toString().split(" ")[1];
+                    if(meterinfo.contains("/")){
+                        meterinfo = Integer.toString(ui.sess.details.shp);
+                    }
                 }
             }
         }

@@ -1044,6 +1044,18 @@ public class OptWnd extends Window {
         final WidgetVerticalAppender appender = new WidgetVerticalAppender(withScrollport(display, new Coord(620, 350)));
         appender.setVerticalMargin(VERTICAL_MARGIN);
 
+        appender.add(new CheckBox("Show IMeter Text - Requires Logout") {
+            {
+                a = Config.showmetertext;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showmetertext", val);
+                Config.showmetertext = val;
+                a = val;
+            }
+        });
+
         appender.add(new CheckBox("Flatten Cupboards - Requires Restart") {
             {
                 a = Config.flatcupboards;
