@@ -43,7 +43,9 @@ public class RootWidget extends ConsoleHost {
         setfocusctl(true);
         hasfocus = true;
         cursor = defcurs.indir();
-        add(sessionDisplay = new SessionDisplay());
+        if(Config.sessiondisplay){
+            add(sessionDisplay = new SessionDisplay());
+        }
     }
 
     public boolean globtype(char key, KeyEvent ev) {

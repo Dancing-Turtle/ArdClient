@@ -301,8 +301,10 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         timerswnd = add(new haven.timers.TimersWnd(this));
         if(!Config.autowindows.get("Timers").selected)
             timerswnd.hide();
-        ui.root.sessionDisplay.unlink();
-        add(ui.root.sessionDisplay);
+        if(Config.sessiondisplay){
+            ui.root.sessionDisplay.unlink();
+            add(ui.root.sessionDisplay);
+        }
     }
 
     public void beltPageSwitch1(){

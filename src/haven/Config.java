@@ -77,6 +77,7 @@ public class Config {
     public static boolean mapdrawquests = Utils.getprefb("mapdrawquests", true);
     public static boolean mapdrawflags = Utils.getprefb("mapdrawflags", false);
     public static boolean hideflovisual = Utils.getprefb("hideflovisual", false);
+    public static boolean sessiondisplay = Utils.getprefb("sessiondisplay", true);
     public static boolean longtooltips = Utils.getprefb("longtooltips", true);
     public static boolean straightcavewall = Utils.getprefb("straightcavewall", false);
     public static boolean avatooltips = Utils.getprefb("avatooltips", false);
