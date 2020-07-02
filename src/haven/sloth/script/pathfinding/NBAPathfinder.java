@@ -140,14 +140,8 @@ public class NBAPathfinder extends Pathfinder {
                         if (!checkHit(nc)) {
                             //18:       g(v) = min(g(v), g(u0) + d(u0, v));
                             final Node child = new Node(node, nc, node.g + 1, heuristic.distance(nc, target));
-                            if (heuristic.distance(nc, start) < 440) {
-                                M.add(child);
-                                myNodes.put(nc, child);
-                                if (side == Side.SOURCE && child.h < estbest) {
-                                    estbest = child.h;
-                                    estbestc = nc;
-                                }
-                            }
+                            M.add(child);
+                            myNodes.put(nc, child);
                         }
                     } else if (otherNodes.containsKey(nc)) { //19:       L = min(L, g(v) + ˜g(v));
                         final Node child = new Node(node, nc, node.g + 1, heuristic.distance(nc, target));
