@@ -26,11 +26,12 @@
 
 package haven;
 
-import java.awt.Color;
-import java.awt.image.BufferedImage;
-import java.util.*;
-
 import haven.ItemInfo.AttrCache;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.util.Collections;
+import java.util.List;
 
 public class Buff extends Widget implements ItemInfo.ResOwner, Bufflist.Managed {
     public static final Text.Foundry nfnd = new Text.Foundry(Text.dfont, 10);
@@ -275,6 +276,7 @@ public class Buff extends Widget implements ItemInfo.ResOwner, Bufflist.Managed 
         } else if (msg == "tt") {
             info = null;
             rawinfo = new ItemInfo.Raw(args);
+            shorttip = longtip = null;
         } else if (msg == "tip") {
             String tt = (String) args[0];
             this.tt = tt.equals("") ? null : tt;
