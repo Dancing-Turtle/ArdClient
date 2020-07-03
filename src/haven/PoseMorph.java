@@ -37,33 +37,26 @@ import java.util.LinkedList;
 import java.util.List;
 /*
 TODO FOR LARGE ANIMALS:
-    magpie
-    dragonfly
-    sand fleas
-    firefly
-    moon moth
-    stag beetle
-    monarch butterfly
-    mallard drake
-    jellyfish
-    waterstriders
-    silk moths
-    wood grouse hens
-    - cave moth
-    - centipede
-    - rats
-    - grub
-    - baby rabbits
-    - forest snail
-    -- baby chicken
-    -- chickens
-    -- ptarmigan
-    -- mallard hen
-    -- seagull
-    -- forest lizard
-    -- bog turtle
-    -- quail
-    -- toad frog
+    Need to Collect:
+        magpie
+        dragonfly
+        sand fleas
+        firefly
+        moon moth
+        stag beetle
+        monarch butterfly
+        mallard drake
+        jellyfish
+        waterstriders
+        silk moths
+        wood grouse hens
+    Collected:
+        - cave moth
+        - centipede
+        - rats
+        - grub
+        - baby rabbits
+        - forest snail
  */
 public class PoseMorph implements Morpher.Factory {
     public final Pose pose;

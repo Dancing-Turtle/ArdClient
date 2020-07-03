@@ -1059,7 +1059,8 @@ public class Config {
             "Tummy",
             "main.008_R",
             "Bone_L.001",
-            "LegFront01.r"
+            "LegFront01.r",
+            "foot.r"
 
     ));
 
