@@ -44,7 +44,7 @@ public class ResDrawable extends Drawable {
             if(name == null){
                 //Large Animal debug
                 this.name = res.get().name;
-                System.out.println(this.name);
+                //System.out.println(this.name);
             }
         } catch (Loading e) {
         }
