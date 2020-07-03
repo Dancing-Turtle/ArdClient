@@ -79,7 +79,8 @@ public class TrellisFarmer extends Window implements Runnable {
 					return;
 
 				// Check if stamina is under 30%, drink if needed
-				GameUI gui = this.parent.findchild(GameUI.class);
+				//GameUI gui = this.parent.findchild(GameUI.class);
+				GameUI gui = gameui();
 				IMeter.Meter stam = gui.getmeter("stam", 0);
 				if (stam.a <= 30) {
 					PBotUtils.drink(true);
@@ -190,7 +191,8 @@ public class TrellisFarmer extends Window implements Runnable {
 					return;
 
 				// Check if stamina is under 30%, drink if needed
-				GameUI gui = this.parent.findchild(GameUI.class);
+				//GameUI gui = this.parent.findchild(GameUI.class);
+				GameUI gui = gameui();
 				IMeter.Meter stam = gui.getmeter("stam", 0);
 				if (stam.a <= 30) {
 					PBotUtils.drink(true);

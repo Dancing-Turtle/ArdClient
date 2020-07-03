@@ -89,6 +89,7 @@ public class Config {
     public static boolean flatcupboards = Utils.getprefb("flatcupboards", true);
     public static boolean flatwalls = Utils.getprefb("flatwalls", false);
     public static boolean flatcaves = Utils.getprefb("flatcaves", false);
+    public static boolean biganimals = Utils.getprefb("biganimals", false);
     public static boolean showquality = Utils.getprefb("showquality", true);
     public static boolean showroadendpoint = Utils.getprefb("showroadendpoint", true);
     public static boolean showroadmidpoint = Utils.getprefb("showroadmidpoint", false);
@@ -242,6 +243,7 @@ public class Config {
     public static boolean DropBones = Utils.getprefb("DropBones", false);
     public static boolean bonsai = Utils.getprefb("bonsai", false);
     public static boolean largetree = Utils.getprefb("largetree", false);
+    public static boolean smallworld = Utils.getprefb("smallworld", false);
     public static boolean largetreeleaves = Utils.getprefb("largetree", false);
     public static int fontsizechat = Utils.getprefi("fontsizechat", 14);
     public static int curiotimetarget = Utils.getprefi("curiotimetarget", 1440);
@@ -1039,6 +1041,27 @@ public class Config {
                 "gfx/invobjs/kelpcream"
         });
     }};
+
+    public final static Set<String> bigAnimals = new HashSet<String>(Arrays.asList(
+            "Spine01_R.001",
+            "main.004_R",
+            "tail0_R.001",
+            "footfront.r",
+            "ear.r",
+            "frontleg4.r",
+            "Bone_R.018",
+            "main.002_L.002",
+            "foot.l",
+            "main.001_R.002",
+            "frontleg4.r",
+            "boneback01.l",
+            "Spine3",
+            "Tummy",
+            "main.008_R",
+            "Bone_L.001",
+            "LegFront01.r"
+
+    ));
 
     public static final Map<Long, Pair<String, String>> gridIdsMap = new HashMap<>(58000);
 

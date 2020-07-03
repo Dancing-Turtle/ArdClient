@@ -33,6 +33,7 @@ public class ResDrawable extends Drawable {
     public Sprite spr = null;
     MessageBuf sdt;
     private int delay = 0;
+    String name = null;
 
     public ResDrawable(Gob gob, Indir<Resource> res, Message sdt) {
         super(gob);
@@ -40,6 +41,11 @@ public class ResDrawable extends Drawable {
         this.sdt = new MessageBuf(sdt);
         try {
             init();
+            if(name == null){
+                //Large Animal debug
+                this.name = res.get().name;
+                System.out.println(this.name);
+            }
         } catch (Loading e) {
         }
     }

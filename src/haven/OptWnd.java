@@ -1056,6 +1056,18 @@ public class OptWnd extends Window {
             }
         });
 
+        appender.add(new CheckBox("Big Animals (required for Small World)") {
+            {
+                a = Config.biganimals;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("biganimals", val);
+                Config.biganimals = val;
+                a = val;
+            }
+        });
+
         appender.add(new CheckBox("Show IMeter Text - Requires Logout") {
             {
                 a = Config.showmetertext;
@@ -1527,6 +1539,18 @@ public class OptWnd extends Window {
                 Config.largetree = false;
             }
         };
+
+        appender.add(new CheckBox("It's a small world") {
+            {
+                a = Config.smallworld;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("smallworld", val);
+                Config.smallworld = val;
+                a = val;
+            }
+        });
         appender.add(lt);
         appender.add(bt);
         appender.add(ltl);

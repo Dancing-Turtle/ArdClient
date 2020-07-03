@@ -26,14 +26,12 @@
 
 package haven;
 
-import java.util.*;
-
 import haven.MapView.ClickInfo;
 import haven.Skeleton.Pose;
 import haven.Skeleton.PoseMod;
-import haven.MapView.ClickInfo;
-import haven.DefSettings;
 import haven.sloth.gob.Type;
+
+import java.util.*;
 
 public class Composited implements Rendered, MapView.Clickable {
     public final Skeleton skel;

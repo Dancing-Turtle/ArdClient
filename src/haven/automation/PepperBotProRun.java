@@ -143,7 +143,8 @@ try {
 }
 
 			// Check if stamina is under 30%, drink if needed
-			gui = this.parent.findchild(GameUI.class);
+			//gui = this.parent.findchild(GameUI.class);
+			gui = gameui();
 			IMeter.Meter stam = gui.getmeter("stam", 0);
 			if (stam.a <= 60) {
 				if (stopThread)
@@ -354,7 +355,8 @@ try {
 						}
 					}
 
-					gui = this.parent.findchild(GameUI.class);
+					//gui = this.parent.findchild(GameUI.class);
+					gui = gameui();
 					stam = gui.getmeter("stam", 0);
 					if (stam.a <= 60) {
 						if (stopThread)

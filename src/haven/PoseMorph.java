@@ -26,20 +26,50 @@
 
 package haven;
 
+import haven.MorphedMesh.MorphedBuf;
+import haven.MorphedMesh.Morpher;
+import haven.Skeleton.Pose;
+
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-
-import haven.MorphedMesh.MorphedBuf;
-import haven.MorphedMesh.Morpher;
-import haven.Skeleton.Pose;
-
+/*
+TODO FOR LARGE ANIMALS:
+    magpie
+    dragonfly
+    sand fleas
+    firefly
+    moon moth
+    stag beetle
+    monarch butterfly
+    mallard drake
+    jellyfish
+    waterstriders
+    silk moths
+    wood grouse hens
+    - cave moth
+    - centipede
+    - rats
+    - grub
+    - baby rabbits
+    - forest snail
+    -- baby chicken
+    -- chickens
+    -- ptarmigan
+    -- mallard hen
+    -- seagull
+    -- forest lizard
+    -- bog turtle
+    -- quail
+    -- toad frog
+ */
 public class PoseMorph implements Morpher.Factory {
     public final Pose pose;
     private float[][] offs;
     private int seq = -1;
+    private String name = null;
 
     public PoseMorph(Pose pose) {
         this.pose = pose;
@@ -207,9 +237,38 @@ public class PoseMorph implements Morpher.Factory {
                             break;
                         float bw = wl.get(ao + o);
                         float[] xf = offs[bi];
-                        npx += ((xf[0] * opx) + (xf[4] * opy) + (xf[8] * opz) + xf[12]) * bw;
-                        npy += ((xf[1] * opx) + (xf[5] * opy) + (xf[9] * opz) + xf[13]) * bw;
-                        npz += ((xf[2] * opx) + (xf[6] * opy) + (xf[10] * opz) + xf[14]) * bw;
+                        //Big Animals HERE!!!!  ! ! ! !
+                        if(!Config.biganimals){
+                            if(name == null){
+                                name = ba.names[0];
+                                System.out.println(name);
+                            }
+                            //Squirrel > centipede > forest lizard > grasshopper > rabbit > toad
+                            //Large Animal
+                            npx += ((xf[0] * opx) + (xf[4] * opy) + (xf[8] * opz) + xf[12]) * bw;
+                            npy += ((xf[1] * opx) + (xf[5] * opy) + (xf[9] * opz) + xf[13]) * bw;
+                            npz += ((xf[2] * opx) + (xf[6] * opy) + (xf[10] * opz) + xf[14]) * bw;
+                        } else {
+                            if(name == null){
+                                name = ba.names[0];
+                                System.out.println(name);
+                            }
+                            if(Config.smallworld){
+                                npx += ((xf[0] * opx) + (xf[4] * opy) + (xf[8] * opz) + xf[12]) * bw*6;
+                                npy += ((xf[1] * opx) + (xf[5] * opy) + (xf[9] * opz) + xf[13]) * bw*6;
+                                npz += ((xf[2] * opx) + (xf[6] * opy) + (xf[10] * opz) + xf[14]) * bw*6;
+                            } else {
+                                if(Config.bigAnimals.contains(name)){
+                                    npx += ((xf[0] * opx) + (xf[4] * opy) + (xf[8] * opz) + xf[12]) * bw*2;
+                                    npy += ((xf[1] * opx) + (xf[5] * opy) + (xf[9] * opz) + xf[13]) * bw*2;
+                                    npz += ((xf[2] * opx) + (xf[6] * opy) + (xf[10] * opz) + xf[14]) * bw*2;
+                                } else {
+                                    npx += ((xf[0] * opx) + (xf[4] * opy) + (xf[8] * opz) + xf[12]) * bw;
+                                    npy += ((xf[1] * opx) + (xf[5] * opy) + (xf[9] * opz) + xf[13]) * bw;
+                                    npz += ((xf[2] * opx) + (xf[6] * opy) + (xf[10] * opz) + xf[14]) * bw;
+                                }
+                            }
+                        }
                         rw -= bw;
                     }
                     npx += opx * rw;

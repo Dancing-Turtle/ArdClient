@@ -1,40 +1,20 @@
 package haven.res.ui.barterbox;
 
-import java.awt.Color;
+import haven.Button;
+import haven.*;
+import haven.GSprite.Owner;
+import haven.Label;
+import haven.ItemInfo.SpriteOwner;
+import haven.Resource.Image;
+import haven.Resource.Pagina;
+import haven.res.lib.tspec.Spec;
+import haven.res.ui.tt.q.qbuff.QBuff;
+
+import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.Random;
-
-import haven.Button;
-import haven.Coord;
-import haven.GItem;
-import haven.GOut;
-import haven.GSprite;
-import haven.GSprite.Owner;
-import haven.Glob;
-import haven.Indir;
-import haven.Inventory;
-import haven.ItemInfo;
-import haven.ItemInfo.SpriteOwner;
-import haven.Label;
-import haven.Loading;
-import haven.Message;
-import haven.MessageBuf;
-import haven.ResData;
-import haven.Resource;
-import haven.Resource.Image;
-import haven.Resource.Pagina;
-import haven.RichText;
-import haven.Tex;
-import haven.TexI;
-import haven.Text;
-import haven.TextEntry;
-import haven.UI;
-import haven.Utils;
-import haven.WItem;
-import haven.Widget;
-import haven.res.lib.tspec.Spec;
-import haven.res.ui.tt.q.qbuff.QBuff;
 
 // ui/barterstand
 public class Shopbox extends Widget implements SpriteOwner, Owner {
@@ -42,7 +22,8 @@ public class Shopbox extends Widget implements SpriteOwner, Owner {
     public static final Text qlbl = Text.render(Resource.getLocString(Resource.BUNDLE_LABEL, "Quality:"));
     public static final Tex bg = Resource.loadtex("ui/shopbox");
     public static final Coord itemc = new Coord(5, 5);
-    public static final Coord buyc = new Coord(5, 66);
+    public static final Coord buyc = new Coord(5, 43);
+    public static final Coord buyca = new Coord(5, 66);
     public static final Coord pricec = new Coord(200, 5);
     public static final Coord qualc = (new Coord(200, 5)).add(Inventory.invsq.sz()).add(40, 0);
     public static final Coord cbtnc = new Coord(200, 66);
@@ -60,7 +41,8 @@ public class Shopbox extends Widget implements SpriteOwner, Owner {
     private Text quality;
     private Button spipe;
     private Button bpipe;
-    private Button bbtn;
+    private Button bbtn,bbtn100;
+    private TextEntry tbuy;
     private Button cbtn;
     private TextEntry pnume;
     private TextEntry pqe;
@@ -70,6 +52,7 @@ public class Shopbox extends Widget implements SpriteOwner, Owner {
     private Tex longtip = null;
     private Tex pricetip = null;
     private Random rnd = null;
+    private int count = 0;
 
     public static Widget mkwidget(UI ui, Object... var1) {
         boolean var2 = ((Integer) var1[0]).intValue() != 0;
@@ -271,6 +254,13 @@ public class Shopbox extends Widget implements SpriteOwner, Owner {
             }else {
                 this.wdgmsg("buy", new Object[0]);
             }
+        } else if(var1 == this.bbtn100) {
+            if(count > 0){
+                for (int i = 0; i < count; i++)
+                    this.wdgmsg("buy", new Object[0]);
+            } else {
+                gameui().msg("You can't buy 0 items.");
+            }
         } else if(var1 == this.spipe) {
             this.wdgmsg("spipe", new Object[0]);
         } else if(var1 == this.bpipe) {
@@ -286,12 +276,36 @@ public class Shopbox extends Widget implements SpriteOwner, Owner {
 
     private void updbtn() {
         boolean var1 = this.price != null && this.pnum > 0;
-        if (var1 && this.bbtn == null) {
+        if (var1 && this.bbtn == null || this.bbtn100 == null) {
             this.bbtn = (Button) this.add(new Button(75, "Buy"), buyc);
             this.bbtn.tooltip = "Left click to buy 1, Shift left click to buy 5, ctrl shift left click to buy 20.";
+            this.bbtn100 = (Button) this.add(new Button(75, "Buy x"), buyca);
+            this.bbtn100.tooltip = "Type the number in box press enter and press this button.";
+
+            tbuy = this.add(new TextEntry(40, "") {
+                @Override
+                public boolean keydown(KeyEvent e) {
+                    return !(e.getKeyCode() >= KeyEvent.VK_F1 && e.getKeyCode() <= KeyEvent.VK_F12);
+                }
+
+                @Override
+                public boolean type(char c, KeyEvent ev) {
+                    if (c >= KeyEvent.VK_0 && c <= KeyEvent.VK_9 && buf.line.length() < 2 || c == '\b') {
+                        return buf.key(ev);
+                    } else if (c == '\n') {
+                        try {
+                            count = Integer.parseInt(dtext());
+                            return true;
+                        } catch (NumberFormatException e) {
+                        }
+                    }
+                    return false;
+                }
+            }, new Coord(82, 66));
         } else if (!var1 && this.bbtn != null) {
             this.bbtn.reqdestroy();
             this.bbtn = null;
+            this.bbtn100 = null;
         }
 
     }
