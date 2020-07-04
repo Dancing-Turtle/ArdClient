@@ -53,6 +53,7 @@ public class Config {
     public static boolean profile = false;
     public static boolean simplemap = Utils.getprefb("simplemap", false);
     public static boolean rawrzmap = Utils.getprefb("rawrzmap", false);
+    public static boolean trollexmap = Utils.getprefb("trollexmap", false);
     public static boolean disableBlackOutLinesOnMap = Utils.getprefb("disableBlackOutLinesOnMap", false);
     public static boolean mapscale = Utils.getprefb("mapscale", false);
     public static boolean profilegpu = false;
@@ -1119,27 +1120,27 @@ public class Config {
         */
 
         // populate grid ids map
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new FileReader("grid_ids.txt"));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] tknzed = line.split(",");
-                try {
-                    gridIdsMap.put(Long.parseLong(tknzed[2]), new Pair<>(tknzed[0], tknzed[1]));
-                } catch (NumberFormatException nfe) {
-                }
-            }
-        } catch (IOException e){
-            e.printStackTrace();
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) { // ignored
-                }
-            }
-        }
+//        BufferedReader reader = null;
+//        try {
+//            reader = new BufferedReader(new FileReader("grid_ids.txt"));
+//            String line;
+//            while ((line = reader.readLine()) != null) {
+//                String[] tknzed = line.split(",");
+//                try {
+//                    gridIdsMap.put(Long.parseLong(tknzed[2]), new Pair<>(tknzed[0], tknzed[1]));
+//                } catch (NumberFormatException nfe) {
+//                }
+//            }
+//        } catch (IOException e){
+//            e.printStackTrace();
+//        } finally {
+//            if (reader != null) {
+//                try {
+//                    reader.close();
+//                } catch (IOException e) { // ignored
+//                }
+//            }
+//        }
 
         if(Config.vendanMapv4) {
             MappingClient.getInstance().SetEndpoint(Utils.getpref("vendan-mapv4-endpoint", ""));

@@ -2758,6 +2758,18 @@ public class OptWnd extends Window {
             }
         });
 
+        appender.add(new CheckBox("Trollex Map Binds") {
+            {
+                a = Config.trollexmap;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("trollexmap", val);
+                Config.trollexmap = val;
+                a = val;
+            }
+        });
+
         additions.add(new PButton(200, "Back", 27, main), new Coord(210, 360));
         additions.pack();
     }

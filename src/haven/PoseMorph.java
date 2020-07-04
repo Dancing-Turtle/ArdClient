@@ -38,7 +38,6 @@ import java.util.List;
 /*
 TODO FOR LARGE ANIMALS:
     Need to Collect:
-        magpie
         dragonfly
         sand fleas
         firefly

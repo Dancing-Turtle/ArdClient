@@ -348,7 +348,7 @@ public class UI {
     }
 
     private void removeid(Widget wdg) {
-        System.out.println("Removing widget "+wdg.toString());
+        //System.out.println("Removing widget "+wdg.toString());
         wdg.removed();
         if (rwidgets.containsKey(wdg)) {
             int id = rwidgets.get(wdg);

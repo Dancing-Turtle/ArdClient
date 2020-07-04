@@ -785,36 +785,70 @@ LocalMiniMap extends Widget {
     }
 
     public boolean mousedown(Coord c, int button) {
-        if (button != 2) {
-            if (cc == null)
-                return false;
-            Coord csd = c.sub(delta);
-            Coord2d mc = c2p(csd);
-            if (button == 1)
-                MapView.pllastcc = mc;
-            Gob gob = findicongob(csd.add(delta));
-            if (gob == null) { //click tile
-                if(ui.modmeta && button == 1) {
-                    mv.queuemove(c2p(c.sub(delta)));
-                } else if (button == 1) {
-                    mv.wdgmsg("click", rootpos().add(csd), mc.floor(posres), button, ui.modflags());
-                    mv.clearmovequeue();
+        if(Config.trollexmap){
+            if (button != 1) {
+                if (cc == null)
+                    return false;
+                Coord csd = c.sub(delta);
+                Coord2d mc = c2p(csd);
+                if (button == 3)
+                    MapView.pllastcc = mc;
+                Gob gob = findicongob(csd.add(delta));
+                if (gob == null) { //click tile
+                    if(ui.modmeta && button == 3) {
+                        mv.queuemove(c2p(c.sub(delta)));
+                    } else if (button == 3) {
+                        mv.wdgmsg("click", rootpos().add(csd), mc.floor(posres), 1, ui.modflags());
+                        mv.clearmovequeue();
+                    }
+                    return true;
+                } else {
+                    mv.wdgmsg("click", rootpos().add(csd), mc.floor(posres), button, ui.modflags(), 0, (int) gob.id, gob.rc.floor(posres), 0, -1);
+                    if (Config.autopickmussels && gob.getres() != null && (gob.getres().basename().contains("mussel") || gob.getres().basename().contains("oyster")))
+                        mv.startMusselsPicker(gob);
+                    if(Config.autopickclay && gob.getres() != null && gob.getres().basename().contains("clay-gray"))
+                        mv.startMusselsPicker(gob);
+                    if(Config.autopickbarnacles && gob.getres() != null && gob.getres().basename().contains("goosebarnacle"))
+                        mv.startMusselsPicker(gob);
+                    if(Config.autopickcattails && gob.getres() != null && gob.getres().basename().contains("cattail"))
+                        mv.startMusselsPicker(gob);
                 }
-                return true;
-            } else {
-                mv.wdgmsg("click", rootpos().add(csd), mc.floor(posres), button, ui.modflags(), 0, (int) gob.id, gob.rc.floor(posres), 0, -1);
-            if (Config.autopickmussels && gob.getres() != null && (gob.getres().basename().contains("mussel") || gob.getres().basename().contains("oyster")))
-                mv.startMusselsPicker(gob);
-            if(Config.autopickclay && gob.getres() != null && gob.getres().basename().contains("clay-gray"))
-                mv.startMusselsPicker(gob);
-                if(Config.autopickbarnacles && gob.getres() != null && gob.getres().basename().contains("goosebarnacle"))
-                    mv.startMusselsPicker(gob);
-                if(Config.autopickcattails && gob.getres() != null && gob.getres().basename().contains("cattail"))
-                    mv.startMusselsPicker(gob);
+            } else if (button == 1) {
+                doff = c;
+                dragging = ui.grabmouse(this);
             }
-        } else if (button == 2) {
-            doff = c;
-            dragging = ui.grabmouse(this);
+        } else {
+            if (button != 2) {
+                if (cc == null)
+                    return false;
+                Coord csd = c.sub(delta);
+                Coord2d mc = c2p(csd);
+                if (button == 1)
+                    MapView.pllastcc = mc;
+                Gob gob = findicongob(csd.add(delta));
+                if (gob == null) { //click tile
+                    if(ui.modmeta && button == 1) {
+                        mv.queuemove(c2p(c.sub(delta)));
+                    } else if (button == 1) {
+                        mv.wdgmsg("click", rootpos().add(csd), mc.floor(posres), button, ui.modflags());
+                        mv.clearmovequeue();
+                    }
+                    return true;
+                } else {
+                    mv.wdgmsg("click", rootpos().add(csd), mc.floor(posres), button, ui.modflags(), 0, (int) gob.id, gob.rc.floor(posres), 0, -1);
+                    if (Config.autopickmussels && gob.getres() != null && (gob.getres().basename().contains("mussel") || gob.getres().basename().contains("oyster")))
+                        mv.startMusselsPicker(gob);
+                    if(Config.autopickclay && gob.getres() != null && gob.getres().basename().contains("clay-gray"))
+                        mv.startMusselsPicker(gob);
+                    if(Config.autopickbarnacles && gob.getres() != null && gob.getres().basename().contains("goosebarnacle"))
+                        mv.startMusselsPicker(gob);
+                    if(Config.autopickcattails && gob.getres() != null && gob.getres().basename().contains("cattail"))
+                        mv.startMusselsPicker(gob);
+                }
+            } else if (button == 2) {
+                doff = c;
+                dragging = ui.grabmouse(this);
+            }
         }
         return true;
     }
