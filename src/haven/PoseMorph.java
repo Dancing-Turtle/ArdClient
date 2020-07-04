@@ -39,17 +39,17 @@ import java.util.List;
 TODO FOR LARGE ANIMALS:
     Need to Collect:
         dragonfly
-        sand fleas
         firefly
         moon moth
         stag beetle
-        monarch butterfly
-        mallard drake
-        jellyfish
-        waterstriders
         silk moths
         wood grouse hens
+        ladybug
     Collected:
+        - jellyfish
+        - waterstriders
+        - monarch butterfly
+        - sand fleas
         - cave moth
         - centipede
         - rats

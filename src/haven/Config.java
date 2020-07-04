@@ -1061,7 +1061,9 @@ public class Config {
             "main.008_R",
             "Bone_L.001",
             "LegFront01.r",
-            "foot.r"
+            "foot.r",
+            "Bone.001_L.002",
+            "Spine00"
 
     ));
 
