@@ -2821,6 +2821,18 @@ public class OptWnd extends Window {
             }
         });
 
+        appender.add(new CheckBox("Autodrop Uncommon and Below") {
+            {
+                a = Config.dropuncommon;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("dropuncommon", val);
+                Config.dropuncommon = val;
+                a = val;
+            }
+        });
+
         appender.add(new Label(""));
 
         appender.add(new CheckBox("Straight cave wall (requires new chunk render)") {

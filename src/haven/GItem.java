@@ -26,19 +26,17 @@
 
 package haven;
 
-import static haven.Text.num10Fnd;
-import static haven.Text.num12boldFnd;
+import haven.purus.pbot.PBotUtils;
+import haven.res.ui.tt.q.qbuff.QBuff;
 
-import java.awt.Color;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import haven.automation.MinerAlert;
-import haven.purus.pbot.PBotAPI;
-import haven.purus.pbot.PBotUtils;
-import haven.res.ui.tt.q.qbuff.QBuff;
+import static haven.Text.num10Fnd;
+import static haven.Text.num12boldFnd;
 
 public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owner {
     public Indir<Resource> res;
@@ -314,6 +312,11 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
             String name = this.resource().basename();
             String invname = this.getname();
             for (String itm : Config.autodroplist.keySet()) {
+                if(Config.dropuncommon){
+                    if (quality.q > Config.uncommonq){
+                        return;
+                    }
+                }
                 if (itm.equals(invname) && Config.autodroplist.get(itm)) {
                     this.wdgmsg("drop", Coord.z);
                 }
