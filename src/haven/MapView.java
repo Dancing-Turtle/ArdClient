@@ -1646,7 +1646,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
 
     private Loading camload = null, lastload = null;
     public void draw(GOut g) {
-            glob.map.sendreqs();
+
 	if((olftimer != 0) && (olftimer < Utils.rtime()))
                 unflashol();
             try {
@@ -1833,6 +1833,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         return questQueue;
     }
     public void tick(double dt) {
+        glob.map.sendreqs();
         camload = null;
         try {
             if ((shake = shake * Math.pow(100, -dt)) < 0.01)

@@ -307,6 +307,15 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         }
     }
 
+    @Override
+    public void destroy() {
+        if(statuswindow != null) {//seems to be a bug that occasionally keeps the status window thread alive.
+            statuswindow.reqdestroy();
+        }
+        ui.root.add(ui.root.sessionDisplay = new SessionDisplay());
+        super.destroy();
+    }
+
     public void beltPageSwitch1(){
         nbelt.page = 0;
         nbelt.upd_page();
