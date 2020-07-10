@@ -312,11 +312,6 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
             String name = this.resource().basename();
             String invname = this.getname();
             for (String itm : Config.autodroplist.keySet()) {
-                if(Config.dropuncommon){
-                    if (quality.q > Config.uncommonq){
-                        return;
-                    }
-                }
                 if (itm.equals(invname) && Config.autodroplist.get(itm)) {
                     this.wdgmsg("drop", Coord.z);
                 }
