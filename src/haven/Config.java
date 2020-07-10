@@ -110,8 +110,8 @@ public class Config {
     public static int fpsBackgroundLimit = Utils.getprefi("fpsBackgroundLimit", 200);
 
     //Item Coloring
-    public static boolean qualitycolor = Utils.getprefb("qualitycolor", true);
-    public static boolean insaneitem = Utils.getprefb("insaneitem", true);
+    public static boolean qualitycolor = Utils.getprefb("qualitycolor", false);
+    public static boolean insaneitem = Utils.getprefb("insaneitem", false);
     public static Color uncommon = new Color(30, 255, 0);
     public static Color rare = new Color(0, 112, 221);
     public static Color epic = new Color(163, 53, 238);
