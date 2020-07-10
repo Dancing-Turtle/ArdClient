@@ -31,10 +31,12 @@ import integrations.mapv4.MappingClient;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.*;
 import java.net.URL;
 import java.util.*;
+import java.util.List;
 
 import static haven.Utils.getprop;
 
@@ -106,6 +108,14 @@ public class Config {
     public static boolean showprogressperc = Utils.getprefb("showprogressperc", true);
     public static int fpsLimit = Utils.getprefi("fpsLimit", 200);
     public static int fpsBackgroundLimit = Utils.getprefi("fpsBackgroundLimit", 200);
+
+    //Item Coloring
+    public static boolean qualitycolor = Utils.getprefb("qualitycolor", true);
+    public static boolean insaneitem = Utils.getprefb("insaneitem", true);
+    public static Color uncommon = new Color(30, 255, 0);
+    public static Color rare = new Color(0, 112, 221);
+    public static Color epic = new Color(163, 53, 238);
+    public static Color legendary = new Color(255, 128, 0);
 
     public static boolean quickslots = Utils.getprefb("quickslots", true);
     public static boolean disablequickslotdrop = Utils.getprefb("disablequickslotdrop", true);

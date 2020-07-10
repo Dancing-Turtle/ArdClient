@@ -2688,6 +2688,32 @@ public class OptWnd extends Window {
         appender.add(new Label("Additional Client Features"));
         //Test//Test//Test
 
+        appender.add(new CheckBox("Item Quality Coloring") {
+            {
+                a = Config.qualitycolor;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("qualitycolor", val);
+                Config.qualitycolor = val;
+                a = val;
+            }
+        });
+
+        appender.add(new CheckBox("Insane Item Alert (400+ Quality)") {
+            {
+                a = Config.insaneitem;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("insaneitem", val);
+                Config.insaneitem = val;
+                a = val;
+            }
+        });
+
+        appender.add(new Label(""));
+
         appender.add(new CheckBox("Straight cave wall (requires new chunk render)") {
             {
                 a = Config.straightcavewall;
