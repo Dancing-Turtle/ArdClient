@@ -2809,7 +2809,7 @@ public class OptWnd extends Window {
 
         additions.add(f, new Coord(300, 10));
 
-        appender.add(new CheckBox("Insane Item Alert (400+ Quality)") {
+        appender.add(new CheckBox("Insane Item Alert (Above Legendary)") {
             {
                 a = Config.insaneitem;
             }
