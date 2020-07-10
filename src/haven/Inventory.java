@@ -158,8 +158,14 @@ public class Inventory extends Widget implements DTarget {
                     else
                         return msg.endsWith("asc") ? -1 : 1;
                 });
-                for (WItem item : items)
+                for (WItem item : items){
+                    if(Config.transfercolor){
+                        if(item.qq.color != items.get(0).qq.color)
+                            return;
+                    }
                     item.item.wdgmsg("transfer", Coord.z);
+                }
+
             } else {
                 for (Widget w = stockpile.lchild; w != null; w = w.prev) {
                     if (w instanceof ISBox) {

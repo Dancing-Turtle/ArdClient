@@ -18,23 +18,23 @@ public class QBuff extends ItemInfo.Tip {
     public static final Layout.ID<Table> lid = new Tid();
     public static final Layout.ID<Summary> sid = new Sid();
     public Tex qtex, qwtex;
+    public Color color, outline = Color.BLACK;
     public QBuff(Owner owner, BufferedImage icon, String name, double q) {
         super(owner);
         this.icon = icon;
         this.origName = name;
         this.name = Resource.getLocString(Resource.BUNDLE_LABEL, name);
         this.q = q;
-        Color color, outline = Color.BLACK;
         if(Config.qualitycolor){
             if(q < 11){
                 color = Color.white;
-            } else if(q < 26){
+            } else if(q < Config.uncommonq){
                 color = Config.uncommon;
-            } else if(q < 101){
+            } else if(q < Config.rareq){
                 color = Config.rare;
-            } else if(q < 250){
+            } else if(q < Config.epicq){
                 color = Config.epic;
-            } else if(q < 400){
+            } else if(q < Config.legendaryq){
                 color = Config.legendary;
             } else {
                 if(Config.insaneitem){

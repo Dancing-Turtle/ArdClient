@@ -112,10 +112,18 @@ public class Config {
     //Item Coloring
     public static boolean qualitycolor = Utils.getprefb("qualitycolor", false);
     public static boolean insaneitem = Utils.getprefb("insaneitem", false);
+    public static boolean transferquality = Utils.getprefb("transferquality", false);
+    public static boolean transfercolor = Utils.getprefb("transfercolor", false);
     public static Color uncommon = new Color(30, 255, 0);
     public static Color rare = new Color(0, 112, 221);
     public static Color epic = new Color(163, 53, 238);
     public static Color legendary = new Color(255, 128, 0);
+
+    public static int uncommonq =  Utils.getprefi("uncommonq", 26);
+    public static int rareq =  Utils.getprefi("rareq", 101);
+    public static int epicq =  Utils.getprefi("epicq", 250);
+    public static int legendaryq =  Utils.getprefi("legendaryq", 400);
+
 
     public static boolean quickslots = Utils.getprefb("quickslots", true);
     public static boolean disablequickslotdrop = Utils.getprefb("disablequickslotdrop", true);

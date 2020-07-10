@@ -2700,6 +2700,115 @@ public class OptWnd extends Window {
             }
         });
 
+        appender.add(new CheckBox("Item Quality Coloring Transfer ASC") {
+            {
+                a = Config.transfercolor;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("transfercolor", val);
+                Config.transfercolor = val;
+                a = val;
+            }
+        });
+
+        Frame f = new Frame(new Coord(200, 100), false);
+        f.add(new Label("Uncommon below:"), 5, 10);
+        f.add(new TextEntry(40, String.valueOf(Config.uncommonq)) {
+            @Override
+            public boolean keydown(KeyEvent e) {
+                return !(e.getKeyCode() >= KeyEvent.VK_F1 && e.getKeyCode() <= KeyEvent.VK_F12);
+            }
+
+            @Override
+            public boolean type(char c, KeyEvent ev) {
+                if (c >= KeyEvent.VK_0 && c <= KeyEvent.VK_9 && buf.line.length() < 3 || c == '\b') {
+                    return buf.key(ev);
+                } else if (c == '\n') {
+                    try {
+                        Config.uncommonq = Integer.parseInt(dtext());
+                        Utils.setprefi("uncommonq", Config.uncommonq);
+                        return true;
+                    } catch (NumberFormatException e) {
+                    }
+                }
+                return false;
+            }
+        }, new Coord(140, 10));
+
+        f.add(new Label("Rare below:"), 5, 30);
+        f.add(new TextEntry(40, String.valueOf(Config.rareq)) {
+            @Override
+            public boolean keydown(KeyEvent e) {
+                return !(e.getKeyCode() >= KeyEvent.VK_F1 && e.getKeyCode() <= KeyEvent.VK_F12);
+            }
+
+            @Override
+            public boolean type(char c, KeyEvent ev) {
+                if (c >= KeyEvent.VK_0 && c <= KeyEvent.VK_9 && buf.line.length() < 3 || c == '\b') {
+                    return buf.key(ev);
+                } else if (c == '\n') {
+                    try {
+                        Config.rareq = Integer.parseInt(dtext());
+                        Utils.setprefi("rareq", Config.rareq);
+                        return true;
+                    } catch (NumberFormatException e) {
+                    }
+                }
+                return false;
+            }
+        }, new Coord(140, 30));
+
+        f.add(new Label("Epic below:"), 5, 50);
+        f.add(new TextEntry(40, String.valueOf(Config.epicq)) {
+            @Override
+            public boolean keydown(KeyEvent e) {
+                return !(e.getKeyCode() >= KeyEvent.VK_F1 && e.getKeyCode() <= KeyEvent.VK_F12);
+            }
+
+            @Override
+            public boolean type(char c, KeyEvent ev) {
+                if (c >= KeyEvent.VK_0 && c <= KeyEvent.VK_9 && buf.line.length() < 3 || c == '\b') {
+                    return buf.key(ev);
+                } else if (c == '\n') {
+                    try {
+                        Config.epicq = Integer.parseInt(dtext());
+                        Utils.setprefi("epicq", Config.epicq);
+                        return true;
+                    } catch (NumberFormatException e) {
+                    }
+                }
+                return false;
+            }
+        }, new Coord(140, 50));
+
+        f.add(new Label("Legendary below:"), 5, 70);
+        f.add(new TextEntry(40, String.valueOf(Config.legendaryq)) {
+            @Override
+            public boolean keydown(KeyEvent e) {
+                return !(e.getKeyCode() >= KeyEvent.VK_F1 && e.getKeyCode() <= KeyEvent.VK_F12);
+            }
+
+            @Override
+            public boolean type(char c, KeyEvent ev) {
+                if (c >= KeyEvent.VK_0 && c <= KeyEvent.VK_9 && buf.line.length() < 3 || c == '\b') {
+                    return buf.key(ev);
+                } else if (c == '\n') {
+                    try {
+                        Config.legendaryq = Integer.parseInt(dtext());
+                        Utils.setprefi("legendaryq", Config.legendaryq);
+                        return true;
+                    } catch (NumberFormatException e) {
+                    }
+                }
+                return false;
+            }
+        }, new Coord(140, 70));
+
+
+
+        additions.add(f, new Coord(300, 10));
+
         appender.add(new CheckBox("Insane Item Alert (400+ Quality)") {
             {
                 a = Config.insaneitem;
