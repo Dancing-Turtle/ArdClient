@@ -2702,12 +2702,24 @@ public class OptWnd extends Window {
 
         appender.add(new CheckBox("Item Quality Coloring Transfer ASC") {
             {
-                a = Config.transfercolor;
+                a = Config.dropcolor;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("dropcolor", val);
+                Config.dropcolor = val;
+                a = val;
+            }
+        });
+
+        appender.add(new CheckBox("Drop Color Identical") {
+            {
+                a = Config.dropcolor;
             }
 
             public void set(boolean val) {
                 Utils.setprefb("transfercolor", val);
-                Config.transfercolor = val;
+                Config.dropcolor = val;
                 a = val;
             }
         });

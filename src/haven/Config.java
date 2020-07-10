@@ -114,6 +114,7 @@ public class Config {
     public static boolean insaneitem = Utils.getprefb("insaneitem", false);
     public static boolean transferquality = Utils.getprefb("transferquality", false);
     public static boolean transfercolor = Utils.getprefb("transfercolor", false);
+    public static boolean dropcolor = Utils.getprefb("dropcolor", false);
     public static Color uncommon = new Color(30, 255, 0);
     public static Color rare = new Color(0, 112, 221);
     public static Color epic = new Color(163, 53, 238);

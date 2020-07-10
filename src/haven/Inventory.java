@@ -29,6 +29,8 @@ package haven;
 import haven.purus.pbot.PBotUtils;
 import haven.res.ui.tt.q.qbuff.QBuff;
 
+import java.awt.*;
+import java.util.List;
 import java.util.*;
 
 public class Inventory extends Widget implements DTarget {
@@ -138,8 +140,21 @@ public class Inventory extends Widget implements DTarget {
     @Override
     public void wdgmsg(Widget sender, String msg, Object... args) {
         if(msg.equals("drop-identical")) {
-            for (WItem item : getIdenticalItems((GItem) args[0]))
-                item.item.wdgmsg("drop", Coord.z);
+            Color colorIdentical = null;
+            for (WItem item : getIdenticalItems((GItem) args[0])){
+                if(Config.dropcolor){
+                    if(colorIdentical == null){
+                        GItem g = (GItem) args[0];
+                        colorIdentical = g.quality().color;
+                    }
+                    if(item.qq.color != colorIdentical){
+                        continue;
+                    }
+                    item.item.wdgmsg("drop", Coord.z);
+                } else {
+                    item.item.wdgmsg("drop", Coord.z);
+                }
+            }
         } else if(msg.startsWith("transfer-identical")) {
             Window stockpile = gameui().getwnd("Stockpile");
             Window smelter = gameui().getwnd("Ore Smelter");
