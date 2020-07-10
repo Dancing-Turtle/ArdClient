@@ -119,10 +119,10 @@ public class Config {
     public static Color epic = new Color(163, 53, 238);
     public static Color legendary = new Color(255, 128, 0);
 
-    public static int uncommonq =  Utils.getprefi("uncommonq", 26);
-    public static int rareq =  Utils.getprefi("rareq", 101);
-    public static int epicq =  Utils.getprefi("epicq", 250);
-    public static int legendaryq =  Utils.getprefi("legendaryq", 400);
+    public static int uncommonq =  Utils.getprefi("uncommonq", 40);
+    public static int rareq =  Utils.getprefi("rareq", 90);
+    public static int epicq =  Utils.getprefi("epicq", 160);
+    public static int legendaryq =  Utils.getprefi("legendaryq", 250);
 
 
     public static boolean quickslots = Utils.getprefb("quickslots", true);
