@@ -143,12 +143,14 @@ public class Inventory extends Widget implements DTarget {
             Color colorIdentical = null;
             for (WItem item : getIdenticalItems((GItem) args[0])){
                 if(Config.dropcolor){
-                    if(colorIdentical == null){
-                        GItem g = (GItem) args[0];
-                        colorIdentical = g.quality().color;
-                    }
-                    if(item.qq.color != colorIdentical){
-                        continue;
+                    GItem g = (GItem) args[0];
+                    if(g.quality().color != null){
+                        if(colorIdentical == null){
+                            colorIdentical = g.quality().color;
+                        }
+                        if(item.qq.color != colorIdentical){
+                            continue;
+                        }
                     }
                     item.item.wdgmsg("drop", Coord.z);
                 } else {
@@ -175,8 +177,10 @@ public class Inventory extends Widget implements DTarget {
                 });
                 for (WItem item : items){
                     if(Config.transfercolor){
-                        if(item.qq.color != items.get(0).qq.color)
-                            return;
+                        if(item.qq.color != null && items.get(0).qq.color != null){
+                            if(item.qq.color != items.get(0).qq.color)
+                                return;
+                        }
                     }
                     item.item.wdgmsg("transfer", Coord.z);
                 }
