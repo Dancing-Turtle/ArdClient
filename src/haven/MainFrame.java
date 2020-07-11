@@ -65,6 +65,7 @@ public class MainFrame extends java.awt.Frame implements Runnable, Console.Direc
         } catch (Exception e) {
         }
     }
+
     DisplayMode findmode(int w, int h) {
         GraphicsDevice dev = getGraphicsConfiguration().getDevice();
         if (!dev.isFullScreenSupported())

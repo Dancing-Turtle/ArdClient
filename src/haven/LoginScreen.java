@@ -69,7 +69,7 @@ public class LoginScreen extends Widget {
         //super(bg.sz());
         super(new Coord(800, 600));
         setfocustab(true);
-        add(background = new Img(bg), Coord.z);
+        add(new Img(bg), Coord.z);
         optbtn = adda(new Button(100, "Options"), sz.x-110, 40, 0, 1);
        // new UpdateChecker().start();
         add(new LoginList(200, 29), new Coord(10, 10));
@@ -391,11 +391,6 @@ public class LoginScreen extends Widget {
                 error(null);
                 clear();
                 progress((String) args[0]);
-            } else if (msg == "bg") {
-                background.destroy(); //destroy
-                bg = configuration.imageToTex(Config.defaultUtilsCustomLoginScreenBg, 800, 600, Resource.loadtex("gfx/loginscr"));
-                System.out.println(bg);
-                add(background = new Img(bg), Coord.z); //layers or invert of add (this.remove(background)). mb configurate tick
             }
         }
     }
