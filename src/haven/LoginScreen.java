@@ -27,6 +27,7 @@
 package haven;
 
 import haven.purus.pbot.PBotAPI;
+import modification.configuration;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -46,7 +47,7 @@ public class LoginScreen extends Widget {
     private TextEntry user;
     OptWnd opts;
     static Text.Foundry textf, textfs, special;
-    static Tex bg = Resource.loadtex("gfx/loginscr");
+    static Tex bg = configuration.imageToTex("modification/loginscr.png", 800, 600, Resource.loadtex("gfx/loginscr"));	//static Tex bg = Resource.loadtex("gfx/loginscr");
     Text progress = null;
     private Window log;
 

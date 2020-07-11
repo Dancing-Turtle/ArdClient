@@ -1,8 +1,8 @@
 package haven.sloth.gui;
 
 import haven.*;
-import haven.sloth.gui.layout.GridGrouping;
-import haven.sloth.gui.layout.Grouping;
+import haven.sloth.gui.GridGrouping;
+import haven.sloth.gui.Grouping;
 import haven.sloth.util.ObservableListener;
 
 import java.util.*;

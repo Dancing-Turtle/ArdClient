@@ -127,7 +127,7 @@ jackson-core.jar graal-sdk.jar graaljs.jar tregex.jar truffle-api.jar" />
     </target>
 
   <target name="jars" depends="build-env, jar, res-jar, l10n-jar, custom-jar, scripts">
-    <copy todir="build/lib">
+    <copy todir="build">
       <fileset dir="lib">
 	    <include name="jogl.jar" />
 	    <include name="gluegen-rt.jar" />
