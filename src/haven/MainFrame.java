@@ -48,7 +48,7 @@ public class MainFrame extends java.awt.Frame implements Runnable, Console.Direc
     private final ThreadGroup g;
     public final Thread mt;
     DisplayMode fsmode = null, prefs = null;
-    private static final String TITLE = "Ardennes Hafen Revived " + "1.02: Rise of the Machines";
+    private static final String TITLE = "Ardennes Hafen Revived " + "♂right version♂: You turn ♂Leatherman♂";
 
     static {
         try {
