@@ -256,6 +256,9 @@ jackson-core.jar graal-sdk.jar graaljs.jar tregex.jar truffle-api.jar" />
         <copy todir="update/scripts">
             <fileset dir="build/scripts/" includes="**"/>
         </copy>
+        <copy todir="update/modification">
+            <fileset dir="build/modification/" includes="**"/>
+        </copy>
     </target>
 
     <target name="update" depends="prep-update">
