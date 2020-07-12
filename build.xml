@@ -126,7 +126,15 @@ jackson-core.jar graal-sdk.jar graaljs.jar tregex.jar truffle-api.jar" />
         </copy>
     </target>
 
-  <target name="jars" depends="build-env, jar, res-jar, l10n-jar, custom-jar, scripts">
+    <target name="modification" depends="build-env">
+        <mkdir dir="build/modification"/>
+        <copy todir="build/modification">
+            <fileset dir="modification/" includes="*">
+            </fileset>
+        </copy>
+    </target>
+
+  <target name="jars" depends="build-env, jar, res-jar, l10n-jar, custom-jar, scripts, modification">
     <copy todir="build">
       <fileset dir="lib">
 	    <include name="jogl.jar" />

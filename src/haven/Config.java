@@ -109,6 +109,12 @@ public class Config {
     public static int fpsLimit = Utils.getprefi("fpsLimit", 200);
     public static int fpsBackgroundLimit = Utils.getprefi("fpsBackgroundLimit", 200);
 
+    //Custom Title and Login Screen Background
+    public static String defaultCustomTitle = "♂right version♂: You turn ♂Leatherman♂";
+    public static String defaultCustomLoginScreenBg = "modification/loginscr.png";
+    public static String defaultUtilsCustomTitle = Utils.getpref("custom-title", Config.defaultCustomTitle);
+    public static String defaultUtilsCustomLoginScreenBg = Utils.getpref("custom-login-background", Config.defaultCustomLoginScreenBg);
+
     //Item Coloring
     public static boolean qualitycolor = Utils.getprefb("qualitycolor", false);
     public static boolean insaneitem = Utils.getprefb("insaneitem", false);

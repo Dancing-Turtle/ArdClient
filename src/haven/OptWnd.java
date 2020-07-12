@@ -38,6 +38,7 @@ import integrations.mapv4.MappingClient;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.io.IOException;
 import java.net.JarURLConnection;
 import java.net.URL;
@@ -2688,6 +2689,51 @@ public class OptWnd extends Window {
         appender.add(new Label("Additional Client Features"));
         //Test//Test//Test
 
+        appender.addRow(new Label("Custom title:") {
+                            @Override
+                            public Object tooltip(Coord c0, Widget prev) {
+                                Tex tex = Text.render("Request restart").tex();
+                                return tex;
+                            }
+                        },
+                new TextEntry(240, Config.defaultUtilsCustomTitle) {
+                    @Override
+                    public boolean keydown(KeyEvent ev) {
+                        if (!parent.visible)
+                            return false;
+                        Utils.setpref("custom-title", text);
+
+                        return buf.key(ev);
+                    }
+                }
+        );
+
+        appender.addRow(new Label("Custom Login Background:") {
+                            @Override
+                            public Object tooltip(Coord c0, Widget prev) {
+                                Tex tex = Text.render("Request restart").tex();
+                                return tex;
+                            }
+                        },
+                new TextEntry(200, Config.defaultUtilsCustomLoginScreenBg) {
+                    @Override
+                    public void changed() {
+                        try {
+                            File img = new File(text);
+                            if (img.exists() && img.isFile()) {
+                                Utils.setpref("custom-login-background", text);
+                                //ui.uimsg(1, "bg"); //FIXME dont work instant change bg
+                                System.out.println("custom login screen " + text);
+                            }
+                            else System.out.println("custom login screen file not found");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+        );
+
+        int yItem = appender.getY();
         appender.add(new CheckBox("Item Quality Coloring") {
             {
                 a = Config.qualitycolor;
@@ -2819,7 +2865,7 @@ public class OptWnd extends Window {
 
 
 
-        additions.add(f, new Coord(300, 10));
+        additions.add(f, new Coord(300, yItem));
 
         appender.add(new CheckBox("Insane Item Alert (Above Legendary)") {
             {
