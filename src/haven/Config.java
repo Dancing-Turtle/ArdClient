@@ -124,6 +124,9 @@ public class Config {
     public static boolean newCropStageOverlay = Utils.getprefb("newCropStageOverlay", false);
     public static boolean newQuickSlotWdg = Utils.getprefb("newQuickSlotWdg", false);
 
+    public static boolean scaletree = Utils.getprefb("scaletree", false);
+    public static int scaletreeint = Utils.getprefi("scaletreeint", 25);
+
     //Item Coloring
     public static boolean qualitycolor = Utils.getprefb("qualitycolor", false);
     public static boolean insaneitem = Utils.getprefb("insaneitem", false);

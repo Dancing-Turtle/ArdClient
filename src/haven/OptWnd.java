@@ -62,7 +62,7 @@ public class OptWnd extends Window {
     public final Panel main, video, audio, display, map, general, combat, control, uis,uip, quality, mapping, flowermenus, soundalarms, hidesettings, studydesksettings, autodropsettings, keybindsettings, chatsettings, clearboulders, clearbushes, cleartrees, clearhides, additions;
     public Panel current;
     public CheckBox discordcheckbox, menugridcheckbox;
-    CheckBox sm = null, rm = null, lt = null, bt = null, ltl;
+    CheckBox sm = null, rm = null;/*, lt = null, bt = null, ltl;*/
 
     public void chpanel(Panel p) {
         if (current != null)
@@ -1494,7 +1494,7 @@ public class OptWnd extends Window {
             }
         });
 
-        bt = new CheckBox("Miniature trees (req. logout)") {
+        /**bt = new CheckBox("Miniature trees (req. logout)") {
             {
                 a = Config.bonsai;
             }
@@ -1540,7 +1540,33 @@ public class OptWnd extends Window {
                 lt.a = false;
                 Config.largetree = false;
             }
-        };
+        };**/
+
+        appender.addRow(new CheckBox("Scalable trees (req. logout)"){
+            {
+                this.a = Config.scaletree;
+            }
+
+            @Override
+            public void set(boolean val) {
+                Utils.setprefb("scaletree", val);
+                Config.scaletree = val;
+                this.a = val;
+            }
+        }, new HSlider(200, 0, 255, Config.scaletreeint){
+
+            @Override
+            protected void attach(UI ui) {
+                super.attach(ui);
+            }
+
+            @Override
+            public void changed() {
+                Config.scaletreeint = this.val;
+                Utils.setprefi("scaletreeint", Config.scaletreeint);
+                settip("Scale tree and brush : " + Config.scaletreeint + "%");
+            }
+        });
 
         appender.add(new CheckBox("It's a small world") {
             {
@@ -1553,9 +1579,9 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
-        appender.add(lt);
+       /** appender.add(lt);
         appender.add(bt);
-        appender.add(ltl);
+        appender.add(ltl);**/
 
         Button OutputSettings = new Button(220, "Output Light Settings to System Tab") {
             @Override

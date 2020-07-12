@@ -63,7 +63,7 @@ public class ResDrawable extends Drawable {
 
         MessageBuf stdCopy = sdt.clone();
         byte[] args = new byte[2];
-        if(Config.largetree || Config.largetreeleaves || Config.bonsai){
+        /*if(Config.largetree || Config.largetreeleaves || Config.bonsai){
             if(res.name.contains("tree") && !stdCopy.eom()){
 
                 if(Config.largetree){
@@ -92,6 +92,15 @@ public class ResDrawable extends Drawable {
                     System.out.println("--------");
                 }
             }
+        }*/
+        if (Config.scaletree && (this.gob.type == Type.TREE || this.gob.type == Type.BUSH) && !stdCopy.eom()) {
+            args[0] = (byte)stdCopy.uint8();
+            int fscale = Config.scaletreeint;
+            if (!stdCopy.eom() && (fscale = stdCopy.uint8()) > Config.scaletreeint) {
+                fscale = Config.scaletreeint;
+            }
+            args[1] = (byte)fscale;
+            stdCopy = new MessageBuf(args);
         }
         //Dump Name/Type of non-gob
         //System.out.println(this.res.get().name);
