@@ -1,8 +1,11 @@
 package haven;
 
+import haven.glsl.Block;
+
 import java.awt.*;
 import java.io.*;
 import java.net.*;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -78,15 +81,17 @@ public class StatusWdg extends Widget {
                 HttpURLConnection conn = null;
 
                 try {
-                    url_ = new URL("http://www.havenandhearth.com/mt/srv-mon");
+                    url_ = new URL("http://www.havenandhearth.com/portal/index/status");
                     conn = (HttpURLConnection)url_.openConnection();
                     InputStream is = conn.getInputStream();
                     br = new BufferedReader(new InputStreamReader(is));
 
                     String line;
                     while ((line = br.readLine()) != null) {
-                        if (line.startsWith("users ")) {
-                            String p = line.substring("users ".length());
+                        System.out.println(LocalTime.now() + " " + line);
+                        if (line.contains("There are")) {
+                            System.out.println(LocalTime.now() + " yes " + line.length());
+                            String p = line.substring("<p>There are  ".length(), line.length() - " hearthlings playing.</p>".length());
                             players = Text.render(String.format(Resource.getLocString(Resource.BUNDLE_LABEL, "Players: %s"), p), Color.WHITE).tex();
                         }
 

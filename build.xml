@@ -203,7 +203,7 @@ jackson-core.jar graal-sdk.jar graaljs.jar tregex.jar truffle-api.jar" />
   <target name="deftgt" depends="buildinfo, jars" />
 
   <target name="run" depends="jars">
-    <java jar="build/hafen.jar" fork="true" />
+    <java jar="build/hafen.jar" args="-U https://game.havenandhearth.com/hres/ game.havenandhearth.com" fork="true" />
   </target>
   
   <target name="clean">
