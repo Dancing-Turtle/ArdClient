@@ -122,6 +122,7 @@ public class Config {
 
     public static boolean statustooltip = Utils.getprefb("statustooltip", false);
     public static boolean newCropStageOverlay = Utils.getprefb("newCropStageOverlay", false);
+    public static boolean newQuickSlotWdg = Utils.getprefb("newQuickSlotWdg", false);
 
     //Item Coloring
     public static boolean qualitycolor = Utils.getprefb("qualitycolor", false);

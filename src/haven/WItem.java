@@ -120,7 +120,7 @@ public class WItem extends Widget implements DTarget {
 		}
 	}
 
-	private double hoverstart;
+	public double hoverstart;
 	private ItemTip shorttip = null, longtip = null;
 	private List<ItemInfo> ttinfo = null;
 

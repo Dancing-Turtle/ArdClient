@@ -2377,7 +2377,10 @@ public class OptWnd extends Window {
                 a = val;
 
                 try {
-                    Widget qs = ((GameUI) parent.parent.parent).quickslots;
+                    Widget qs = null;
+                    if (Config.newQuickSlotWdg)
+                        qs = ui.gui.newquickslots;
+                    else qs = ui.gui.quickslots;
                     if (qs != null) {
                         if (val)
                             qs.show();
@@ -2618,6 +2621,7 @@ public class OptWnd extends Window {
                 Utils.delpref("mmapwndsz");
                 Utils.delpref("mmapsz");
                 Utils.delpref("quickslotsc");
+                Utils.delpref("newQuickSlotWdgc");
                 Utils.delpref("chatsz");
                 Utils.delpref("chatvis");
                 Utils.delpref("menu-visible");
@@ -3004,6 +3008,33 @@ public class OptWnd extends Window {
                 Utils.setprefb("newCropStageOverlay", val);
                 Config.newCropStageOverlay = val;
                 a = val;
+            }
+        });
+        appender.add(new CheckBox("New quick hand slots") {
+            {
+                a = Config.newQuickSlotWdg;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("newQuickSlotWdg", val);
+                Config.newQuickSlotWdg = val;
+                a = val;
+
+                try {
+                    Widget qs = ui.gui.quickslots;
+                    Widget nqs = ui.gui.newquickslots;
+
+                    if (qs != null && nqs != null) {
+                        if (val) {
+                            nqs.show();
+                            qs.hide();
+                        } else {
+                            nqs.hide();
+                            qs.show();
+                        }
+                    }
+                } catch (ClassCastException e) { // in case we are at the login screen
+                }
             }
         });
 
