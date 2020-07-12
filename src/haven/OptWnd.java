@@ -35,9 +35,11 @@ import haven.resutil.BPRadSprite;
 import haven.sloth.gfx.HitboxMesh;
 import haven.sloth.gob.Movable;
 import integrations.mapv4.MappingClient;
+import modification.configuration;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.io.IOException;
 import java.net.JarURLConnection;
 import java.net.URL;
@@ -2376,7 +2378,10 @@ public class OptWnd extends Window {
                 a = val;
 
                 try {
-                    Widget qs = ((GameUI) parent.parent.parent).quickslots;
+                    Widget qs = null;
+                    if (Config.newQuickSlotWdg)
+                        qs = ui.gui.newquickslots;
+                    else qs = ui.gui.quickslots;
                     if (qs != null) {
                         if (val)
                             qs.show();
@@ -2617,6 +2622,7 @@ public class OptWnd extends Window {
                 Utils.delpref("mmapwndsz");
                 Utils.delpref("mmapsz");
                 Utils.delpref("quickslotsc");
+                Utils.delpref("newQuickSlotWdgc");
                 Utils.delpref("chatsz");
                 Utils.delpref("chatvis");
                 Utils.delpref("menu-visible");
@@ -2688,6 +2694,71 @@ public class OptWnd extends Window {
         appender.add(new Label("Additional Client Features"));
         //Test//Test//Test
 
+        appender.addRow(new CheckBox("Use custom title") {
+            {
+                a = Config.defaultUtilsCustomTitleBoolean;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("custom-title-bol", val);
+                Config.defaultUtilsCustomTitleBoolean = val;
+                a = val;
+            }
+
+            @Override
+            public Object tooltip(Coord c0, Widget prev) {
+                Tex tex = Text.render("Request restart").tex();
+                return tex;
+            }
+        },
+                new TextEntry(240, Config.defaultUtilsCustomTitle) {
+                    @Override
+                    public boolean keydown(KeyEvent ev) {
+                        if (!parent.visible)
+                            return false;
+                        Utils.setpref("custom-title", text);
+
+                        return buf.key(ev);
+                    }
+                });
+        appender.addRow(new CheckBox("Use custom login background") {
+            {
+                a = Config.defaultUtilsCustomLoginScreenBgBoolean;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("custom-login-background-bol", val);
+                Config.defaultUtilsCustomLoginScreenBgBoolean = val;
+                a = val;
+            }
+
+            @Override
+            public Object tooltip(Coord c0, Widget prev) {
+                Tex tex = Text.render("Request restart").tex();
+                return tex;
+            }
+        },
+                /**new TextEntry(200, Config.defaultUtilsCustomLoginScreenBg) {
+                    @Override
+                    public void changed() {
+                        try {
+                            File img = new File(text);
+                            if (img.exists() && img.isFile()) {
+                                Utils.setpref("custom-login-background", text);
+                                //ui.uimsg(1, "bg"); //FIXME dont work instant change bg
+                                System.out.println("custom login screen " + text);
+                            }
+                            else System.out.println("custom login screen file not found");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }**/
+                makePictureChoiseDropdown());
+
+        appender.add(new Label(""));
+
+        int yItem = appender.getY();
         appender.add(new CheckBox("Item Quality Coloring") {
             {
                 a = Config.qualitycolor;
@@ -2819,7 +2890,7 @@ public class OptWnd extends Window {
 
 
 
-        additions.add(f, new Coord(300, 10));
+        additions.add(f, new Coord(300, yItem));
 
         appender.add(new CheckBox("Insane Item Alert (Above Legendary)") {
             {
@@ -2914,6 +2985,58 @@ public class OptWnd extends Window {
                 Utils.setprefb("trollexmap", val);
                 Config.trollexmap = val;
                 a = val;
+            }
+        });
+
+        appender.add(new Label(""));
+
+        appender.add(new CheckBox("Status tooltip") {
+            {
+                a = Config.statustooltip;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("statustooltip", val);
+                Config.statustooltip = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("New overlay for plant stage") {
+            {
+                a = Config.newCropStageOverlay;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("newCropStageOverlay", val);
+                Config.newCropStageOverlay = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("New quick hand slots") {
+            {
+                a = Config.newQuickSlotWdg;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("newQuickSlotWdg", val);
+                Config.newQuickSlotWdg = val;
+                a = val;
+
+                try {
+                    Widget qs = ui.gui.quickslots;
+                    Widget nqs = ui.gui.newquickslots;
+
+                    if (qs != null && nqs != null) {
+                        if (val) {
+                            nqs.show();
+                            qs.hide();
+                        } else {
+                            nqs.hide();
+                            qs.show();
+                        }
+                    }
+                } catch (ClassCastException e) { // in case we are at the login screen
+                }
             }
         });
 
@@ -4029,6 +4152,33 @@ public class OptWnd extends Window {
                 Utils.setpref("attackedsfx", item);
                 if(!item.equals("None"))
                     Audio.play(Resource.local().loadwait(item),Config.attackedvol);
+            }
+        };
+    }
+
+    private static final List<String> pictureList = configuration.findFiles("modification", Arrays.asList(".png", ".jpg"));
+    private Dropbox<String> makePictureChoiseDropdown() {
+        return new Dropbox<String>(pictureList.size(), pictureList) {
+            {
+                super.change(Config.defaultUtilsCustomLoginScreenBg);
+            }
+            @Override
+            protected String listitem(int i) {
+                return pictureList.get(i);
+            }
+            @Override
+            protected int listitems() {
+                return pictureList.size();
+            }
+            @Override
+            protected void drawitem(GOut g, String item, int i) {
+                g.text(item, Coord.z);
+            }
+            @Override
+            public void change(String item) {
+                super.change(item);
+                Config.defaultUtilsCustomLoginScreenBg = item;
+                Utils.setpref("custom-login-background", item);
             }
         };
     }

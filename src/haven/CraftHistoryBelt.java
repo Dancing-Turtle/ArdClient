@@ -102,4 +102,27 @@ public class CraftHistoryBelt extends Widget {
             belt[i + 1] = belt[i];
         belt[0] = pagina;
     }
+
+    @Override
+    public Object tooltip(Coord c, Widget prev) {
+        Object tt = super.tooltip(c, prev);
+        if (tt != null) {
+            return tt;
+        } else {
+            int sl = -1;
+            if (vertical)
+                sl = c.y / vsz.x;
+            else
+                sl = c.x / hsz.y;
+
+            if (sl < SIZE && sl >= 0)
+                if (belt[sl] != null) {
+                    return belt[sl].button().rendertt(true);
+                } else {
+                    return super.tooltip(c, prev);
+                }
+            else return null;
+        }
+    }
+
 }

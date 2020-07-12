@@ -126,7 +126,15 @@ jackson-core.jar graal-sdk.jar graaljs.jar tregex.jar truffle-api.jar" />
         </copy>
     </target>
 
-  <target name="jars" depends="build-env, jar, res-jar, l10n-jar, custom-jar, scripts">
+    <target name="modification" depends="build-env">
+        <mkdir dir="build/modification"/>
+        <copy todir="build/modification">
+            <fileset dir="modification/"/>
+        </copy>
+    </target>
+
+  <target name="jars" depends="build-env, jar, res-jar, l10n-jar, custom-jar, scripts, modification">
+
     <copy todir="build">
       <fileset dir="lib">
 	    <include name="jogl.jar" />
@@ -194,7 +202,7 @@ jackson-core.jar graal-sdk.jar graaljs.jar tregex.jar truffle-api.jar" />
   <target name="deftgt" depends="buildinfo, jars" />
 
   <target name="run" depends="jars">
-    <java jar="build/hafen.jar" fork="true" />
+    <java jar="build/hafen.jar" args="-U https://game.havenandhearth.com/hres/ game.havenandhearth.com" fork="true" />
   </target>
   
   <target name="clean">
@@ -246,6 +254,9 @@ jackson-core.jar graal-sdk.jar graaljs.jar tregex.jar truffle-api.jar" />
         </copy>
         <copy todir="update/scripts">
             <fileset dir="build/scripts/" includes="**"/>
+        </copy>
+        <copy todir="update/modification">
+            <fileset dir="build/modification/"/>
         </copy>
     </target>
 

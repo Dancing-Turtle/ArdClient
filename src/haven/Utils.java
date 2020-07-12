@@ -440,7 +440,7 @@ public class Utils {
         }
     }
 
-    static Coord getprefc(String prefname, Coord def) {
+    public static Coord getprefc(String prefname, Coord def) {
         try {
             String val = prefs().get(prefname, null);
             if (val == null)
@@ -454,7 +454,7 @@ public class Utils {
         }
     }
 
-    static void setprefc(String prefname, Coord val) {
+    public static void setprefc(String prefname, Coord val) {
         try {
             prefs().put(prefname, val.x + "x" + val.y);
         } catch (SecurityException e) {

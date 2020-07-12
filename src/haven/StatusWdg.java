@@ -1,8 +1,11 @@
 package haven;
 
+import haven.glsl.Block;
+
 import java.awt.*;
 import java.io.*;
 import java.net.*;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -78,16 +81,33 @@ public class StatusWdg extends Widget {
                 HttpURLConnection conn = null;
 
                 try {
-                    url_ = new URL("http://www.havenandhearth.com/mt/srv-mon");
+                    url_ = new URL("http://www.havenandhearth.com/portal/index/status");
                     conn = (HttpURLConnection)url_.openConnection();
                     InputStream is = conn.getInputStream();
                     br = new BufferedReader(new InputStreamReader(is));
 
-                    String line;
+                    String line, brt = "";
                     while ((line = br.readLine()) != null) {
-                        if (line.startsWith("users ")) {
-                            String p = line.substring("users ".length());
+                        if (line.contains("There are")) {
+                            String p = line.substring("<p>There are  ".length(), line.length() - " hearthlings playing.</p>".length()); //need testing
                             players = Text.render(String.format(Resource.getLocString(Resource.BUNDLE_LABEL, "Players: %s"), p), Color.WHITE).tex();
+                        }
+                        if (Config.statustooltip) {
+                            if (!line.contains("<div class")) {
+                                line = line.replace("<p>", "");
+                                line = line.replace("</p>", "");
+                                line = line.replace("<h2>", "");
+                                line = line.replace("</h2>", "");
+                                line = line.replace("</div>", "");
+                                while (line.length() > 0 && line.startsWith(" ")) {
+                                    line = line.substring(" ".length());
+                                }
+                                if (brt.equals(""))
+                                    brt = line;
+                                else brt = brt + "\n" + line;
+                            }
+                            tooltip = RichText.Parser.quote(String.format("%s", brt));
+                            tooltip = RichText.render((String) tooltip, 250);
                         }
 
                         // Update ping at least every 5 seconds.
@@ -148,5 +168,10 @@ public class StatusWdg extends Widget {
     public void reqdestroy() {
         tg.interrupt();
         super.reqdestroy();
+    }
+
+    @Override
+    public Object tooltip(Coord c0, Widget prev) {
+        return tooltip;
     }
 }

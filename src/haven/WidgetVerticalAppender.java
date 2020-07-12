@@ -44,4 +44,12 @@ public class WidgetVerticalAppender {
     private int horizontalMargin;
     private int y;
     private int x;
+
+    public int getY() {
+        return y;
+    }
+
+    public int getX() {
+        return x;
+    }
 }
