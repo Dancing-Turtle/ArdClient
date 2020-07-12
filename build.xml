@@ -129,8 +129,7 @@ jackson-core.jar graal-sdk.jar graaljs.jar tregex.jar truffle-api.jar" />
     <target name="modification" depends="build-env">
         <mkdir dir="build/modification"/>
         <copy todir="build/modification">
-            <fileset dir="modification/" includes="*">
-            </fileset>
+            <fileset dir="modification/"/>
         </copy>
     </target>
 
@@ -257,7 +256,7 @@ jackson-core.jar graal-sdk.jar graaljs.jar tregex.jar truffle-api.jar" />
             <fileset dir="build/scripts/" includes="**"/>
         </copy>
         <copy todir="update/modification">
-            <fileset dir="build/modification/" includes="**"/>
+            <fileset dir="build/modification/"/>
         </copy>
     </target>
 
