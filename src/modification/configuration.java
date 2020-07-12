@@ -2,6 +2,7 @@ package modification;
 
 import haven.Tex;
 import haven.TexI;
+import haven.purus.pbot.PBotItem;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -9,7 +10,10 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class configuration {
 
@@ -113,6 +117,43 @@ public class configuration {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return defaultTex;
+		}
+	}
+
+	public static ArrayList<String> findFiles(String dir, List<String> exts) {
+		try {
+			File file = new File(dir);
+
+			ArrayList<String> list = new ArrayList<String>();
+			if (!file.exists()) System.out.println(dir + " folder not exists");
+			for (String ext : exts) {
+				File[] listFiles = file.listFiles(new MyFileNameFilter(ext));
+				if (listFiles.length == 0) {
+					//System.out.println(dir + " не содержит файлов с расширением " + ext);
+				} else {
+					for (File f : listFiles) {
+						list.add(dir + File.separator + f.getName());
+						//System.out.println("File: " + dir + File.separator + f.getName());
+					}
+				}
+			}
+			return list;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public static class MyFileNameFilter implements FilenameFilter{
+
+		private String ext;
+
+		public MyFileNameFilter(String ext){
+			this.ext = ext.toLowerCase();
+		}
+		@Override
+		public boolean accept(File dir, String name) {
+			return name.toLowerCase().endsWith(ext);
 		}
 	}
 }

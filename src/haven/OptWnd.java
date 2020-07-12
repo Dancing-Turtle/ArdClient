@@ -35,6 +35,7 @@ import haven.resutil.BPRadSprite;
 import haven.sloth.gfx.HitboxMesh;
 import haven.sloth.gob.Movable;
 import integrations.mapv4.MappingClient;
+import modification.configuration;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -2737,7 +2738,7 @@ public class OptWnd extends Window {
                 return tex;
             }
         },
-                new TextEntry(200, Config.defaultUtilsCustomLoginScreenBg) {
+                /**new TextEntry(200, Config.defaultUtilsCustomLoginScreenBg) {
                     @Override
                     public void changed() {
                         try {
@@ -2752,7 +2753,8 @@ public class OptWnd extends Window {
                             e.printStackTrace();
                         }
                     }
-                });
+                }**/
+                makePictureChoiseDropdown());
 
         appender.add(new Label(""));
 
@@ -4150,6 +4152,33 @@ public class OptWnd extends Window {
                 Utils.setpref("attackedsfx", item);
                 if(!item.equals("None"))
                     Audio.play(Resource.local().loadwait(item),Config.attackedvol);
+            }
+        };
+    }
+
+    private static final List<String> pictureList = configuration.findFiles("modification", Arrays.asList(".png", ".jpg"));
+    private Dropbox<String> makePictureChoiseDropdown() {
+        return new Dropbox<String>(pictureList.size(), pictureList) {
+            {
+                super.change(Config.defaultUtilsCustomLoginScreenBg);
+            }
+            @Override
+            protected String listitem(int i) {
+                return pictureList.get(i);
+            }
+            @Override
+            protected int listitems() {
+                return pictureList.size();
+            }
+            @Override
+            protected void drawitem(GOut g, String item, int i) {
+                g.text(item, Coord.z);
+            }
+            @Override
+            public void change(String item) {
+                super.change(item);
+                Config.defaultUtilsCustomLoginScreenBg = item;
+                Utils.setpref("custom-login-background", item);
             }
         };
     }
