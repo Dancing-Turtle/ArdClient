@@ -26,6 +26,7 @@
 
 package haven;
 
+import haven.overlays.newPlantStageSprite;
 import haven.resutil.BPRadSprite;
 import haven.resutil.WaterTile;
 import haven.sloth.gfx.HitboxMesh;
@@ -1055,10 +1056,15 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
                     Overlay ol = findol(Sprite.GROWTH_STAGE_ID);
                     Resource res = getres();
                     if (ol == null && (stage == cropstgmaxval || (Config.showfreshcropstage ? stage >= 0 : stage > 0) && stage < 6)) {
-                        addol(new Gob.Overlay(Sprite.GROWTH_STAGE_ID, new PlantStageSprite(stage, cropstgmaxval, type == Type.MULTISTAGE_PLANT,(res!= null && res.basename().contains("turnip") || res!= null && res.basename().contains("leek")))));
+                        if (Config.newCropStageOverlay)
+                            addol(new Gob.Overlay(Sprite.GROWTH_STAGE_ID, new newPlantStageSprite(stage, cropstgmaxval, type == Type.MULTISTAGE_PLANT,(res!= null && res.basename().contains("turnip") || res!= null && res.basename().contains("leek") || res!= null && res.basename().contains("carrot")))));
+                        else
+                            addol(new Gob.Overlay(Sprite.GROWTH_STAGE_ID, new PlantStageSprite(stage, cropstgmaxval, type == Type.MULTISTAGE_PLANT,(res!= null && res.basename().contains("turnip") || res!= null && res.basename().contains("leek")))));
                     } else if (!Config.showfreshcropstage && stage == 0 || (stage != cropstgmaxval && stage >= 6)) {
                         ols.remove(ol);
-                    } else if (((PlantStageSprite) ol.spr).stg != stage) {
+                    } else if (Config.newCropStageOverlay && ol.spr instanceof newPlantStageSprite && ((newPlantStageSprite) ol.spr).stg != stage) {
+                        ((newPlantStageSprite) ol.spr).update(stage, cropstgmaxval);
+                    } else if (ol.spr instanceof PlantStageSprite && ((PlantStageSprite) ol.spr).stg != stage) {
                         ((PlantStageSprite) ol.spr).update(stage, cropstgmaxval);
                     }
                 }

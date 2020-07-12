@@ -112,10 +112,16 @@ public class Config {
     //Custom Title and Login Screen Background
     public static boolean defaultUtilsCustomTitleBoolean = Utils.getprefb("custom-title-bol", false);
     public static boolean defaultUtilsCustomLoginScreenBgBoolean = Utils.getprefb("custom-login-background-bol", false);
+    public static String defaultCustomTitleName(String name) {
+        return "♂" + name + "♂: ♂right version♂";
+    }
     public static String defaultCustomTitle = "♂right version♂: You turn ♂Leatherman♂";
     public static String defaultCustomLoginScreenBg = "modification/loginscr.png";
     public static String defaultUtilsCustomTitle = Utils.getpref("custom-title", Config.defaultCustomTitle);
     public static String defaultUtilsCustomLoginScreenBg = Utils.getpref("custom-login-background", Config.defaultCustomLoginScreenBg);
+
+    public static boolean statustooltip = Utils.getprefb("statustooltip", false);
+    public static boolean newCropStageOverlay = Utils.getprefb("newCropStageOverlay", false);
 
     //Item Coloring
     public static boolean qualitycolor = Utils.getprefb("qualitycolor", false);

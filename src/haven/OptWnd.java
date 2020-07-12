@@ -2750,6 +2750,8 @@ public class OptWnd extends Window {
                     }
                 });
 
+        appender.add(new Label(""));
+
         int yItem = appender.getY();
         appender.add(new CheckBox("Item Quality Coloring") {
             {
@@ -2976,6 +2978,31 @@ public class OptWnd extends Window {
             public void set(boolean val) {
                 Utils.setprefb("trollexmap", val);
                 Config.trollexmap = val;
+                a = val;
+            }
+        });
+
+        appender.add(new Label(""));
+
+        appender.add(new CheckBox("Status tooltip") {
+            {
+                a = Config.statustooltip;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("statustooltip", val);
+                Config.statustooltip = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("New overlay for plant stage") {
+            {
+                a = Config.newCropStageOverlay;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("newCropStageOverlay", val);
+                Config.newCropStageOverlay = val;
                 a = val;
             }
         });
