@@ -55,6 +55,7 @@ public class LoginScreen extends Widget {
         else bg = Resource.loadtex("gfx/loginscr");
     }
     //TODO add animated login screen aka world of warcraft
+
     Text progress = null;
     private Window log;
 
