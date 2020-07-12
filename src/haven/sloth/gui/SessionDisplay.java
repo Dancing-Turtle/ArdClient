@@ -1,11 +1,11 @@
 package haven.sloth.gui;
 
 import haven.*;
-import haven.sloth.gui.layout.GridGrouping;
-import haven.sloth.gui.layout.Grouping;
 import haven.sloth.util.ObservableListener;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SessionDisplay extends MovableWidget implements ObservableListener<UI> {
     private static class UIDisplay extends Widget {

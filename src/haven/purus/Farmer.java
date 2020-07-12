@@ -24,7 +24,7 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 	private boolean areaselected = false;
 
 	public Farmer() {
-		super(new Coord(180, 785), "Farming Bots", "Farming Bots");
+		super(new Coord(350, 410), "Farming Bots", "Farming Bots");
 		int y = 0;
 		PBotUtils.sysMsg("Hold alt and left click containers to select them.",Color.white);
 		Button carrotBtn = new Button(140, "Carrot") {
@@ -215,7 +215,7 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 			}
 		};
 		add(barleyBtn, new Coord(20, y));
-		y += 35;
+		y = 0;
 
 		Button wheatBtn = new Button(140, "Wheat") {
 			@Override
@@ -236,7 +236,7 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 				}
 			}
 		};
-		add(wheatBtn, new Coord(20, y));
+		add(wheatBtn, new Coord(190, y));
 		y += 35;
 
 		Button milletBtn = new Button(140, "Millet") {
@@ -258,7 +258,7 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 				}
 			}
 		};
-		add(milletBtn, new Coord(20, y));
+		add(milletBtn, new Coord(190, y));
 		y += 35;
 
 		Button flaxBtn = new Button(140, "Flax") {
@@ -279,7 +279,7 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 				}
 			}
 		};
-		add(flaxBtn, new Coord(20, y));
+		add(flaxBtn, new Coord(190, y));
 		y += 35;
 
 		Button poppyBtn = new Button(140, "Poppy") {
@@ -301,7 +301,7 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 				}
 			}
 		};
-		add(poppyBtn, new Coord(20, y));
+		add(poppyBtn, new Coord(190, y));
 		y += 35;
 
 		Button hempBtn = new Button(140, "Hemp") {
@@ -321,7 +321,7 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 					PBotUtils.sysMsg("Area not selected!", Color.WHITE);
 			}
 		};
-		add(hempBtn, new Coord(20, y));
+		add(hempBtn, new Coord(190, y));
 		y += 35;
 
 		Button pipeBtn = new Button(140, "Pipeweed") {
@@ -341,7 +341,7 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 					PBotUtils.sysMsg("Area not selected!", Color.WHITE);
 			}
 		};
-		add(pipeBtn, new Coord(20, y));
+		add(pipeBtn, new Coord(190, y));
 		y += 35;
 
 		Button trelHarBtn = new Button(140, "Trellis harvest") {
@@ -359,7 +359,7 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 				}
 			}
 		};
-		add(trelHarBtn, new Coord(20, y));
+		add(trelHarBtn, new Coord(190, y));
 		y += 35;
 
 		Button trelDesBtn = new Button(140, "Trellis destroy") {
@@ -377,7 +377,7 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 				}
 			}
 		};
-		add(trelDesBtn, new Coord(20, y));
+		add(trelDesBtn, new Coord(190, y));
 		y += 35;
 
 		Button trelPlantBtn = new Button(140, "Trellis plant") {
@@ -394,17 +394,27 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 				}
 			}
 		};
-		add(trelPlantBtn, new Coord(20, y));
+		add(trelPlantBtn, new Coord(190, y));
 		y += 35;
 
-		Button areaSelBtn = new Button(140, "Select Area") {
+		Button lettuceBtn = new Button(140, "Lettuce") {
 			@Override
 			public void click() {
-				PBotUtils.sysMsg("Drag area over crops", Color.WHITE);
-				gameui().map.farmSelect = true;
+				if(replantcontainer && containers.size() == 0 || containeronly && containers.size() == 0) {
+					PBotUtils.sysMsg("Please select a container by holding alt and clicking it before starting if using barrel or replantbarrel.", Color.white);
+				}
+				else if (a != null && b != null) {
+					// Start hemp farmer and close this window
+					SeedCropFarmer bf = new SeedCropFarmer(a, b, "gfx/terobjs/plants/lettuce", "gfx/invobjs/seed-lettuce", 4, replant, containeronly, replantcontainer, containers,stockpile,stockpileLocs);
+
+					gameui().add(bf, new Coord(gameui().sz.x / 2 - bf.sz.x / 2, gameui().sz.y / 2 - bf.sz.y / 2 - 200));
+					new Thread(bf).start();
+					this.parent.destroy();
+				} else
+					PBotUtils.sysMsg("Area not selected!", Color.WHITE);
 			}
 		};
-		add(areaSelBtn, new Coord(20, y));
+		add(lettuceBtn, new Coord(190, y));
 		y += 35;
 		replantChkbox = new CheckBox("Replant") {
 			{
@@ -468,7 +478,18 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 			}
 		};
 		add(fillContainerChkbox, new Coord(85, y));
-		y+= 20;
+		y-= 20;
+
+		Button areaSelBtn = new Button(140, "Select Area") {
+			@Override
+			public void click() {
+				PBotUtils.sysMsg("Drag area over crops", Color.WHITE);
+				gameui().map.farmSelect = true;
+			}
+		};
+		add(areaSelBtn, new Coord(190, y));
+
+		y += 35;
 		stockpilearea = new Button(140, "Stockpile Area") {
 			@Override
 			public void click() {
@@ -481,7 +502,7 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 				}
 			}
 		};
-		add(stockpilearea, new Coord(20, y));
+		add(stockpilearea, new Coord(190, y));
 	}
 
 	private class selectingarea implements Runnable {
