@@ -48,7 +48,10 @@ public class MainFrame extends java.awt.Frame implements Runnable, Console.Direc
     private final ThreadGroup g;
     public final Thread mt;
     DisplayMode fsmode = null, prefs = null;
-    private static final String TITLE = Config.defaultUtilsCustomTitle;
+    private static final String TITLE = check();
+    static String check() {
+        return Config.defaultUtilsCustomTitleBoolean ? Config.defaultUtilsCustomTitle : "Ardennes Hafen Revived " + "1.02: Rise of the Machines" ;
+    }
 
     static {
         try {
@@ -62,7 +65,6 @@ public class MainFrame extends java.awt.Frame implements Runnable, Console.Direc
         } catch (Exception e) {
         }
     }
-
     DisplayMode findmode(int w, int h) {
         GraphicsDevice dev = getGraphicsConfiguration().getDevice();
         if (!dev.isFullScreenSupported())

@@ -110,6 +110,8 @@ public class Config {
     public static int fpsBackgroundLimit = Utils.getprefi("fpsBackgroundLimit", 200);
 
     //Custom Title and Login Screen Background
+    public static boolean defaultUtilsCustomTitleBoolean = Utils.getprefb("custom-title-bol", false);
+    public static boolean defaultUtilsCustomLoginScreenBgBoolean = Utils.getprefb("custom-login-background-bol", false);
     public static String defaultCustomTitle = "♂right version♂: You turn ♂Leatherman♂";
     public static String defaultCustomLoginScreenBg = "modification/loginscr.png";
     public static String defaultUtilsCustomTitle = Utils.getpref("custom-title", Config.defaultCustomTitle);

@@ -2689,13 +2689,23 @@ public class OptWnd extends Window {
         appender.add(new Label("Additional Client Features"));
         //Test//Test//Test
 
-        appender.addRow(new Label("Custom title:") {
-                            @Override
-                            public Object tooltip(Coord c0, Widget prev) {
-                                Tex tex = Text.render("Request restart").tex();
-                                return tex;
-                            }
-                        },
+        appender.addRow(new CheckBox("Use custom title") {
+            {
+                a = Config.defaultUtilsCustomTitleBoolean;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("custom-title-bol", val);
+                Config.defaultUtilsCustomTitleBoolean = val;
+                a = val;
+            }
+
+            @Override
+            public Object tooltip(Coord c0, Widget prev) {
+                Tex tex = Text.render("Request restart").tex();
+                return tex;
+            }
+        },
                 new TextEntry(240, Config.defaultUtilsCustomTitle) {
                     @Override
                     public boolean keydown(KeyEvent ev) {
@@ -2705,16 +2715,24 @@ public class OptWnd extends Window {
 
                         return buf.key(ev);
                     }
-                }
-        );
+                });
+        appender.addRow(new CheckBox("Use custom login background") {
+            {
+                a = Config.defaultUtilsCustomLoginScreenBgBoolean;
+            }
 
-        appender.addRow(new Label("Custom Login Background:") {
-                            @Override
-                            public Object tooltip(Coord c0, Widget prev) {
-                                Tex tex = Text.render("Request restart").tex();
-                                return tex;
-                            }
-                        },
+            public void set(boolean val) {
+                Utils.setprefb("custom-login-background-bol", val);
+                Config.defaultUtilsCustomLoginScreenBgBoolean = val;
+                a = val;
+            }
+
+            @Override
+            public Object tooltip(Coord c0, Widget prev) {
+                Tex tex = Text.render("Request restart").tex();
+                return tex;
+            }
+        },
                 new TextEntry(200, Config.defaultUtilsCustomLoginScreenBg) {
                     @Override
                     public void changed() {
@@ -2730,8 +2748,7 @@ public class OptWnd extends Window {
                             e.printStackTrace();
                         }
                     }
-                }
-        );
+                });
 
         int yItem = appender.getY();
         appender.add(new CheckBox("Item Quality Coloring") {
