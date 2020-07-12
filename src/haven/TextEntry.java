@@ -34,7 +34,7 @@ import java.awt.image.BufferedImage;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
-public class TextEntry extends SIWidget {
+public class TextEntry extends SIWidget { //TODO make highlighting copy paste
     public static final Color defcol = new Color(255, 205, 109), dirtycol = new Color(255, 232, 209);
     public static final Text.Foundry fnd = new Text.Foundry(Text.serif, 12).aa(true);
     public static final BufferedImage lcap = Theme.img("textedit", 0);
