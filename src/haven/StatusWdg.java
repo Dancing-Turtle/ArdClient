@@ -91,7 +91,7 @@ public class StatusWdg extends Widget {
                         System.out.println(LocalTime.now() + " " + line);
                         if (line.contains("There are")) {
                             System.out.println(LocalTime.now() + " yes " + line.length());
-                            String p = line.substring("<p>There are  ".length(), line.length() - " hearthlings playing.</p>".length());
+                            String p = line.substring("<p>There are  ".length(), line.length() - " hearthlings playing.</p>".length()); //need testing
                             players = Text.render(String.format(Resource.getLocString(Resource.BUNDLE_LABEL, "Players: %s"), p), Color.WHITE).tex();
                         }
 
