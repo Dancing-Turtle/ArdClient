@@ -33,10 +33,7 @@ import haven.automation.Traverse;
 import haven.livestock.LivestockManager;
 import haven.purus.DrinkWater;
 import haven.purus.ItemClickCallback;
-import haven.purus.pbot.PBotAPI;
-import haven.purus.pbot.PBotScriptlist;
-import haven.purus.pbot.PBotScriptlistOld;
-import haven.purus.pbot.PBotUtils;
+import haven.purus.pbot.*;
 import haven.resutil.FoodInfo;
 import haven.sloth.gob.Mark;
 import haven.sloth.gui.*;
@@ -299,6 +296,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         PBotScriptlistold = add(new PBotScriptlistOld());
         PBotScriptlistold.hide();
         timerswnd = add(new haven.timers.TimersWnd(this));
+        PBotDiscord.initalize();
         if(!Config.autowindows.get("Timers").selected)
             timerswnd.hide();
         if(Config.sessiondisplay){
@@ -314,6 +312,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         }
         ui.root.add(ui.root.sessionDisplay = new SessionDisplay());
         super.destroy();
+        ui.gui = null;
     }
 
     public void beltPageSwitch1(){

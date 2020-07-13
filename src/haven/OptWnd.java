@@ -57,7 +57,7 @@ public class OptWnd extends Window {
     public static final int HORIZONTAL_MARGIN = 5;
     private static final Text.Foundry fonttest = new Text.Foundry(Text.sans, 10).aa(true);
     public static final int VERTICAL_AUDIO_MARGIN = 5;
-    public final Panel main, video, audio, display, map, general, combat, control, uis,uip, quality, mapping, flowermenus, soundalarms, hidesettings, studydesksettings, autodropsettings, keybindsettings, chatsettings, clearboulders, clearbushes, cleartrees, clearhides, additions;
+    public final Panel main, video, audio, display, map, general, combat, control, uis,uip, quality, mapping, flowermenus, soundalarms, hidesettings, studydesksettings, autodropsettings, keybindsettings, chatsettings, clearboulders, clearbushes, cleartrees, clearhides, discord, additions;
     public Panel current;
     public CheckBox discordcheckbox, menugridcheckbox;
     CheckBox sm = null, rm = null, lt = null, bt = null, ltl;
@@ -531,6 +531,7 @@ public class OptWnd extends Window {
         cleartrees = add(new Panel());
         clearhides = add(new Panel());
         additions = add(new Panel());
+        discord = add(new Panel());
         mapping = add(new Panel());
 
         initMain(gopts);
@@ -552,6 +553,7 @@ public class OptWnd extends Window {
         initchatsettings();
         initAdditions();
         initMapping();
+        initDiscord();
 
         chpanel(main);
     }
@@ -649,6 +651,7 @@ public class OptWnd extends Window {
         main.add(new PButton(200, "Theme",'t', uip), new Coord(0,150));
         main.add(new PButton(200, "Autodrop", 's', autodropsettings), new Coord(420, 150));
         main.add(new PButton(200, "Additional settings", 'z', additions), new Coord(0, 180));
+        main.add(new PButton(200, "PBotDiscord", 'z', discord), new Coord(0, 210));
         main.add(new PButton(200, "Mapping", 'z', mapping), new Coord(420, 180));
         if (gopts) {
             main.add(new Button(200, "Disconnect Discord") {
@@ -2919,6 +2922,50 @@ public class OptWnd extends Window {
 
         additions.add(new PButton(200, "Back", 27, main), new Coord(210, 360));
         additions.pack();
+    }
+
+    private void initDiscord() {
+        final WidgetVerticalAppender appender = new WidgetVerticalAppender(withScrollport(discord, new Coord(620, 350)));
+
+        appender.setVerticalMargin(VERTICAL_MARGIN);
+        appender.setHorizontalMargin(HORIZONTAL_MARGIN);
+
+        appender.addRow(new Label("Discord Token: "),
+                new TextEntry(240, Utils.getpref("discordtoken", "")) {
+                    @Override
+                    public boolean keydown(KeyEvent ev) {
+                        if (!parent.visible)
+                            return false;
+                        Utils.setpref("discordtoken", text);
+                        System.out.println(text);
+                        Config.discordtoken = text;
+                        System.out.println(Utils.getpref("discordtoken", ""));
+
+                        return buf.key(ev);
+                    }
+                }
+        );
+
+        appender.addRow(new Label("Discord Channel: "),
+                new TextEntry(240, Utils.getpref("discordchannel", "")) {
+                    @Override
+                    public boolean keydown(KeyEvent ev) {
+                        if (!parent.visible)
+                            return false;
+                        Utils.setpref("discordchannel", text);
+                        System.out.println(text);
+                        Config.discordchannel = text;
+                        System.out.println(Utils.getpref("discordchannel", ""));
+
+                        return buf.key(ev);
+                    }
+                }
+        );
+
+
+
+        discord.add(new PButton(200, "Back", 27, main), new Coord(210, 360));
+        discord.pack();
     }
 
     private void initFlowermenus() {
