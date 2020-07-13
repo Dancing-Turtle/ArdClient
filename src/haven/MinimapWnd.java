@@ -166,6 +166,12 @@ public class MinimapWnd extends ResizableWnd {
             }
         };add(geoloc,mapwnd.c.add(mapwnd.sz.x + spacer,0));
         final IButton oddigeoloc = new IButton("gfx/hud/wndmap/btns/geoloc", "", "", "") {
+            private Pair<String, String> coords = null;
+            private BufferedImage green = Resource.loadimg("hud/geoloc-green");
+            private BufferedImage red = Resource.loadimg("hud/geoloc-red");
+
+            private boolean state = false;
+
             @Override
             public Object tooltip(Coord c, Widget prev) {
                 Pair<String, String> coords = getCurCoords();
@@ -189,6 +195,32 @@ public class MinimapWnd extends ResizableWnd {
                 } else {
                     getparent(GameUI.class).error("Unable to determine your current location.");
                 }
+            }
+
+            @Override
+            public void draw(GOut g) {
+                boolean redraw = false;
+
+                Pair<String, String> coords = getCurCoords();
+                if (!state && coords != null) {
+                    this.coords = coords;
+                    state = true;
+                    redraw = true;
+                }
+
+                if (redraw) this.redraw();
+                super.draw(g);
+            }
+
+            @Override
+            public void draw(BufferedImage buf) {
+                Graphics2D g = (Graphics2D) buf.getGraphics();
+                if (state) {
+                    g.drawImage(green, 0, 0, null);
+                } else  {
+                    g.drawImage(red, 0, 0, null);
+                }
+                g.dispose();
             }
 
             private Pair<String, String> getCurCoords() {
