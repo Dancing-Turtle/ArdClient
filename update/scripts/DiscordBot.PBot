@@ -1,0 +1,7 @@
+//PBotDiscord Integration
+//How will this effect the average user I wonder.
+//To use this, simply put your discord bot token in PBotDiscord and the channel you wish to use. To get a token watch a video about JDA Discord Bots
+//To send a message to your discord using the arguments in this order: String title, String urlThumb, String urlPicture, String text, String color;
+const PBD = Java.type('haven.purus.pbot.PBotDiscord');
+
+PBD.embedMessage("Embed Title", null, "https://i.imgur.com/QxQiaeO.png", "This is an example Discord message.", "black");
