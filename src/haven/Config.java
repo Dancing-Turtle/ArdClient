@@ -266,6 +266,7 @@ public class Config {
     public static String treeboxclr =  Utils.getpref("treeboxclr", "D7FF00");
     public static String discordtoken =  Utils.getpref("discordtoken", "Null");
     public static String discordchannel =  Utils.getpref("discordchannel", "Null");
+    public static String charname =  Utils.getpref("charname", "Null");
     public static String chatalert =  Utils.getpref("chatalert", "Null");
     public static String AlertChannel =  Utils.getpref("AlertChannel", "Null");
     public static boolean discordchat =  Utils.getprefb("", false);//invoked in gameui once you have a char name

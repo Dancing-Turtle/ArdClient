@@ -5,13 +5,15 @@ import haven.purus.pbot.PBotUtils;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
-import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.ReadyEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import net.dv8tion.jda.core.utils.MiscUtil;
 
+import javax.security.auth.login.LoginException;
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -19,13 +21,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
-
-import javax.security.auth.login.LoginException;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class Discord extends ListenerAdapter implements Runnable {
@@ -70,7 +67,7 @@ public class Discord extends ListenerAdapter implements Runnable {
         try {
             JDABuilder builder = new JDABuilder(AccountType.BOT);
             if(connection.equals("normal"))
-            builder.setToken(Resource.getLocString(Resource.BUNDLE_LABEL, Config.discordbotkey));
+            builder.setToken(Resource.getLocString(Resource.BUNDLE_LABEL, Config.discordtoken));
             else
                 builder.setToken(stuff);
             builder.addEventListener(new Discord(gui, connection));

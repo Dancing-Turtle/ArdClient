@@ -26,11 +26,11 @@
 
 package haven;
 
+import haven.automation.Discord;
 import haven.sloth.gob.Mark;
+import net.dv8tion.jda.core.entities.TextChannel;
 
-import java.util.*;
-import java.awt.Color;
-import java.awt.Font;
+import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.StringSelection;
@@ -49,19 +49,11 @@ import java.text.AttributedCharacterIterator;
 import java.text.AttributedCharacterIterator.Attribute;
 import java.text.CharacterIterator;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import haven.automation.Discord;
-import net.dv8tion.jda.core.entities.TextChannel;
 import static haven.MCache.tilesz;
 
 public class ChatUI extends Widget {
@@ -700,7 +692,8 @@ public class ChatUI extends Widget {
                 GameUI gui = gameui();
                 for(TextChannel loop:haven.automation.Discord.channels)
                     if (loop.getName().equals(Config.discordchannel) && !Discord.discordmessage) {
-                        loop.sendMessage(gui.getparent(GameUI.class).buddies.getCharName() + ": " + text).queue();
+                        //loop.sendMessage(gui.getparent(GameUI.class).buddies.getCharName() + ": " + text).queue();
+                        loop.sendMessage(Config.charname + ": " + text).queue();
                     }else
                         Discord.SwitchMessageFlag();
             }
@@ -765,7 +758,8 @@ public class ChatUI extends Widget {
             GameUI gui = gameui();
             for(TextChannel loop:haven.automation.Discord.channels)
                 if (this.name().equals(loop.getName())) {
-                    loop.sendMessage(gui.getparent(GameUI.class).buddies.getCharName() + ": " + text).queue();
+                    //loop.sendMessage(gui.getparent(GameUI.class).buddies.getCharName() + ": " + text).queue();
+                    loop.sendMessage(Config.charname + ": " + text).queue();
                 }
         }
     }

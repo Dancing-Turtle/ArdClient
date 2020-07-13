@@ -3397,7 +3397,7 @@ public class OptWnd extends Window {
             }
         });
         appender.addRow(new Label("Enter Discord Bot Key"),
-                new TextEntry(475, Config.discordbotkey) {
+                new TextEntry(475, Config.discordtoken) {
                     @Override
                     public boolean type(char c, KeyEvent ev) {
                         if (!parent.visible)
@@ -3405,8 +3405,8 @@ public class OptWnd extends Window {
 
                         boolean ret = buf.key(ev);
                         if (text.length() > 0) {
-                            Utils.setpref("discordbotkey", text);
-                            Config.discordbotkey = text;
+                            Utils.setpref("discordtoken", text);
+                            Config.discordtoken = text;
                         }
 
                         return ret;
@@ -3454,17 +3454,38 @@ public class OptWnd extends Window {
                     }
                 }
         );
-        appender.add(new CheckBox("Connection to ArdZone Discord on login."){
-            {
-                a = Config.autoconnectarddiscord;
-            }
 
-            public void set(boolean val) {
-                Utils.setprefb("autoconnectarddiscord", val);
-                Config.autoconnectarddiscord = val;
-                a = val;
-            }
-        });
+        appender.addRow(new Label("Enter Discord Name For Bot."),
+                new TextEntry(150, Config.charname) {
+                    @Override
+                    public boolean type(char c, KeyEvent ev) {
+                        if (!parent.visible)
+                            return false;
+
+                        boolean ret = buf.key(ev);
+                        if (text.length() > 0) {
+                            Utils.setpref("charname", text);
+                            Config.charname = text;
+                        }
+
+                        return ret;
+                    }
+                }
+        );
+
+
+//Maybe someday he will return
+//        appender.add(new CheckBox("Connection to ArdZone Discord on login."){
+//            {
+//                a = Config.autoconnectarddiscord;
+//            }
+//
+//            public void set(boolean val) {
+//                Utils.setprefb("autoconnectarddiscord", val);
+//                Config.autoconnectarddiscord = val;
+//                a = val;
+//            }
+//        });
         chatsettings.add(new PButton(200, "Back", 27, main), new Coord(210, 360));
         chatsettings.pack();
     }
