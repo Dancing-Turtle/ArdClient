@@ -3,6 +3,7 @@ package haven.purus.pbot;
 import haven.Config;
 import haven.automation.DiscordBot;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
@@ -27,6 +28,31 @@ public class PBotDiscord extends ListenerAdapter {
 
     public static void initalize() {
         setChannelByName(Config.discordchannel);
+    }
+
+    public static void at(String contains){
+        initalize();
+        for (TextChannel ch : channels) {
+            for(Member member : ch.getMembers()){
+                if(member.getUser().getName().contains(contains)){
+                    ch.sendMessage("<@"+member.getUser().getId()+">").queue();
+                }
+            }
+        }
+    }
+
+    //Must use Caps for name, doesn't require #0000
+    public static String getAt(String name){
+        initalize();
+        String at = "";
+        for (TextChannel ch : channels) {
+            for(Member member : ch.getMembers()){
+                if(member.getUser().getName().equals(name)){
+                    at = "<@"+member.getUser().getId()+">";
+                }
+            }
+        }
+        return at;
     }
 
     public static void embedMessage(String title, String urlThumb, String urlPicture, String text, String color) {
