@@ -39,7 +39,7 @@ public class TabStrip<T> extends Widget {
 		return button;
 	}
 
-	public Button<T> insert(int index, Tex image, String text, MenuGrid.Pagina tooltip) {
+	public Button<T> insert(int index, Tex image, String text, String tooltipText, MenuGrid.Pagina tooltip) {
 		final Button<T> button = add(new Button<T>(image, text) {
 			public void click() {
 				select(this);

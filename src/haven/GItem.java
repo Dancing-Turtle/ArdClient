@@ -28,6 +28,8 @@ package haven;
 
 import haven.purus.pbot.PBotUtils;
 import haven.res.ui.tt.q.qbuff.QBuff;
+import integrations.food.FoodService;
+import integrations.food.IconService;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -192,6 +194,7 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
                     dropItMaybe();
                     postProcessed = true;
                 }
+                IconService.checkIcon(info(), spr);
             } catch (Loading l) {
             }
         }
@@ -233,7 +236,12 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
     public List<ItemInfo> info() {
         if (info == null && rawinfo != null) {
             info = ItemInfo.buildinfo(this, rawinfo);
-            info.add(new ItemInfo.AdHoc(this, (Config.resinfo ? ("\n" + this.getres().name) : "")));
+			info.add(new ItemInfo.AdHoc(this, (Config.resinfo ? ("\n" + this.getres().name) : "")));
+			try {
+                // getres() can throw Loading, ignore it
+                FoodService.checkFood(info, getres().name);
+            } catch (Exception ex) {
+			}
         }
         return (info);
     }

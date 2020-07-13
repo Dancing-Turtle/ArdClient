@@ -9,9 +9,6 @@ import haven.Label;
 import haven.Window;
 import haven.Utils;
 import haven.purus.pbot.PBotUtils;
-import javafx.scene.layout.Pane;
-
-import javax.xml.soap.Detail;
 import java.awt.Color;
 
 public class LivestockManager extends ResizableWnd {

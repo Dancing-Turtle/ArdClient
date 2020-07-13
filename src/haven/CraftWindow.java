@@ -107,7 +107,7 @@ public class CraftWindow extends GameUI.Hidewnd {
 		if (text.length() > 12) {
 			text = text.substring(0, 12 - 2) + "..";
 		}
-		TabStrip.Button<Pagina> added = tabStrip.insert(0, icon, text, pagina);
+		TabStrip.Button<Pagina> added = tabStrip.insert(0, icon, text, pagina.act().name, pagina);
 		added.tag = pagina;
 		tabStrip.select(added);
 		if (tabStrip.getButtonCount() > 4) {
