@@ -290,8 +290,7 @@ public class Farmer extends Window implements AreaSelectCallback, GobSelectCallb
 				}
 				else if (a != null && b != null) {
 					// Start poppy farmer and close this window
-					SeedCropFarmer bf =
-							new SeedCropFarmer(a, b, "gfx/terobjs/plants/poppy", "gfx/invobjs/seed-poppy", 4, replant, containeronly, replantcontainer, containers,stockpile,stockpileLocs);
+					SeedCropFarmer bf = new SeedCropFarmer(a, b, "gfx/terobjs/plants/poppy", "gfx/invobjs/seed-poppy", 4, replant, containeronly, replantcontainer, containers,stockpile,stockpileLocs);
 
 					gameui().add(bf, new Coord(gameui().sz.x / 2 - bf.sz.x / 2, gameui().sz.y / 2 - bf.sz.y / 2 - 200));
 					new Thread(bf).start();

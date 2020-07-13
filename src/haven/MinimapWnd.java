@@ -1,5 +1,6 @@
 package haven;
 
+import haven.purus.pbot.PBotUtils;
 import integrations.map.Navigation;
 import integrations.map.RemoteNavigation;
 import integrations.mapv4.MappingClient;

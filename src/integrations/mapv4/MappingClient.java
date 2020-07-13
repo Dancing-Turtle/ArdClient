@@ -333,7 +333,7 @@ public class MappingClient {
                 }
                 System.out.println("Marker upload " + connection.getResponseCode());
             } catch (Exception ex) {
-                System.out.println(ex);
+                //System.out.println("MarkerUpdate " + ex);
             }
         }
     }
@@ -379,11 +379,11 @@ public class MappingClient {
                             }
                         }
                         catch(Exception ex) {
-                            System.out.println(ex);
+                            System.out.println("12" + ex);
                         }
                     }
-                }catch(Exception ex) {
-                    System.out.println(ex);
+                } catch(Exception ex) {
+                    //System.out.println("PositionUpdates " + ex);
                     return;
                 }
 
@@ -399,7 +399,7 @@ public class MappingClient {
                     }
                     connection.getResponseCode();
                 } catch (final Exception ex) {
-                    System.out.println(ex);
+                    //System.out.println("PositionUpdates endpoint " + ex);
                 }
             }
         }
