@@ -1143,27 +1143,29 @@ public class Config {
         */
 
         // populate grid ids map
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new FileReader("grid_ids.txt"));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] tknzed = line.split(",");
-                try {
-                    gridIdsMap.put(Long.parseLong(tknzed[2]), new Pair<>(tknzed[0], tknzed[1]));
-                } catch (NumberFormatException nfe) {
-                }
-            }
-        } catch (IOException e){
-            e.printStackTrace();
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) { // ignored
-                }
-            }
-        }
+//  TODO remember to add Oddimap in
+
+//        BufferedReader reader = null;
+//        try {
+//            reader = new BufferedReader(new FileReader("grid_ids.txt"));
+//            String line;
+//            while ((line = reader.readLine()) != null) {
+//                String[] tknzed = line.split(",");
+//                try {
+//                    gridIdsMap.put(Long.parseLong(tknzed[2]), new Pair<>(tknzed[0], tknzed[1]));
+//                } catch (NumberFormatException nfe) {
+//                }
+//            }
+//        } catch (IOException e){
+//            e.printStackTrace();
+//        } finally {
+//            if (reader != null) {
+//                try {
+//                    reader.close();
+//                } catch (IOException e) { // ignored
+//                }
+//            }
+//        }
 
         if(Config.vendanMapv4) {
             MappingClient.getInstance().SetEndpoint(Utils.getpref("vendan-mapv4-endpoint", ""));
