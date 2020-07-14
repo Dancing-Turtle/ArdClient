@@ -3078,7 +3078,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         musselPicker.start();
     }
 
-    private void showSpecialMenu(final Gob g) {
+    public void showSpecialMenu(final Gob g) {
         g.resname().ifPresent((name) -> {
             final FlowerMenu modmenu = new FlowerMenu((selection) -> {
                 switch (selection) {
@@ -3124,12 +3124,25 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                         Deleted.add(name);
                         ui.sess.glob.oc.removeAll(name);
                         break;
+                    case 5: //Custom overlays
+                        System.out.println("WIP"); //TODO add pls
+                        break;
+                    case 6: //Mark gob on map
+                        GobIcon icon = g.getattr(GobIcon.class);
+                        if (icon != null) {
+                            ui.gui.mapfile.markobj(g.id, g.getres(), name, icon.res);
+                        }
+                        Resource res = Resource.local().loadwait("gfx/hud/wndmap/btns/center", 1);
+                        ui.gui.mapfile.markobj(g.id, g.getres(), g.getres().basename(), res.indir());
+                        break;
                 }
             },  "Mark for party",
                     !HighlightData.isHighlighted(name) ? "Highlight" : "Remove Highlight",
                     Hidden.isHidden(name) ? "Unhide" : "Hide",
                     Alerted.shouldAlert(name) ? "Remove Sound" : "Add Sound",
-                    "Delete");
+                    "Delete",
+                    "Custom overlays",
+                    "Mark on map");
             ui.gui.add(modmenu, ui.mc);
         });
     }

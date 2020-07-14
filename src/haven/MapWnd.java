@@ -74,6 +74,7 @@ public class MapWnd extends Window {
     private Map<Long, Tex> namemap = new HashMap<>(50);
     private Map<Coord, Coord> questlinemap = new HashMap<>();
 
+    private int zoomlvls = 5;
 
     public MapWnd(MapFile file, MapView mv, Coord sz, String title) {
         super(sz, title,title, true);
@@ -122,7 +123,7 @@ public class MapWnd extends Window {
             add(new IButton("gfx/hud/worldmap/minus", "", "", "") {
                 @Override
                 public void click() {
-                    if (MapFileWidget.zoom < 4) {
+                    if (MapFileWidget.zoom < zoomlvls - 1) {
                         zoomtex = null;
                         Coord tc = view.curloc.tc.mul(MapFileWidget.scalef());
                         MapFileWidget.zoom++;
@@ -155,7 +156,7 @@ public class MapWnd extends Window {
 
         private Tex renderz() {
             if (zoomtex == null)
-                zoomtex = Text.renderstroked((5 - MapFileWidget.zoom) + "", Color.WHITE, Color.BLACK).tex();
+                zoomtex = Text.renderstroked((zoomlvls - MapFileWidget.zoom) + "", Color.WHITE, Color.BLACK).tex();
             return zoomtex;
         }
     }
@@ -166,7 +167,7 @@ public class MapWnd extends Window {
         }
 
         public boolean clickmarker(DisplayMarker mark, int button) {
-            if (button == 1) {
+            if (button == 1 && ui.modflags() == 0) {
                 list.change2(mark.m);
                 list.display(mark.m);
                 return (true);
@@ -450,7 +451,8 @@ public class MapWnd extends Window {
             new Pair<>("Jotun Mussel", "jotunmussel"),
             new Pair<>("Quest Givers", "qst"),
             new Pair<>("Salt Basin", "saltbasin"),
-            new Pair<>("Swirling Vortex", "watervortex")
+            new Pair<>("Swirling Vortex", "watervortex"),
+            new Pair<>("Caves", "cave")
     };
 
     @SuppressWarnings("unchecked")
@@ -698,6 +700,57 @@ public class MapWnd extends Window {
                         SMarker prev = view.file.smarkers.get(oid);
                         if (prev == null) {
                             view.file.add(new SMarker(info.seg, sc, rnm, oid, new Resource.Spec(Resource.remote(), res.name, res.ver)));
+                        } else {
+                            if ((prev.seg != info.seg) || !prev.tc.equals(sc)) {
+                                prev.seg = info.seg;
+                                prev.tc = sc;
+                                view.file.update(prev);
+                            }
+                        }
+                    } finally {
+                        view.file.lock.writeLock().unlock();
+                    }
+                }
+            });
+        }
+    }
+
+    public void markobj(long gobid, final Resource res, String nm, Indir<Resource> icon) {
+        synchronized (deferred) {
+            deferred.add(new Runnable() {
+                double f = 0;
+
+                public void run() {
+                    Resource resid = icon.get();
+                    String rnm = nm;
+                    if (rnm == null) {
+                        Resource.Tooltip tt = res.layer(Resource.tooltip);
+                        if (tt == null)
+                            return;
+                        rnm = tt.t;
+                    }
+                    double now = Utils.rtime();
+                    if (f == 0)
+                        f = now;
+                    Gob gob = ui.sess.glob.oc.getgob(gobid);
+                    if (gob == null) {
+                        if (now - f < 1.0)
+                            throw (new Loading());
+                        return;
+                    }
+                    Coord tc = gob.rc.floor(tilesz);
+                    MCache.Grid obg = ui.sess.glob.map.getgrid(tc.div(cmaps));
+                    if (!view.file.lock.writeLock().tryLock())
+                        throw (new Loading());
+                    try {
+                        MapFile.GridInfo info = view.file.gridinfo.get(obg.id);
+                        if (info == null)
+                            throw (new Loading());
+                        Coord sc = tc.add(info.sc.sub(obg.gc).mul(cmaps));
+                        long oid = Long.parseLong(Math.abs(sc.x) + "" + Math.abs(sc.y) + "" + Math.abs(sc.x * sc.y) + ""); //FIXME bring true obj id
+                        SMarker prev = view.file.smarkers.get(oid);
+                        if (prev == null) {
+                            view.file.add(new SMarker(info.seg, sc, rnm, oid, new Resource.Spec(Resource.remote(), resid.name, resid.ver)));
                         } else {
                             if ((prev.seg != info.seg) || !prev.tc.equals(sc)) {
                                 prev.seg = info.seg;

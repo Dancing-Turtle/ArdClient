@@ -22,19 +22,30 @@ import java.util.concurrent.Executors;
 public class Storage {
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
     private static final Executor writerHandler = Executors.newSingleThreadExecutor();
-    public static final Storage dynamic;
+    public static final Storage dynamic, overlays;
     static {
     	final Optional<Storage> cls = create("jdbc:sqlite:dynamic.sqlite");
+	    final Optional<Storage> clos = create("jdbc:sqlite:overlays.sqlite");
     	if(cls.isPresent()) {
     	    dynamic = cls.get();
-	    Runtime.getRuntime().addShutdownHook(new Thread() {
-		public void run() {
-		    dynamic.close();
+	        Runtime.getRuntime().addShutdownHook(new Thread() {
+				public void run() {
+				    dynamic.close();
+				}
+	        });
+		} else {
+        	    dynamic = null;
 		}
-	    });
-	} else {
-    	    dynamic = null;
-	}
+	    if(clos.isPresent()) {
+		    overlays = clos.get();
+		    Runtime.getRuntime().addShutdownHook(new Thread() {
+			    public void run() {
+				    overlays.close();
+			    }
+		    });
+	    } else {
+		    overlays = null;
+	    }
     }
 
     /**

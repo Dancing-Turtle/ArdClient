@@ -26,7 +26,7 @@
 
 package haven;
 
-import integrations.map.Navigation;
+//import integrations.map.Navigation;
 import integrations.mapv4.MappingClient;
 
 import java.util.ArrayList;
@@ -142,7 +142,7 @@ public class Charlist extends Widget {
 				for (Char c : chars) {
 					if (sender == c.plb) {
 						wdgmsg("play", c.name);
-						Navigation.setCharacterName(c.name);
+//						Navigation.setCharacterName(c.name);
 						if(Config.vendanMapv4)
 							MappingClient.getInstance().SetPlayerName(c.name);
 					}

@@ -1,8 +1,8 @@
 package haven;
 
 import haven.purus.pbot.PBotUtils;
-import integrations.map.Navigation;
-import integrations.map.RemoteNavigation;
+//import integrations.map.Navigation;
+//import integrations.map.RemoteNavigation;
 import integrations.mapv4.MappingClient;
 
 import java.awt.*;
@@ -99,7 +99,7 @@ public class MinimapWnd extends ResizableWnd {
 
             @Override
             public void click() {
-                this.detectedAC = Navigation.getDetectedAbsoluteCoordinates();
+//                this.detectedAC = Navigation.getDetectedAbsoluteCoordinates();
                 System.out.println("Click 1");
                 if (Config.vendanMapv4) {
                     MappingClient.MapRef mr = MappingClient.getInstance().GetMapRef(true);
@@ -117,7 +117,7 @@ public class MinimapWnd extends ResizableWnd {
                     System.out.print("Detected AC " + this.detectedAC);
                 }
                 if (gridCoord != null) {
-                    RemoteNavigation.getInstance().openBrowserMap(gridCoord);
+//                    RemoteNavigation.getInstance().openBrowserMap(gridCoord);
                 }
             }
 
@@ -125,7 +125,7 @@ public class MinimapWnd extends ResizableWnd {
             public void draw(GOut g) {
                 boolean redraw = false;
 
-                Coord2d locatedAC = Navigation.getAbsoluteCoordinates();
+                /*Coord2d locatedAC = Navigation.getAbsoluteCoordinates();
                 if (state != 2 && locatedAC != null) {
                     this.locatedAC = locatedAC;
                     state = 2;
@@ -136,7 +136,7 @@ public class MinimapWnd extends ResizableWnd {
                     this.detectedAC = detectedAC;
                     state = 1;
                     redraw = true;
-                }
+                }*/
                 if (Config.vendanMapv4) {
                     MappingClient.MapRef mr = MappingClient.getInstance().lastMapRef;
                     if (state != 2 && mr != null) {

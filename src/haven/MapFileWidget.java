@@ -56,7 +56,7 @@ public class MapFileWidget extends Widget {
     private Coord dsc, dmc;
     private String biome;
     public static int zoom = 0;
-    private static final double[] scaleFactors = new double[]{1, 100 / 75.0, 100 / 50.0, 100 / 25.0, 100 / 15.0, 100 / 8.0};
+    private static final double[] scaleFactors = new double[]{1, 100 / 75.0, 100 / 50.0, 100 / 25.0, 100 / 15.0, 100 / 8.0}; //FIXME that his add more scale
 
     public MapFileWidget(MapFile file, Coord sz) {
         super();

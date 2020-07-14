@@ -26,7 +26,7 @@
 
 package haven;
 
-import integrations.map.Navigation;
+//import integrations.map.Navigation;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -99,7 +99,7 @@ public class Party {
                 boolean vis = msg.uint8() == 1;
                 if (vis)
                     c = msg.coord().mul(OCache.posres);
-                if(Config.mapperEnabled) Navigation.addPartyCoordinates(gobId, c);
+//                if(Config.mapperEnabled) Navigation.addPartyCoordinates(gobId, c);
                 Color col = msg.color();
                 if (m != null) {
                     m.c = c;
