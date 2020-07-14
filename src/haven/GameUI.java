@@ -105,6 +105,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     private MinimapWnd mmapwnd;
     public haven.timers.TimersWnd timerswnd;
     public QuickSlotsWdg quickslots;
+    public newQuickSlotsWdg newquickslots;
     public StatusWdg statuswindow;
     public static boolean swimon = false;
     public static boolean crimeon = false;
@@ -1671,9 +1672,14 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     }
 
 
-    public void rightHand(){
-        quickslots.drop(QuickSlotsWdg.lc, Coord.z);
-        quickslots.simulateclick(QuickSlotsWdg.lc);
+    public void rightHand() {
+        if (configuration.newQuickSlotWdg) {
+            newquickslots.drop(newQuickSlotsWdg.items[0].coord, Coord.z);
+            newquickslots.simulateclick(newQuickSlotsWdg.items[0].coord);
+        } else {
+            quickslots.drop(QuickSlotsWdg.lc, Coord.z);
+            quickslots.simulateclick(QuickSlotsWdg.lc);
+        }
     }
 
     public void changeDecks(int deck){
@@ -1683,8 +1689,13 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     }
 
     public void leftHand(){
-        quickslots.drop(QuickSlotsWdg.rc, Coord.z);
-        quickslots.simulateclick(QuickSlotsWdg.rc);
+        if (configuration.newQuickSlotWdg) {
+            newquickslots.drop(newQuickSlotsWdg.items[1].coord, Coord.z);
+            newquickslots.simulateclick(newQuickSlotsWdg.items[1].coord);
+        } else {
+            quickslots.drop(QuickSlotsWdg.rc, Coord.z);
+            quickslots.simulateclick(QuickSlotsWdg.rc);
+        }
     }
 
     public void Drink(){
