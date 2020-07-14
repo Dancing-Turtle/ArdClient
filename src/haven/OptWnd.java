@@ -596,17 +596,17 @@ public class OptWnd extends Window {
             }
         });
 
-        appender.add(new CheckBox("Hide character name") {
-            {
-                a = Config.mapperHashName;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("mapperHashName", val);
-                Config.mapperHashName = val;
-                a = val;
-            }
-        });
+//        appender.add(new CheckBox("Hide character name") {
+//            {
+//                a = Config.mapperHashName;
+//            }
+//
+//            public void set(boolean val) {
+//                Utils.setprefb("mapperHashName", val);
+//                Config.mapperHashName = val;
+//                a = val;
+//            }
+//        });
         appender.add(new CheckBox("Enable navigation tracking") {
             {
                 a = Config.enableNavigationTracking;
@@ -615,6 +615,7 @@ public class OptWnd extends Window {
             public void set(boolean val) {
                 Utils.setprefb("enableNavigationTracking", val);
                 Config.enableNavigationTracking = val;
+                MappingClient.getInstance().EnableTracking(Config.enableNavigationTracking);
                 a = val;
             }
         });

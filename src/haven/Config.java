@@ -1186,7 +1186,7 @@ public class Config {
         if(Config.vendanMapv4) {
             MappingClient.getInstance().SetEndpoint(Utils.getpref("vendan-mapv4-endpoint", ""));
             MappingClient.getInstance().EnableGridUploads(Config.vendanMapv4);
-            MappingClient.getInstance().EnableTracking(Config.vendanMapv4);
+            MappingClient.getInstance().EnableTracking(Config.enableNavigationTracking);
         }
         loadLogins();
         Iconfinder.loadConfig();

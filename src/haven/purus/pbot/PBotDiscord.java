@@ -55,6 +55,19 @@ public class PBotDiscord extends ListenerAdapter {
         return at;
     }
 
+    public static String getUserID(String name){
+        initalize();
+        String at = "";
+        for (TextChannel ch : channels) {
+            for(Member member : ch.getMembers()){
+                if(member.getUser().getName().equals(name)){
+                     at = member.getUser().getId();
+                }
+            }
+        }
+        return at;
+    }
+
     public static void embedMessage(String title, String urlThumb, String urlPicture, String text, String color) {
         initalize();
         EmbedBuilder embed = new EmbedBuilder();

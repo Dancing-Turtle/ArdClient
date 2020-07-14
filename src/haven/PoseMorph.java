@@ -233,7 +233,7 @@ public class PoseMorph implements Morpher.Factory {
                         if(!Config.biganimals){
                             if(name == null){
                                 name = ba.names[0];
-                                System.out.println(name);
+                                //System.out.println(name);
                             }
                             //Squirrel > centipede > forest lizard > grasshopper > rabbit > toad
                             //Large Animal
@@ -243,7 +243,7 @@ public class PoseMorph implements Morpher.Factory {
                         } else {
                             if(name == null){
                                 name = ba.names[0];
-                                System.out.println(name);
+                                //System.out.println(name);
                             }
                             if(Config.smallworld){
                                 npx += ((xf[0] * opx) + (xf[4] * opy) + (xf[8] * opz) + xf[12]) * bw*6;
