@@ -1143,6 +1143,7 @@ public class Config {
         */
 
         // populate grid ids map
+//  TODO remember to add Oddimap in
         BufferedReader reader = null;
         try {
             reader = new BufferedReader(new FileReader("grid_ids.txt"));

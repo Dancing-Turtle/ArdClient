@@ -37,7 +37,6 @@ import haven.purus.pbot.*;
 import haven.resutil.FoodInfo;
 import haven.sloth.gob.Mark;
 import haven.sloth.gui.*;
-//import integrations.map.RemoteNavigation;
 import integrations.mapv4.MappingClient;
 import modification.configuration;
 import modification.newQuickSlotsWdg;
@@ -106,7 +105,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     private MinimapWnd mmapwnd;
     public haven.timers.TimersWnd timerswnd;
     public QuickSlotsWdg quickslots;
-    public newQuickSlotsWdg newquickslots;
     public StatusWdg statuswindow;
     public static boolean swimon = false;
     public static boolean crimeon = false;
@@ -943,8 +941,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             mmapwnd = adda(new MinimapWnd(mmap), new Coord(sz.x, 0), 1, 0);
             if(ResCache.global != null) {
                 MapFile file = MapFile.load(ResCache.global, mapfilename());
-                /*if(Config.mapperEnabled)
-                    RemoteNavigation.getInstance().uploadMarkerData(file);*/
                 if(Config.vendanMapv4) {
                     MappingClient.getInstance().ProcessMap(file, (m) -> {
                         if(m instanceof MapFile.PMarker && Config.vendanGreenMarkers) {
@@ -1675,14 +1671,9 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     }
 
 
-    public void rightHand() {
-        if (configuration.newQuickSlotWdg) {
-            newquickslots.drop(newQuickSlotsWdg.items[0].coord, Coord.z);
-            newquickslots.simulateclick(newQuickSlotsWdg.items[0].coord);
-        } else {
-            quickslots.drop(QuickSlotsWdg.lc, Coord.z);
-            quickslots.simulateclick(QuickSlotsWdg.lc);
-        }
+    public void rightHand(){
+        quickslots.drop(QuickSlotsWdg.lc, Coord.z);
+        quickslots.simulateclick(QuickSlotsWdg.lc);
     }
 
     public void changeDecks(int deck){
@@ -1692,13 +1683,8 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     }
 
     public void leftHand(){
-        if (configuration.newQuickSlotWdg) {
-            newquickslots.drop(newQuickSlotsWdg.items[1].coord, Coord.z);
-            newquickslots.simulateclick(newQuickSlotsWdg.items[1].coord);
-        } else {
-            quickslots.drop(QuickSlotsWdg.rc, Coord.z);
-            quickslots.simulateclick(QuickSlotsWdg.rc);
-        }
+        quickslots.drop(QuickSlotsWdg.rc, Coord.z);
+        quickslots.simulateclick(QuickSlotsWdg.rc);
     }
 
     public void Drink(){
