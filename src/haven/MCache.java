@@ -28,7 +28,6 @@ package haven;
 
 import haven.sloth.gfx.GridMesh;
 import haven.sloth.script.pathfinding.Tile;
-import integrations.map.RemoteNavigation;
 
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
@@ -461,8 +460,6 @@ public class MCache {
                 }
             }
             invalidate();
-            if(Config.mapperEnabled)
-                RemoteNavigation.getInstance().receiveGrid(this);
             seq++;
         }
     }

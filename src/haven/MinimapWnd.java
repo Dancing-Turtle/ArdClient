@@ -1,7 +1,5 @@
 package haven;
 
-import integrations.map.Navigation;
-import integrations.map.RemoteNavigation;
 import integrations.mapv4.MappingClient;
 
 import java.awt.*;
@@ -9,6 +7,7 @@ import java.awt.image.BufferedImage;
 
 
 public class MinimapWnd extends ResizableWnd {
+    //TODO: Remember to eventually add odditown mapping once grid_ids are generated
     private LocalMiniMap minimap;
     private final int header;
     public static Tex biometex;
@@ -96,7 +95,6 @@ public class MinimapWnd extends ResizableWnd {
 
             @Override
             public void click() {
-                this.detectedAC = Navigation.getDetectedAbsoluteCoordinates();
                 System.out.println("Click 1");
                 if (Config.vendanMapv4) {
                     MappingClient.MapRef mr = MappingClient.getInstance().GetMapRef(true);
@@ -105,35 +103,11 @@ public class MinimapWnd extends ResizableWnd {
                         return;
                     }
                 }
-                Coord gridCoord = null;
-                if (this.locatedAC != null) {
-                    gridCoord = this.locatedAC.toGridCoordinate();
-                    System.out.print("Located AC " + locatedAC);
-                } else if (this.detectedAC != null) {
-                    gridCoord = this.detectedAC.toGridCoordinate();
-                    System.out.print("Detected AC " + this.detectedAC);
-                }
-                if (gridCoord != null) {
-                    RemoteNavigation.getInstance().openBrowserMap(gridCoord);
-                }
             }
 
             @Override
             public void draw(GOut g) {
                 boolean redraw = false;
-
-                Coord2d locatedAC = Navigation.getAbsoluteCoordinates();
-                if (state != 2 && locatedAC != null) {
-                    this.locatedAC = locatedAC;
-                    state = 2;
-                    redraw = true;
-                }
-                Coord2d detectedAC = Navigation.getDetectedAbsoluteCoordinates();
-                if (state != 1 && detectedAC != null) {
-                    this.detectedAC = detectedAC;
-                    state = 1;
-                    redraw = true;
-                }
                 if (Config.vendanMapv4) {
                     MappingClient.MapRef mr = MappingClient.getInstance().lastMapRef;
                     if (state != 2 && mr != null) {

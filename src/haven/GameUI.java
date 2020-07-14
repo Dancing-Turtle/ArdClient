@@ -37,7 +37,6 @@ import haven.purus.pbot.*;
 import haven.resutil.FoodInfo;
 import haven.sloth.gob.Mark;
 import haven.sloth.gui.*;
-import integrations.map.RemoteNavigation;
 import integrations.mapv4.MappingClient;
 
 import java.awt.*;
@@ -932,8 +931,6 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             mmapwnd = adda(new MinimapWnd(mmap), new Coord(sz.x, 0), 1, 0);
             if(ResCache.global != null) {
                 MapFile file = MapFile.load(ResCache.global, mapfilename());
-                if(Config.mapperEnabled)
-                    RemoteNavigation.getInstance().uploadMarkerData(file);
                 if(Config.vendanMapv4) {
                     MappingClient.getInstance().ProcessMap(file, (m) -> {
                         if(m instanceof MapFile.PMarker && Config.vendanGreenMarkers) {

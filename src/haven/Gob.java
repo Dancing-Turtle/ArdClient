@@ -32,7 +32,6 @@ import haven.sloth.gfx.HitboxMesh;
 import haven.sloth.gob.*;
 import haven.sloth.io.HighlightData;
 import haven.sloth.script.pathfinding.Hitbox;
-import integrations.map.Navigation;
 import integrations.mapv4.MappingClient;
 
 import java.awt.*;
@@ -628,8 +627,6 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             this.rc = c;
 
             if(isplayer()){
-                if(Config.mapperEnabled)
-                    Navigation.setPlayerCoordinates(c);
                 if(Config.vendanMapv4) MappingClient.getInstance().CheckGridCoord(c);
             }
             this.a = a;
