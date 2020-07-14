@@ -26,6 +26,8 @@
 
 package haven;
 
+import modification.configuration;
+
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -419,6 +421,7 @@ public class UI {
             }
             id = rwidgets.get(sender);
         }
+        configuration.Syslog(configuration.clientSender, sender, id, msg, args);
         if(rcvr != null)
             rcvr.rcvmsg(id, msg, args);
     }
@@ -426,6 +429,7 @@ public class UI {
     public void uimsg(int id, String msg, Object... args) {
         synchronized (this) {
             Widget wdg = widgets.get(id);
+            configuration.Syslog(configuration.serverSender, wdg, id, msg, args);
             if(realmchat != null){
                 try{
                     if(realmchat.get() != null && id == realmchat.get().wdgid()) {

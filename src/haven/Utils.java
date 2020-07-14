@@ -217,14 +217,14 @@ public class Utils {
         return (prefs);
     }
 
-    static void delpref(String prefname) {
+    public static void delpref(String prefname) {
         try {
             prefs().remove(prefname);
         } catch (SecurityException e) {
         }
     }
 
-    static String getpref(String prefname, String def) {
+    public static String getpref(String prefname, String def) {
         try {
             return (prefs().get(prefname, def));
         } catch (SecurityException e) {
@@ -395,7 +395,7 @@ public class Utils {
         }
     }
 
-    static int getprefi(String prefname, int def) {
+    public static int getprefi(String prefname, int def) {
         try {
             return (prefs().getInt(prefname, def));
         } catch (SecurityException e) {
@@ -403,14 +403,14 @@ public class Utils {
         }
     }
 
-    static void setprefi(String prefname, int val) {
+    public static void setprefi(String prefname, int val) {
         try {
             prefs().putInt(prefname, val);
         } catch (SecurityException e) {
         }
     }
 
-    static double getprefd(String prefname, double def) {
+    public static double getprefd(String prefname, double def) {
         try {
             return (prefs().getDouble(prefname, def));
         } catch (SecurityException e) {
@@ -425,7 +425,7 @@ public class Utils {
         }
     }
 
-    static boolean getprefb(String prefname, boolean def) {
+    public static boolean getprefb(String prefname, boolean def) {
         try {
             return (prefs().getBoolean(prefname, def));
         } catch (SecurityException e) {

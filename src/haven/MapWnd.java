@@ -74,8 +74,6 @@ public class MapWnd extends Window {
     private Map<Long, Tex> namemap = new HashMap<>(50);
     private Map<Coord, Coord> questlinemap = new HashMap<>();
 
-    private int zoomlvls = 5;
-
     public MapWnd(MapFile file, MapView mv, Coord sz, String title) {
         super(sz, title,title, true);
         this.mv = mv;
@@ -123,7 +121,7 @@ public class MapWnd extends Window {
             add(new IButton("gfx/hud/worldmap/minus", "", "", "") {
                 @Override
                 public void click() {
-                    if (MapFileWidget.zoom < zoomlvls - 1) {
+                    if (MapFileWidget.zoom < MapFileWidget.zoomlvls - 1) {
                         zoomtex = null;
                         Coord tc = view.curloc.tc.mul(MapFileWidget.scalef());
                         MapFileWidget.zoom++;
@@ -156,7 +154,7 @@ public class MapWnd extends Window {
 
         private Tex renderz() {
             if (zoomtex == null)
-                zoomtex = Text.renderstroked((zoomlvls - MapFileWidget.zoom) + "", Color.WHITE, Color.BLACK).tex();
+                zoomtex = Text.renderstroked((MapFileWidget.zoomlvls - MapFileWidget.zoom) + "", Color.WHITE, Color.BLACK).tex();
             return zoomtex;
         }
     }

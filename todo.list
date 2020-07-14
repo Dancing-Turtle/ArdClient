@@ -1,9 +1,25 @@
 pbot session - короче добавить для пбота атрибут номер сессии и тогда можно разпараллелить старых ботов и создать мультисессионую ботоводню
     PBot(int session)
     PBot[]
-MapWnd - //FIXME add more zoom lvl and quick click delete create and button edit mark
+
 MenuGrid -  //ADD custom size
 MusselPicker - //FIXME name, how ender, shift click
 PickForageable - //FIXME custom menu
 
 fix multisession freeze
+add pack gachi sounds
+modify loginscreen to fullhd
+
+map - bigmap add grid, setting, editor for marks
+    add cave marks
+    fix object id
+    MapFileWidget - fix Unknown tooltip from 7 zoom
+
+quickslots - make custom and background without pictures
+
+
+
+
+
+
+write render client pls

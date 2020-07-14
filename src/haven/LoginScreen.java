@@ -50,8 +50,8 @@ public class LoginScreen extends Widget {
     static Text.Foundry textf, textfs, special;
     Tex bg;
     {
-        if (Config.defaultUtilsCustomLoginScreenBgBoolean)
-             bg = configuration.imageToTex(Config.defaultUtilsCustomLoginScreenBg, 800, 600, Resource.loadtex("gfx/loginscr"));
+        if (configuration.defaultUtilsCustomLoginScreenBgBoolean)
+             bg = configuration.imageToTex(configuration.defaultUtilsCustomLoginScreenBg, 800, 600, Resource.loadtex("gfx/loginscr"));
         else bg = Resource.loadtex("gfx/loginscr");
     }
     //TODO add animated login screen aka world of warcraft

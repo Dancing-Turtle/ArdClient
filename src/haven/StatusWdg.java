@@ -1,6 +1,7 @@
 package haven;
 
 import haven.glsl.Block;
+import modification.configuration;
 
 import java.awt.*;
 import java.io.*;
@@ -92,7 +93,7 @@ public class StatusWdg extends Widget {
                             String p = line.substring("<p>There are  ".length(), line.length() - " hearthlings playing.</p>".length()); //need testing
                             players = Text.render(String.format(Resource.getLocString(Resource.BUNDLE_LABEL, "Players: %s"), p), Color.WHITE).tex();
                         }
-                        if (Config.statustooltip) {
+                        if (configuration.statustooltip) {
                             if (!line.contains("<div class")) {
                                 line = line.replace("<p>", "");
                                 line = line.replace("</p>", "");

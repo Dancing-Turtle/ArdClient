@@ -56,7 +56,8 @@ public class MapFileWidget extends Widget {
     private Coord dsc, dmc;
     private String biome;
     public static int zoom = 0;
-    private static final double[] scaleFactors = new double[]{1, 100 / 75.0, 100 / 50.0, 100 / 25.0, 100 / 15.0, 100 / 8.0}; //FIXME that his add more scale
+    public static int zoomlvls = 7;
+    private static final double[] scaleFactors = new double[]{1 / 4.0, 1 / 2.0, 1, 100 / 75.0, 100 / 50.0, 100 / 25.0, 100 / 15.0, 100 / 8.0}; //FIXME that his add more scale
 
     public MapFileWidget(MapFile file, Coord sz) {
         super();
@@ -477,7 +478,7 @@ public class MapFileWidget extends Widget {
 
     public boolean mousewheel(Coord c, int amount) {
         if(amount > 0) {
-            if (MapFileWidget.zoom < 4) {
+            if (MapFileWidget.zoom < zoomlvls - 1) {
                 PBotAPI.gui.mapfile.zoomtex = null;
                 Coord tc = curloc.tc.mul(MapFileWidget.scalef());
                 MapFileWidget.zoom++;

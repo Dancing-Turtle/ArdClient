@@ -93,7 +93,11 @@ public class ErrorHandler extends ThreadGroup {
             String info = ("Java "+System.getProperty("java.runtime.version")+ "\n"
                     + "OS "+System.getProperty("os.name")+ " " + System.getProperty("os.version") + " " + System.getProperty("os.arch") + "\n"
                     + "GPU " + (String)r.props.get("gpu")+ "\n");
-            File file = new File(filename);
+
+            File folder = new File("crashes");
+            if (!folder.exists()) folder.mkdir();
+
+            File file = new File(folder + "/" + filename);
             try {
                 PrintWriter pw = new PrintWriter(file);
                 pw.append(info);

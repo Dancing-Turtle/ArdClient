@@ -39,7 +39,6 @@ import modification.configuration;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.io.File;
 import java.io.IOException;
 import java.net.JarURLConnection;
 import java.net.URL;
@@ -59,7 +58,7 @@ public class OptWnd extends Window {
     public static final int HORIZONTAL_MARGIN = 5;
     private static final Text.Foundry fonttest = new Text.Foundry(Text.sans, 10).aa(true);
     public static final int VERTICAL_AUDIO_MARGIN = 5;
-    public final Panel main, video, audio, display, map, general, combat, control, uis,uip, quality, mapping, flowermenus, soundalarms, hidesettings, studydesksettings, autodropsettings, keybindsettings, chatsettings, clearboulders, clearbushes, cleartrees, clearhides, discord, additions;
+    public final Panel main, video, audio, display, map, general, combat, control, uis,uip, quality, mapping, flowermenus, soundalarms, hidesettings, studydesksettings, autodropsettings, keybindsettings, chatsettings, clearboulders, clearbushes, cleartrees, clearhides, discord, additions, modification;
     public Panel current;
     public CheckBox discordcheckbox, menugridcheckbox;
     CheckBox sm = null, rm = null;/*, lt = null, bt = null, ltl;*/
@@ -535,6 +534,7 @@ public class OptWnd extends Window {
         additions = add(new Panel());
         discord = add(new Panel());
         mapping = add(new Panel());
+        modification = add(new Panel());
 
         initMain(gopts);
         initAudio();
@@ -556,6 +556,7 @@ public class OptWnd extends Window {
         initAdditions();
         initMapping();
         initDiscord();
+        initModification();
 
         chpanel(main);
     }
@@ -655,6 +656,7 @@ public class OptWnd extends Window {
         main.add(new PButton(200, "Autodrop", 's', autodropsettings), new Coord(420, 150));
         main.add(new PButton(200, "Additional settings", 'z', additions), new Coord(0, 180));
         main.add(new PButton(200, "PBotDiscord", 'z', discord), new Coord(0, 210));
+        main.add(new PButton(200, "Modification", 'z', modification), new Coord(0, 240));
         main.add(new PButton(200, "Mapping", 'z', mapping), new Coord(420, 180));
         if (gopts) {
             main.add(new Button(200, "Disconnect Discord") {
@@ -1548,16 +1550,16 @@ public class OptWnd extends Window {
 
         appender.addRow(new CheckBox("Scalable trees (req. logout)"){
             {
-                this.a = Config.scaletree;
+                this.a = configuration.scaletree;
             }
 
             @Override
             public void set(boolean val) {
                 Utils.setprefb("scaletree", val);
-                Config.scaletree = val;
+                configuration.scaletree = val;
                 this.a = val;
             }
-        }, new HSlider(200, 0, 255, Config.scaletreeint){
+        }, new HSlider(200, 0, 255, configuration.scaletreeint){
 
             @Override
             protected void attach(UI ui) {
@@ -1566,9 +1568,9 @@ public class OptWnd extends Window {
 
             @Override
             public void changed() {
-                Config.scaletreeint = this.val;
-                Utils.setprefi("scaletreeint", Config.scaletreeint);
-                settip("Scale tree and brush : " + Config.scaletreeint + "%");
+                configuration.scaletreeint = this.val;
+                Utils.setprefi("scaletreeint", configuration.scaletreeint);
+                settip("Scale tree and brush : " + configuration.scaletreeint + "%");
             }
         });
 
@@ -2409,7 +2411,7 @@ public class OptWnd extends Window {
 
                 try {
                     Widget qs = null;
-                    if (Config.newQuickSlotWdg)
+                    if (configuration.newQuickSlotWdg)
                         qs = ui.gui.newquickslots;
                     else qs = ui.gui.quickslots;
                     if (qs != null) {
@@ -2724,70 +2726,6 @@ public class OptWnd extends Window {
         appender.add(new Label("Additional Client Features"));
         //Test//Test//Test
 
-        appender.addRow(new CheckBox("Use custom title") {
-            {
-                a = Config.defaultUtilsCustomTitleBoolean;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("custom-title-bol", val);
-                Config.defaultUtilsCustomTitleBoolean = val;
-                a = val;
-            }
-
-            @Override
-            public Object tooltip(Coord c0, Widget prev) {
-                Tex tex = Text.render("Request restart").tex();
-                return tex;
-            }
-        },
-                new TextEntry(240, Config.defaultUtilsCustomTitle) {
-                    @Override
-                    public boolean keydown(KeyEvent ev) {
-                        if (!parent.visible)
-                            return false;
-                        Utils.setpref("custom-title", text);
-
-                        return buf.key(ev);
-                    }
-                });
-        appender.addRow(new CheckBox("Use custom login background") {
-            {
-                a = Config.defaultUtilsCustomLoginScreenBgBoolean;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("custom-login-background-bol", val);
-                Config.defaultUtilsCustomLoginScreenBgBoolean = val;
-                a = val;
-            }
-
-            @Override
-            public Object tooltip(Coord c0, Widget prev) {
-                Tex tex = Text.render("Request restart").tex();
-                return tex;
-            }
-        },
-                /**new TextEntry(200, Config.defaultUtilsCustomLoginScreenBg) {
-                    @Override
-                    public void changed() {
-                        try {
-                            File img = new File(text);
-                            if (img.exists() && img.isFile()) {
-                                Utils.setpref("custom-login-background", text);
-                                //ui.uimsg(1, "bg"); //FIXME dont work instant change bg
-                                System.out.println("custom login screen " + text);
-                            }
-                            else System.out.println("custom login screen file not found");
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }**/
-                makePictureChoiseDropdown());
-
-        appender.add(new Label(""));
-
         int yItem = appender.getY();
         appender.add(new CheckBox("Item Quality Coloring") {
             {
@@ -3018,57 +2956,6 @@ public class OptWnd extends Window {
             }
         });
 
-        appender.add(new Label(""));
-
-        appender.add(new CheckBox("Status tooltip") {
-            {
-                a = Config.statustooltip;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("statustooltip", val);
-                Config.statustooltip = val;
-                a = val;
-            }
-        });
-        appender.add(new CheckBox("New overlay for plant stage") {
-            {
-                a = Config.newCropStageOverlay;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("newCropStageOverlay", val);
-                Config.newCropStageOverlay = val;
-                a = val;
-            }
-        });
-        appender.add(new CheckBox("New quick hand slots") {
-            {
-                a = Config.newQuickSlotWdg;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("newQuickSlotWdg", val);
-                Config.newQuickSlotWdg = val;
-                a = val;
-
-                try {
-                    Widget qs = ui.gui.quickslots;
-                    Widget nqs = ui.gui.newquickslots;
-
-                    if (qs != null && nqs != null) {
-                        if (val) {
-                            nqs.show();
-                            qs.hide();
-                        } else {
-                            nqs.hide();
-                            qs.show();
-                        }
-                    }
-                } catch (ClassCastException e) { // in case we are at the login screen
-                }
-            }
-        });
 
         additions.add(new PButton(200, "Back", 27, main), new Coord(210, 360));
         additions.pack();
@@ -3116,6 +3003,162 @@ public class OptWnd extends Window {
 
         discord.add(new PButton(200, "Back", 27, main), new Coord(210, 360));
         discord.pack();
+    }
+
+    private void initModification() {
+        final WidgetVerticalAppender appender = new WidgetVerticalAppender(withScrollport(modification, new Coord(620, 350)));
+
+        appender.add(new Label("Strange or unreal modifications"));
+
+
+        appender.addRow(new CheckBox("Use custom title") {
+                            {
+                                a = configuration.customTitleBoolean;
+                            }
+
+                            public void set(boolean val) {
+                                Utils.setprefb("custom-title-bol", val);
+                                configuration.customTitleBoolean = val;
+                                a = val;
+
+                                MainFrame.instance.setTitle(configuration.tittleCheck(ui.sess));
+                            }
+                        },
+                new ResizableTextEntry(configuration.defaultUtilsCustomTitle) {
+                    @Override
+                    public boolean keydown(KeyEvent ev) {
+                        if (ev.getKeyCode() == KeyEvent.VK_ENTER) {
+                            if (!parent.visible)
+                                return false;
+                            Utils.setpref("custom-title", text);
+                            configuration.defaultUtilsCustomTitle = text;
+
+                            MainFrame.instance.setTitle(configuration.tittleCheck(ui.sess));
+                        }
+                        return buf.key(ev);
+                    }
+                });
+        appender.addRow(new CheckBox("Use custom login background") {
+                            {
+                                a = configuration.defaultUtilsCustomLoginScreenBgBoolean;
+                            }
+
+                            public void set(boolean val) {
+                                Utils.setprefb("custom-login-background-bol", val);
+                                configuration.defaultUtilsCustomLoginScreenBgBoolean = val;
+                                a = val;
+                            }
+
+                            @Override
+                            public Object tooltip(Coord c0, Widget prev) {
+                                Tex tex = Text.render("Request restart").tex();
+                                return tex;
+                            }
+                        },
+                /**new TextEntry(200, Config.defaultUtilsCustomLoginScreenBg) {
+                @Override
+                public void changed() {
+                try {
+                File img = new File(text);
+                if (img.exists() && img.isFile()) {
+                Utils.setpref("custom-login-background", text);
+                //ui.uimsg(1, "bg"); //FIXME dont work instant change bg
+                System.out.println("custom login screen " + text);
+                }
+                else System.out.println("custom login screen file not found");
+                } catch (Exception e) {
+                e.printStackTrace();
+                }
+                }
+                }**/
+                makePictureChoiseDropdown());
+
+        appender.add(new Label(""));
+
+        appender.setVerticalMargin(VERTICAL_MARGIN);
+        appender.setHorizontalMargin(HORIZONTAL_MARGIN);
+
+        appender.add(new CheckBox("Player Status tooltip") {
+            {
+                a = configuration.statustooltip;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("statustooltip", val);
+                configuration.statustooltip = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("New overlay for plant stage") {
+            {
+                a = configuration.newCropStageOverlay;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("newCropStageOverlay", val);
+                configuration.newCropStageOverlay = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("New quick hand slots") {
+            {
+                a = configuration.newQuickSlotWdg;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("newQuickSlotWdg", val);
+                configuration.newQuickSlotWdg = val;
+                a = val;
+
+                try {
+                    if (ui != null && ui.gui != null) {
+                        Widget qs = ui.gui.quickslots;
+                        Widget nqs = ui.gui.newquickslots;
+
+                        if (qs != null && nqs != null) {
+                            if (val) {
+                                nqs.show();
+                                qs.hide();
+                            } else {
+                                nqs.hide();
+                                qs.show();
+                            }
+                        }
+                    }
+                } catch (ClassCastException e) { // in case we are at the login screen
+                }
+            }
+        });
+        appender.add(new CheckBox("Autoclick DiabloLike move") {
+            {
+                a = configuration.autoclick;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("autoclick", val);
+                configuration.autoclick = val;
+                a = val;
+            }
+            @Override
+            public Object tooltip(Coord c0, Widget prev) {
+                Tex tex = Text.render("Bad works with the old system movement. Turn on only by interest.").tex();
+                return tex;
+            }
+        });
+        appender.add(new CheckBox("Log for developer") {
+            {
+                a = configuration.logging;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("msglogging", val);
+                configuration.logging = val;
+                a = val;
+            }
+        });
+
+        modification.add(new PButton(200, "Back", 27, main), new Coord(210, 360));
+        modification.pack();
     }
 
     private void initFlowermenus() {
@@ -4255,7 +4298,7 @@ public class OptWnd extends Window {
     private Dropbox<String> makePictureChoiseDropdown() {
         return new Dropbox<String>(pictureList.size(), pictureList) {
             {
-                super.change(Config.defaultUtilsCustomLoginScreenBg);
+                super.change(configuration.defaultUtilsCustomLoginScreenBg);
             }
             @Override
             protected String listitem(int i) {
@@ -4272,7 +4315,7 @@ public class OptWnd extends Window {
             @Override
             public void change(String item) {
                 super.change(item);
-                Config.defaultUtilsCustomLoginScreenBg = item;
+                configuration.defaultUtilsCustomLoginScreenBg = item;
                 Utils.setpref("custom-login-background", item);
             }
         };

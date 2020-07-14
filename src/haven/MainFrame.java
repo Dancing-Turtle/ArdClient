@@ -28,6 +28,7 @@ package haven;
 
 import com.google.common.flogger.FluentLogger;
 import haven.purus.pbot.PBotAPI;
+import modification.configuration;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -48,10 +49,7 @@ public class MainFrame extends java.awt.Frame implements Runnable, Console.Direc
     private final ThreadGroup g;
     public final Thread mt;
     DisplayMode fsmode = null, prefs = null;
-    private static final String TITLE = check();
-    static String check() {
-        return Config.defaultUtilsCustomTitleBoolean ? Config.defaultUtilsCustomTitle : "Ardennes Hafen Revived " + "1.02: Rise of the Machines" ;
-    }
+    private static final String TITLE = "Ardennes Hafen Revived " + "1.02: Rise of the Machines";
 
     static {
         try {
@@ -363,11 +361,17 @@ public class MainFrame extends java.awt.Frame implements Runnable, Console.Direc
                             Config.authck = null;
                         }
                         fun = bill;
-                        setTitle(TITLE);
+                        if (configuration.customTitleBoolean)
+                            setTitle(configuration.tittleCheck(sess));
+                        else
+                            setTitle(TITLE);
                     } else {
                         fun = new RemoteUI(sess);
                         lui.setSession(sess);
-                        setTitle(TITLE + " \u2013 " + sess.username);
+                        if (configuration.customTitleBoolean)
+                            setTitle(configuration.tittleCheck(sess));
+                        else
+                            setTitle(TITLE + " \u2013 " + sess.username);
                     }
                     sess = fun.run(lui);
                 }

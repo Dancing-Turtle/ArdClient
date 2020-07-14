@@ -39,6 +39,7 @@ import haven.sloth.gob.Mark;
 import haven.sloth.gui.*;
 //import integrations.map.RemoteNavigation;
 import integrations.mapv4.MappingClient;
+import modification.configuration;
 import modification.newQuickSlotsWdg;
 
 import java.awt.*;
@@ -203,7 +204,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         if (!Config.quickslots) {
             quickslots.hide();
             newquickslots.hide();
-        } else if (Config.newQuickSlotWdg)
+        } else if (configuration.newQuickSlotWdg)
             quickslots.hide();
         else newquickslots.hide();
 
@@ -1675,7 +1676,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
 
 
     public void rightHand() {
-        if (Config.newQuickSlotWdg) {
+        if (configuration.newQuickSlotWdg) {
             newquickslots.drop(newQuickSlotsWdg.items[0].coord, Coord.z);
             newquickslots.simulateclick(newQuickSlotsWdg.items[0].coord);
         } else {
@@ -1691,7 +1692,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     }
 
     public void leftHand(){
-        if (Config.newQuickSlotWdg) {
+        if (configuration.newQuickSlotWdg) {
             newquickslots.drop(newQuickSlotsWdg.items[1].coord, Coord.z);
             newquickslots.simulateclick(newQuickSlotsWdg.items[1].coord);
         } else {

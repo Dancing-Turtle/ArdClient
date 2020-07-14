@@ -37,6 +37,7 @@ import haven.sloth.gui.SoundSelector;
 import haven.sloth.io.HighlightData;
 import haven.sloth.script.pathfinding.Move;
 import haven.sloth.script.pathfinding.NBAPathfinder;
+import modification.configuration;
 
 import javax.media.opengl.GL;
 import java.awt.*;
@@ -122,6 +123,8 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     private int pathfindGobMod = 0;
     private String lasttt = "";
     private Object tt;
+
+    private boolean ismousedown = false;
 
     public interface Delayed {
         public void run(GOut g);
@@ -2477,12 +2480,19 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                 wdgmsg("place", placing.rc.floor(posres), (int)Math.round(placing.a * 32768 / Math.PI), button, ui.modflags());
         } else if ((grab != null) && grab.mmousedown(c, button)) {
         } else {
+            if (configuration.autoclick)
+                if (button == 1) {
+                    ismousedown = true;
+                }
             delay(new Click(c, ui.modflags(), button));
         }
         return (true);
     }
 
     public void mousemove(Coord c) {
+        if (configuration.autoclick)
+            if (ismousedown && ui.modflags() == 0)
+                delay(new Click(c, ui.modflags(), 1));
         if (grab != null)
             grab.mmousemove(c);
         if (camdrag != null) {
@@ -2614,6 +2624,10 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
     }
 
     public boolean mouseup(Coord c, int button) {
+        if (configuration.autoclick)
+            if (button == 1) {
+                ismousedown = false;
+            }
         if (button == 2) {
             if (camdrag != null) {
                 camera.release();

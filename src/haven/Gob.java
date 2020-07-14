@@ -35,6 +35,7 @@ import haven.sloth.io.HighlightData;
 import haven.sloth.script.pathfinding.Hitbox;
 //import integrations.map.Navigation;
 import integrations.mapv4.MappingClient;
+import modification.configuration;
 
 import java.awt.*;
 import java.util.List;
@@ -1056,13 +1057,13 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
                     Overlay ol = findol(Sprite.GROWTH_STAGE_ID);
                     Resource res = getres();
                     if (ol == null && (stage == cropstgmaxval || (Config.showfreshcropstage ? stage >= 0 : stage > 0) && stage < 6)) {
-                        if (Config.newCropStageOverlay)
+                        if (configuration.newCropStageOverlay)
                             addol(new Gob.Overlay(Sprite.GROWTH_STAGE_ID, new newPlantStageSprite(stage, cropstgmaxval, type == Type.MULTISTAGE_PLANT,(res!= null && res.basename().contains("turnip") || res!= null && res.basename().contains("leek") || res!= null && res.basename().contains("carrot")))));
                         else
                             addol(new Gob.Overlay(Sprite.GROWTH_STAGE_ID, new PlantStageSprite(stage, cropstgmaxval, type == Type.MULTISTAGE_PLANT,(res!= null && res.basename().contains("turnip") || res!= null && res.basename().contains("leek")))));
                     } else if (!Config.showfreshcropstage && stage == 0 || (stage != cropstgmaxval && stage >= 6)) {
                         ols.remove(ol);
-                    } else if (Config.newCropStageOverlay && ol.spr instanceof newPlantStageSprite && ((newPlantStageSprite) ol.spr).stg != stage) {
+                    } else if (configuration.newCropStageOverlay && ol.spr instanceof newPlantStageSprite && ((newPlantStageSprite) ol.spr).stg != stage) {
                         ((newPlantStageSprite) ol.spr).update(stage, cropstgmaxval);
                     } else if (ol.spr instanceof PlantStageSprite && ((PlantStageSprite) ol.spr).stg != stage) {
                         ((PlantStageSprite) ol.spr).update(stage, cropstgmaxval);

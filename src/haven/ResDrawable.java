@@ -27,6 +27,7 @@
 package haven;
 
 import haven.sloth.gob.Type;
+import modification.configuration;
 
 public class ResDrawable extends Drawable {
     public final Indir<Resource> res;
@@ -93,11 +94,11 @@ public class ResDrawable extends Drawable {
                 }
             }
         }*/
-        if (Config.scaletree && (this.gob.type == Type.TREE || this.gob.type == Type.BUSH) && !stdCopy.eom()) {
+        if (configuration.scaletree && (this.gob.type == Type.TREE || this.gob.type == Type.BUSH) && !stdCopy.eom()) {
             args[0] = (byte)stdCopy.uint8();
-            int fscale = Config.scaletreeint;
-            if (!stdCopy.eom() && (fscale = stdCopy.uint8()) > Config.scaletreeint) {
-                fscale = Config.scaletreeint;
+            int fscale = configuration.scaletreeint;
+            if (!stdCopy.eom() && (fscale = stdCopy.uint8()) > configuration.scaletreeint) {
+                fscale = configuration.scaletreeint;
             }
             args[1] = (byte)fscale;
             stdCopy = new MessageBuf(args);

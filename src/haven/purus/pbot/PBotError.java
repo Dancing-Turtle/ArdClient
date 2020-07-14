@@ -12,7 +12,10 @@ public class PBotError {
 	// Writes error stacktrace to disk and notifies the user
 	public static void handleException(Exception e) {
 		try {
-			File output = new File("PBotError_" + System.currentTimeMillis() + ".txt");
+			File folder = new File("pboterrors");
+			if (!folder.exists()) folder.mkdir();
+
+			File output = new File(folder + "/" +"PBotError_" + System.currentTimeMillis() + ".txt");
 			output.createNewFile();
 			PBotUtils.sysMsg("PBot error occurred!! Writing it into a file called: " + output.getPath(), Color.RED);
 			PrintWriter pw = new PrintWriter(Files.newBufferedWriter(output.toPath(), StandardOpenOption.WRITE));
