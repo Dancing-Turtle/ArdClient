@@ -2,6 +2,7 @@ package haven.purus.pbot;
 
 import haven.Config;
 import haven.automation.DiscordBot;
+import integrations.mapv4.MappingClient;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -126,6 +127,18 @@ public class PBotDiscord extends ListenerAdapter {
         }
         for (TextChannel ch : channels) {
             ch.sendMessage(embed.build()).queue();
+        }
+    }
+
+    public static void mapAlert(String string){
+        try {
+            String base = MappingClient.getInstance().endpoint;
+            String mod = base.split("/")[2];
+            String output = String.format("<@97095603439284224> " + string + " at: " + " http://" + mod
+                    + "/map/#/grid/2/%d/%d/6", MappingClient.getInstance().lastMapRef.gc.x, MappingClient.getInstance().lastMapRef.gc.y);
+            PBotDiscord.sendMessage(output);
+        } catch (Exception e){
+            e.printStackTrace();
         }
     }
 

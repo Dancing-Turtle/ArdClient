@@ -27,14 +27,15 @@
 package haven;
 
 import haven.purus.Iconfinder;
+import haven.purus.pbot.PBotDiscord;
 import haven.purus.pbot.PBotUtils;
 import haven.resutil.Ridges;
 import haven.sloth.gob.Type;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 import static haven.MCache.cmaps;
 import static haven.MCache.tilesz;
@@ -464,10 +465,16 @@ LocalMiniMap extends Widget {
                         if (!Config.alarmunknownplayer.equals("None") && kininfo == null) {
                             sgobs.add(gob.id);
                             Audio.play(Resource.local().loadwait(Config.alarmunknownplayer), Config.alarmunknownvol);
+                            if(Config.discordplayeralert){
+                                PBotDiscord.mapAlert("Player");
+                            }
                             enemy = true;
                         } else if (!Config.alarmredplayer.equals("None") && kininfo != null && kininfo.group == 2) {
                             sgobs.add(gob.id);
                             Audio.play(Resource.local().loadwait(Config.alarmredplayer), Config.alarmredvol);
+                            if(Config.discordplayeralert){
+                                PBotDiscord.mapAlert("Player");
+                            }
                             enemy = true;
                         }
 

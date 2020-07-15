@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 public class MappingClient {
     private ExecutorService gridsUploader = Executors.newSingleThreadExecutor();
     private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(3);
+    public String mapString;
 
     private static volatile MappingClient INSTANCE = null;
 
@@ -71,7 +72,7 @@ public class MappingClient {
         scheduler.scheduleAtFixedRate(pu, 5L, 5L, TimeUnit.SECONDS);
     }
 
-    private String endpoint;
+    public String endpoint;
 
     /***
      * Set mapping server endpoint.  Must be called each time the client is started.  Takes effect immediately.
@@ -158,8 +159,9 @@ public class MappingClient {
      */
     public void OpenMap(MapRef mapRef) {
         try {
+            mapString = String.format(endpoint + "/#/grid/%d/%d/%d/6", mapRef.mapID, mapRef.gc.x, mapRef.gc.y);
             WebBrowser.self.show(new URL(
-                    String.format(endpoint + "/#/grid/%d/%d/%d/6", mapRef.mapID, mapRef.gc.x, mapRef.gc.y)));
+                    mapString));
         } catch (Exception ex) {}
     }
 
