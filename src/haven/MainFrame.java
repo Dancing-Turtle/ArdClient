@@ -49,7 +49,7 @@ public class MainFrame extends java.awt.Frame implements Runnable, Console.Direc
     private final ThreadGroup g;
     public final Thread mt;
     DisplayMode fsmode = null, prefs = null;
-    private static final String TITLE = "Ardennes Hafen Revived " + "1.02: Rise of the Machines";
+    private static final String TITLE = "Ardennes Hafen Revived " + "1.03: Reign of the Toad King";
 
     static {
         try {

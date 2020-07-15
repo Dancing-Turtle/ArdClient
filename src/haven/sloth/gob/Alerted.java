@@ -2,9 +2,7 @@ package haven.sloth.gob;
 
 import com.google.common.flogger.FluentLogger;
 import haven.*;
-import haven.DefSettings;
-import haven.Storage;
-import haven.sloth.gui.SoundManager;
+import haven.purus.pbot.PBotDiscord;
 import haven.sloth.util.ObservableMap;
 import haven.sloth.util.ObservableMapListener;
 
@@ -12,7 +10,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.*;
-import java.util.stream.Collectors;
 
 //TODO: Idealy all the sounds we allow should be stored locally and separate from jorb's names to avoid issues in the future
 public class Alerted {
@@ -99,6 +96,14 @@ public class Alerted {
 				if (!name.equals("gfx/borka/body") && !g.isDead() && !sgobs.contains(g.id)) {
 					if (!alertedmap.containsKey(g.id) || (System.currentTimeMillis() - alertedmap.get(g.id) > 5000)) {
 						Audio.play(sfxmap.get(name), volmap.get(name));
+						if(Config.discordalarmalert){
+							try {
+								String s = g.name().substring(g.name().lastIndexOf("/") + 1);
+								PBotDiscord.mapAlert(s);
+							} catch (Exception e){
+								
+							}
+						}
 						if (Config.alarmonce) {
 							sgobs.add(g.id);
 						}

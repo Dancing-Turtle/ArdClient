@@ -326,6 +326,8 @@ public class Config {
     public static double alarmredvol = Utils.getprefd("alarmredvol", 0.32);
     public static String alarmstudy = Utils.getpref("alarmstudy","sfx/Study");
     public static double studyalarmvol = Utils.getprefd("studyalarmvol", 0.8);
+    public static boolean discordplayeralert = Utils.getprefb("discordplayeralert",false);
+    public static boolean discordalarmalert = Utils.getprefb("discordalarmalert",false);
     public static String cleavesfx = Utils.getpref("cleavesfx","sfx/oof");
     public static double cleavesoundvol = Utils.getprefd("cleavesoundvol", 0.8);
     public static String attackedsfx = Utils.getpref("attackedsfx","None");

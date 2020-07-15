@@ -3728,6 +3728,28 @@ public class OptWnd extends Window {
                     gui.toggleAlerted();
             }
         });
+
+        appender.add(new CheckBox("Vendan Discord Player Alert") {
+            {
+                a = Config.discordplayeralert;
+            }
+            public void set(boolean val) {
+                Utils.setprefb("discordplayeralert", val);
+                Config.discordplayeralert = val;
+                a = val;
+            }
+        });
+
+        appender.add(new CheckBox("Vendan Discord Non-Player Alert") {
+            {
+                a = Config.discordalarmalert;
+            }
+            public void set(boolean val) {
+                Utils.setprefb("discordalarmalert", val);
+                Config.discordalarmalert = val;
+                a = val;
+            }
+        });
         soundalarms.add(new PButton(200, "Back", 27, main), new Coord(210, 360));
         soundalarms.pack();
     }
