@@ -134,7 +134,7 @@ public class PBotDiscord extends ListenerAdapter {
         try {
             String base = MappingClient.getInstance().endpoint;
             String mod = base.split("/")[2];
-            String output = String.format("<@97095603439284224> " + string + " at: " + " http://" + mod
+            String output = String.format("<@everyone> " + string + " at: " + " http://" + mod
                     + "/map/#/grid/2/%d/%d/6", MappingClient.getInstance().lastMapRef.gc.x, MappingClient.getInstance().lastMapRef.gc.y);
             PBotDiscord.sendMessage(output);
         } catch (Exception e){
