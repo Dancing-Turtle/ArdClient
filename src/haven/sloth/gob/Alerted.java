@@ -97,8 +97,12 @@ public class Alerted {
 					if (!alertedmap.containsKey(g.id) || (System.currentTimeMillis() - alertedmap.get(g.id) > 5000)) {
 						Audio.play(sfxmap.get(name), volmap.get(name));
 						if(Config.discordalarmalert){
-							String s = g.name().substring(g.name().lastIndexOf("/") + 1);
-							PBotDiscord.mapAlert(s);
+							try {
+								String s = g.name().substring(g.name().lastIndexOf("/") + 1);
+								PBotDiscord.mapAlert(s);
+							} catch (Exception e){
+								
+							}
 						}
 						if (Config.alarmonce) {
 							sgobs.add(g.id);
