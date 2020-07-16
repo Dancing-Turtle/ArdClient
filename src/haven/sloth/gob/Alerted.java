@@ -99,7 +99,13 @@ public class Alerted {
 						if(Config.discordalarmalert){
 							try {
 								String s = g.name().substring(g.name().lastIndexOf("/") + 1);
-								PBotDiscord.mapAlert(s);
+								if(Config.discorduser){
+									PBotDiscord.mapAlert(Config.discordalertstring, s);
+								} else if(Config.discordrole){
+									PBotDiscord.mapAlertRole(Config.discordalertstring, s);
+								} else {
+									PBotDiscord.mapAlertEveryone(s);
+								}
 							} catch (Exception e){
 								
 							}

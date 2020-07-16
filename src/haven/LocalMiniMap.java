@@ -466,14 +466,24 @@ LocalMiniMap extends Widget {
                             sgobs.add(gob.id);
                             Audio.play(Resource.local().loadwait(Config.alarmunknownplayer), Config.alarmunknownvol);
                             if(Config.discordplayeralert){
-                                PBotDiscord.mapAlert("Player");
+                                if(Config.discorduser){
+                                    PBotDiscord.mapAlert(Config.discordalertstring, "Player");
+                                } else if(Config.discordrole){
+                                    PBotDiscord.mapAlertRole(Config.discordalertstring, "Player");
+                                } else {
+                                    PBotDiscord.mapAlertEveryone("Player");
+                                }
                             }
                             enemy = true;
                         } else if (!Config.alarmredplayer.equals("None") && kininfo != null && kininfo.group == 2) {
                             sgobs.add(gob.id);
                             Audio.play(Resource.local().loadwait(Config.alarmredplayer), Config.alarmredvol);
-                            if(Config.discordplayeralert){
-                                PBotDiscord.mapAlert("Player");
+                            if(Config.discorduser){
+                                PBotDiscord.mapAlert(Config.discordalertstring, "Player");
+                            } else if(Config.discordrole){
+                                PBotDiscord.mapAlertRole(Config.discordalertstring, "Player");
+                            } else {
+                                PBotDiscord.mapAlertEveryone("Player");
                             }
                             enemy = true;
                         }

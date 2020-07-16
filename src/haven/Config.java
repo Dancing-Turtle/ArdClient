@@ -248,6 +248,9 @@ public class Config {
     public static String treeboxclr =  Utils.getpref("treeboxclr", "D7FF00");
     public static String discordtoken =  Utils.getpref("discordtoken", "Null");
     public static String discordchannel =  Utils.getpref("discordchannel", "Null");
+    public static String discordalertstring =  Utils.getpref("discordalertstring", "Null");
+    public static boolean discorduser = Utils.getprefb("discorduser", false);
+    public static boolean discordrole = Utils.getprefb("discordrole", false);
     public static String charname =  Utils.getpref("charname", "Null");
     public static String chatalert =  Utils.getpref("chatalert", "Null");
     public static String AlertChannel =  Utils.getpref("AlertChannel", "Null");
@@ -719,7 +722,7 @@ public class Config {
         put("gfx/terobjs/herbs/ladysmantledew", new CheckListboxItem("Dewy Lady's Mantle"));
     }};
 
-    public final static HashMap<String, String> defaultitems = new HashMap<String, String>(93) {{
+    public final static HashMap<String, String> defaultitems = new HashMap<String, String>(94) {{
         put("gfx/terobjs/herbs/flotsam", "Peculiar Flotsam");
         put("gfx/terobjs/herbs/chimingbluebell", "Chiming Bluebell");
         put("gfx/terobjs/herbs/edelweiss", "Edelweiß");
@@ -747,6 +750,7 @@ public class Config {
         put("gfx/kritter/mallard/mallard", "Duck");
         put("gfx/kritter/ladybug/ladybug", "Ladybug");
         put("gfx/kritter/silkmoth/silkmoth", "Silkmoth");
+        put("gfx/kritter/caveangler/caveangler", "Cave Angler");
         put("gfx/kritter/hedgehog/hedgehog", "Hedgehog");
         put("gfx/kritter/squirrel/squirrel", "Squirrel");
         put("gfx/kritter/rabbit/rabbit", "Rabbit");

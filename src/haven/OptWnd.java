@@ -60,7 +60,7 @@ public class OptWnd extends Window {
     public final Panel main, video, audio, display, map, general, combat, control, uis,uip, quality, mapping, flowermenus, soundalarms, hidesettings, studydesksettings, autodropsettings, keybindsettings, chatsettings, clearboulders, clearbushes, cleartrees, clearhides, discord, additions;
     public Panel current;
     public CheckBox discordcheckbox, menugridcheckbox;
-    CheckBox sm = null, rm = null, lt = null, bt = null, ltl;
+    CheckBox sm = null, rm = null, lt = null, bt = null, ltl, discordrole, discorduser;
 
     public void chpanel(Panel p) {
         if (current != null)
@@ -2963,6 +2963,78 @@ public class OptWnd extends Window {
                 }
         );
 
+        appender.add(new CheckBox("Vendan Discord Player Alert") {
+            {
+                a = Config.discordplayeralert;
+            }
+            public void set(boolean val) {
+                Utils.setprefb("discordplayeralert", val);
+                Config.discordplayeralert = val;
+                a = val;
+            }
+        });
+
+        appender.add(new CheckBox("Vendan Discord Non-Player Alert") {
+            {
+                a = Config.discordalarmalert;
+            }
+            public void set(boolean val) {
+                Utils.setprefb("discordalarmalert", val);
+                Config.discordalarmalert = val;
+                a = val;
+            }
+        });
+
+        Frame f = new Frame(new Coord( 300, 100), false);
+
+        discorduser = new CheckBox("Message a specific user.") {
+            {
+                a = Config.discorduser;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("discorduser", val);
+                Config.discorduser = val;
+                a = val;
+                Config.discordrole = false;
+                discordrole.a = false;
+            }
+        };
+
+        discordrole = new CheckBox("Message a specific role.") {
+            {
+                a = Config.discordrole;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("discordrole", val);
+                Config.discordrole = val;
+                a = val;
+                Config.discorduser = false;
+                discorduser.a = false;
+            }
+        };
+
+        appender.add(f);
+        f.add(new Label("Messages everyone by default."), 2, 0);
+        f.add(discorduser, 0, 20);
+        f.add(discordrole, 0, 40);
+
+        f.add(new Label("User Name/Role ID to Alert:"), 2, 60);
+        f.add(new TextEntry(80, Utils.getpref("discordalertstring", "")) {
+                    @Override
+                    public boolean keydown(KeyEvent ev) {
+                        if (!parent.visible)
+                            return false;
+                        Utils.setpref("discordalertstring", text);
+                        Config.discordalertstring = text;
+                        System.out.println(text);
+                        System.out.println(Utils.getpref("discordalertstring", ""));
+                        return buf.key(ev);
+                    }
+                }
+        , new Coord(180, 60));
+
 
 
         discord.add(new PButton(200, "Back", 27, main), new Coord(210, 360));
@@ -3537,27 +3609,6 @@ public class OptWnd extends Window {
             }
         });
 
-        appender.add(new CheckBox("Vendan Discord Player Alert") {
-            {
-                a = Config.discordplayeralert;
-            }
-            public void set(boolean val) {
-                Utils.setprefb("discordplayeralert", val);
-                Config.discordplayeralert = val;
-                a = val;
-            }
-        });
-
-        appender.add(new CheckBox("Vendan Discord Non-Player Alert") {
-            {
-                a = Config.discordalarmalert;
-            }
-            public void set(boolean val) {
-                Utils.setprefb("discordalarmalert", val);
-                Config.discordalarmalert = val;
-                a = val;
-            }
-        });
         soundalarms.add(new PButton(200, "Back", 27, main), new Coord(210, 360));
         soundalarms.pack();
     }
