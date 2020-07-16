@@ -177,11 +177,17 @@ public class MinimapWnd extends ResizableWnd {
                 boolean redraw = false;
 
                 Pair<String, String> coords = getCurCoords();
-                if (!state && coords != null) {
+                if (coords != null) {
                     this.coords = coords;
-                    state = true;
+                    if (!state) {
+                        state = true;
+                        redraw = true;
+                    }
+                } if (state) {
+                    state = false;
                     redraw = true;
                 }
+
 
                 if (redraw) this.redraw();
                 super.draw(g);

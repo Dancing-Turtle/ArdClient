@@ -115,13 +115,13 @@ public class configuration {
 
 		if (!skip_log && logging) {
 			System.out.print("[" + LocalTime.now() + "]");
-			System.out.print(" || ");
+			//System.out.print(" || ");
 			/*for (int i = 1; i < stackTraceElementsLength; i++) {
 				System.out.print("{" + stackTraceElements[i].getClassName() + "(" + stackTraceElements[i].getMethodName() + ")(" + stackTraceElements[i].getLineNumber() + ")");
 				if (i != stackTraceElementsLength - 1) System.out.print(">");
 			}*/
 
-			//System.out.print(" || " + who);
+			System.out.print(" || " + who);
 			System.out.print(" || " + widget + "(" + id + ") ");
 
 			int a;
