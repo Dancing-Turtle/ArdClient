@@ -56,7 +56,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     private static final int blpw = 142;
     public final String chrid, genus;
     public final long plid;
-    private final Hidepanel ulpanel, umpanel, urpanel, brpanel, menupanel;
+    public final Hidepanel ulpanel, umpanel, urpanel, brpanel, menupanel;
     public Avaview portrait;
     public MenuGrid menu;
     public MenuSearch menuSearch;

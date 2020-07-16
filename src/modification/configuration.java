@@ -2,6 +2,7 @@ package modification;
 
 import haven.AuthClient;
 import haven.Coord;
+import haven.Resource;
 import haven.Session;
 import haven.Tex;
 import haven.TexI;
@@ -49,6 +50,13 @@ public class configuration {
 	public static boolean defaultUtilsCustomLoginScreenBgBoolean = Utils.getprefb("custom-login-background-bol", false);
 	public static String defaultCustomLoginScreenBg = "modification/loginscr.png";
 	public static String defaultUtilsCustomLoginScreenBg = Utils.getpref("custom-login-background", defaultCustomLoginScreenBg);
+	public static Tex bgCheck() {
+		Tex bg;
+		if (defaultUtilsCustomLoginScreenBgBoolean)
+			bg = configuration.imageToTex(defaultUtilsCustomLoginScreenBg, 800, 600, Resource.loadtex("gfx/loginscr"));
+		else bg = Resource.loadtex("gfx/loginscr");
+		return bg;
+	}
 
 	public static boolean autoclick = Utils.getprefb("autoclick", false);
 
@@ -60,6 +68,11 @@ public class configuration {
 
 	public static boolean scaletree = Utils.getprefb("scaletree", false);
 	public static int scaletreeint = Utils.getprefi("scaletreeint", 25);
+
+	public static String[] customMenuGrid = new String[] {Utils.getpref("customMenuGrid0", "6"), Utils.getpref("customMenuGrid1", "4")};
+	public static Coord getMenuGrid() {
+		return new Coord(Integer.parseInt(configuration.customMenuGrid[0]), Integer.parseInt(configuration.customMenuGrid[1]));
+	}
 
 	public static boolean logging = Utils.getprefb("msglogging", false);      //allow log in console
 	public static boolean loadLog = false;

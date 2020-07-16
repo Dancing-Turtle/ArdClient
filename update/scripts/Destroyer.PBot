@@ -14,10 +14,9 @@ const btnClick = () => {
 	btn.changeText("Click a gob");
 	PBotUtils.sysMsg("Alt+Click gob to destroy it!");
 	const gob = PBotGobAPI.selectGob();
-	//PBotUtils.sleep(3000);
-	//gob.doClick(0, 4);
-	//PBotUtils.sysMsg("Gob chosen! Beginning to destroy!");
-	//PBotUtils.drink();
+	gob.doClick(0, 4);
+	PBotUtils.sysMsg("Gob chosen! Beginning to destroy!");
+	PBotUtils.drink();
 	PBotCharacterAPI.doAct("destroy");
 	gob.doClick(1, 0);
 	while(PBotGobAPI.findGobById(gob.id) != null) {

@@ -3121,22 +3121,6 @@ public class OptWnd extends Window {
                                 return tex;
                             }
                         },
-                /**new TextEntry(200, Config.defaultUtilsCustomLoginScreenBg) {
-                @Override
-                public void changed() {
-                try {
-                File img = new File(text);
-                if (img.exists() && img.isFile()) {
-                Utils.setpref("custom-login-background", text);
-                //ui.uimsg(1, "bg"); //FIXME dont work instant change bg
-                System.out.println("custom login screen " + text);
-                }
-                else System.out.println("custom login screen file not found");
-                } catch (Exception e) {
-                e.printStackTrace();
-                }
-                }
-                }**/
                 makePictureChoiseDropdown());
 
         appender.add(new Label(""));
@@ -3222,6 +3206,14 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
+
+        appender.addRow(new Label("Custom grid size: ") {
+            @Override
+            public Object tooltip(Coord c0, Widget prev) {
+                Tex tex = Text.render("Request restart").tex();
+                return tex;
+            }
+        }, makeCustomMenuGrid(0), makeCustomMenuGrid(1));
 
         modification.add(new PButton(200, "Back", 27, main), new Coord(210, 360));
         modification.pack();
@@ -4385,6 +4377,43 @@ public class OptWnd extends Window {
                 super.change(item);
                 configuration.defaultUtilsCustomLoginScreenBg = item;
                 Utils.setpref("custom-login-background", item);
+                if(ui.gui == null || ui.gui.ui == null || ui.gui.ui.sess == null || !ui.sess.alive())
+                    ui.uimsg(1, "bg");
+            }
+        };
+    }
+
+    private static final List<String> menuSize = Arrays.asList("4", "5", "6", "7", "8", "9", "10");
+    private Dropbox<String> makeCustomMenuGrid(int n) {
+        return new Dropbox<String>(menuSize.size(), menuSize) {
+            {
+                super.change(configuration.customMenuGrid[n]);
+            }
+            @Override
+            protected String listitem(int i) {
+                return menuSize.get(i);
+            }
+            @Override
+            protected int listitems() {
+                return menuSize.size();
+            }
+            @Override
+            protected void drawitem(GOut g, String item, int i) {
+                g.text(item, Coord.z);
+            }
+            @Override
+            public void change(String item) {
+                super.change(item);
+                configuration.customMenuGrid[n] = item;
+                Utils.setpref("customMenuGrid" + n, item);
+                MenuGrid.gsz = configuration.getMenuGrid();
+
+                if (ui != null && ui.gui != null && ui.gui.menu != null) {
+                    ui.gui.menu.destroy();
+                    ui.gui.addchild(new MenuGrid(), "menu");
+                    ui.gui.brpanel.pack();
+                    ui.gui.brpanel.move();
+                }
             }
         };
     }

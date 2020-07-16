@@ -224,7 +224,6 @@ public class MainFrame extends java.awt.Frame implements Runnable, Console.Direc
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 GameUI gui = PBotAPI.gui;
-                System.out.println(gui + " " + gui.ui + " " + gui.ui.sess + " " + !gui.ui.sess.alive());
                 if(gui == null || gui.ui == null || gui.ui.sess == null || !gui.ui.sess.alive())
                     g.interrupt();
                 if (Config.confirmclose) {
@@ -311,7 +310,6 @@ public class MainFrame extends java.awt.Frame implements Runnable, Console.Direc
     private final List<Thread> sessionThreads = new ArrayList<>();
 
     public void makeNewSession() {
-        System.out.println("makeNewSession");
         final Thread rui = new HackThread(() -> {
             final UI lui = p.newui(null);
             try {

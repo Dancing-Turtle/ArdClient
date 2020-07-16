@@ -46,14 +46,8 @@ public class LoginScreen extends Widget {
     Button optbtn;
     private TextEntry user;
     OptWnd opts;
-    Widget background;
     static Text.Foundry textf, textfs, special;
-    Tex bg;
-    {
-        if (configuration.defaultUtilsCustomLoginScreenBgBoolean)
-             bg = configuration.imageToTex(configuration.defaultUtilsCustomLoginScreenBg, 800, 600, Resource.loadtex("gfx/loginscr"));
-        else bg = Resource.loadtex("gfx/loginscr");
-    }
+    Tex bg = configuration.bgCheck();
     //TODO add animated login screen aka world of warcraft
 
     Text progress = null;
@@ -391,6 +385,13 @@ public class LoginScreen extends Widget {
                 error(null);
                 clear();
                 progress((String) args[0]);
+            } else if (msg == "bg") {
+                this.destroy();
+                GameUI gui = PBotAPI.gui;
+                if(gui == null || gui.ui == null || gui.ui.sess == null || !gui.ui.sess.alive()) {
+                    ui.bind(ui.root.add(new LoginScreen()), 1);
+                    ui.uimsg(1, "passwd", Utils.getpref("loginname", ""), false);
+                }
             }
         }
     }

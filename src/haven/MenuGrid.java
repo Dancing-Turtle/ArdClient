@@ -30,34 +30,29 @@ import haven.Resource.AButton;
 import haven.automation.*;
 import haven.automation.Discord;
 import haven.purus.*;
-import haven.automation.PepperBot;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.font.TextAttribute;
 import java.awt.image.BufferedImage;
-import haven.Resource.AButton;
 import haven.purus.pbot.PBotAPI;
 import haven.purus.pbot.PBotUtils;
+import modification.configuration;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.*;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 public class MenuGrid extends Widget {
     public final static Coord bgsz = Inventory.invsq.sz().add(-1, -1);
     public final static RichText.Foundry ttfnd = new RichText.Foundry(TextAttribute.FAMILY, Text.cfg.font.get("sans"), TextAttribute.SIZE, Text.cfg.tooltipCap); //aa(true)
     public final Map<String, SpecialPagina> specialpag = new HashMap<>();
     public final ObservableCollection<Pagina> paginae = new ObservableCollection<>(new HashSet<>());
-    private static Coord gsz = new Coord(6, 4);
+    public static Coord gsz = configuration.getMenuGrid();   //private static Coord gsz = new Coord(6, 4);
     public Pagina cur, dragging;
     private Collection<PagButton> curbtns = null;
-    private PagButton pressed, layout[][] = new PagButton[gsz.x][gsz.y];
+    public PagButton pressed, layout[][] = new PagButton[configuration.getMenuGrid().x][configuration.getMenuGrid().y];
     private UI.Grab grab;
     private int curoff = 0;
     private static int cap = (gsz.x * gsz.y) - 2;
