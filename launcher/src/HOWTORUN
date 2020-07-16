@@ -1,0 +1,4 @@
+Edit configuration > + > Application > 
+	Main class > ... > Updater > OK > 
+	Program arguments > update https://raw.githubusercontent.com/{your_github_name}/{your_repository}/{your_branch}/update/ >
+	Working directory > [Optional] > OK
