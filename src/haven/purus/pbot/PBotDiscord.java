@@ -65,6 +65,7 @@ public class PBotDiscord extends ListenerAdapter {
      * Gets the ID string to alert a user.
      * Must use Caps for name, doesn't require #0000 after username.
      * @param name
+     * @return returns Discord alert string.
      */
     public static String getAlertString(String name){
         initalize();
@@ -94,7 +95,7 @@ public class PBotDiscord extends ListenerAdapter {
      * Gets the role id of a single player.
      * @param nameplayer
      * @param namerole
-     * name role
+     * @return Returns role ID.
      */
     public static String getRoleID(String nameplayer, String namerole){
         initalize();
@@ -114,6 +115,7 @@ public class PBotDiscord extends ListenerAdapter {
     /***
      * Gets the ID of a user.
      * @param name
+     * @return Returns user ID.
      */
     public static String getUserID(String name){
         initalize();
