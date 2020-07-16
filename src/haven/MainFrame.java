@@ -49,7 +49,7 @@ public class MainFrame extends java.awt.Frame implements Runnable, Console.Direc
     private final ThreadGroup g;
     public final Thread mt;
     DisplayMode fsmode = null, prefs = null;
-    private static final String TITLE = "Ardennes Hafen Revived " + "1.03: Reign of the Toad King";
+    private static final String TITLE = configuration.defaultTitle;
 
     static {
         try {
@@ -224,6 +224,7 @@ public class MainFrame extends java.awt.Frame implements Runnable, Console.Direc
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 GameUI gui = PBotAPI.gui;
+                System.out.println(gui + " " + gui.ui + " " + gui.ui.sess + " " + !gui.ui.sess.alive());
                 if(gui == null || gui.ui == null || gui.ui.sess == null || !gui.ui.sess.alive())
                     g.interrupt();
                 if (Config.confirmclose) {
@@ -310,6 +311,7 @@ public class MainFrame extends java.awt.Frame implements Runnable, Console.Direc
     private final List<Thread> sessionThreads = new ArrayList<>();
 
     public void makeNewSession() {
+        System.out.println("makeNewSession");
         final Thread rui = new HackThread(() -> {
             final UI lui = p.newui(null);
             try {
@@ -327,7 +329,8 @@ public class MainFrame extends java.awt.Frame implements Runnable, Console.Direc
                 new RemoteUI(sess).run(lui);
                 //Remove this UI once done
                 p.removeUI(lui);
-            } catch (InterruptedException e) {
+            } catch (Exception e) {
+                e.printStackTrace();
             } finally {
                 p.removeUI(lui);
                 synchronized (sessionThreads) {

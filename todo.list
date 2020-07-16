@@ -7,18 +7,36 @@ MusselPicker - //FIXME name, how ender, shift click
 PickForageable - //FIXME custom menu
 
 fix multisession freeze
-add pack gachi sounds
+fix logout crash    fix?????
+fix text с обводкой
+add pack gachi sounds and pack dark souls sounds
 modify loginscreen to fullhd
 
 map - bigmap add grid, setting, editor for marks
     add cave marks
     fix object id
     MapFileWidget - fix Unknown tooltip from 7 zoom
+    pathfinder on bigmap
 
 quickslots - make custom and background without pictures
 
+camera save state
 
+fix water
 
+new textures for game
+
+edit farming bot small margin button = add water barrel = check barrels
+
+custom color for quality
+
+movable widgets like Ender
+
+move files to other folder like grid_ids scripts
+
+find ingame reloading textures
+
+make changelogfile and more
 
 
 

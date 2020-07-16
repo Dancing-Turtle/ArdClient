@@ -138,8 +138,72 @@ public class MinimapWnd extends ResizableWnd {
                 g.dispose();
             }
         };add(geoloc,mapwnd.c.add(mapwnd.sz.x + spacer,0));
+        final IButton oddigeoloc = new IButton("gfx/hud/wndmap/btns/geoloc", "", "", "") {
+            private Pair<String, String> coords = null;
+            private BufferedImage green = Resource.loadimg("hud/geoloc-green");
+            private BufferedImage red = Resource.loadimg("hud/geoloc-red");
+
+            private boolean state = false;
+
+            @Override
+            public Object tooltip(Coord c, Widget prev) {
+                Pair<String, String> coords = getCurCoords();
+                if (coords != null) {
+                    this.coords = coords;
+                    tooltip = Text.render(String.format("Current location: %s x %s", coords.a, coords.b));
+                } else
+                    tooltip = Text.render("Unable to determine your current location.");
+                return super.tooltip(c, prev);
+            }
+
+            @Override
+            public void click() {
+                Pair<String, String> coords = getCurCoords();
+                if (coords != null) {
+                    this.coords = coords;
+                    try {
+                        WebBrowser.self.show(new URL(String.format("http://odditown.com/haven/map/#x=%s&y=%s&zoom=9", coords.a, coords.b)));
+                    } catch (WebBrowser.BrowserException e) {
+                        getparent(GameUI.class).error("Could not launch web browser.");
+                    } catch (MalformedURLException e) {
+                    }
+                } else {
+                    getparent(GameUI.class).error("Unable to determine your current location.");
+                }
+            }
+
+            @Override
+            public void draw(GOut g) {
+                boolean redraw = false;
+
+                Pair<String, String> coords = getCurCoords();
+                if (!state && coords != null) {
+                    this.coords = coords;
+                    state = true;
+                    redraw = true;
+                }
+
+                if (redraw) this.redraw();
+                super.draw(g);
+            }
+
+            @Override
+            public void draw(BufferedImage buf) {
+                Graphics2D g = (Graphics2D) buf.getGraphics();
+                if (state) {
+                    g.drawImage(green, 0, 0, null);
+                } else  {
+                    g.drawImage(red, 0, 0, null);
+                }
+                g.dispose();
+            }
+
+            private Pair<String, String> getCurCoords() {
+                return minimap.cur != null ? Config.gridIdsMap.get(minimap.cur.grid.id) : null;
+            }
+        };add(oddigeoloc, geoloc.c.add(geoloc.sz.x + spacer,0));
         final IButton center = add(new IButton("gfx/hud/wndmap/btns/center", "Center map on player", () -> mm.center()),
-                geoloc.c.add(geoloc.sz.x + spacer, 0));
+                oddigeoloc.c.add(oddigeoloc.sz.x + spacer, 0));
         final IButton grid = add(new IButton("gfx/hud/wndmap/btns/grid", "Toggle grid on minimap", () -> gameui().toggleMapGrid()),
                 center.c.add(center.sz.x + spacer, 0));
         final IButton viewdist = add(new IButton("gfx/hud/wndmap/btns/viewdist", "Toggle view range", () -> gameui().toggleMapViewDist()),

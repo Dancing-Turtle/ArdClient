@@ -534,6 +534,7 @@ public class OptWnd extends Window {
         additions = add(new Panel());
         discord = add(new Panel());
         mapping = add(new Panel());
+        modification = add(new Panel());
 
         initMain(gopts);
         initAudio();
@@ -555,6 +556,7 @@ public class OptWnd extends Window {
         initAdditions();
         initMapping();
         initDiscord();
+        initModification();
 
         chpanel(main);
     }
@@ -655,6 +657,7 @@ public class OptWnd extends Window {
         main.add(new PButton(200, "Additional settings", 'z', additions), new Coord(0, 180));
         main.add(new PButton(200, "PBotDiscord", 'z', discord), new Coord(0, 210));
         main.add(new PButton(200, "Mapping", 'z', mapping), new Coord(420, 180));
+        main.add(new PButton(200, "Modification", 'z', modification), new Coord(0, 240));
         if (gopts) {
             main.add(new Button(200, "Disconnect Discord") {
                 public void click() {
@@ -1497,53 +1500,79 @@ public class OptWnd extends Window {
             }
         });
 
-        bt = new CheckBox("Miniature trees (req. logout)") {
+        /**bt = new CheckBox("Miniature trees (req. logout)") {
+         {
+         a = Config.bonsai;
+         }
+
+         public void set(boolean val) {
+         Utils.setprefb("bonsai", val);
+         Config.bonsai = val;
+         a = val;
+         lt.a = false;
+         Config.largetree = false;
+         ltl.a = false;
+         Config.largetreeleaves = false;
+         }
+         };
+
+         lt = new CheckBox("LARP trees (req. logout)") {
+         {
+         a = Config.largetree;
+         }
+
+         public void set(boolean val) {
+         Utils.setprefb("largetree", val);
+         Config.largetree = val;
+         a = val;
+         bt.a = false;
+         Config.bonsai = false;
+         ltl.a = false;
+         Config.largetreeleaves = false;
+         }
+         };
+
+         ltl = new CheckBox("LARP trees w/ leaves (req. logout)") {
+         {
+         a = Config.largetreeleaves;
+         }
+
+         public void set(boolean val) {
+         Utils.setprefb("largetreeleaves", val);
+         Config.largetreeleaves = val;
+         a = val;
+         bt.a = false;
+         Config.bonsai = false;
+         lt.a = false;
+         Config.largetree = false;
+         }
+         };**/
+
+        appender.addRow(new CheckBox("Scalable trees (req. logout)"){
             {
-                a = Config.bonsai;
+                this.a = configuration.scaletree;
             }
 
+            @Override
             public void set(boolean val) {
-                Utils.setprefb("bonsai", val);
-                Config.bonsai = val;
-                a = val;
-                lt.a = false;
-                Config.largetree = false;
-                ltl.a = false;
-                Config.largetreeleaves = false;
+                Utils.setprefb("scaletree", val);
+                configuration.scaletree = val;
+                this.a = val;
             }
-        };
+        }, new HSlider(200, 0, 255, configuration.scaletreeint){
 
-        lt = new CheckBox("LARP trees (req. logout)") {
-            {
-                a = Config.largetree;
+            @Override
+            protected void attach(UI ui) {
+                super.attach(ui);
             }
 
-            public void set(boolean val) {
-                Utils.setprefb("largetree", val);
-                Config.largetree = val;
-                a = val;
-                bt.a = false;
-                Config.bonsai = false;
-                ltl.a = false;
-                Config.largetreeleaves = false;
+            @Override
+            public void changed() {
+                configuration.scaletreeint = this.val;
+                Utils.setprefi("scaletreeint", configuration.scaletreeint);
+                settip("Scale tree and brush : " + configuration.scaletreeint + "%");
             }
-        };
-
-        ltl = new CheckBox("LARP trees w/ leaves (req. logout)") {
-            {
-                a = Config.largetreeleaves;
-            }
-
-            public void set(boolean val) {
-                Utils.setprefb("largetreeleaves", val);
-                Config.largetreeleaves = val;
-                a = val;
-                bt.a = false;
-                Config.bonsai = false;
-                lt.a = false;
-                Config.largetree = false;
-            }
-        };
+        });
 
         appender.add(new CheckBox("It's a small world") {
             {
@@ -1556,9 +1585,9 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
-        appender.add(lt);
-        appender.add(bt);
-        appender.add(ltl);
+        /** appender.add(lt);
+         appender.add(bt);
+         appender.add(ltl);**/
 
         Button OutputSettings = new Button(220, "Output Light Settings to System Tab") {
             @Override
@@ -3048,7 +3077,7 @@ public class OptWnd extends Window {
         appender.add(new Label("Strange or unreal modifications"));
 
 
-        appender.addRow(new CheckBox("Use custom title") {
+        appender.addRow(new CheckBox("Custom title: ") {
                             {
                                 a = configuration.customTitleBoolean;
                             }
@@ -3075,7 +3104,7 @@ public class OptWnd extends Window {
                         return buf.key(ev);
                     }
                 });
-        appender.addRow(new CheckBox("Use custom login background") {
+        appender.addRow(new CheckBox("Custom login background: ") {
                             {
                                 a = configuration.defaultUtilsCustomLoginScreenBgBoolean;
                             }
@@ -4328,6 +4357,34 @@ public class OptWnd extends Window {
                 Utils.setpref("attackedsfx", item);
                 if(!item.equals("None"))
                     Audio.play(Resource.local().loadwait(item),Config.attackedvol);
+            }
+        };
+    }
+
+
+    private static final List<String> pictureList = configuration.findFiles("modification", Arrays.asList(".png", ".jpg"));
+    private Dropbox<String> makePictureChoiseDropdown() {
+        return new Dropbox<String>(pictureList.size(), pictureList) {
+            {
+                super.change(configuration.defaultUtilsCustomLoginScreenBg);
+            }
+            @Override
+            protected String listitem(int i) {
+                return pictureList.get(i);
+            }
+            @Override
+            protected int listitems() {
+                return pictureList.size();
+            }
+            @Override
+            protected void drawitem(GOut g, String item, int i) {
+                g.text(item, Coord.z);
+            }
+            @Override
+            public void change(String item) {
+                super.change(item);
+                configuration.defaultUtilsCustomLoginScreenBg = item;
+                Utils.setpref("custom-login-background", item);
             }
         };
     }

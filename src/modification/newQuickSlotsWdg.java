@@ -10,6 +10,7 @@ import haven.GSprite;
 import haven.Indir;
 import haven.ItemInfo;
 import haven.Loading;
+import haven.MovableWidget;
 import haven.Resource;
 import haven.RichText;
 import haven.Tex;
@@ -27,16 +28,16 @@ import java.awt.image.BufferedImage;
 import java.util.Iterator;
 import java.util.List;
 
-public class newQuickSlotsWdg extends Widget implements DTarget {
+public class newQuickSlotsWdg extends MovableWidget implements DTarget {
     private static final Tex sbg = configuration.imageToTex("modification/gfx/hud/slots.png"); //Resource.loadtex("gfx/hud/slots");
     public static final int slots = 4;
     public static final Item[] items = new Item[4];
     private static final Coord ssz = new Coord(33, 33);
     private static final Coord spz = new Coord(4, 33);
-    public static final Coord leftCoord;
-    public static final Coord rightCoord;
-    public static final Coord beltCoord;
-    public static final Coord capeCoord;
+    public static final Coord leftCoord = new Coord((ssz.x + spz.x) * 0, 1);
+    public static final Coord rightCoord = new Coord((ssz.x + spz.x) * 1, 1);
+    public static final Coord beltCoord = new Coord((ssz.x + spz.x) * 2, 1);
+    public static final Coord capeCoord = new Coord((ssz.x + spz.x) * 3, 1);
     private ItemTip shorttip = null;
     private ItemTip longtip = null;
     private List ttinfo = null;
@@ -44,10 +45,15 @@ public class newQuickSlotsWdg extends Widget implements DTarget {
     private double hoverstart;
     private UI.Grab dragging;
     private Coord dc;
-    private static final Color qualitybg;
+    private static final Color qualitybg = new Color(20, 20, 20, 255 - Config.qualitybgtransparency);
 
     public newQuickSlotsWdg() {
-        super(new Coord(ssz.x * 4 + spz.x * 3, ssz.y));
+        super(new Coord(ssz.x * 4 + spz.x * 3, ssz.y), "NewQuickSlotsWdg");
+    }
+
+    @Override
+    protected boolean moveHit(Coord c, int btn) {
+        return btn == 3;
     }
 
     public static BufferedImage shorttip(List info) {
@@ -363,14 +369,6 @@ public class newQuickSlotsWdg extends Widget implements DTarget {
                 return null;
             }
         }
-    }
-
-    static {
-        leftCoord = new Coord((ssz.x + spz.x) * 0, 1);
-        rightCoord = new Coord((ssz.x + spz.x) * 1, 1);
-        beltCoord = new Coord((ssz.x + spz.x) * 2, 1);
-        capeCoord = new Coord((ssz.x + spz.x) * 3, 1);
-        qualitybg = new Color(20, 20, 20, 255 - Config.qualitybgtransparency);
     }
 
     public class LongTip extends ItemTip {

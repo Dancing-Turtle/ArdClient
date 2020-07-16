@@ -1416,10 +1416,14 @@ public class CharWnd extends Window {
             public void draw(GOut g) {
                 int y = 0;
                 if (rtitle != null) {
-                    if (rootxlate(ui.mc).isect(Coord.z, rtitle.sz()))
-                        g.chcolor(192, 192, 255, 255);
-		    else if(info.done() == QST_DISABLED)
-			g.chcolor(255, 128, 0, 255);
+                    try {
+                        if (rootxlate(ui.mc).isect(Coord.z, rtitle.sz()))
+                            g.chcolor(192, 192, 255, 255);
+                        else if (info.done() == QST_DISABLED)
+                            g.chcolor(255, 128, 0, 255);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     g.image(rtitle, new Coord(3, y));
                     g.chcolor();
                     y += rtitle.sz().y + 5;

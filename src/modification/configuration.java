@@ -27,7 +27,7 @@ public class configuration {
 	public static String defaultCustomTitleName(String name) {
 		return "♂" + name + "♂: ♂right version♂";
 	}
-	public static String defaultTitle = "Ardennes Hafen Revived " + "1.02: Rise of the Machines";
+	public static String defaultTitle = "Ardennes Hafen Revived " + "1.03: Reign of the Toad King";
 	public static String defaultCustomTitle = "♂right version♂: You turn ♂Leatherman♂";
 	public static String defaultUtilsCustomTitle = Utils.getpref("custom-title", defaultCustomTitle);
 	public static String tittleCheck(Session sess) {
@@ -116,12 +116,12 @@ public class configuration {
 		if (!skip_log && logging) {
 			System.out.print("[" + LocalTime.now() + "]");
 			System.out.print(" || ");
-			for (int i = 1; i < stackTraceElementsLength; i++) {
+			/*for (int i = 1; i < stackTraceElementsLength; i++) {
 				System.out.print("{" + stackTraceElements[i].getClassName() + "(" + stackTraceElements[i].getMethodName() + ")(" + stackTraceElements[i].getLineNumber() + ")");
 				if (i != stackTraceElementsLength - 1) System.out.print(">");
-			}
+			}*/
 
-			System.out.print(" || " + who);
+			//System.out.print(" || " + who);
 			System.out.print(" || " + widget + "(" + id + ") ");
 
 			int a;
@@ -142,26 +142,30 @@ public class configuration {
 			System.out.print("|| [" + args.length + "]:");
 
 
-			for (int i = 0; i < args.length; i++) {
-				if (args[i] instanceof AuthClient.NativeCred) {
-					AuthClient.NativeCred arg = (AuthClient.NativeCred) args[i];
-					System.out.print("{(AuthClient.NativeCred):" + arg.name() + "}");
-				} else if (args[i] instanceof Integer) {
-					System.out.print("i{" + args[i] + "}");
-				} else if (args[i] instanceof String) {
-					System.out.print("s{" + args[i] + "}");
-				} else if (args[i] instanceof Boolean) {
-					System.out.print("b{" + args[i] + "}");
-				} else if (args[i] instanceof Coord) {
-					Coord coord = (Coord) args[i];
-					System.out.print("{x:" + coord.x + ", y:" + coord.y + "}");
-				} else {
-					if (stackTraceElements[1].getMethodName().equals("wdgmsg"))
-						System.out.print("{" + args[i].getClass().getName() + ":" + args[i] + "}");
-					else
-						System.out.print("{" + args[i] + "}");
+			try {
+				for (int i = 0; i < args.length; i++) {
+					if (args[i] instanceof AuthClient.NativeCred) {
+						AuthClient.NativeCred arg = (AuthClient.NativeCred) args[i];
+						System.out.print("{(AuthClient.NativeCred):" + arg.name() + "}");
+					} else if (args[i] instanceof Integer) {
+						System.out.print("i{" + args[i] + "}");
+					} else if (args[i] instanceof String) {
+						System.out.print("s{" + args[i] + "}");
+					} else if (args[i] instanceof Boolean) {
+						System.out.print("b{" + args[i] + "}");
+					} else if (args[i] instanceof Coord) {
+						Coord coord = (Coord) args[i];
+						System.out.print("{x:" + coord.x + ", y:" + coord.y + "}");
+					} else {
+						if (stackTraceElements[1].getMethodName().equals("wdgmsg"))
+							System.out.print("{" + args[i].getClass().getName() + ":" + args[i] + "}");
+						else
+							System.out.print("{" + args[i] + "}");
+					}
+					if (i != args.length - 1) System.out.print(", ");
 				}
-				if (i != args.length - 1) System.out.print(", ");
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 			System.out.println();
 		}
