@@ -45,10 +45,10 @@ public class LoginScreen extends Widget {
     Button statusbtn;
     Button optbtn;
     private TextEntry user;
+    LoginList loginList;
     OptWnd opts;
     static Text.Foundry textf, textfs, special;
-    Tex bg = configuration.bgCheck();
-    //TODO add animated login screen aka world of warcraft
+    static Tex bg = configuration.bgCheck();
 
     Text progress = null;
     private Window log;
@@ -60,13 +60,13 @@ public class LoginScreen extends Widget {
     }
 
     public LoginScreen() {
-        //super(bg.sz());
-        super(new Coord(800, 600));
+        super(bg.sz());
+//        super(new Coord(800, 600));
         setfocustab(true);
         add(new Img(bg), Coord.z);
         optbtn = adda(new Button(100, "Options"), sz.x-110, 40, 0, 1);
-       // new UpdateChecker().start();
-        add(new LoginList(200, 29), new Coord(10, 10));
+//        new UpdateChecker().start();
+        loginList = adda(new LoginList(200, 29), new Coord(10, 10), 0, 0);
         statusbtn = adda(new Button(200, "Initializing..."), sz.x-210, 80, 0, 1);
         StartUpdaterThread();
         GameUI.swimon = false;
@@ -112,9 +112,9 @@ public class LoginScreen extends Widget {
 
         private Pwbox(String username, boolean save) {
             setfocustab(true);
-            add(new Label("User name", textf), Coord.z);
+            add(new Label("User name", textf){{setstroked(Color.BLACK);}}, Coord.z);
             add(user = new TextEntry(150, username), new Coord(0, 20));
-            add(new Label("Password", textf), new Coord(0, 50));
+            add(new Label("Password", textf){{setstroked(Color.BLACK);}}, new Coord(0, 50));
             add(pass = new TextEntry(150, ""), new Coord(0, 70));
             pass.pw = true;
             if (user.text.equals(""))
@@ -122,7 +122,7 @@ public class LoginScreen extends Widget {
             else
                 setfocus(pass);
             resize(new Coord(150, 150));
-            LoginScreen.this.add(this, new Coord(345, 310));
+            LoginScreen.this.adda(this, new Coord(LoginScreen.this.sz.x / 2, LoginScreen.this.sz.y / 2), 0.5, 0);
         }
 
         public void wdgmsg(Widget sender, String name, Object... args) {
@@ -294,7 +294,7 @@ public class LoginScreen extends Widget {
                 protected void unpress() {
                     Audio.play(Button.lbtup.stream());
                 }
-            }, 419, 510, 0.5, 0.5);
+            }, LoginScreen.this.sz.x / 2, LoginScreen.this.sz.y / 2 + 100, 0.5, -1);
             progress(null);
         }
     }
@@ -304,7 +304,7 @@ public class LoginScreen extends Widget {
             if (this.error != null)
                 this.error = null;
             if (error != null)
-                this.error = textf.render(error, java.awt.Color.RED);
+                this.error = textf.renderstroked(error, java.awt.Color.RED, Color.BLACK);
         }
     }
 
@@ -313,7 +313,7 @@ public class LoginScreen extends Widget {
             if (progress != null)
                 progress = null;
             if (p != null)
-                progress = textf.render(p, java.awt.Color.WHITE);
+                progress = textf.renderstroked(p, java.awt.Color.WHITE, Color.BLACK);
         }
     }
 
@@ -387,8 +387,7 @@ public class LoginScreen extends Widget {
                 progress((String) args[0]);
             } else if (msg == "bg") {
                 this.destroy();
-                GameUI gui = PBotAPI.gui;
-                if(gui == null || gui.ui == null || gui.ui.sess == null || !gui.ui.sess.alive()) {
+                if (ui == null || ui.gui == null || ui.sess == null || !ui.sess.alive()) {
                     ui.bind(ui.root.add(new LoginScreen()), 1);
                     ui.uimsg(1, "passwd", Utils.getpref("loginname", ""), false);
                 }
@@ -407,10 +406,19 @@ public class LoginScreen extends Widget {
 
     public void draw(GOut g) {
         super.draw(g);
+        int szx = Math.min(MainFrame.instance.p.getSize().width, sz.x);
+        int szy = Math.min(MainFrame.instance.p.getSize().height, sz.y);
+        int zerox = MainFrame.instance.p.getSize().width > sz.x ? 0 : sz.x / 2 - MainFrame.instance.p.getSize().width / 2;
+        int zeroy = MainFrame.instance.p.getSize().height > sz.y ? 0 : sz.y / 2 - MainFrame.instance.p.getSize().height / 2;
+
+        optbtn.move(new Coord(zerox + szx - 110, zeroy + 40), 0, 1);
+        loginList.move(new Coord(zerox + 10, zeroy + 10), 0, 0);
+        statusbtn.move(new Coord(zerox + szx - 210, zeroy + 80), 0, 1);
+
         if (error != null)
-            g.image(error.tex(), new Coord(420 - (error.sz().x / 2), 450));
+            g.aimage(error.tex(), new Coord(LoginScreen.this.sz.x / 2, LoginScreen.this.sz.y / 2 + 100), 0.5, -1);
         if (progress != null)
-            g.image(progress.tex(), new Coord(420 - (progress.sz().x / 2), 350));
+            g.aimage(progress.tex(), new Coord(LoginScreen.this.sz.x / 2, LoginScreen.this.sz.y / 2), 0.5, -1);
     }
 
     public boolean type(char k, KeyEvent ev) {

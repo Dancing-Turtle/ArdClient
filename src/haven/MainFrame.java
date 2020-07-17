@@ -271,7 +271,7 @@ public class MainFrame extends java.awt.Frame implements Runnable, Console.Direc
                     if(gui != null) {
                         gui.add(confirmwnd, new Coord(gui.sz.x / 2 - confirmwnd.sz.x / 2, gui.sz.y / 2 - 200));
                         confirmwnd.show();
-                    }else {
+                    } else {
                         g.interrupt();
                     }
                 } else {

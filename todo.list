@@ -1,16 +1,18 @@
 pbot session - короче добавить для пбота атрибут номер сессии и тогда можно разпараллелить старых ботов и создать мультисессионую ботоводню
-    PBot(int session)
-    PBot[]
+    PBot(int session)   PBot[]
 
-MenuGrid -  //ADD custom size
++MenuGrid -  //ADD custom size == work
 MusselPicker - //FIXME name, how ender, shift click
 PickForageable - //FIXME custom menu
 
-fix multisession freeze
-fix logout crash    fix?????
-fix text с обводкой
-add pack gachi sounds and pack dark souls sounds
-modify loginscreen to fullhd
+fix multisession freeze     fix?????
+fix logout crash            fix?????
+fix text с обводкой         added???
+sounds
+    add pack gachi sounds and pack dark souls sounds
+    to be continued
+
+modify loginscreen to fullhd and add animated login screen aka world of warcraft reopen settings
 
 map - bigmap add grid, setting, editor for marks
     add cave marks
@@ -43,7 +45,21 @@ button to switch a lot of function of game (light grid border)
 Option button to Characters List ?
 
 Utils to file config
+utils don't work??
 
++why don't work crashlogs? - because moved to build folder then
+
+Fight
+    keybind
+    movable
+
+Sort inventory
+
+Shift click to link in textentry
+
+wiki fix 0.50 kg
+
+session widget to up
 
 
 for Jorb and Loftar:
@@ -51,5 +67,5 @@ for Jorb and Loftar:
     stockpiles for logs or maybe Object
 
 launcher rewrite:
-    autocreater files
+    +autocreater files
 @write render client pls@

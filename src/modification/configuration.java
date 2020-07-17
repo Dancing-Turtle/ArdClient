@@ -2,6 +2,7 @@ package modification;
 
 import haven.AuthClient;
 import haven.Coord;
+import haven.MainFrame;
 import haven.Resource;
 import haven.Session;
 import haven.Tex;
@@ -53,10 +54,11 @@ public class configuration {
 	public static Tex bgCheck() {
 		Tex bg;
 		if (defaultUtilsCustomLoginScreenBgBoolean)
-			bg = configuration.imageToTex(defaultUtilsCustomLoginScreenBg, 800, 600, Resource.loadtex("gfx/loginscr"));
+			bg = configuration.imageToTex(defaultUtilsCustomLoginScreenBg, Resource.loadtex("gfx/loginscr"));
 		else bg = Resource.loadtex("gfx/loginscr");
 		return bg;
 	}
+	public static Coord savedHavenPanelSize = Utils.getprefc("havpansz", new Coord(800, 600));
 
 	public static boolean autoclick = Utils.getprefb("autoclick", false);
 
@@ -236,6 +238,71 @@ public class configuration {
 		}
 	}
 
+	public static Coord getAutoSize(int w, int h) {
+		Coord minSize = new Coord(800, 600);
+		Coord maxSize = new Coord(MainFrame.instance.p.getSize());
+		if (MainFrame.instance.p.getSize().width < minSize.x || MainFrame.instance.p.getSize().height < minSize.y) maxSize = minSize;
+		Coord chosenSize = new Coord(w, h);
+
+		if ((w < minSize.x && h > maxSize.y) || (w > maxSize.x && h < minSize.y) || (w < minSize.x && h < minSize.y)) {
+			return minSize;
+		}
+
+		if (w < minSize.x) {
+			chosenSize = new Coord(minSize.x, h * minSize.x / w);
+			if (chosenSize.y < minSize.y) {
+				chosenSize = new Coord(chosenSize.x * minSize.y / chosenSize.y, minSize.y);
+				if (chosenSize.x > maxSize.x) {
+					chosenSize = new Coord(maxSize.x, chosenSize.y * maxSize.x / chosenSize.x);
+					if (chosenSize.y > maxSize.y)
+						chosenSize = new Coord(chosenSize.x * maxSize.y / chosenSize.y, maxSize.y);
+				}
+			}
+		}
+		if (h < minSize.y) {
+			chosenSize = new Coord(w * minSize.y / h, minSize.y);
+			if (chosenSize.x > maxSize.x) {
+				chosenSize = new Coord(maxSize.x, chosenSize.y * maxSize.x / chosenSize.x);
+				if (chosenSize.y > maxSize.y)
+					chosenSize = new Coord(chosenSize.x * maxSize.y / chosenSize.y, maxSize.y);
+			}
+		}
+		if (w > maxSize.x) {
+			chosenSize = new Coord(maxSize.x, h * maxSize.x / w);
+			if (chosenSize.y > maxSize.y)
+				chosenSize = new Coord(chosenSize.x * maxSize.y / chosenSize.y, maxSize.y);
+		}
+		if (h > maxSize.y)
+			chosenSize = new Coord(w * maxSize.y / h, maxSize.y);
+
+		return chosenSize;
+	}
+
+	public static BufferedImage scaleImage(BufferedImage before, boolean autoSize) {
+		try {
+			int w = before.getWidth();
+			int h = before.getHeight();
+
+			Coord chosenSize;
+			if (autoSize) chosenSize = getAutoSize(w, h);
+			else chosenSize = new Coord(w, h);
+
+			// Create a new image of the proper size
+			int w2 = chosenSize.x;
+			int h2 = chosenSize.y;
+			double scale1 = (double) w2 / w;
+			double scale2 = (double) h2 / h;
+			BufferedImage after = new BufferedImage(w2, h2, BufferedImage.TYPE_INT_ARGB);
+			AffineTransform scaleInstance = AffineTransform.getScaleInstance(scale1, scale2);
+			AffineTransformOp scaleOp = new AffineTransformOp(scaleInstance, AffineTransformOp.TYPE_BILINEAR);
+
+			scaleOp.filter(before, after);
+			return after;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return before;
+		}
+	}
 	public static BufferedImage scaleImage(BufferedImage before, int scale) {
 		try {
 			int w = before.getWidth();
@@ -254,14 +321,13 @@ public class configuration {
 			return before;
 		}
 	}
-
-	public static BufferedImage scaleImage(BufferedImage before, int newWidth, int newHeight) {
+	public static BufferedImage scaleImage(BufferedImage before, Coord chosenSize) {
 		try {
 			int w = before.getWidth();
 			int h = before.getHeight();
 			// Create a new image of the proper size
-			int w2 = newWidth;
-			int h2 = newHeight;
+			int w2 = chosenSize.x;
+			int h2 = chosenSize.y;
 			double scale1 = (double) w2 / w;
 			double scale2 = (double) h2 / h;
 			BufferedImage after = new BufferedImage(w2, h2, BufferedImage.TYPE_INT_RGB);
@@ -276,7 +342,7 @@ public class configuration {
 		}
 	}
 
-	private static Tex getTex(String name) throws IOException {
+	public static Tex getTex(String name, Coord chosenSize, boolean autoSize) throws IOException {
 		BufferedImage in;
 		File img = new File(name);
 		in = ImageIO.read(img);
@@ -286,57 +352,63 @@ public class configuration {
 		Graphics2D g = newImage.createGraphics();
 		g.drawImage(in, 0, 0, null);
 		g.dispose();
-		Tex tex = new TexI(newImage);
+
+		Tex tex;
+		if (autoSize)
+			tex = new TexI(scaleImage(newImage, true));
+		else if (chosenSize != null)
+			tex = new TexI(scaleImage(newImage, chosenSize));
+		else
+			tex = new TexI(newImage);
+
 		return tex;
 	}
+	public static Tex getTex(String name) throws IOException {
+		return getTex(name, null, false);
+	}
+	public static Tex getTex(String name, Coord chosenSize) throws IOException {
+		return getTex(name, chosenSize, false);
+	}
+	public static Tex getTex(String name, boolean autoSize) throws IOException {
+		return getTex(name, null, autoSize);
+	}
 
-	private static Tex getTex(String name, int width, int height) throws IOException {
-		BufferedImage in;
-		File img = new File(name);
-		in = ImageIO.read(img);
-
-		BufferedImage newImage = new BufferedImage(in.getWidth(), in.getHeight(), BufferedImage.TYPE_INT_ARGB);
-
-
-		Graphics2D g = newImage.createGraphics();
-		g.drawImage(in, 0, 0, null);
-		g.dispose();
-
-		Tex tex = new TexI(scaleImage(newImage, width, height));
-		return tex;
+	public static Tex imageToTex(String name, boolean autoSize, Coord chosenSize, Tex defaultTex) {
+		try {
+			if (autoSize)
+				return getTex(name, autoSize);
+			else
+				if (chosenSize == null)
+					return getTex(name);
+				else
+					return getTex(name, chosenSize);
+		} catch (Exception e) {
+			e.printStackTrace();
+			if (defaultTex == null)
+				return null;
+			else
+				return defaultTex;
+		}
 	}
 
 	public static Tex imageToTex(String name) {
-
-		BufferedImage in;
-		try {
-			return getTex(name);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
+		return imageToTex(name, false, null, null);
+	}
+	public static Tex imageToTex(String name, Coord chosenSize) {
+		return imageToTex(name, false, chosenSize, null);
+	}
+	public static Tex imageToTex(String name, boolean autoSize) {
+		return imageToTex(name, autoSize, null, null);
 	}
 
 	public static Tex imageToTex(String name, Tex defaultTex) {
-
-		BufferedImage in;
-		try {
-			return getTex(name);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return defaultTex;
-		}
+		return imageToTex(name, false, null, defaultTex);
 	}
-
-	public static Tex imageToTex(String name, int width, int height, Tex defaultTex) {
-
-		BufferedImage in;
-		try {
-			return getTex(name, width, height);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return defaultTex;
-		}
+	public static Tex imageToTex(String name, Coord chosenSize, Tex defaultTex) {
+		return imageToTex(name, false, chosenSize, defaultTex);
+	}
+	public static Tex imageToTex(String name, boolean autoSize, Tex defaultTex) {
+		return imageToTex(name, autoSize, null, defaultTex);
 	}
 
 	public static ArrayList<String> findFiles(String dir, List<String> exts) {
@@ -362,8 +434,7 @@ public class configuration {
 			return null;
 		}
 	}
-
-	public static class MyFileNameFilter implements FilenameFilter{
+	public static class MyFileNameFilter implements FilenameFilter {
 
 		private String ext;
 
