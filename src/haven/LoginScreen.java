@@ -47,6 +47,7 @@ public class LoginScreen extends Widget {
     private TextEntry user;
     LoginList loginList;
     OptWnd opts;
+    Img background;
     static Text.Foundry textf, textfs, special;
     static Tex bg = configuration.bgCheck();
 
@@ -63,7 +64,7 @@ public class LoginScreen extends Widget {
         super(bg.sz());
 //        super(new Coord(800, 600));
         setfocustab(true);
-        add(new Img(bg), Coord.z);
+        background = add(new Img(bg), Coord.z);
         optbtn = adda(new Button(100, "Options"), sz.x-110, 40, 0, 1);
 //        new UpdateChecker().start();
         loginList = adda(new LoginList(200, 29), new Coord(10, 10), 0, 0);
@@ -386,10 +387,11 @@ public class LoginScreen extends Widget {
                 clear();
                 progress((String) args[0]);
             } else if (msg == "bg") {
-                this.destroy();
+                LoginScreen.bg = configuration.bgCheck();
                 if (ui == null || ui.gui == null || ui.sess == null || !ui.sess.alive()) {
-                    ui.bind(ui.root.add(new LoginScreen()), 1);
-                    ui.uimsg(1, "passwd", Utils.getpref("loginname", ""), false);
+                    background.img = bg;
+                    background.resize(bg.sz());
+                    resize(bg.sz());
                 }
             }
         }
@@ -404,6 +406,7 @@ public class LoginScreen extends Widget {
         parent.setfocus(this);
     }
 
+    Coord oldsz;
     public void draw(GOut g) {
         super.draw(g);
         int szx = Math.min(MainFrame.instance.p.getSize().width, sz.x);
@@ -414,11 +417,19 @@ public class LoginScreen extends Widget {
         optbtn.move(new Coord(zerox + szx - 110, zeroy + 40), 0, 1);
         loginList.move(new Coord(zerox + 10, zeroy + 10), 0, 0);
         statusbtn.move(new Coord(zerox + szx - 210, zeroy + 80), 0, 1);
+        cur.move(new Coord(zerox + szx / 2, zeroy + szy / 2), 0.5, 0);
+        btn.move(new Coord(zerox + szx / 2, zeroy + szy / 2 + 100), 0.5, -1);
+        move(new Coord(MainFrame.instance.p.getSize().width / 2, MainFrame.instance.p.getSize().height / 2), 0.5, 0.5);
 
         if (error != null)
             g.aimage(error.tex(), new Coord(LoginScreen.this.sz.x / 2, LoginScreen.this.sz.y / 2 + 100), 0.5, -1);
         if (progress != null)
             g.aimage(progress.tex(), new Coord(LoginScreen.this.sz.x / 2, LoginScreen.this.sz.y / 2), 0.5, -1);
+
+
+        if (oldsz != null && opts != null && opts.visible)
+            opts.move(new Coord(sz.x * (opts.c.x + opts.sz.x / 2) / oldsz.x, sz.y * (opts.c.y + opts.sz.y / 2) / oldsz.y), 0.5, 0.5);
+        oldsz = sz;
     }
 
     public boolean type(char k, KeyEvent ev) {

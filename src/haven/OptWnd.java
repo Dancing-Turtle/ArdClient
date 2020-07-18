@@ -4390,7 +4390,6 @@ public class OptWnd extends Window {
                 super.change(item);
                 configuration.defaultUtilsCustomLoginScreenBg = item;
                 Utils.setpref("custom-login-background", item);
-                LoginScreen.bg = configuration.bgCheck();
                 if(ui.gui == null || ui.gui.ui == null || ui.gui.ui.sess == null || !ui.sess.alive())
                     ui.uimsg(1, "bg");
             }

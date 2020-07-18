@@ -994,7 +994,7 @@ public class Widget {
 	    this.c = c;
     }
 
-    public void move(Coord c, int ax, int ay) {
+    public void move(Coord c, double ax, double ay) {
         move(new Coord(c.x - (int) (sz.x * ax), c.y - (int) (sz.y * ay)));
     }
 

@@ -28,7 +28,7 @@ package haven;
 
 public class Img extends Widget {
     private Indir<Resource> res;
-    private Tex img;
+    protected Tex img;
     public boolean hit = false;
 
     @RName("img")
