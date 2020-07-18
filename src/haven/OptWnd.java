@@ -1570,7 +1570,11 @@ public class OptWnd extends Window {
             public void changed() {
                 configuration.scaletreeint = this.val;
                 Utils.setprefi("scaletreeint", configuration.scaletreeint);
-                settip("Scale tree and brush : " + configuration.scaletreeint + "%");
+            }
+            @Override
+            public Object tooltip(Coord c0, Widget prev) {
+                Tex tex = Text.render("Scale tree and brush : " + configuration.scaletreeint + "%").tex();
+                return tex;
             }
         });
 
@@ -3124,7 +3128,13 @@ public class OptWnd extends Window {
                                 return tex;
                             }
                         },
-                makePictureChoiseDropdown());
+                pictureList != null ? makePictureChoiseDropdown() : new Label("The modification folder has no pictures") {
+                    @Override
+                    public Object tooltip(Coord c0, Widget prev) {
+                        Tex tex = Text.render("Create modification folder and add in pictures or launch updater").tex();
+                        return tex;
+                    }
+                });
 
         appender.add(new Label(""));
 
@@ -4357,7 +4367,7 @@ public class OptWnd extends Window {
     }
 
 
-    private static final List<String> pictureList = configuration.findFiles("modification", Arrays.asList(".png", ".jpg"));
+    private static List<String> pictureList = configuration.findFiles("modification", Arrays.asList(".png", ".jpg"));
     private Dropbox<String> makePictureChoiseDropdown() {
         return new Dropbox<String>(pictureList.size(), pictureList) {
             {
@@ -4411,10 +4421,12 @@ public class OptWnd extends Window {
                 configuration.customMenuGrid[n] = item;
                 Utils.setpref("customMenuGrid" + n, item);
                 MenuGrid.gsz = configuration.getMenuGrid();
+                MenuGrid.cap = (MenuGrid.gsz.x *  MenuGrid.gsz.y) - 2;
 
                 if (ui != null && ui.gui != null && ui.gui.menu != null) {
-                    ui.gui.menu.destroy();
-                    ui.gui.addchild(new MenuGrid(), "menu");
+                    ui.gui.menu.layout = new MenuGrid.PagButton[configuration.getMenuGrid().x][configuration.getMenuGrid().y];
+                    ui.gui.menu.updlayout();
+                    ui.gui.menu.resize(MenuGrid.bgsz.mul(MenuGrid.gsz).add(1, 1));
                     ui.gui.brpanel.pack();
                     ui.gui.brpanel.move();
                 }

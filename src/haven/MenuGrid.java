@@ -49,13 +49,13 @@ public class MenuGrid extends Widget {
     public final static RichText.Foundry ttfnd = new RichText.Foundry(TextAttribute.FAMILY, Text.cfg.font.get("sans"), TextAttribute.SIZE, Text.cfg.tooltipCap); //aa(true)
     public final Map<String, SpecialPagina> specialpag = new HashMap<>();
     public final ObservableCollection<Pagina> paginae = new ObservableCollection<>(new HashSet<>());
-    public static Coord gsz = configuration.getMenuGrid();   //private static Coord gsz = new Coord(6, 4);
+    public static Coord gsz = configuration.getMenuGrid();
     public Pagina cur, dragging;
     private Collection<PagButton> curbtns = null;
     public PagButton pressed, layout[][] = new PagButton[configuration.getMenuGrid().x][configuration.getMenuGrid().y];
     private UI.Grab grab;
     private int curoff = 0;
-    private static int cap = (gsz.x * gsz.y) - 2;
+    public static int cap = (gsz.x * gsz.y) - 2;
     BufferedReader br;
     private boolean recons = true;
     private Map<Character, PagButton> hotmap = new HashMap<>();
@@ -941,8 +941,7 @@ public class MenuGrid extends Widget {
                 (pag) -> ui.gui.changeDecks(4)));
 
     }
-
-    private void updlayout() {
+    protected void updlayout() {
         synchronized(paginae) {
             List<PagButton> cur = new ArrayList<>();
             recons = !cons(this.cur, cur);
@@ -1316,12 +1315,12 @@ public class MenuGrid extends Widget {
                             pag.rawinfo = new Object[0];
 
                         // this is very crappy way to do this. needs to be redone probably
-                        try {
+                        /*try {
                             Resource res = pag.res.get();
                             if (res.name.equals("ui/tt/q/quality"))
                                 continue;
                         } catch (Loading l) {
-                        }
+                        }*/
 
                         paginae.add(pag);
                     } else {
