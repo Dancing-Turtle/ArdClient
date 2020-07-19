@@ -27,6 +27,7 @@
 package haven;
 
 
+import haven.overlays.TextOverlay;
 import haven.purus.pbot.PBotUtils;
 import haven.sloth.gob.HeldBy;
 import haven.sloth.gob.Hidden;
@@ -34,6 +35,8 @@ import haven.sloth.gob.Holding;
 
 import java.util.*;
 import java.util.List;
+
+import static haven.MapView.markedGobs;
 
 public class OCache implements Iterable<Gob> {
     public static final int OD_REM = 0;
@@ -794,10 +797,55 @@ public class OCache implements Iterable<Gob> {
     }
 
     public synchronized void unhighlightGobs(final String gname) {
-        for(final Gob g : this) {
+        for (final Gob g : this) {
             g.resname().ifPresent(name -> {
                 if(gname.equals(name)) {
                     g.unmark();
+                }
+            });
+        }
+    }
+
+    public synchronized void ovTextGobs(final String gname) {
+        for (final Gob g : this) {
+            g.resname().ifPresent(name -> {
+                if(gname.equals(name)) {
+                    g.addol(new Gob.Overlay(Sprite.GOB_TEXT_ID, new TextOverlay(g)));
+                }
+            });
+        }
+    }
+
+    public synchronized void unovTextGobs(final String gname) {
+        for (final Gob g : this) {
+            g.resname().ifPresent(name -> {
+                if (gname.equals(name)) {
+                    Gob.Overlay ol = g.findol(Sprite.GOB_TEXT_ID);
+                    g.ols.remove(ol);
+                }
+            });
+        }
+    }
+
+    public synchronized void ovHighGobs(final String gname) {
+        for (final Gob g : this) {
+            g.resname().ifPresent(name -> {
+                if (gname.equals(name)) {
+                    if (!markedGobs.contains(g.id))
+                        markedGobs.add(g.id);
+                    glob.oc.changed(g);
+                }
+            });
+        }
+    }
+
+    public synchronized void unovHighGobs(final String gname) {
+        for (final Gob g : this) {
+            g.resname().ifPresent(name -> {
+                if (gname.equals(name)) {
+                    if (markedGobs.contains(g.id))
+                        markedGobs.remove(g.id);
+                    glob.oc.changed(g);
                 }
             });
         }

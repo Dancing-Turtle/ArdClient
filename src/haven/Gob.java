@@ -26,6 +26,8 @@
 
 package haven;
 
+import haven.overlays.OverlayData;
+import haven.overlays.TextOverlay;
 import haven.overlays.newPlantStageSprite;
 import haven.resutil.BPRadSprite;
 import haven.resutil.WaterTile;
@@ -40,6 +42,8 @@ import java.awt.*;
 import java.util.List;
 import java.util.*;
 import java.util.function.Consumer;
+
+import static haven.MapView.markedGobs;
 
 public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
     public int cropstgmaxval = 0;
@@ -322,7 +326,18 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
     private void discovered(final String name) {
         //Don't try to discover anything until we know who the plgob is.
         final UI ui = glob.ui.get();
-        if(ui != null && ui.gui != null && ui.gui.map != null && ui.gui.map.plgob != -1) {
+        if (ui != null && ui.gui != null && ui.gui.map != null && ui.gui.map.plgob != -1) {
+            if (ui.gui.mapfile != null && configuration.customMarkObj) {
+                GobIcon icon = this.getattr(GobIcon.class);
+                if (icon != null) {
+                    for (String resname : configuration.customMarkObjs.values()) {
+                        if (name.equals(resname)) {
+                            ui.gui.mapfile.markobj(id, getres(), configuration.customMarkObjs.get(resname), icon.res);
+                        }
+                    }
+                }
+            }
+
             //Before we do anything make sure we care about this
             if (!Deleted.isDeleted(name)) {
                 //Gobs we care about
@@ -344,6 +359,14 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
                 }
                 if (HighlightData.isHighlighted(name)) {
                     mark(-1);
+                }
+                if (OverlayData.isTexted(name)) {
+                    addol(new Overlay(Sprite.GOB_TEXT_ID, new TextOverlay(this)));
+                }
+                if (OverlayData.isHighlighted(name)) {
+                    if (!markedGobs.contains(id))
+                        markedGobs.add(id);
+                    glob.oc.changed(this);
                 }
                 if(type == Type.HUMAN) {
                     setattr(new Halo(this));

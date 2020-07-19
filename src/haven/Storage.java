@@ -25,7 +25,6 @@ public class Storage {
     public static final Storage dynamic, overlays;
     static {
     	final Optional<Storage> cls = create("jdbc:sqlite:dynamic.sqlite");
-	    final Optional<Storage> clos = create("jdbc:sqlite:overlays.sqlite");
     	if(cls.isPresent()) {
     	    dynamic = cls.get();
 	        Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -36,6 +35,7 @@ public class Storage {
 		} else {
         	    dynamic = null;
 		}
+		final Optional<Storage> clos = create("jdbc:sqlite:overlays.sqlite");
 	    if(clos.isPresent()) {
 		    overlays = clos.get();
 		    Runtime.getRuntime().addShutdownHook(new Thread() {

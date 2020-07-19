@@ -27,6 +27,7 @@
 package haven;
 import haven.GLProgram.VarID;
 import haven.automation.*;
+import haven.overlays.OverlaySelector;
 import haven.pathfinder.PFListener;
 import haven.pathfinder.Pathfinder;
 import haven.purus.Farmer;
@@ -629,7 +630,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
         setcanfocus(true);
         markedGobs.clear();
 
-        if(SHOWPCLAIM.get()) {
+        if(SHOWPCLAIM.get()) { //TODO look at me
             enol(0, 1);
         }
         if(SHOWVCLAIM.get()) {
@@ -3139,7 +3140,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                         ui.sess.glob.oc.removeAll(name);
                         break;
                     case 5: //Custom overlays
-                        System.out.println("WIP"); //TODO add pls
+                        ui.gui.add(new OverlaySelector(name), ui.mc);
                         break;
                     case 6: //Mark gob on map
                         GobIcon icon = g.getattr(GobIcon.class);

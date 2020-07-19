@@ -11,14 +11,18 @@ fix text с обводкой         added???
 sounds
     add pack gachi sounds and pack dark souls sounds
     to be continued
+indir to text and pictures
+add pack warcraft icons
 
-modify loginscreen to fullhd and add animated login screen aka world of warcraft reopen settings
++modify loginscreen to fullhd
+    and add animated login screen aka world of warcraft reopen settings? i don't know how
 
 map - bigmap add grid, setting, editor for marks
     add cave marks
     fix object id
     MapFileWidget - fix Unknown tooltip from 7 zoom
     pathfinder on bigmap
+    zoomable icons
 
 quickslots - make custom and background without pictures
 

@@ -387,7 +387,6 @@ public class LoginScreen extends Widget {
                 clear();
                 progress((String) args[0]);
             } else if (msg == "bg") {
-                LoginScreen.bg = configuration.bgCheck();
                 if (ui == null || ui.gui == null || ui.sess == null || !ui.sess.alive()) {
                     background.img = bg;
                     background.resize(bg.sz());

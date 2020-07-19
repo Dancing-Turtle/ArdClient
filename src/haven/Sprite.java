@@ -37,6 +37,7 @@ public abstract class Sprite implements Rendered {
     public static final int GROWTH_STAGE_ID = -1002;
     public static final int GOB_QUALITY_ID = -1003;
     public static final int GOB_CUSTOM_ID = -1004;
+    public static final int GOB_TEXT_ID = -1005;
     public final Resource res;
     public final Owner owner;
     public static List<Factory> factories = new LinkedList<Factory>();

@@ -3080,6 +3080,8 @@ public class OptWnd extends Window {
 
         appender.add(new Label("Strange or unreal modifications"));
 
+        appender.setVerticalMargin(VERTICAL_MARGIN);
+        appender.setHorizontalMargin(HORIZONTAL_MARGIN);
 
         appender.addRow(new CheckBox("Custom title: ") {
                             {
@@ -3137,9 +3139,6 @@ public class OptWnd extends Window {
                 });
 
         appender.add(new Label(""));
-
-        appender.setVerticalMargin(VERTICAL_MARGIN);
-        appender.setHorizontalMargin(HORIZONTAL_MARGIN);
 
         appender.add(new CheckBox("Player Status tooltip") {
             {
@@ -3227,6 +3226,22 @@ public class OptWnd extends Window {
                 return tex;
             }
         }, makeCustomMenuGrid(0), makeCustomMenuGrid(1));
+
+        appender.add(new Label(""));
+        appender.add(new Label("Map settings. temp."));
+
+        appender.add(new CheckBox("Map settings. temp."){
+            {
+                a = configuration.customMarkObj;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("customMarkObj", val);
+                configuration.customMarkObj = val;
+                a = val;
+            }
+        });
+
 
         modification.add(new PButton(200, "Back", 27, main), new Coord(210, 360));
         modification.pack();
@@ -4367,7 +4382,7 @@ public class OptWnd extends Window {
     }
 
 
-    private static List<String> pictureList = configuration.findFiles("modification", Arrays.asList(".png", ".jpg"));
+    private static List<String> pictureList = configuration.findFiles("modification", Arrays.asList(".png", ".jpg", ".gif"));
     private Dropbox<String> makePictureChoiseDropdown() {
         return new Dropbox<String>(pictureList.size(), pictureList) {
             {
@@ -4390,6 +4405,7 @@ public class OptWnd extends Window {
                 super.change(item);
                 configuration.defaultUtilsCustomLoginScreenBg = item;
                 Utils.setpref("custom-login-background", item);
+                LoginScreen.bg = configuration.bgCheck();
                 if(ui.gui == null || ui.gui.ui == null || ui.gui.ui.sess == null || !ui.sess.alive())
                     ui.uimsg(1, "bg");
             }

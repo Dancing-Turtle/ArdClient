@@ -912,6 +912,9 @@ public class MenuGrid extends Widget {
         addSpecial(new SpecialPagina(this, "paginae::windows::highlight",
                 Resource.local().load("paginae/windows/highlight"),
                 (pag) -> ui.gui.toggleHighlight()));
+        addSpecial(new SpecialPagina(this, "paginae::windows::overlay",
+                Resource.local().load("paginae/windows/highlight"), //FIXME ingame setting title and picture
+                (pag) -> ui.gui.toggleOverlay()));
         addSpecial(new SpecialPagina(this, "paginae::windows::gobspawner",
                 Resource.local().load("paginae/windows/gobspawner"),
                 (pag) -> ui.gui.toggleGobSpawner()));

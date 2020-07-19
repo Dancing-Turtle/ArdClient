@@ -21,7 +21,9 @@ import java.io.IOException;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class configuration {
 
@@ -54,7 +56,7 @@ public class configuration {
 	public static Tex bgCheck() {
 		Tex bg;
 		if (defaultUtilsCustomLoginScreenBgBoolean)
-			bg = configuration.imageToTex(defaultUtilsCustomLoginScreenBg, Resource.loadtex("gfx/loginscr"));
+			bg = configuration.imageToTex(defaultUtilsCustomLoginScreenBg, true, Resource.loadtex("gfx/loginscr"));
 		else bg = Resource.loadtex("gfx/loginscr");
 		return bg;
 	}
@@ -70,6 +72,17 @@ public class configuration {
 
 	public static boolean scaletree = Utils.getprefb("scaletree", false);
 	public static int scaletreeint = Utils.getprefi("scaletreeint", 25);
+
+	public static boolean customMarkObj = Utils.getprefb("customMarkObj", false);
+	public static Map<String, String> customMarkObjs = new HashMap<>();
+	{
+		customMarkObjs.put("gfx/tiles/ridges/cavein", "Cave In");
+		customMarkObjs.put("gfx/tiles/ridges/caveout", "Cave Out");
+		customMarkObjs.put("gfx/terobjs/beaverdamdoor", "Beaver Dungeon");
+		customMarkObjs.put("gfx/terobjs/dng/batcave", "Bat Dungeon");
+		customMarkObjs.put("gfx/terobjs/dng/antdungeon", "Ant Dungeon");
+		customMarkObjs.put("gfx/terobjs/wonders/tarpit", "Tarpit");
+	}
 
 	public static String[] customMenuGrid = new String[] {Utils.getpref("customMenuGrid0", "6"), Utils.getpref("customMenuGrid1", "4")};
 	public static Coord getMenuGrid() {
@@ -164,7 +177,9 @@ public class configuration {
 						System.out.print("{(AuthClient.NativeCred):" + arg.name() + "}");
 					} else if (args[i] instanceof Integer) {
 						System.out.print("i{" + args[i] + "}");
-					} else if (args[i] instanceof String) {
+					} else if (args[i] instanceof Long) {
+						System.out.print("l{" + args[i] + "}");
+					}else if (args[i] instanceof String) {
 						System.out.print("s{" + args[i] + "}");
 					} else if (args[i] instanceof Boolean) {
 						System.out.print("b{" + args[i] + "}");
@@ -240,8 +255,7 @@ public class configuration {
 
 	public static Coord getAutoSize(int w, int h) {
 		Coord minSize = new Coord(800, 600);
-		Coord maxSize = new Coord(MainFrame.instance.p.getSize());
-		if (MainFrame.instance.p.getSize().width < minSize.x || MainFrame.instance.p.getSize().height < minSize.y) maxSize = minSize;
+		Coord maxSize = new Coord(9999, 9999);
 		Coord chosenSize = new Coord(w, h);
 
 		if ((w < minSize.x && h > maxSize.y) || (w > maxSize.x && h < minSize.y) || (w < minSize.x && h < minSize.y)) {

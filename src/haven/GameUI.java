@@ -31,6 +31,7 @@ import haven.automation.ErrorSysMsgCallback;
 import haven.automation.PickForageable;
 import haven.automation.Traverse;
 import haven.livestock.LivestockManager;
+import haven.overlays.OverlayManager;
 import haven.purus.DrinkWater;
 import haven.purus.ItemClickCallback;
 import haven.purus.pbot.*;
@@ -94,7 +95,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
     private int dangerradius = 1;
     public WeakReference<Speedget> speedget;
     public ChatUI.Channel syslog;
-    public Window hidden, deleted, alerted, highlighted, gobspawner;
+    public Window hidden, deleted, alerted, highlighted, overlayed, gobspawner;
     public double prog = -1;
     private boolean afk = false;
     @SuppressWarnings("unchecked")
@@ -301,6 +302,8 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         gobspawner.hide();
         highlighted = add(new HighlightManager());
         highlighted.hide();
+        overlayed = add(new OverlayManager());
+        overlayed.hide();
         PBotScriptlist = add(new PBotScriptlist());
         PBotScriptlist.hide();
         PBotScriptlistold = add(new PBotScriptlistOld());
@@ -1284,6 +1287,8 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             else
                 help.res = res;
         } else if(msg == "map-mark") {
+            configuration.sysPrintStackTrace("map-mark");
+            configuration.Syslog("map-mark", this, -1, msg, args);
             long gobid = ((Integer)args[0]) & 0xffffffff;
             long oid = (Long)args[1];
             Indir<Resource> res = ui.sess.getres((Integer)args[2]);
@@ -1396,6 +1401,13 @@ public class GameUI extends ConsoleHost implements Console.Directory {
             highlighted.raise();
             fitwdg(highlighted);
             setfocus(highlighted);
+        }
+    }
+    void toggleOverlay() {
+        if(overlayed != null && overlayed.show(!overlayed.visible)) {
+            overlayed.raise();
+            fitwdg(overlayed);
+            setfocus(overlayed);
         }
     }
     void toggleHidden() {

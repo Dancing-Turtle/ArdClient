@@ -1,6 +1,7 @@
 package haven;
 
 import com.google.common.flogger.FluentLogger;
+import haven.overlays.OverlayData;
 import haven.sloth.gob.Alerted;
 import haven.sloth.gob.Deleted;
 import haven.sloth.gob.Hidden;
@@ -337,6 +338,7 @@ public class DefSettings {
 			Deleted.init();
 			Hidden.init();
 			HighlightData.init();
+			OverlayData.init();
 			//Internal lookups are no longer needed
 			optint.get().close();
 		} else {
