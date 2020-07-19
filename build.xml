@@ -217,7 +217,7 @@ jackson-core.jar graal-sdk.jar graaljs.jar tregex.jar truffle-api.jar" />
   </target>
 
     <target name="prep-update">
-        <copy todir="update">
+        <copy todir="update/build">
             <fileset dir="lib">
                 <include name="amber-res.jar" />
                 <include name="graaljs.jar" />
@@ -243,10 +243,14 @@ jackson-core.jar graal-sdk.jar graaljs.jar tregex.jar truffle-api.jar" />
             <fileset dir="build">
                 <include name="hafen.jar"/>
                 <include name="l10n.jar"/>
+                <include name="amber-res.jar"/>
+            </fileset>
+        </copy>
+        <copy todir="update">
+            <fileset dir="build">
                 <include name="logging.properties"/>
                 <include name="static.sqlite"/>
                 <include name="grid_ids.txt"/>
-                <include name="amber-res.jar"/>
             </fileset>
             <fileset dir="build/classes">
                 <include name="changelog.txt" />
