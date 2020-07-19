@@ -74,6 +74,7 @@ public class MapWnd extends Window {
     private Map<Long, Tex> namemap = new HashMap<>(50);
     private Map<Coord, Coord> questlinemap = new HashMap<>();
 
+
     public MapWnd(MapFile file, MapView mv, Coord sz, String title) {
         super(sz, title,title, true);
         this.mv = mv;
@@ -449,8 +450,7 @@ public class MapWnd extends Window {
             new Pair<>("Jotun Mussel", "jotunmussel"),
             new Pair<>("Quest Givers", "qst"),
             new Pair<>("Salt Basin", "saltbasin"),
-            new Pair<>("Swirling Vortex", "watervortex"),
-            new Pair<>("Caves", "cave")
+            new Pair<>("Swirling Vortex", "watervortex")
     };
 
     @SuppressWarnings("unchecked")

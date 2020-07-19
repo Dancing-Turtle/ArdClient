@@ -444,16 +444,9 @@ public class UI {
             if (wdg != null) {
                 // try { for(Object obj:args) if(!wdg.toString().contains("CharWnd")) System.out.println("UI Wdg : " + wdg + " msg : "+msg+" id = " + id + " arg 1 : " + obj); }catch(ArrayIndexOutOfBoundsException qq){}
                 wdg.uimsg(msg.intern(), args); }
-            else {
-                try {
-                    throw (new UIException("Uimsg to non-existent widget " + id, msg, args));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+            else throw (new UIException("Uimsg to non-existent widget " + id, msg, args));
         }
     }
-
 
     private void setmods(InputEvent ev) {
         int mod = ev.getModifiersEx();
@@ -587,12 +580,7 @@ public class UI {
         for(Grab g : mousegrabCopy) {
             if (g == null || g.wdg == null)
                 continue;
-            Resource ret = null;
-            try {
-                ret = g.wdg.getcurs(wdgxlate(c, g.wdg));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            Resource ret = g.wdg.getcurs(wdgxlate(c, g.wdg));
             if(ret != null)
                 return(ret);
         }

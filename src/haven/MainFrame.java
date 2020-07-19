@@ -49,7 +49,7 @@ public class MainFrame extends java.awt.Frame implements Runnable, Console.Direc
     private final ThreadGroup g;
     public final Thread mt;
     DisplayMode fsmode = null, prefs = null;
-    private static final String TITLE = configuration.defaultTitle;
+    public static final String TITLE = "Ardennes Hafen Revived " + "1.03: Reign of the Toad King";
 
     static {
         try {
@@ -327,8 +327,7 @@ public class MainFrame extends java.awt.Frame implements Runnable, Console.Direc
                 new RemoteUI(sess).run(lui);
                 //Remove this UI once done
                 p.removeUI(lui);
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (InterruptedException e) {
             } finally {
                 p.removeUI(lui);
                 synchronized (sessionThreads) {

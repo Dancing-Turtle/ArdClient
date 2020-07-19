@@ -15,12 +15,6 @@ public class GobHighlight extends GAttrib {
         super(g);
     }
 
-    public GobHighlight(Gob g, Color color) {
-        super(g);
-        clr = Utils.c2fa(color);
-        emi = new float[]{color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f};
-    }
-
     public GLState getfx() {
         if (cycle <= 0)
             return GLState.nullstate;

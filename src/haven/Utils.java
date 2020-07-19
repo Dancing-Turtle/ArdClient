@@ -217,7 +217,7 @@ public class Utils {
         return (prefs);
     }
 
-    public static void delpref(String prefname) {
+    static void delpref(String prefname) {
         try {
             prefs().remove(prefname);
         } catch (SecurityException e) {
@@ -232,7 +232,7 @@ public class Utils {
         }
     }
 
-    static void setpref(String prefname, String val) {
+    public static void setpref(String prefname, String val) {
         try {
             prefs().put(prefname, val);
         } catch (SecurityException e) {

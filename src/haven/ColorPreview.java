@@ -39,7 +39,6 @@ public class ColorPreview extends Widget {
     }
 
     public boolean mouseup(Coord c, int btn) {
-        System.out.println("mouseup " + btn + " " + cp + " " + callback);
         if (btn == 1 && cp == null && callback != null) {
             cp = new ColorPicker(col, (color -> {
                 cp = null;

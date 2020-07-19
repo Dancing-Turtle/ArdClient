@@ -201,7 +201,7 @@ public class WItem extends Widget implements DTarget {
 		return(() -> ret);
 	});
 
-    public final AttrCache<Double> itemmeter = new AttrCache<>(this::info, AttrCache.map1(GItem.MeterInfo.class, minf -> {
+    public final AttrCache<Double> itemmeter = new AttrCache<Double>(this::info, AttrCache.map1(GItem.MeterInfo.class, minf -> {
         GItem itm = WItem.this.item;
         if (minf != null) {
             double meter = minf.meter();

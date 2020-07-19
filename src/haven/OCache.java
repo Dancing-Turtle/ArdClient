@@ -787,9 +787,9 @@ public class OCache implements Iterable<Gob> {
     }
 
     public synchronized void highlightGobs(final String gname) {
-        for(final Gob g : this) {
+        for (final Gob g : this) {
             g.resname().ifPresent(name -> {
-                if(gname.equals(name)) {
+                if (gname.equals(name)) {
                     g.mark(-1);
                 }
             });
@@ -799,7 +799,7 @@ public class OCache implements Iterable<Gob> {
     public synchronized void unhighlightGobs(final String gname) {
         for (final Gob g : this) {
             g.resname().ifPresent(name -> {
-                if(gname.equals(name)) {
+                if (gname.equals(name)) {
                     g.unmark();
                 }
             });
@@ -809,7 +809,7 @@ public class OCache implements Iterable<Gob> {
     public synchronized void ovTextGobs(final String gname) {
         for (final Gob g : this) {
             g.resname().ifPresent(name -> {
-                if(gname.equals(name)) {
+                if (gname.equals(name)) {
                     g.addol(new Gob.Overlay(Sprite.GOB_TEXT_ID, new TextOverlay(g)));
                 }
             });

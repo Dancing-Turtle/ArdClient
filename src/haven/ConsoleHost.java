@@ -66,7 +66,6 @@ public abstract class ConsoleHost extends Widget {
                     ui.cons.out.println(msg);
                     error(msg);
                 }
-
             }
             cancel();
         }

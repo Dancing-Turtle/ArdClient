@@ -511,14 +511,7 @@ public class Widget {
     public Coord parentpos(Widget in) {
         if (in == this)
             return (new Coord(0, 0));
-
-        try {
-            return(parent.xlate(parent.parentpos(in).add(c), true));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-
+	return(parent.xlate(parent.parentpos(in).add(c), true));
     }
 
     public Coord rootpos() {
@@ -991,7 +984,7 @@ public class Widget {
     }
 
     public void move(Coord c) {
-	    this.c = c;
+	this.c = c;
     }
 
     public void move(Coord c, double ax, double ay) {

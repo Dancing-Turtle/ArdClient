@@ -295,7 +295,7 @@ public class LoginScreen extends Widget {
                 protected void unpress() {
                     Audio.play(Button.lbtup.stream());
                 }
-            }, LoginScreen.this.sz.x / 2, LoginScreen.this.sz.y / 2 + 100, 0.5, -1);
+            }, LoginScreen.this.sz.x / 2, LoginScreen.this.sz.y / 2 + 100, 0.5, 0);
             progress(null);
         }
     }

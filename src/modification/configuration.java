@@ -31,7 +31,7 @@ public class configuration {
 	public static String defaultCustomTitleName(String name) {
 		return "♂" + name + "♂: ♂right version♂";
 	}
-	public static String defaultTitle = "Ardennes Hafen Revived " + "1.03: Reign of the Toad King";
+	public static String defaultTitle = MainFrame.TITLE;
 	public static String defaultCustomTitle = "♂right version♂: You turn ♂Leatherman♂";
 	public static String defaultUtilsCustomTitle = Utils.getpref("custom-title", defaultCustomTitle);
 	public static String tittleCheck(Session sess) {

@@ -381,7 +381,7 @@ public class MappingClient {
                             }
                         }
                         catch(Exception ex) {
-                            System.out.println("12" + ex);
+                            System.out.println("MappintClient run : " + ex);
                         }
                     }
                 } catch(Exception ex) {

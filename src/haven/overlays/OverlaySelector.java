@@ -50,9 +50,13 @@ public class OverlaySelector extends Window {
     }
 
     private String getDefaultTextName() {
-        int p = gobname.lastIndexOf('/');
-        if (p < 0) return (gobname);
-        return gobname.substring(p + 1, p + 2).toUpperCase() + gobname.substring(p + 2);
+        int p;
+        if (gobname.contains("/")) {
+            p = gobname.lastIndexOf('/');
+            if (p < 0) return (gobname);
+            return gobname.substring(p + 1, p + 2).toUpperCase() + gobname.substring(p + 2);
+        } else return gobname;
+
     }
     private static final List<String> fontSizes = Arrays.asList("10", "11", "12", "13", "14", "15", "16");
     private Dropbox<String> makeFontSizeDropbox(int fontSize) {

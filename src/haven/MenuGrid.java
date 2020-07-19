@@ -944,6 +944,7 @@ public class MenuGrid extends Widget {
                 (pag) -> ui.gui.changeDecks(4)));
 
     }
+
     protected void updlayout() {
         synchronized(paginae) {
             List<PagButton> cur = new ArrayList<>();
