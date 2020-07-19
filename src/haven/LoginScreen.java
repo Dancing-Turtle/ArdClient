@@ -417,8 +417,10 @@ public class LoginScreen extends Widget {
         optbtn.move(new Coord(zerox + szx - 110, zeroy + 40), 0, 1);
         loginList.move(new Coord(zerox + 10, zeroy + 10), 0, 0);
         statusbtn.move(new Coord(zerox + szx - 210, zeroy + 80), 0, 1);
-        cur.move(new Coord(zerox + szx / 2, zeroy + szy / 2), 0.5, 0);
-        btn.move(new Coord(zerox + szx / 2, zeroy + szy / 2 + 100), 0.5, -1);
+        if (cur != null)
+            cur.move(new Coord(zerox + szx / 2, zeroy + szy / 2), 0.5, 0);
+        if (btn != null)
+            btn.move(new Coord(zerox + szx / 2, zeroy + szy / 2 + 100), 0.5, -1);
         move(new Coord(MainFrame.instance.p.getSize().width / 2, MainFrame.instance.p.getSize().height / 2), 0.5, 0.5);
 
         if (error != null)
