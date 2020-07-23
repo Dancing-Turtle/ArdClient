@@ -444,7 +444,7 @@ public class MappingClient {
                             gridRefs.put(String.valueOf(subg.id), new WeakReference<MCache.Grid>(subg));
                         }
                     }
-                    System.out.println("Scheduling grid request");
+                    //System.out.println("Scheduling grid request");
                     scheduler.execute(new UploadGridUpdateTask(new GridUpdate(gridMap, gridRefs)));
                 } catch(LoadingMap lm) {
                     retries--;
@@ -477,7 +477,7 @@ public class MappingClient {
                     connection.setDoOutput(true);
                     try (DataOutputStream out = new DataOutputStream(connection.getOutputStream())) {
                         String json = new JSONObject(dataToSend).toString();
-                        System.out.println("Sending grid update " + json);
+                        //System.out.println("Sending grid update " + json);
                         out.write(json.getBytes(StandardCharsets.UTF_8));
                     }
                     if (connection.getResponseCode() == 200) {

@@ -2,7 +2,6 @@ package haven.purus.pbot;
 
 import haven.ChatUI;
 import haven.Coord2d;
-import haven.GameUI;
 import haven.Widget;
 import haven.automation.Discord;
 
