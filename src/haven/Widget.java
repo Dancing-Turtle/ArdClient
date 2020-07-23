@@ -34,17 +34,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.AbstractSet;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.Stack;
-import java.util.TreeMap;
-import haven.MovableWidget;
+import java.util.*;
 
 import static haven.MovableWidget.VISIBLE_PER;
 
@@ -509,9 +499,13 @@ public class Widget {
     }
 
     public Coord parentpos(Widget in) {
-        if (in == this)
-            return (new Coord(0, 0));
-	return(parent.xlate(parent.parentpos(in).add(c), true));
+        try {
+            if (in == this)
+                return (new Coord(0, 0));
+            return(parent.xlate(parent.parentpos(in).add(c), true));
+        } catch (Exception e){
+            return new Coord(0,0);
+        }
     }
 
     public Coord rootpos() {
