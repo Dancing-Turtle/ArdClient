@@ -7,7 +7,7 @@ import java.util.List;
 
 public class PBotInventory {
 
-	private Inventory inv;
+	public Inventory inv;
 
 	public PBotInventory(Inventory inv) {
 		this.inv = inv;
