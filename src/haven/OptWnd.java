@@ -4382,7 +4382,7 @@ public class OptWnd extends Window {
     }
 
 
-    private static List<String> pictureList = configuration.findFiles("modification", Arrays.asList(".png", ".jpg", ".gif"));
+    private static List<String> pictureList = configuration.findFiles(configuration.picturePath, Arrays.asList(".png", ".jpg", ".gif"));
     private Dropbox<String> makePictureChoiseDropdown() {
         return new Dropbox<String>(pictureList.size(), pictureList) {
             {
@@ -4398,7 +4398,8 @@ public class OptWnd extends Window {
             }
             @Override
             protected void drawitem(GOut g, String item, int i) {
-                g.text(item, Coord.z);
+//                g.text(item, Coord.z);
+                g.text(item.replace(configuration.picturePath + "\\", ""), Coord.z);
             }
             @Override
             public void change(String item) {

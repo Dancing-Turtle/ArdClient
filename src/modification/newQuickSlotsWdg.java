@@ -29,7 +29,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class newQuickSlotsWdg extends MovableWidget implements DTarget {
-    private static final Tex sbg = configuration.imageToTex("modification/gfx/hud/slots.png"); //Resource.loadtex("gfx/hud/slots");
+    private static final Tex sbg = configuration.imageToTex(configuration.modificationPath + "/gfx/hud/slots.png"); //Resource.loadtex("gfx/hud/slots");
     public static final int slots = 4;
     public static final Item[] items = new Item[4];
     private static final Coord ssz = new Coord(33, 33);

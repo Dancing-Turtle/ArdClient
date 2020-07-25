@@ -26,6 +26,11 @@ import java.util.List;
 import java.util.Map;
 
 public class configuration {
+	public static String modificationPath = "modification";
+	public static String soundPath = modificationPath + "/sound";
+	public static String picturePath = modificationPath + "/picture";
+	public static String errorPath = "errors";
+	public static String pbotErrorPath = "pboterrors";
 
 	public static boolean customTitleBoolean = Utils.getprefb("custom-title-bol", false);
 	public static String defaultCustomTitleName(String name) {
@@ -51,7 +56,7 @@ public class configuration {
 	}
 
 	public static boolean defaultUtilsCustomLoginScreenBgBoolean = Utils.getprefb("custom-login-background-bol", false);
-	public static String defaultCustomLoginScreenBg = "modification/loginscr.png";
+	public static String defaultCustomLoginScreenBg = picturePath + "/loginscr.png";
 	public static String defaultUtilsCustomLoginScreenBg = Utils.getpref("custom-login-background", defaultCustomLoginScreenBg);
 	public static Tex bgCheck() {
 		Tex bg;
@@ -398,6 +403,7 @@ public class configuration {
 					return getTex(name, chosenSize);
 		} catch (Exception e) {
 			e.printStackTrace();
+			System.out.println(name);
 			if (defaultTex == null)
 				return null;
 			else

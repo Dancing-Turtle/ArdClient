@@ -31,6 +31,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import haven.Config;
+import modification.configuration;
 
 public class ErrorHandler extends ThreadGroup {
     private final ThreadGroup initial;
@@ -94,7 +95,7 @@ public class ErrorHandler extends ThreadGroup {
                     + "OS "+System.getProperty("os.name")+ " " + System.getProperty("os.version") + " " + System.getProperty("os.arch") + "\n"
                     + "GPU " + (String)r.props.get("gpu")+ "\n");
 
-            File folder = new File("crashes");
+            File folder = new File(configuration.errorPath);
             if (!folder.exists()) folder.mkdir();
 
             File file = new File(folder + "/" + filename);

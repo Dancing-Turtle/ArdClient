@@ -26,21 +26,31 @@
 
 package haven;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
+import dolda.xiphutil.VorbisStream;
+import haven.purus.pbot.PBotUtils;
 
 import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.SourceDataLine;
-
-import dolda.xiphutil.VorbisStream;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Map;
 
 public class Audio {
     public static boolean enabled = true;
-    private static Player player;
+    public static Player player;
     public static final AudioFormat fmt = new AudioFormat(44100, 16, 2, true, false);
     private static int bufsize = Utils.getprefi("audiobufsize", 4096);
     public static double volume = 1.0;
@@ -411,8 +421,8 @@ public class Audio {
         }
     }
 
-    private static class Player extends HackThread {
-        private final CS stream;
+    public static class Player extends HackThread {
+        public final CS stream;
         private final int nch;
         private final Object queuemon = new Object();
         private Collection<Runnable> queue = new LinkedList<Runnable>();
@@ -578,32 +588,32 @@ public class Audio {
             if (Config.sfxwhipvol != 1.0 && "sfx/balders".equals(res.name))
                 return new Audio.VolAdjust(clip.stream(), Config.sfxwhipvol);
 
-            try{
+            try {
 
-            if(res.name.equals("sfx/lvlup") || res.name.equals("sfx/msg")) {
-                Date thislvlup = new Date();
-                if (lastlvlup != null) {
-                    if ((Math.abs(lastlvlup.getTime() - thislvlup.getTime()) / 1000) < 1)
-                        return new Audio.VolAdjust(clip.stream(), 0);
-                    else
+                if (res.name.equals("sfx/lvlup") || res.name.equals("sfx/msg")) {
+                    Date thislvlup = new Date();
+                    if (lastlvlup != null) {
+                        if ((Math.abs(lastlvlup.getTime() - thislvlup.getTime()) / 1000) < 1)
+                            return new Audio.VolAdjust(clip.stream(), 0);
+                        else
+                            lastlvlup = thislvlup;
+                    } else
                         lastlvlup = thislvlup;
-                } else
-                    lastlvlup = thislvlup;
+                }
+            } catch (NoClassDefFoundError q) {
             }
-            }catch(NoClassDefFoundError q){}
             return (clip.stream());
         }
     }
 
     public static void play(Resource res) {
-        if(res.name.equals("sfx/msg"))
-            play(res,Config.sfxdingvol);
+        if (res.name.equals("sfx/msg"))
+            play(res, Config.sfxdingvol);
         else
             play(fromres(res));
     }
 
-    public static void play(Resource res, double vol)
-    {
+    public static void play(Resource res, double vol) {
         play(new Audio.VolAdjust(fromres(res), vol));
     }
 
@@ -618,16 +628,37 @@ public class Audio {
             }
         });
     }
+
     public static void play(final Indir<Resource> clip, double vol) {
         queue(new Runnable() {
             public void run() {
                 try {
-                    play(clip.get(),vol);
+                    play(clip.get(), vol);
                 } catch (Loading e) {
                     queue(this);
                 }
             }
         });
+    }
+
+    public static void play(String sound, double vol) {
+        File file = new File(sound);
+        if (!file.exists() || file.isDirectory()) {
+            PBotUtils.sysMsg("Error while playing an alarm, file " + file.getAbsolutePath() + " does not exist!");
+        } else
+            try {
+                AudioInputStream in = AudioSystem.getAudioInputStream(file);
+                AudioFormat tgtFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 44100, 16, 2, 4, 44100, false);
+                AudioInputStream pcmStream = AudioSystem.getAudioInputStream(tgtFormat, in);
+                Audio.CS klippi = new Audio.PCMClip(pcmStream, 2);
+                ((Audio.Mixer) Audio.player.stream).add(new Audio.VolAdjust(klippi, vol));
+            } catch (UnsupportedAudioFileException e) {
+                PBotUtils.sysMsg("UnsupportedAudioFileException");
+                e.printStackTrace();
+            } catch (IOException e) {
+                PBotUtils.sysMsg("IOException");
+                e.printStackTrace();
+            }
     }
 
     public static void main(String[] args) throws Exception {
