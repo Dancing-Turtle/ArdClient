@@ -3227,6 +3227,18 @@ public class OptWnd extends Window {
             }
         }, makeCustomMenuGrid(0), makeCustomMenuGrid(1));
 
+        appender.add(new CheckBox("Special menu alt+RMC in proximity to the mouse cursor") {
+            {
+                a = configuration.proximityspecial;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("proximityspecial", val);
+                configuration.proximityspecial = val;
+                a = val;
+            }
+        });
+
         appender.add(new Label(""));
         appender.add(new Label("Map settings. temp."));
 

@@ -2153,11 +2153,24 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
 
         protected void hit(Coord pc, Coord2d mc, ClickInfo inf) {
             if (clickb == 3 && ui.modmeta && gameui().vhand == null) {
-                final Optional<Gob> gob = gobFromClick(inf);
-                if(gob.isPresent()) {
-                    showSpecialMenu(gob.get());
+                final Optional<Gob> clickgob = gobFromClick(inf);
+                if (clickgob.isPresent()) {
+                    showSpecialMenu(clickgob.get());
+                } else if (configuration.proximityspecial) {
+                    Gob target = null;
+                    synchronized (glob.oc) {
+                        for (Gob gob : glob.oc) {
+                            if (!gob.isplayer()) {
+                                double dist = gob.rc.dist(mc);
+                                if ((target == null || dist < target.rc.dist(mc)) && dist <= 5 * tilesz.x)
+                                    target = gob;
+                            }
+                        }
+                        if (target != null)
+                            showSpecialMenu(target);
+                    }
                 }
-            }else {
+            } else {
                 lastItemactClickArgs = null;
                 if (clickb == 1)
                     pllastcc = mc;
