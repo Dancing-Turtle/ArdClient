@@ -3076,7 +3076,10 @@ public class OptWnd extends Window {
     }
 
     private void initModification() {
-        final WidgetVerticalAppender appender = new WidgetVerticalAppender(withScrollport(modification, new Coord(620, 350)));
+        final WidgetVerticalAppender appender = new WidgetVerticalAppender(withScrollport(modification, new Coord(370, 350)));
+        final WidgetVerticalAppender appender2 = new WidgetVerticalAppender(modification);
+        appender2.setHorizontalMargin(5);
+        appender2.setX(400);
 
         appender.add(new Label("Strange or unreal modifications"));
 
@@ -3239,6 +3242,46 @@ public class OptWnd extends Window {
             }
         });
 
+        appender2.add(new Label("Choose/add item quality color:"));
+        appender2.add(new CheckBox("Custom quality below") {
+            {
+                a = configuration.customquality;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("customquality", val);
+                configuration.customquality = val;
+                a = val;
+            }
+        });
+
+        final CustomQualityList list = new CustomQualityList();
+        appender2.add(list);
+
+        final ColorPreview colPre = new ColorPreview(new Coord(20, 20), Color.WHITE, val -> { CustomQualityList.NewColor = val; });
+        final TextEntry value = new TextEntry(120, "") {
+            @Override
+            public void activate(String text) {
+                try {
+                    list.add(Double.parseDouble(text), Double.parseDouble(text), CustomQualityList.NewColor, true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                settext("");
+            }
+        };
+        appender2.addRow(value, colPre, new Button(45, "Add") {
+            @Override
+            public void click() {
+                try {
+                    list.add(Double.parseDouble(value.text), Double.parseDouble(value.text), CustomQualityList.NewColor, true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                value.settext("");
+            }
+        });
+
         appender.add(new Label(""));
         appender.add(new Label("Map settings. temp."));
 
@@ -3253,7 +3296,6 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
-
 
         modification.add(new PButton(200, "Back", 27, main), new Coord(210, 360));
         modification.pack();

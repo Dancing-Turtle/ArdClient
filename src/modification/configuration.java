@@ -79,6 +79,7 @@ public class configuration {
 	public static int scaletreeint = Utils.getprefi("scaletreeint", 25);
 
 	public static boolean proximityspecial = Utils.getprefb("proximityspecial", false);
+	public static boolean customquality = Utils.getprefb("customquality", false);
 
 	public static boolean customMarkObj = Utils.getprefb("customMarkObj", false);
 	public static Map<String, String> customMarkObjs = new HashMap<>();
