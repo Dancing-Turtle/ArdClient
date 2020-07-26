@@ -26,7 +26,7 @@
 
 package haven;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -96,5 +96,27 @@ public class VMeter extends Widget {
         } else {
             super.uimsg(msg, args);
         }
+    }
+
+    @Override
+    public Object tooltip(Coord c, Widget prev) {
+        Widget p = this.parent;
+        if(p instanceof Window){
+            if(((Window) p).cap.text.equals("Oven")){
+                if(ui.modctrl){
+                    return RichText.render("$b{$col[255,223,5]{" + amount +"/100 units}}" + ".\n13 units to cook.", -1).tex();
+                } else {
+                    return RichText.render("$b{$col[255,223,5]{" + amount +"/100 units}}", -1).tex();
+                }
+            } else if(((Window) p).cap.text.equals("Ore Smelter")){
+                if(ui.modctrl){
+                    return RichText.render("$b{$col[255,223,5]{" + amount +"/100 units.}}" + "\n40 units to smelt.\n30 units to smelt well mined.", -1).tex();
+                } else {
+                    return RichText.render("$b{$col[255,223,5]{" + amount +"/100 units}}", -1).tex();
+                }
+            }
+        }
+        return RichText.render("$b{$col[255,223,5]{" + amount +"/100 units.}}", -1).tex();
+
     }
 }
