@@ -28,26 +28,20 @@ package haven;
 
 import haven.Resource.AButton;
 import haven.automation.*;
-import haven.automation.Discord;
-import haven.purus.*;
-import haven.automation.PepperBot;
+import haven.purus.Farmer;
+import haven.purus.StockpileFiller;
+import haven.purus.TroughFiller;
+import haven.purus.pbot.PBotAPI;
+import haven.purus.pbot.PBotUtils;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.font.TextAttribute;
 import java.awt.image.BufferedImage;
-import haven.Resource.AButton;
-import haven.purus.pbot.PBotAPI;
-import haven.purus.pbot.PBotUtils;
-
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.*;
+import java.io.BufferedReader;
 import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 public class MenuGrid extends Widget {
     public final static Coord bgsz = Inventory.invsq.sz().add(-1, -1);
@@ -610,7 +604,23 @@ public class MenuGrid extends Widget {
                     if(gui != null){
                         new Thread(new EquipSwordShield(gui), "EquipSwordShield").start();
                     }}
+        ));//
+        addSpecial(new SpecialPagina(this, "paginae::amber::bunnyshoes",
+                Resource.local().load("paginae/amber/bunnyshoes"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                        new Thread(new EquipSlippers(gui), "bunnyshoes").start();
+                    }}
         ));
+        addSpecial(new SpecialPagina(this, "paginae::amber::rusalka",
+                Resource.local().load("paginae/amber/rusalka"),
+                (pag) -> {
+                    GameUI gui = gameui();
+                    if(gui != null){
+                        new Thread(new EquipRusalka(gui), "rusalka").start();
+                    }}
+        ));//
         addSpecial(new SpecialPagina(this, "paginae::amber::slicecheese",
                 Resource.local().load("paginae/amber/SliceCheese"),
                 (pag) -> {
