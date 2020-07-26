@@ -469,7 +469,7 @@ public class LoginScreen extends Widget {
 				} catch(IOException e) {
 					e.printStackTrace();
 				} catch(InterruptedException e) {
-					e.printStackTrace();
+					//e.printStackTrace();
 				} 
             }
         });

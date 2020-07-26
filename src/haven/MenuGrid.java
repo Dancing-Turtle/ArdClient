@@ -27,27 +27,61 @@
 package haven;
 
 import haven.Resource.AButton;
-import haven.automation.*;
+import haven.automation.AddBranchesToOven;
+import haven.automation.AddCoalToSmelter;
+import haven.automation.ButcherFish;
+import haven.automation.CoalToSmelters;
+import haven.automation.Coracleslol;
+import haven.automation.CountGobs;
 import haven.automation.Discord;
-import haven.purus.*;
+import haven.automation.Dismount;
+import haven.automation.DreamHarvester;
+import haven.automation.EquipRusalka;
+import haven.automation.EquipSacks;
+import haven.automation.EquipSlippers;
+import haven.automation.EquipSwordShield;
+import haven.automation.EquipWeapon;
+import haven.automation.FeedClover;
+import haven.automation.FillCheeseTray;
+import haven.automation.FlaxBot;
+import haven.automation.GobSelectCallback;
+import haven.automation.LeashAnimal;
+import haven.automation.LightWithTorch;
+import haven.automation.MinerAlert;
+import haven.automation.MothKiller;
+import haven.automation.OysterOpener;
+import haven.automation.PepperBotPro;
+import haven.automation.PepperFood;
+import haven.automation.PlaceTrays;
+import haven.automation.SliceCheese;
+import haven.automation.SplitLogs;
+import haven.automation.SteelRefueler;
+import haven.automation.TakeTrays;
+import haven.automation.TrellisDestroy;
+import haven.automation.TrellisHarvest;
 import haven.purus.Farmer;
 import haven.purus.StockpileFiller;
 import haven.purus.TroughFiller;
 import haven.purus.pbot.PBotAPI;
 import haven.purus.pbot.PBotUtils;
+import modification.configuration;
 
-import java.awt.*;
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.font.TextAttribute;
 import java.awt.image.BufferedImage;
-import haven.purus.pbot.PBotAPI;
-import haven.purus.pbot.PBotUtils;
-import modification.configuration;
-
-import java.io.*;
 import java.io.BufferedReader;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.*;
+import java.util.Map;
+import java.util.Objects;
+import java.util.WeakHashMap;
 import java.util.function.Consumer;
 
 public class MenuGrid extends Widget {
@@ -69,6 +103,7 @@ public class MenuGrid extends Widget {
     public boolean discordconnected;
     public Pagina lastCraft = null;
     public int pagseq = 0;
+
     @RName("scm")
     public static class $_ implements Factory {
         public Widget create(UI ui, Object[] args) {
@@ -86,58 +121,71 @@ public class MenuGrid extends Widget {
         }
 
 
-        public BufferedImage img() {return(res.layer(Resource.imgc).img);}
-        public String name() {return(res.layer(Resource.action).name);}
-        public char hotkey() {return(res.layer(Resource.action).hk);}
-        public void use()
-        {
+        public BufferedImage img() {
+            return (res.layer(Resource.imgc).img);
+        }
+
+        public String name() {
+            return (res.layer(Resource.action).name);
+        }
+
+        public char hotkey() {
+            return (res.layer(Resource.action).hk);
+        }
+
+        public void use() {
             pag.use();
         }
 
         public String sortkey() {
             AButton ai = pag.act();
 
-            if(ai.ad.length == 0) {
-                return("\0" + name());
+            if (ai.ad.length == 0) {
+                return ("\0" + name());
             }
 
-            if(ai.ad[0].contains("!")) {
-                return("\0\0" + ai.ad[0] + name());
+            if (ai.ad[0].contains("!")) {
+                return ("\0\0" + ai.ad[0] + name());
             }
 
-            return(name());
+            return (name());
         }
 
         private List<ItemInfo> info = null;
+
         public List<ItemInfo> info() {
-            if(info == null)
+            if (info == null)
                 info = ItemInfo.buildinfo(this, pag.rawinfo);
-            return(info);
+            return (info);
         }
+
         private static final OwnerContext.ClassResolver<PagButton> ctxr = new OwnerContext.ClassResolver<PagButton>()
                 .add(Glob.class, p -> p.pag.scm.ui.sess.glob)
                 .add(Session.class, p -> p.pag.scm.ui.sess);
-        public <T> T context(Class<T> cl) {return(ctxr.context(cl, this));}
+
+        public <T> T context(Class<T> cl) {
+            return (ctxr.context(cl, this));
+        }
 
         public BufferedImage rendertt(boolean withpg) {
             Resource.AButton ad = res.layer(Resource.action);
             Resource.Pagina pg = res.layer(Resource.pagina);
             String tt = ad.name;
             int pos = tt.toUpperCase().indexOf(Character.toUpperCase(ad.hk));
-            if(pos >= 0)
+            if (pos >= 0)
                 tt = tt.substring(0, pos) + "$b{$col[255,128,0]{" + tt.charAt(pos) + "}}" + tt.substring(pos + 1);
-            else if(ad.hk != 0)
+            else if (ad.hk != 0)
                 tt += " [" + ad.hk + "]";
             BufferedImage ret = ttfnd.render(tt, 300).img;
-            if(withpg) {
+            if (withpg) {
                 List<ItemInfo> info = info();
                 info.removeIf(el -> el instanceof ItemInfo.Name);
-                if(!info.isEmpty())
+                if (!info.isEmpty())
                     ret = ItemInfo.catimgs(0, ret, ItemInfo.longtip(info));
-                if(pg != null)
+                if (pg != null)
                     ret = ItemInfo.catimgs(0, ret, ttfnd.render("\n" + pg.text, 200).img);
             }
-            return(ret);
+            return (ret);
         }
 
         @Resource.PublishedCode(name = "pagina")
@@ -149,20 +197,20 @@ public class MenuGrid extends Widget {
 
     public final PagButton next = new PagButton(new Pagina(this, Resource.local().loadwait("gfx/hud/sc-next").indir())) {
         public void use() {
-            if((curoff + cap) >= curbtns.size())
+            if ((curoff + cap) >= curbtns.size())
                 curoff = 0;
             else
                 curoff += cap;
         }
 
         public BufferedImage rendertt(boolean withpg) {
-            return(RichText.render("More... ($b{$col[255,128,0]{\u21e7N}})", 0).img);
+            return (RichText.render("More... ($b{$col[255,128,0]{\u21e7N}})", 0).img);
         }
     };
 
     public final PagButton bk = new PagButton(new Pagina(this, Resource.local().loadwait("gfx/hud/sc-back").indir())) {
         public void use() {
-            if((curoff - cap) >= 0)
+            if ((curoff - cap) >= 0)
                 curoff -= cap;
             else {
                 pag.scm.cur = paginafor(pag.scm.cur.act().parent);
@@ -173,11 +221,11 @@ public class MenuGrid extends Widget {
         }
 
         public BufferedImage rendertt(boolean withpg) {
-            return(RichText.render("Back ($b{$col[255,128,0]{Backspace}})", 0).img);
+            return (RichText.render("Back ($b{$col[255,128,0]{Backspace}})", 0).img);
         }
     };
 
-    public static class Pagina implements ItemInfo.Owner{
+    public static class Pagina implements ItemInfo.Owner {
         public final MenuGrid scm;
         public final Indir<Resource> res;
         public State st;
@@ -203,7 +251,7 @@ public class MenuGrid extends Widget {
             this.scm = scm;
             this.res = res;
             state(State.ENABLED);
-            this.onUse = (me) -> scm.wdgmsg("act", (Object[])res().layer(Resource.action).ad);
+            this.onUse = (me) -> scm.wdgmsg("act", (Object[]) res().layer(Resource.action).ad);
         }
 
         public Pagina(MenuGrid scm, Indir<Resource> res, final Consumer<Pagina> onUse) {
@@ -225,6 +273,7 @@ public class MenuGrid extends Widget {
         public void use() {
             onUse.accept(this);
         }
+
         private PagButton button = null;
 
         public PagButton button() {
@@ -247,54 +296,67 @@ public class MenuGrid extends Widget {
         public void button(PagButton btn) {
             button = btn;
         }
+
         private List<ItemInfo> info = null;
+
         public List<ItemInfo> info() {
-            if(info == null)
+            if (info == null)
                 info = ItemInfo.buildinfo(this, rawinfo);
-            return(info);
+            return (info);
         }
+
         private static final OwnerContext.ClassResolver<Pagina> ctxr = new OwnerContext.ClassResolver<Pagina>()
                 .add(Glob.class, p -> p.scm.ui.sess.glob)
                 .add(Session.class, p -> p.scm.ui.sess)
                 .add(UI.class, p -> p.scm.ui);
-        public <T> T context(Class<T> cl) {return(ctxr.context(cl, this));}
+
+        public <T> T context(Class<T> cl) {
+            return (ctxr.context(cl, this));
+        }
 
         public boolean isAction() {
             Resource.AButton act = act();
-            if(act == null) {return false;}
+            if (act == null) {
+                return false;
+            }
             String[] ad = act.ad;
             return ad != null && ad.length > 0;
         }
 
         public static String name(Pagina p) {
             String name = "";
-            if(p.res instanceof Resource.Named) {
+            if (p.res instanceof Resource.Named) {
                 name = ((Resource.Named) p.res).name;
             } else {
                 try {
                     name = p.res.get().name;
-                } catch (Loading ignored) {}
+                } catch (Loading ignored) {
+                }
             }
             return name;
         }
     }
 
     public Map<Indir<Resource>, Pagina> pmap = new WeakHashMap<Indir<Resource>, Pagina>();
+
     public Pagina paginafor(Indir<Resource> res) {
-        if(res == null)
-            return(null);
-        synchronized(pmap) {
+        if (res == null)
+            return (null);
+        synchronized (pmap) {
             Pagina p = pmap.get(res);
-            if(p == null)
+            if (p == null)
                 pmap.put(res, p = new Pagina(this, res));
-            return(p);
+            return (p);
         }
     }
+
     public Pagina paginafor(Resource res) {
-        if(res != null) {
+        if (res != null) {
             synchronized (pmap) {
                 for (Indir<Resource> key : pmap.keySet()) {
-                    if(Objects.equals(key.get().name, res.name)) { return pmap.get(key); }
+                    if (Objects.equals(key.get().name, res.name)) {
+                        return pmap.get(key);
+                    }
                 }
             }
         }
@@ -309,111 +371,113 @@ public class MenuGrid extends Widget {
     public static Comparator<Pagina> sorter = new Comparator<Pagina>() {
         public int compare(Pagina a, Pagina b) {
             AButton aa = a.act(), ab = b.act();
-            if((aa.ad.length == 0) && (ab.ad.length > 0))
-                return(-1);
-            if((aa.ad.length > 0) && (ab.ad.length == 0))
-                return(1);
-            return(aa.name.compareTo(ab.name));
+            if ((aa.ad.length == 0) && (ab.ad.length > 0))
+                return (-1);
+            if ((aa.ad.length > 0) && (ab.ad.length == 0))
+                return (1);
+            return (aa.name.compareTo(ab.name));
         }
     };
 
 
     public boolean cons(Pagina p, Collection<PagButton> buf) {
         Collection<Pagina> open, close = new HashSet<>();
-        synchronized(paginae) {
+        synchronized (paginae) {
             open = new LinkedList<>();
-            for(Pagina pag : paginae) {
-                if(pag.newp == 2) {
+            for (Pagina pag : paginae) {
+                if (pag.newp == 2) {
                     pag.newp = 0;
                     pag.fstart = 0;
                 }
                 open.add(pag);
             }
-            for(Pagina pag : pmap.values()) {
-                if(pag.newp == 2) {
+            for (Pagina pag : pmap.values()) {
+                if (pag.newp == 2) {
                     pag.newp = 0;
                     pag.fstart = 0;
                 }
             }
         }
         boolean ret = true;
-        while(!open.isEmpty()) {
+        while (!open.isEmpty()) {
             Iterator<Pagina> iter = open.iterator();
             Pagina pag = iter.next();
             iter.remove();
             try {
                 AButton ad = pag.act();
-                if(ad == null)
-                    throw(new RuntimeException("Pagina in " + pag.res + " lacks action"));
+                if (ad == null)
+                    throw (new RuntimeException("Pagina in " + pag.res + " lacks action"));
                 Pagina parent = paginafor(ad.parent);
-                if((pag.newp != 0) && (parent != null) && (parent.newp == 0)) {
+                if ((pag.newp != 0) && (parent != null) && (parent.newp == 0)) {
                     parent.newp = 2;
-                    parent.fstart = (parent.fstart == 0)?pag.fstart:Math.min(parent.fstart, pag.fstart);
+                    parent.fstart = (parent.fstart == 0) ? pag.fstart : Math.min(parent.fstart, pag.fstart);
                 }
-                if(parent == p)
+                if (parent == p)
                     buf.add(pag.button());
-                else if((parent != null) && !close.contains(parent) && !open.contains(parent))
+                else if ((parent != null) && !close.contains(parent) && !open.contains(parent))
                     open.add(parent);
                 close.add(pag);
-            } catch(Loading e) {
+            } catch (Loading e) {
                 ret = false;
             }
         }
-        return(ret);
+        return (ret);
     }
 
     public boolean cons2(Pagina p, Collection<Pagina> buf) {
         Pagina[] cp = new Pagina[0];
         Collection<Pagina> open, close = new HashSet<Pagina>();
-        synchronized(paginae) {
+        synchronized (paginae) {
             open = new LinkedList<Pagina>();
-            for(Pagina pag : paginae) {
-                if(pag.newp == 2) {
+            for (Pagina pag : paginae) {
+                if (pag.newp == 2) {
                     pag.newp = 0;
                     pag.fstart = 0;
                 }
                 open.add(pag);
             }
-            for(Pagina pag : pmap.values()) {
-                if(pag.newp == 2) {
+            for (Pagina pag : pmap.values()) {
+                if (pag.newp == 2) {
                     pag.newp = 0;
                     pag.fstart = 0;
                 }
             }
         }
         boolean ret = true;
-        while(!open.isEmpty()) {
+        while (!open.isEmpty()) {
             Iterator<Pagina> iter = open.iterator();
             Pagina pag = iter.next();
             iter.remove();
             try {
                 AButton ad = pag.act();
-                if(ad == null)
-                    throw(new RuntimeException("Pagina in " + pag.res + " lacks action"));
+                if (ad == null)
+                    throw (new RuntimeException("Pagina in " + pag.res + " lacks action"));
                 Pagina parent = paginafor(ad.parent);
-                if((pag.newp != 0) && (parent != null) && (parent.newp == 0)) {
+                if ((pag.newp != 0) && (parent != null) && (parent.newp == 0)) {
                     parent.newp = 2;
-                    parent.fstart = (parent.fstart == 0)?pag.fstart:Math.min(parent.fstart, pag.fstart);
+                    parent.fstart = (parent.fstart == 0) ? pag.fstart : Math.min(parent.fstart, pag.fstart);
                 }
-                if(parent == p)
+                if (parent == p)
                     buf.add(pag);
-                else if((parent != null) && !close.contains(parent) && !open.contains(parent))
+                else if ((parent != null) && !close.contains(parent) && !open.contains(parent))
                     open.add(parent);
                 close.add(pag);
-            } catch(Loading e) {
+            } catch (Loading e) {
                 ret = false;
             }
         }
-        return(ret);
+        return (ret);
     }
 
     public static class SpecialPagina extends Pagina {
         public final String key;
+
         public SpecialPagina(MenuGrid scm, String key, Indir<Resource> res, final Consumer<Pagina> onUse) {
             super(scm, res, onUse);
             this.key = key;
         }
     }
+
     private void addSpecial(final SpecialPagina pag) {
         paginae.add(pag);
         specialpag.put(pag.key, pag);
@@ -426,34 +490,37 @@ public class MenuGrid extends Widget {
                 Resource.local().load("paginae/amber/coal12"),
                 (pag) -> {
                     GameUI gui = gameui();
-                    if(gui != null){
+                    if (gui != null) {
                         Thread t = new Thread(new AddCoalToSmelter(gui, 12), "AddCoalToSmelter");
                         t.start();
-                    }}
+                    }
+                }
         ));
         addSpecial(new SpecialPagina(this, "paginae::amber::coal9",
                 Resource.local().load("paginae/amber/coal9"),
                 (pag) -> {
                     GameUI gui = gameui();
-                    if(gui != null){
+                    if (gui != null) {
                         Thread t = new Thread(new AddCoalToSmelter(gui, 9), "AddCoalToSmelter");
                         t.start();
-                    }}
+                    }
+                }
         ));
         addSpecial(new SpecialPagina(this, "paginae::amber::branchoven",
                 Resource.local().load("paginae/amber/branchoven"),
                 (pag) -> {
                     GameUI gui = gameui();
-                    if(gui != null){
-                        Thread t = new Thread(new AddBranchesToOven(gui,4), "AddBranchesToOven");
+                    if (gui != null) {
+                        Thread t = new Thread(new AddBranchesToOven(gui, 4), "AddBranchesToOven");
                         t.start();
-                    }}
+                    }
+                }
         ));
         addSpecial(new SpecialPagina(this, "paginae::amber::steel",
                 Resource.local().load("paginae/amber/steel"),
                 (pag) -> {
                     GameUI gui = gameui();
-                    if(gui != null){
+                    if (gui != null) {
                         if (gui.getwnd("Steel Refueler") == null) {
                             SteelRefueler sw = new SteelRefueler();
                             gui.map.steelrefueler = sw;
@@ -462,13 +529,14 @@ public class MenuGrid extends Widget {
                                 gui.map.registerGobSelect(sw);
                             }
                         }
-                    }}
+                    }
+                }
         ));
         addSpecial(new SpecialPagina(this, "paginae::amber::torch",
                 Resource.local().load("paginae/amber/torch"),
                 (pag) -> {
                     GameUI gui = gameui();
-                    if(gui != null){
+                    if (gui != null) {
                         if (gui.getwnd("Torch Lighter") == null) {
                             LightWithTorch sw = new LightWithTorch(gui);
                             gui.map.torchlight = sw;
@@ -477,13 +545,14 @@ public class MenuGrid extends Widget {
                                 gui.map.registerGobSelect(sw);
                             }
                         }
-                    }}
+                    }
+                }
         ));
         addSpecial(new SpecialPagina(this, "paginae::amber::coaltosmelters",
                 Resource.local().load("paginae/amber/CoalToSmelters"),
                 (pag) -> {
                     GameUI gui = gameui();
-                    if(gui != null){
+                    if (gui != null) {
                         if (gui.getwnd("Add Coal To Smelters") == null) {
                             CoalToSmelters sw = new CoalToSmelters(gui);
                             gui.map.coaltosmelters = sw;
@@ -492,199 +561,222 @@ public class MenuGrid extends Widget {
                                 gui.map.registerGobSelect(sw);
                             }
                         }
-                    }}
+                    }
+                }
         ));
         addSpecial(new SpecialPagina(this, "paginae::amber::coracleslol",
                 Resource.local().load("paginae/amber/Coracleslol"),
                 (pag) -> {
                     GameUI gui = gameui();
-                    if(gui != null){
+                    if (gui != null) {
                         new Thread(new Coracleslol(gui), "Coracleslol").start();
-                    }}
+                    }
+                }
         ));
         addSpecial(new SpecialPagina(this, "paginae::amber::mineralert",
                 Resource.local().load("paginae/amber/MinerAlert"),
                 (pag) -> {
                     GameUI gui = gameui();
-                    if(gui != null){
+                    if (gui != null) {
                         if (gui.getwnd("Miner Alert") == null) {
                             MinerAlert sw = new MinerAlert(gui);
                             gui.map.mineralert = sw;
                             gui.add(sw, new Coord(gui.sz.x / 2 - sw.sz.x / 2, gui.sz.y / 2 - sw.sz.y / 2 - 200));
                         }
-                    }}
+                    }
+                }
         ));
         addSpecial(new SpecialPagina(this, "paginae::amber::clover",
                 Resource.local().load("paginae/amber/clover"),
                 (pag) -> {
                     GameUI gui = gameui();
-                    if(gui != null){
+                    if (gui != null) {
                         new Thread(new FeedClover(gui), "FeedClover").start();
-                    }}
+                    }
+                }
         ));
         addSpecial(new SpecialPagina(this, "paginae::amber::rope",
                 Resource.local().load("paginae/amber/rope"),
                 (pag) -> {
                     GameUI gui = gameui();
-                    if(gui != null){
+                    if (gui != null) {
                         new Thread(new LeashAnimal(gui), "LeashAnimal").start();
-                    }}
+                    }
+                }
         ));
         addSpecial(new SpecialPagina(this, "paginae::amber::fish",
                 Resource.local().load("paginae/amber/fish"),
                 (pag) -> {
                     GameUI gui = gameui();
-                    if(gui != null){
+                    if (gui != null) {
                         new Thread(new ButcherFish(gui), "ButcherFish").start();
-                    }}
+                    }
+                }
         ));
         addSpecial(new SpecialPagina(this, "paginae::windows::timers",
                 Resource.local().load("paginae/amber/timers"),
                 (pag) -> {
                     GameUI gui = gameui();
-                    if(gui != null){
+                    if (gui != null) {
                         gui.timerswnd.show(!gui.timerswnd.visible);
                         gui.timerswnd.raise();
-                    }}
+                    }
+                }
         ));
         addSpecial(new SpecialPagina(this, "paginae::windows::livestock",
                 Resource.local().load("paginae/amber/livestock"),
                 (pag) -> {
                     GameUI gui = gameui();
-                    if(gui != null){
+                    if (gui != null) {
                         gui.livestockwnd.show(!gui.livestockwnd.visible);
                         gui.livestockwnd.raise();
-                    }}
+                    }
+                }
         ));
         addSpecial(new SpecialPagina(this, "paginae::amber::dream",
                 Resource.local().load("paginae/amber/dream"),
                 (pag) -> {
                     GameUI gui = gameui();
-                    if(gui != null){
+                    if (gui != null) {
                         new Thread(new DreamHarvester(gui), "DreamHarvester").start();
-                    }}
+                    }
+                }
         ));
         addSpecial(new SpecialPagina(this, "paginae::amber::trellisharvest",
                 Resource.local().load("paginae/amber/trellisharvest"),
                 (pag) -> {
                     GameUI gui = gameui();
-                    if(gui != null){
+                    if (gui != null) {
                         new Thread(new TrellisHarvest(gui), "TrellisHarvest").start();
-                    }}
+                    }
+                }
         ));
         addSpecial(new SpecialPagina(this, "paginae::amber::trellisdestroy",
                 Resource.local().load("paginae/amber/trellisdestroy"),
                 (pag) -> {
                     GameUI gui = gameui();
-                    if(gui != null){
+                    if (gui != null) {
                         new Thread(new TrellisDestroy(gui), "TrellisDestroy").start();
-                    }}
+                    }
+                }
         ));
         addSpecial(new SpecialPagina(this, "paginae::amber::cheesetrayfiller",
                 Resource.local().load("paginae/amber/cheesetrayfiller"),
                 (pag) -> {
                     GameUI gui = gameui();
-                    if(gui != null){
+                    if (gui != null) {
                         new Thread(new FillCheeseTray(gui), "FillCheeseTray").start();
-                    }}
+                    }
+                }
         ));
         addSpecial(new SpecialPagina(this, "paginae::amber::equipweapon",
                 Resource.local().load("paginae/amber/equipweapon"),
                 (pag) -> {
                     GameUI gui = gameui();
-                    if(gui != null){
+                    if (gui != null) {
                         new Thread(new EquipWeapon(gui), "EquipWeapon").start();
-                    }}
+                    }
+                }
         ));
         addSpecial(new SpecialPagina(this, "paginae::amber::equipsacks",
                 Resource.local().load("paginae/amber/equipsacks"),
                 (pag) -> {
                     GameUI gui = gameui();
-                    if(gui != null){
+                    if (gui != null) {
                         new Thread(new EquipSacks(gui), "EquipSacks").start();
-                    }}
+                    }
+                }
         ));
         addSpecial(new SpecialPagina(this, "paginae::amber::equipswordshield",
                 Resource.local().load("paginae/amber/equipswordshield"),
                 (pag) -> {
                     GameUI gui = gameui();
-                    if(gui != null){
+                    if (gui != null) {
                         new Thread(new EquipSwordShield(gui), "EquipSwordShield").start();
-                    }}
+                    }
+                }
         ));//
         addSpecial(new SpecialPagina(this, "paginae::amber::bunnyshoes",
                 Resource.local().load("paginae/amber/bunnyshoes"),
                 (pag) -> {
                     GameUI gui = gameui();
-                    if(gui != null){
+                    if (gui != null) {
                         new Thread(new EquipSlippers(gui), "bunnyshoes").start();
-                    }}
+                    }
+                }
         ));
         addSpecial(new SpecialPagina(this, "paginae::amber::rusalka",
                 Resource.local().load("paginae/amber/rusalka"),
                 (pag) -> {
                     GameUI gui = gameui();
-                    if(gui != null){
+                    if (gui != null) {
                         new Thread(new EquipRusalka(gui), "rusalka").start();
-                    }}
+                    }
+                }
         ));//
         addSpecial(new SpecialPagina(this, "paginae::amber::slicecheese",
                 Resource.local().load("paginae/amber/SliceCheese"),
                 (pag) -> {
                     GameUI gui = gameui();
-                    if(gui != null){
+                    if (gui != null) {
                         new Thread(new SliceCheese(gui), "SliceCheese").start();
-                    }}
+                    }
+                }
         ));
         addSpecial(new SpecialPagina(this, "paginae::amber::oysteropener",
                 Resource.local().load("paginae/amber/OysterOpener"),
                 (pag) -> {
                     GameUI gui = gameui();
-                    if(gui != null){
+                    if (gui != null) {
                         new Thread(new OysterOpener(gui), "OysterOpener").start();
-                    }}
+                    }
+                }
         ));
         addSpecial(new SpecialPagina(this, "paginae::amber::splitlogs",
                 Resource.local().load("paginae/amber/SplitLogs"),
                 (pag) -> {
                     GameUI gui = gameui();
-                    if(gui != null){
+                    if (gui != null) {
                         new Thread(new SplitLogs(gui), "SplitLogs").start();
-                    }}
+                    }
+                }
         ));
         addSpecial(new SpecialPagina(this, "paginae::amber::countgobs",
                 Resource.local().load("paginae/amber/CountGobs"),
                 (pag) -> {
                     GameUI gui = gameui();
-                    if(gui != null){
+                    if (gui != null) {
                         new Thread(new CountGobs(gui), "CountGobs").start();
-                    }}
+                    }
+                }
         ));
         addSpecial(new SpecialPagina(this, "paginae::amber::mothkillers",
                 Resource.local().load("paginae/amber/MothKiller"),
                 (pag) -> {
                     GameUI gui = gameui();
-                    if(gui != null){
+                    if (gui != null) {
                         new Thread(new MothKiller(gui), "MothKiller").start();
-                    }}
+                    }
+                }
         ));
         addSpecial(new SpecialPagina(this, "paginae::amber::flaxbot",
                 Resource.local().load("paginae/amber/FlaxBot"),
                 (pag) -> {
                     GameUI gui = gameui();
-                    if(gui != null){
+                    if (gui != null) {
                         if (gui.getwnd("Flax Bot") == null) {
                             FlaxBot sw = new FlaxBot(gui);
                             gui.map.flaxbot = sw;
                             gui.add(sw, new Coord(gui.sz.x / 2 - sw.sz.x / 2, gui.sz.y / 2 - sw.sz.y / 2 - 200));
                         }
-                    }}
+                    }
+                }
         ));
         addSpecial(new SpecialPagina(this, "paginae::amber::pepperbotpro",
                 Resource.local().load("paginae/amber/PepperBotPro"),
                 (pag) -> {
                     GameUI gui = gameui();
-                    if(gui != null){
+                    if (gui != null) {
                         if (gui.getwnd("Pepper Bot") == null) {
                             PepperBotPro sw = new PepperBotPro(gui);
                             gui.map.pepperbotpro = sw;
@@ -694,79 +786,87 @@ public class MenuGrid extends Widget {
                                 gui.map.registerGobSelect(sw);
                             }
                         }
-                    }}
+                    }
+                }
         ));
         addSpecial(new SpecialPagina(this, "paginae::amber::taketrays",
                 Resource.local().load("paginae/amber/TakeTrays"),
                 (pag) -> {
                     GameUI gui = gameui();
-                    if(gui != null){
+                    if (gui != null) {
                         new Thread(new TakeTrays(gui), "TakeTrays").start();
-                    }}
+                    }
+                }
         ));
         addSpecial(new SpecialPagina(this, "paginae::amber::pepperfood",
                 Resource.local().load("paginae/amber/PepperFood"),
                 (pag) -> {
                     GameUI gui = gameui();
-                    if(gui != null){
+                    if (gui != null) {
                         new Thread(new PepperFood(gui), "PepperFood").start();
-                    }}
+                    }
+                }
         ));
         addSpecial(new SpecialPagina(this, "paginae::amber::placetrays",
                 Resource.local().load("paginae/amber/PlaceTrays"),
                 (pag) -> {
                     GameUI gui = gameui();
-                    if(gui != null){
+                    if (gui != null) {
                         new Thread(new PlaceTrays(gui), "PlaceTrays").start();
-                    }}
+                    }
+                }
         ));
         addSpecial(new SpecialPagina(this, "paginae::amber::farmer",
                 Resource.local().load("paginae/purus/farmer"),
                 (pag) -> {
                     GameUI gui = gameui();
-                    if(gui != null){
+                    if (gui != null) {
                         Farmer f = new Farmer();
                         Window w = f;
-                        gui.add(w, new Coord(gui.sz.x/2 - w.sz.x/2, gui.sz.y/2 - w.sz.y/2 - 200));
+                        gui.add(w, new Coord(gui.sz.x / 2 - w.sz.x / 2, gui.sz.y / 2 - w.sz.y / 2 - 200));
                         synchronized (GobSelectCallback.class) {
                             gameui().map.registerAreaSelect(f);
                             gui.map.registerGobSelect(f);
                         }
-                    }}
+                    }
+                }
         ));
         addSpecial(new SpecialPagina(this, "paginae::amber::troughfill",
                 Resource.local().load("paginae/purus/troughfill"),
                 (pag) -> {
                     GameUI gui = gameui();
-                    if(gui != null){
+                    if (gui != null) {
                         TroughFiller tf = new TroughFiller();
                         gui.add(tf, new Coord(gui.sz.x / 2 - tf.sz.x / 2, gui.sz.y / 2 - tf.sz.y / 2 - 200));
                         synchronized (GobSelectCallback.class) {
                             gui.map.registerGobSelect(tf);
                         }
-                    }}
+                    }
+                }
         ));
         addSpecial(new SpecialPagina(this, "paginae::amber::stockpilefill",
                 Resource.local().load("paginae/purus/stockpilefill"),
                 (pag) -> {
                     GameUI gui = gameui();
-                    if(gui != null){
+                    if (gui != null) {
                         StockpileFiller spf = new StockpileFiller();
                         gui.add(spf, new Coord(gui.sz.x / 2 - spf.sz.x / 2, gui.sz.y / 2 - spf.sz.y / 2 - 200));
                         synchronized (GobSelectCallback.class) {
                             gui.map.registerGobSelect(spf);
                         }
-                    }}
+                    }
+                }
         ));
         addSpecial(new SpecialPagina(this, "paginae::amber::dismount",
                 Resource.local().load("paginae/amber/dismount"),
                 (pag) -> {
                     GameUI gui = gameui();
-                    if(gui != null){
+                    if (gui != null) {
                         new Thread(new Dismount(gui), "Dismount").start();
-                    }}
+                    }
+                }
         ));
-        if(Config.showPBot) {
+        if (Config.showPBot) {
             addSpecial(new SpecialPagina(this, "paginae::amber::pbotmenu",
                     Resource.local().load("paginae/purus/PBotMenu"),
                     (pag) -> {
@@ -781,7 +881,7 @@ public class MenuGrid extends Widget {
                     }
             ));
         }
-        if(Config.showPBotOld) {
+        if (Config.showPBotOld) {
             addSpecial(new SpecialPagina(this, "paginae::amber::pbotmenuold",
                     Resource.local().load("paginae/purus/PBotMenuOld"),
                     (pag) -> {
@@ -801,9 +901,10 @@ public class MenuGrid extends Widget {
                 Resource.local().load("paginae/windows/chat"),
                 (pag) -> {
                     GameUI gui = gameui();
-                    if(gui != null){
+                    if (gui != null) {
                         gui.OpenChat();
-                    }}
+                    }
+                }
         ));
 
         /*
@@ -855,51 +956,57 @@ public class MenuGrid extends Widget {
                     Resource.local().load("paginae/mainmenu/char"),
                     (pag) -> {
                         GameUI gui = gameui();
-                        if(gui != null){
+                        if (gui != null) {
                             gui.toggleCharWnd();
-                        }}
+                        }
+                    }
             ));
 
             addSpecial(new SpecialPagina(this, "paginae::equ",
                     Resource.local().load("paginae/mainmenu/equ"),
                     (pag) -> {
                         GameUI gui = gameui();
-                        if(gui != null){
+                        if (gui != null) {
                             gui.toggleEquipment();
-                        }}
+                        }
+                    }
             ));
             addSpecial(new SpecialPagina(this, "paginae::inv",
                     Resource.local().load("paginae/mainmenu/inv"),
                     (pag) -> {
                         GameUI gui = gameui();
-                        if(gui != null){
+                        if (gui != null) {
                             gui.toggleInv();
-                        }}
+                        }
+                    }
             ));
             addSpecial(new SpecialPagina(this, "paginae::kithnkin",
                     Resource.local().load("paginae/mainmenu/kithnkin"),
                     (pag) -> {
                         GameUI gui = gameui();
-                        if(gui != null){
+                        if (gui != null) {
                             gui.toggleKinList();
-                        }}
+                        }
+                    }
             ));
             addSpecial(new SpecialPagina(this, "paginae::search",
                     Resource.local().load("paginae/mainmenu/search"),
                     (pag) -> {
                         GameUI gui = gameui();
-                        if(gui != null){
+                        if (gui != null) {
                             gui.toggleSearch();
-                        }}
+                        }
+                    }
             ));
 
             addSpecial(new SpecialPagina(this, "paginae::options",
                     Resource.local().load("paginae/mainmenu/opt"),
                     (pag) -> {
                         GameUI gui = gameui();
-                        if(gui != null){
+                        if (gui != null) {
                             gui.toggleOptions();
-                        }}
+                        }
+                    }
             ));
         }
 
@@ -908,17 +1015,19 @@ public class MenuGrid extends Widget {
                 Resource.local().load("paginae/windows/smap"),
                 (pag) -> {
                     GameUI gui = gameui();
-                    if(gui != null){
+                    if (gui != null) {
                         gui.toggleMinimap();
-                    }}
+                    }
+                }
         ));
         addSpecial(new SpecialPagina(this, "paginae::windows::study",
                 Resource.local().load("paginae/windows/study"),
                 (pag) -> {
                     GameUI gui = gameui();
-                    if(gui != null){
+                    if (gui != null) {
                         gui.toggleStudy();
-                    }}
+                    }
+                }
         ));
 
 
@@ -968,26 +1077,26 @@ public class MenuGrid extends Widget {
     }
 
     protected void updlayout() {
-        synchronized(paginae) {
+        synchronized (paginae) {
             List<PagButton> cur = new ArrayList<>();
             recons = !cons(this.cur, cur);
             cur.sort(Comparator.comparing(PagButton::sortkey));
             this.curbtns = cur;
             int i = curoff;
             hotmap.clear();
-            for(PagButton btn : cur) {
+            for (PagButton btn : cur) {
                 char hk = btn.hotkey();
-                if(hk != 0)
+                if (hk != 0)
                     hotmap.put(Character.toUpperCase(hk), btn);
             }
-            for(int y = 0; y < gsz.y; y++) {
-                for(int x = 0; x < gsz.x; x++) {
+            for (int y = 0; y < gsz.y; y++) {
+                for (int x = 0; x < gsz.x; x++) {
                     PagButton btn = null;
-                    if((this.cur != null) && (x == gsz.x - 1) && (y == gsz.y - 1)) {
+                    if ((this.cur != null) && (x == gsz.x - 1) && (y == gsz.y - 1)) {
                         btn = bk;
-                    } else if((cur.size() > ((gsz.x * gsz.y) - 1)) && (x == gsz.x - 2) && (y == gsz.y - 1)) {
+                    } else if ((cur.size() > ((gsz.x * gsz.y) - 1)) && (x == gsz.x - 2) && (y == gsz.y - 1)) {
                         btn = next;
-                    } else if(i < cur.size()) {
+                    } else if (i < cur.size()) {
                         btn = cur.get(i++);
                     }
                     layout[x][y] = btn;
@@ -1008,41 +1117,41 @@ public class MenuGrid extends Widget {
     }
 
     private void selectCraft(Pagina r) {
-        if(r == null){
+        if (r == null) {
             return;
         }
-        if(ui.gui.craftwnd != null){
+        if (ui.gui.craftwnd != null) {
             ui.gui.craftwnd.select(r, true);
         }
     }
 
     public void draw(GOut g) {
         double now = Utils.rtime();
-        for(int y = 0; y < gsz.y; y++) {
-            for(int x = 0; x < gsz.x; x++) {
+        for (int y = 0; y < gsz.y; y++) {
+            for (int x = 0; x < gsz.x; x++) {
                 Coord p = bgsz.mul(new Coord(x, y));
                 g.image(Inventory.invsq, p);
                 PagButton btn = layout[x][y];
-                if(btn != null) {
+                if (btn != null) {
                     Pagina info = btn.pag;
                     Tex btex = info.img.get();
                     g.image(btex, p.add(1, 1));
-                    if(info.meter > 0) {
+                    if (info.meter > 0) {
                         double m = info.meter;
-                        if(info.dtime > 0)
+                        if (info.dtime > 0)
                             m += (1 - m) * (now - info.gettime) / info.dtime;
                         m = Utils.clip(m, 0, 1);
                         g.chcolor(255, 255, 255, 128);
                         g.fellipse(p.add(bgsz.div(2)), bgsz.div(2), Math.PI / 2, ((Math.PI / 2) + (Math.PI * 2 * m)));
                         g.chcolor();
                     }
-                    if(info.newp != 0) {
-                        if(info.fstart == 0) {
+                    if (info.newp != 0) {
+                        if (info.fstart == 0) {
                             info.fstart = now;
                         } else {
                             double ph = (now - info.fstart) - (((x + (y * gsz.x)) * 0.15) % 1.0);
-                            if(ph < 1.25) {
-                                g.chcolor(255, 255, 255, (int)(255 * ((Math.cos(ph * Math.PI * 2) * -0.5) + 0.5)));
+                            if (ph < 1.25) {
+                                g.chcolor(255, 255, 255, (int) (255 * ((Math.cos(ph * Math.PI * 2) * -0.5) + 0.5)));
                                 g.image(glowmask(btn), p.sub(4, 4));
                                 g.chcolor();
                             } else {
@@ -1052,7 +1161,7 @@ public class MenuGrid extends Widget {
                             }
                         }
                     }
-                    if(btn == pressed) {
+                    if (btn == pressed) {
                         g.chcolor(new Color(0, 0, 0, 128));
                         g.frect(p.add(1, 1), btex.sz());
                         g.chcolor();
@@ -1061,7 +1170,7 @@ public class MenuGrid extends Widget {
             }
         }
         super.draw(g);
-        if(dragging != null) {
+        if (dragging != null) {
             Tex dt = dragging.img.get();
             ui.drawafter(new UI.AfterDraw() {
                 public void draw(GOut g) {
@@ -1079,24 +1188,24 @@ public class MenuGrid extends Widget {
     public Object tooltip(Coord c, Widget prev) {
         PagButton pag = bhit(c);
         double now = Utils.rtime();
-        if(pag != null) {
-            if(prev != this)
+        if (pag != null) {
+            if (prev != this)
                 hoverstart = now;
             boolean ttl = (now - hoverstart) > 0.5;
-            if((pag != curttp) || (ttl != curttl)) {
+            if ((pag != curttp) || (ttl != curttl)) {
                 try {
                     BufferedImage ti = pag.rendertt(ttl);
                     curtt = (ti == null) ? null : new TexI(ti);
-                } catch(Loading l) {
-                    return(null);
+                } catch (Loading l) {
+                    return (null);
                 }
                 curttp = pag;
                 curttl = ttl;
             }
-            return(curtt);
+            return (curtt);
         } else {
             hoverstart = now;
-            return(null);
+            return (null);
         }
     }
 
@@ -1111,10 +1220,10 @@ public class MenuGrid extends Widget {
 
     public boolean mousedown(Coord c, int button) {
         PagButton h = bhit(c);
-        if((button == 1) && (h != null)) {
+        if ((button == 1) && (h != null)) {
             pressed = h;
             grab = ui.grabmouse(this);
-            return(true);
+            return (true);
         } else {
             return true;
             //  return super.mousedown(c, button);
@@ -1122,9 +1231,9 @@ public class MenuGrid extends Widget {
     }
 
     public void mousemove(Coord c) {
-        if((dragging == null) && (pressed != null)) {
+        if ((dragging == null) && (pressed != null)) {
             PagButton h = bhit(c);
-            if(h != pressed)
+            if (h != pressed)
                 dragging = pressed.pag;
         } else {
             super.mousemove(c);
@@ -1132,28 +1241,26 @@ public class MenuGrid extends Widget {
     }
 
 
-
     public void use(PagButton r, boolean reset) {
         Collection<PagButton> sub = new ArrayList<>();
         cons(r.pag, sub);
         selectCraft(r.pag);
-        if(sub.size() > 0) {
+        if (sub.size() > 0) {
             this.cur = r.pag;
             curoff = 0;
-        }else if(r.pag == bk.pag){
-            if((curoff - cap) >= 0)
+        } else if (r.pag == bk.pag) {
+            if ((curoff - cap) >= 0)
                 curoff -= cap;
             else {
                 this.cur = paginafor(this.cur.act().parent);
                 curoff = 0;
             }
             selectCraft(this.cur);
-        }  else{
+        } else {
             Resource.AButton act = r.pag.act();
             if (act == null) {
                 r.use();
-            }
-            else {
+            } else {
                 String[] ad = r.pag.act().ad;
                 if (ad.length > 0 && (ad[0].equals("craft") || ad[0].equals("bp"))) {
                     lastCraft = r.pag;
@@ -1232,43 +1339,41 @@ public class MenuGrid extends Widget {
                 wdgmsg("act", new Object[]{"tracking"});
                 gui.trackautotgld = true;
             }
-            if(Config.autoconnectarddiscord && !discordconnected) {
-                new Thread(new Discord(PBotAPI.gui,"ard")).start();
+            if (Config.autoconnectarddiscord && !discordconnected) {
+                new Thread(new Discord(PBotAPI.gui, "ard")).start();
                 gui.discordconnected = true;
             }
-            if(Config.autoconnectdiscord && !gui.discordconnected) {
+            if (Config.autoconnectdiscord && !gui.discordconnected) {
                 if (Resource.getLocString(Resource.BUNDLE_LABEL, Config.discordbotkey) != null) {
                     new Thread(new Discord(PBotAPI.gui, "normal")).start();
                     gui.discordconnected = true;
                 }
-            }else if (gui.discordconnected)
-                PBotUtils.sysMsg("Discord is already connected, you can only connect to one server at a time.",Color.white);
+            } else if (gui.discordconnected)
+                PBotUtils.sysMsg("Discord is already connected, you can only connect to one server at a time.", Color.white);
 
             if (Config.enablecrime && !GameUI.crimeon) {
                 gui.crimeautotgld = true;
                 wdgmsg("act", new Object[]{"crime"});
             }
-            if(Config.enableswimming && !GameUI.swimon){
+            if (Config.enableswimming && !GameUI.swimon) {
                 gui.swimautotgld = true;
                 wdgmsg("act", new Object[]{"swim"});
             }
-            if(Config.autowindows.get("Belt").selected){
+            if (Config.autowindows.get("Belt").selected) {
                 WItem l = gui.getequipory().quickslots[5];
-                if(l != null)
+                if (l != null)
                     l.item.wdgmsg("iact", Coord.z, -1);
             }
             for (Widget w = gameui().chat.lchild; w != null; w = w.prev) {
                 if (w instanceof ChatUI.MultiChat) {
                     ChatUI.MultiChat chat = (ChatUI.MultiChat) w;
-                    if(Config.chatalert != null) {
+                    if (Config.chatalert != null) {
                         if (chat.name().equals(Resource.getLocString(Resource.BUNDLE_LABEL, Config.chatalert))) {
                             chat.select();
                             chat.getparent(ChatUI.class).expand();
                             break;
                         }
-                    }
-                    else
-                    if (chat.name().equals(Resource.getLocString(Resource.BUNDLE_LABEL, "Area Chat"))) {
+                    } else if (chat.name().equals(Resource.getLocString(Resource.BUNDLE_LABEL, "Area Chat"))) {
                         chat.select();
                         chat.getparent(ChatUI.class).expand();
                         break;
@@ -1276,9 +1381,9 @@ public class MenuGrid extends Widget {
                 }
             }
 
-            if(!Config.autowindows.get("Quest Log").selected)
+            if (!Config.autowindows.get("Quest Log").selected)
                 gui.questwnd.hide();
-            if(Config.autowindows.get("Craft window").selected)
+            if (Config.autowindows.get("Craft window").selected)
                 gui.toggleCraftDB();
 
             togglestuff = false;
@@ -1287,56 +1392,56 @@ public class MenuGrid extends Widget {
 
     public boolean mouseup(Coord c, int button) {
         PagButton h = bhit(c);
-        if((button == 1) && (grab != null)) {
-            if(dragging != null) {
-                if(!(dragging instanceof SpecialPagina)) {
+        if ((button == 1) && (grab != null)) {
+            if (dragging != null) {
+                if (!(dragging instanceof SpecialPagina)) {
                     ui.dropthing(ui.root, ui.mc, dragging.res());
                 } else {
                     ui.dropthing(ui.root, ui.mc, dragging);
                 }
                 pressed = null;
                 dragging = null;
-            } else if(pressed != null) {
-                if(pressed == h)
+            } else if (pressed != null) {
+                if (pressed == h)
                     use(h, false);
                 pressed = null;
             }
             grab.remove();
             grab = null;
-            return(true);
+            return (true);
         } else {
             return super.mouseup(c, button);
         }
     }
 
     public void uimsg(String msg, Object... args) {
-        if(msg == "goto") {
-            if(args[0] == null)
+        if (msg == "goto") {
+            if (args[0] == null)
                 cur = null;
             else
-                cur = paginafor(ui.sess.getres((Integer)args[0]));
+                cur = paginafor(ui.sess.getres((Integer) args[0]));
             curoff = 0;
             updlayout();
-        } else if(msg == "fill") {
-            synchronized(paginae) {
+        } else if (msg == "fill") {
+            synchronized (paginae) {
                 int a = 0;
-                while(a < args.length) {
-                    int fl = (Integer)args[a++];
-                    Pagina pag = paginafor(ui.sess.getres((Integer)args[a++]));
-                    if((fl & 1) != 0) {
+                while (a < args.length) {
+                    int fl = (Integer) args[a++];
+                    Pagina pag = paginafor(ui.sess.getres((Integer) args[a++]));
+                    if ((fl & 1) != 0) {
                         pag.state(Pagina.State.ENABLED);
                         pag.meter = 0;
-                        if((fl & 2) != 0)
+                        if ((fl & 2) != 0)
                             pag.state(Pagina.State.DISABLED);
-                        if((fl & 4) != 0) {
-                            pag.meter = ((Number)args[a++]).doubleValue() / 1000.0;
+                        if ((fl & 4) != 0) {
+                            pag.meter = ((Number) args[a++]).doubleValue() / 1000.0;
                             pag.gettime = Utils.rtime();
-                            pag.dtime = ((Number)args[a++]).doubleValue() / 1000.0;
+                            pag.dtime = ((Number) args[a++]).doubleValue() / 1000.0;
                         }
-                        if((fl & 8) != 0)
+                        if ((fl & 8) != 0)
                             pag.newp = 1;
-                        if((fl & 16) != 0)
-                            pag.rawinfo = (Object[])args[a++];
+                        if ((fl & 16) != 0)
+                            pag.rawinfo = (Object[]) args[a++];
                         else
                             pag.rawinfo = new Object[0];
 
@@ -1362,42 +1467,41 @@ public class MenuGrid extends Widget {
     }
 
     public boolean globtype(char k, KeyEvent ev) {
-        if(Config.disablemenugrid)
+        if (Config.disablemenugrid)
             return false;
         if (ev.isShiftDown() || ev.isAltDown()) {
             return false;
-        }
-        else if((k == 27) && (this.cur != null)) {
+        } else if ((k == 27) && (this.cur != null)) {
             this.cur = null;
             curoff = 0;
             updlayout();
-            return(true);
-        } else if((k == 8) && (this.cur != null)) {
+            return (true);
+        } else if ((k == 8) && (this.cur != null)) {
             this.cur = paginafor(this.cur.act().parent);
             curoff = 0;
             updlayout();
-            return(true);
-        } else if((k == 'N') && (layout[gsz.x - 2][gsz.y - 1] == next)) {
+            return (true);
+        } else if ((k == 'N') && (layout[gsz.x - 2][gsz.y - 1] == next)) {
             use(next, false);
-            return(true);
+            return (true);
         }
         PagButton r = hotmap.get(Character.toUpperCase(k));
-        if(r != null) {
+        if (r != null) {
             if (Config.disablemagaicmenugrid && r.res.name.startsWith("paginae/seid/"))
-                return(false);
+                return (false);
             use(r, true);
-            return(true);
+            return (true);
         }
-        return(false);
+        return (false);
     }
 
     public boolean isCrafting(Pagina p) {
         return (p != null) && (isCrafting(p.res()) || isCrafting(getParent(p)));
     }
 
-    public Pagina getPagina(String ad){
-        for(Pagina p : paginae) {
-            if(p.act().ad.length > 1) {
+    public Pagina getPagina(String ad) {
+        for (Pagina p : paginae) {
+            if (p.act().ad.length > 1) {
                 if (p.act().ad[1].equals(ad)) {
                     return p;
                 }
@@ -1406,12 +1510,12 @@ public class MenuGrid extends Widget {
         return null;
     }
 
-    public boolean isCrafting(Resource res){
+    public boolean isCrafting(Resource res) {
         return res.name.contains("paginae/act/craft");
     }
 
-    public Pagina getParent(Pagina p){
-        if(p == null){
+    public Pagina getParent(Pagina p) {
+        if (p == null) {
             return null;
         }
         try {
@@ -1420,15 +1524,17 @@ public class MenuGrid extends Widget {
             if (ad == null)
                 return null;
             return paginafor(ad.parent);
-        } catch (Loading e){
+        } catch (Loading e) {
             return null;
         }
     }
 
     public boolean isChildOf(Pagina item, Pagina parent) {
         Pagina p;
-        while((p = getParent(item)) != null){
-            if(p == parent){ return true; }
+        while ((p = getParent(item)) != null) {
+            if (p == parent) {
+                return true;
+            }
             item = p;
         }
         return false;
