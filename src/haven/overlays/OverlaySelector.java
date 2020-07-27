@@ -175,12 +175,12 @@ public class OverlaySelector extends Window {
         }
         if (highlightchbox.a) { //FIXME markedgobs need testing
             OverlayData.addHighlight(gobname, highlightColor, true);
-            ui.sess.glob.oc.unovHighGobs(gobname);
-            ui.sess.glob.oc.ovHighGobs(gobname);
+//            ui.sess.glob.oc.unovHighGobs(gobname);
+//            ui.sess.glob.oc.ovHighGobs(gobname);
         } else {
             OverlayData.addHighlight(gobname, null, false);
             OverlayData.removeHighlight(gobname);
-            ui.sess.glob.oc.unovHighGobs(gobname);
+//            ui.sess.glob.oc.unovHighGobs(gobname);
         }
         if (!textchbox.a && !highlightchbox.a) {
             OverlayData.remove(gobname);

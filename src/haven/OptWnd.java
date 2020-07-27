@@ -2740,12 +2740,12 @@ public class OptWnd extends Window {
 
         appender.add(new CheckBox("Item Quality Coloring Transfer ASC") {
             {
-                a = Config.dropcolor;
+                a = Config.transfercolor;
             }
 
             public void set(boolean val) {
                 Utils.setprefb("dropcolor", val);
-                Config.dropcolor = val;
+                Config.transfercolor = val;
                 a = val;
             }
         });
@@ -3238,6 +3238,17 @@ public class OptWnd extends Window {
             public void set(boolean val) {
                 Utils.setprefb("proximityspecial", val);
                 configuration.proximityspecial = val;
+                a = val;
+            }
+        });
+        appender.add(new CheckBox("Show trough status") {
+            {
+                a = configuration.showtroughstatus;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("showtroughstatus", val);
+                configuration.showtroughstatus = val;
                 a = val;
             }
         });

@@ -29,9 +29,13 @@ package haven;
 import haven.purus.pbot.PBotUtils;
 import haven.res.ui.tt.q.qbuff.QBuff;
 
-import java.awt.*;
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
-import java.util.*;
+import java.util.Map;
 
 public class Inventory extends Widget implements DTarget {
     public static final Tex invsq = Resource.loadtex("gfx/hud/invsq");
@@ -39,26 +43,27 @@ public class Inventory extends Widget implements DTarget {
     public boolean dropul = true;
     public Coord isz;
     public static final Comparator<WItem> ITEM_COMPARATOR_ASC = new Comparator<WItem>() {
-	@Override
-	public int compare(WItem o1, WItem o2) {
-	    QualityList ql1 = o1.itemq.get();
-	    double q1 = (ql1 != null && !ql1.isEmpty()) ? ql1.single(QualityList.SingleType.Average).value : 0;
+        @Override
+        public int compare(WItem o1, WItem o2) {
+            QualityList ql1 = o1.itemq.get();
+            double q1 = (ql1 != null && !ql1.isEmpty()) ? ql1.single(QualityList.SingleType.Average).value : 0;
 
-	    QualityList ql2 = o2.itemq.get();
-	    double q2 = (ql2 != null && !ql2.isEmpty()) ? ql2.single(QualityList.SingleType.Average).value : 0;
+            QualityList ql2 = o2.itemq.get();
+            double q2 = (ql2 != null && !ql2.isEmpty()) ? ql2.single(QualityList.SingleType.Average).value : 0;
 
-	    return Double.compare(q1, q2);
-	}
+            return Double.compare(q1, q2);
+        }
     };
     public static final Comparator<WItem> ITEM_COMPARATOR_DESC = new Comparator<WItem>() {
-	@Override
-	public int compare(WItem o1, WItem o2) {
-	    return ITEM_COMPARATOR_ASC.compare(o2, o1);
-	}
+        @Override
+        public int compare(WItem o1, WItem o2) {
+            return ITEM_COMPARATOR_ASC.compare(o2, o1);
+        }
     };
 
     public boolean locked = false;
     Map<GItem, WItem> wmap = new HashMap<GItem, WItem>();
+
     @RName("inv")
     public static class $_ implements Factory {
         public Widget create(UI ui, Object[] args) {
@@ -96,7 +101,7 @@ public class Inventory extends Widget implements DTarget {
 
     @Override
     public boolean mousedown(Coord c, int button) {
-	return !locked && super.mousedown(c, button);
+        return !locked && super.mousedown(c, button);
     }
 
     public void addchild(Widget child, Object... args) {
@@ -119,7 +124,7 @@ public class Inventory extends Widget implements DTarget {
     public boolean drop(Coord cc, Coord ul) {
         Coord dc = dropul ? ul.add(sqsz.div(2)).div(sqsz) : cc.div(sqsz);
         wdgmsg("drop", dc);
-        return(true);
+        return (true);
     }
 
     public boolean iteminteract(Coord cc, Coord ul) {
@@ -130,8 +135,8 @@ public class Inventory extends Widget implements DTarget {
         if (msg == "sz") {
             isz = (Coord) args[0];
             resize(invsq.sz().add(new Coord(-1, -1)).mul(isz).add(new Coord(1, 1)));
-        } else if(msg == "mode") {
-            dropul = (((Integer)args[0]) == 0);
+        } else if (msg == "mode") {
+            dropul = (((Integer) args[0]) == 0);
         } else {
             super.uimsg(msg, args);
         }
@@ -139,17 +144,17 @@ public class Inventory extends Widget implements DTarget {
 
     @Override
     public void wdgmsg(Widget sender, String msg, Object... args) {
-        if(msg.equals("drop-identical")) {
+        if (msg.equals("drop-identical")) {
             Color colorIdentical = null;
-            for (WItem item : getIdenticalItems((GItem) args[0])){
+            for (WItem item : getIdenticalItems((GItem) args[0])) {
                 try {
-                    if(Config.dropcolor){
+                    if (Config.dropcolor) {
                         GItem g = (GItem) args[0];
-                        if(g.quality().color != null){
-                            if(colorIdentical == null){
+                        if (g.quality().color != null) {
+                            if (colorIdentical == null) {
                                 colorIdentical = g.quality().color;
                             }
-                            if(item.qq.color != colorIdentical){
+                            if (item.qq.color != colorIdentical) {
                                 continue;
                             }
                         }
@@ -157,11 +162,11 @@ public class Inventory extends Widget implements DTarget {
                     } else {
                         item.item.wdgmsg("drop", Coord.z);
                     }
-                } catch (Exception e){
+                } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
             }
-        } else if(msg.startsWith("transfer-identical")) {
+        } else if (msg.startsWith("transfer-identical")) {
             Window stockpile = gameui().getwnd("Stockpile");
             Window smelter = gameui().getwnd("Ore Smelter");
             Window kiln = gameui().getwnd("Kiln");
@@ -179,18 +184,27 @@ public class Inventory extends Widget implements DTarget {
                     else
                         return msg.endsWith("asc") ? -1 : 1;
                 });
-                for (WItem item : items){
+
+                Color colorIdentical = null;
+                for (WItem item : getIdenticalItems((GItem) args[0])) {
                     try {
-                        if(Config.transfercolor){
-                            if(item.qq.color != null && items.get(0).qq.color != null){
-                                if(item.qq.color != items.get(0).qq.color)
-                                    return;
+                        if (Config.transfercolor) {
+                            GItem g = (GItem) args[0];
+                            if (g.quality().color != null) {
+                                if (colorIdentical == null) {
+                                    colorIdentical = g.quality().color;
+                                }
+                                if (item.qq.color != colorIdentical) {
+                                    continue;
+                                }
                             }
+                            item.item.wdgmsg("transfer", Coord.z);
+                        } else {
+                            item.item.wdgmsg("transfer", Coord.z);
                         }
-                    } catch (Exception e){
+                    } catch (Exception e) {
                         System.out.println(e.getMessage());
                     }
-                    item.item.wdgmsg("transfer", Coord.z);
                 }
 
             } else {
@@ -241,7 +255,7 @@ public class Inventory extends Widget implements DTarget {
         List<WItem> items = new ArrayList<WItem>();
         for (Widget wdg = child; wdg != null; wdg = wdg.next) {
             if (wdg instanceof WItem) {
-                String wdgname = ((WItem)wdg).item.getname();
+                String wdgname = ((WItem) wdg).item.getname();
                 for (String name : names) {
                     if (wdgname.contains(name)) {
                         items.add((WItem) wdg);
@@ -256,30 +270,32 @@ public class Inventory extends Widget implements DTarget {
     public WItem getItemPartial(String name) {
         for (Widget wdg = child; wdg != null; wdg = wdg.next) {
             if (wdg instanceof WItem) {
-                String wdgname = ((WItem)wdg).item.getname();
+                String wdgname = ((WItem) wdg).item.getname();
                 if (wdgname.contains(name))
                     return (WItem) wdg;
             }
         }
         return null;
     }
+
     public WItem getItemPartialTrays(String name) {
         for (Widget wdg = child; wdg != null; wdg = wdg.next) {
             if (wdg instanceof WItem) {
-                String wdgname = ((WItem)wdg).item.getname();
+                String wdgname = ((WItem) wdg).item.getname();
                 if (wdgname.contains(name))
                     return (WItem) wdg;
             }
         }
         return null;
     }
+
     public WItem getItemPartialDrink(String name) {
         for (Widget wdg = child; wdg != null; wdg = wdg.next) {
             if (wdg instanceof WItem) {
                 String wdgname = ((WItem) wdg).item.getname();
                 if (wdgname.contains(name))
                     if (!PBotUtils.canDrinkFrom((WItem) wdg))
-                return null;
+                        return null;
                 if (PBotUtils.canDrinkFrom((WItem) wdg)) {
                     return (WItem) wdg;
                 }
@@ -292,7 +308,7 @@ public class Inventory extends Widget implements DTarget {
         int count = 0;
         for (Widget wdg = child; wdg != null; wdg = wdg.next) {
             if (wdg instanceof WItem) {
-                String wdgname = ((WItem)wdg).item.getname();
+                String wdgname = ((WItem) wdg).item.getname();
                 if (wdgname.contains(name))
                     count++;
             }
@@ -311,20 +327,20 @@ public class Inventory extends Widget implements DTarget {
 
     // Null if no free slots found
     public Coord getFreeSlot() {
-    	int[][] invTable = new int[isz.x][isz.y];
+        int[][] invTable = new int[isz.x][isz.y];
         for (Widget wdg = child; wdg != null; wdg = wdg.next) {
             if (wdg instanceof WItem) {
-            	WItem item = (WItem) wdg;
-            	for(int i=0; i<item.sz.div(sqsz).y; i++)
-            		for(int j=0; j<item.sz.div(sqsz).x; j++)
-            			invTable[item.c.div(sqsz).x+j][item.c.div(sqsz).y+i] = 1;
+                WItem item = (WItem) wdg;
+                for (int i = 0; i < item.sz.div(sqsz).y; i++)
+                    for (int j = 0; j < item.sz.div(sqsz).x; j++)
+                        invTable[item.c.div(sqsz).x + j][item.c.div(sqsz).y + i] = 1;
             }
         }
-        for(int i=0; i<isz.y; i++) {
-        	for(int j=0; j<isz.x; j++) {
-        		if(invTable[j][i] == 0)
-        			return new Coord(j, i);
-        	}
+        for (int i = 0; i < isz.y; i++) {
+            for (int j = 0; j < isz.x; j++) {
+                if (invTable[j][i] == 0)
+                    return new Coord(j, i);
+            }
         }
         return null;
     }
@@ -335,15 +351,15 @@ public class Inventory extends Widget implements DTarget {
         for (Widget wdg = child; wdg != null; wdg = wdg.next) {
             if (wdg instanceof WItem) {
                 WItem item = (WItem) wdg;
-                for(int i=0; i<item.sz.div(sqsz).y; i++)
-                    for(int j=0; j<item.sz.div(sqsz).x; j++)
-                        invTable[item.c.div(sqsz).x+j][item.c.div(sqsz).y+i] = 1;
+                for (int i = 0; i < item.sz.div(sqsz).y; i++)
+                    for (int j = 0; j < item.sz.div(sqsz).x; j++)
+                        invTable[item.c.div(sqsz).x + j][item.c.div(sqsz).y + i] = 1;
             }
         }
-        for(int i=0; i<isz.y; i++) {
-            for(int j=0; j<isz.x; j++) {
-                if(invTable[j][i] == 0)
-                    cordlist.add(new Coord(j,i));
+        for (int i = 0; i < isz.y; i++) {
+            for (int j = 0; j < isz.x; j++) {
+                if (invTable[j][i] == 0)
+                    cordlist.add(new Coord(j, i));
             }
         }
         return cordlist;
@@ -367,9 +383,16 @@ public class Inventory extends Widget implements DTarget {
 
         return false;
     }
-    public static Coord invsz(Coord sz) { return invsq.sz().add(new Coord(-1, -1)).mul(sz).add(new Coord(1, 1)); }
 
-    public static Coord sqroff(Coord c){ return c.div(invsq.sz()); }
+    public static Coord invsz(Coord sz) {
+        return invsq.sz().add(new Coord(-1, -1)).mul(sz).add(new Coord(1, 1));
+    }
 
-    public static Coord sqoff(Coord c){ return c.mul(invsq.sz()); }
+    public static Coord sqroff(Coord c) {
+        return c.div(invsq.sz());
+    }
+
+    public static Coord sqoff(Coord c) {
+        return c.mul(invsq.sz());
+    }
 }

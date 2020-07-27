@@ -363,11 +363,6 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
                 if (OverlayData.isTexted(name)) {
                     addol(new Overlay(Sprite.GOB_TEXT_ID, new TextOverlay(this)));
                 }
-                if (OverlayData.isHighlighted(name)) {
-                    if (!markedGobs.contains(id))
-                        markedGobs.add(id);
-                    glob.oc.changed(this);
-                }
                 if(type == Type.HUMAN) {
                     setattr(new Halo(this));
                 }
@@ -470,7 +465,12 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
         StringBuilder sb = new StringBuilder();
         sb.append("Res: " ); sb.append(resname().orElse(""));
         sb.append(" ["); sb.append(id); sb.append("]\n");
-        sb.append("Type: " );sb.append(type); sb.append("\n");
+        sb.append("Type: " );sb.append(type);
+        if (type == Type.TROUGH) {
+            int stage = getattr(ResDrawable.class).sdt.peekrbuf(0);
+            sb.append(" Stage: " ); sb.append(stage);
+        }
+        sb.append("\n");
         sb.append("staticp: "); sb.append(staticp() != null ? "static" : "dynamic"); sb.append("\n");
         final Holding holding = getattr(Holding.class);
         if(holding != null) {
@@ -965,6 +965,20 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
                     rl.prepc(coopMissing);
                 if(stage == -38 || stage == 58 || stage == 57 || stage == -6 || stage == -7 || stage == 122 || stage == 121)
                     rl.prepc(dframeWater);
+            }
+
+            if (configuration.showtroughstatus && type == Type.TROUGH) {
+                int stage = getattr(ResDrawable.class).sdt.peekrbuf(0);
+
+                if (stage == 1)
+                    rl.prepc(coopMissing);
+                if (stage == 0)
+                    rl.prepc(cRackFull);
+            }
+
+            if (OverlayData.isHighlighted(name())) {
+                System.out.println(name() + " " + OverlayData.get(name()).highlightColor);
+                rl.prepc(new Material.Colors(OverlayData.get(name()).highlightColor));
             }
 
             if (Config.showdframestatus && type == Type.DFRAME) {

@@ -91,7 +91,7 @@ public class OverlayManager extends Window implements ObservableListener<Overlay
             if (lst.sel != null) {
                 OverlayData.remove(lst.sel);
                 highlighted.remove(lst.sel);
-                ui.sess.glob.oc.unovHighGobs(lst.sel);
+//                ui.sess.glob.oc.unovHighGobs(lst.sel);
                 ui.sess.glob.oc.unovTextGobs(lst.sel);
             }
         }), new Coord(0, c.copy().y + 27));
