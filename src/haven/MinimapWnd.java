@@ -183,7 +183,7 @@ public class MinimapWnd extends ResizableWnd {
                         state = true;
                         redraw = true;
                     }
-                } if (state) {
+                } else if (state) {
                     state = false;
                     redraw = true;
                 }

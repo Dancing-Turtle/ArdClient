@@ -24,6 +24,7 @@ map - bigmap add grid, setting, editor for marks
     MapFileWidget - fix Unknown tooltip from 7 zoom
     pathfinder on bigmap
     zoomable icons
+    traces
 
 quickslots - make custom and background without pictures
 
@@ -65,6 +66,8 @@ Shift click to link in textentry
 wiki fix 0.50 kg
 
 session widget to up
+
+prepare map and mapmarkers for render client
 
 
 for Jorb and Loftar:

@@ -447,7 +447,7 @@ public class Resource implements Serializable {
 					throw (new Loading(this));
 				}
 				if (error != null)
-					throw (new RuntimeException("Delayed error in resource " + name + " (v" + ver + "), from " + error.src, error));
+					try{throw (new RuntimeException("Delayed error in resource " + name + " (v" + ver + "), from " + error.src, error));} catch (Exception e) {e.printStackTrace();}
 				return (res);
 			}
 
