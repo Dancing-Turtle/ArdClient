@@ -312,7 +312,7 @@ public class GameUI extends ConsoleHost implements Console.Directory {
         try {
             PBotDiscord.initalize();
         } catch (Exception e){
-            e.printStackTrace();
+            System.out.println("PBotDiscord.initalize() " + e);
         }
         if(!Config.autowindows.get("Timers").selected)
             timerswnd.hide();
