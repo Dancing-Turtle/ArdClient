@@ -116,7 +116,7 @@ public class VMeter extends Widget {
                 }
             }
         }
-        return RichText.render("$b{$col[255,223,5]{" + amount +"/100 units.}}", -1).tex();
+        return super.tooltip;//RichText.render("$b{$col[255,223,5]{" + amount +"/100 units.}}", -1).tex();
 
     }
 }

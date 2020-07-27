@@ -3287,7 +3287,7 @@ public class OptWnd extends Window {
                 try {
                     list.add(Double.parseDouble(text), Double.parseDouble(text), CustomQualityList.NewColor, true);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    System.out.println("Color Quality TextEntry " + e);
                 }
                 settext("");
             }

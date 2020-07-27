@@ -48,7 +48,8 @@ public class TimerEditWnd extends Window {
         };
         add(txtminutes, new Coord(285, 30));
 
-        Button add;
+        Button add, andstart;
+        final TimerWdg[] timerNow = new TimerWdg[1];
         if (timer != null) {
             add = new Button(60, "Save") {
                 @Override
@@ -61,6 +62,7 @@ public class TimerEditWnd extends Window {
                     timer.duration = (60 * hours + minutes) * 60 * 1000;
                     timer.updateName();
                     timer.updateDuration();
+                    timerNow[0] = timer;
                     Glob.timersThread.save();
                     parent.reqdestroy();
                 }
@@ -78,7 +80,8 @@ public class TimerEditWnd extends Window {
                         if (timer.c.y + TimerWdg.height > y)
                             y = timer.c.y + TimerWdg.height;
                     }
-                    gui.timerswnd.port.cont.add(Glob.timersThread.add(txtname.text, duration, 0), new Coord(0, y));
+                    timerNow[0] = Glob.timersThread.add(txtname.text, duration, 0);
+                    gui.timerswnd.port.cont.add(timerNow[0], new Coord(0, y));
                     Glob.timersThread.save();
                     gui.timerswnd.resize();
                     parent.reqdestroy();
@@ -86,6 +89,14 @@ public class TimerEditWnd extends Window {
             };
         }
         add(add, new Coord(15, 70));
+        andstart = new Button(60, "and Start") {
+            @Override
+            public void click() {
+                add.click();
+                timerNow[0].start();
+            }
+        };
+        add(andstart, new Coord(add.c.x + add.sz.x + 5, 70));
 
         Button cancel = new Button(60, "Cancel") {
             @Override

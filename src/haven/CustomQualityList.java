@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 public class CustomQualityList extends WidgetList<CustomQualityList.Item> {
-    public static ArrayList<ColorQuality> qualityList = new ArrayList<>();
+    public static ArrayList<ColorQuality> qualityList;
     public static Color NewColor = Color.WHITE;
 
     public static final Comparator<Item> ITEM_COMPARATOR = new Comparator<Item>() {
@@ -120,12 +120,27 @@ public class CustomQualityList extends WidgetList<CustomQualityList.Item> {
                         number = res.getDouble(1);
                         color = new Color(res.getInt(2), true);
                         a = res.getBoolean(3);
+                        if (qualityList == null) qualityList = new ArrayList<>();
                         qualityList.add(new ColorQuality(number, color, a));
                         additem(new CustomQualityList.Item(number, color, a));
 ;                    }
                 }
             }
         });
+        if (qualityList == null) {
+            qualityList = new ArrayList<ColorQuality>() {{
+                add(new ColorQuality(10, Color.WHITE, true));
+                add(new ColorQuality(Config.uncommonq, Config.uncommon, true));
+                add(new ColorQuality(Config.rareq, Config.rare, true));
+                add(new ColorQuality(Config.epicq, Config.epic, true));
+                add(new ColorQuality(Config.legendaryq, Config.legendary, true));
+            }};
+            upsert(10, 10, Color.WHITE, true);
+            upsert(Config.uncommonq, Config.uncommonq, Config.uncommon, true);
+            upsert(Config.rareq, Config.rareq, Config.rare, true);
+            upsert(Config.epicq, Config.epicq, Config.epic, true);
+            upsert(Config.legendaryq, Config.legendaryq, Config.legendary, true);
+        }
     }
 
     public void upsert(double oldNumber, double number, Color color, boolean a) {
