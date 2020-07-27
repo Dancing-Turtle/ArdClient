@@ -83,15 +83,15 @@ public class configuration {
 	public static boolean showtroughstatus = Utils.getprefb("showtroughstatus", false);
 
 	public static boolean customMarkObj = Utils.getprefb("customMarkObj", false);
-	public static Map<String, String> customMarkObjs = new HashMap<>();
-	{
-		customMarkObjs.put("gfx/tiles/ridges/cavein", "Cave In");
-		customMarkObjs.put("gfx/tiles/ridges/caveout", "Cave Out");
-		customMarkObjs.put("gfx/terobjs/beaverdamdoor", "Beaver Dungeon");
-		customMarkObjs.put("gfx/terobjs/dng/batcave", "Bat Dungeon");
-		customMarkObjs.put("gfx/terobjs/dng/antdungeon", "Ant Dungeon");
-		customMarkObjs.put("gfx/terobjs/wonders/tarpit", "Tarpit");
-	}
+	public static Map<String, String> customMarkObjs = new HashMap<String, String>() {{
+		put("gfx/tiles/ridges/cavein", getDefaultTextName("gfx/tiles/ridges/cavein"));
+		put("gfx/tiles/ridges/caveout", getDefaultTextName("gfx/tiles/ridges/caveout"));
+		put("gfx/terobjs/beaverdamdoor", getDefaultTextName("gfx/terobjs/beaverdamdoor"));
+		put("gfx/terobjs/dng/batcave", getDefaultTextName("gfx/terobjs/dng/batcave"));
+		put("gfx/terobjs/dng/antdungeon", getDefaultTextName("gfx/terobjs/dng/antdungeon"));
+		put("gfx/terobjs/wonders/tarpit", getDefaultTextName("gfx/terobjs/wonders/tarpit"));
+	}};
+
 
 	public static String[] customMenuGrid = new String[] {Utils.getpref("customMenuGrid0", "6"), Utils.getpref("customMenuGrid1", "4")};
 	public static Coord getMenuGrid() {
@@ -469,5 +469,15 @@ public class configuration {
 		public boolean accept(File dir, String name) {
 			return name.toLowerCase().endsWith(ext);
 		}
+	}
+
+	public static String getDefaultTextName(String gobname) {
+		int p;
+		if (gobname.contains("/")) {
+			p = gobname.lastIndexOf('/');
+			if (p < 0) return (gobname);
+			return gobname.substring(p + 1, p + 2).toUpperCase() + gobname.substring(p + 2);
+		} else return gobname;
+
 	}
 }

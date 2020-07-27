@@ -328,12 +328,9 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
         final UI ui = glob.ui.get();
         if (ui != null && ui.gui != null && ui.gui.map != null && ui.gui.map.plgob != -1) {
             if (ui.gui.mapfile != null && configuration.customMarkObj) {
-                GobIcon icon = this.getattr(GobIcon.class);
-                if (icon != null) {
-                    for (String resname : configuration.customMarkObjs.values()) {
-                        if (name.equals(resname)) {
-                            ui.gui.mapfile.markobj(id, getres(), configuration.customMarkObjs.get(resname), icon.res);
-                        }
+                for (String resname : configuration.customMarkObjs.keySet()) {
+                    if (name.equals(resname)) {
+                        ui.gui.mapfile.markobj(id, this, configuration.customMarkObjs.get(resname));
                     }
                 }
             }
@@ -977,7 +974,6 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             }
 
             if (OverlayData.isHighlighted(name())) {
-                System.out.println(name() + " " + OverlayData.get(name()).highlightColor);
                 rl.prepc(new Material.Colors(OverlayData.get(name()).highlightColor));
             }
 

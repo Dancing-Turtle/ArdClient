@@ -3156,12 +3156,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                         ui.gui.add(new OverlaySelector(name), ui.mc);
                         break;
                     case 6: //Mark gob on map
-                        GobIcon icon = g.getattr(GobIcon.class);
-                        if (icon != null) {
-                            ui.gui.mapfile.markobj(g.id, g.getres(), name, icon.res);
-                        }
-                        Resource res = Resource.local().loadwait("gfx/hud/wndmap/btns/center", 1);
-                        ui.gui.mapfile.markobj(g.id, g.getres(), g.getres().basename(), res.indir());
+                        ui.gui.mapfile.markobj(g.id, g, configuration.getDefaultTextName(g.resname().get()));
                         break;
                 }
             },  "Mark for party",

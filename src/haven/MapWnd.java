@@ -43,8 +43,6 @@ import haven.MapFileWidget.Locator;
 import haven.MapFileWidget.MapLocator;
 import haven.MapFileWidget.SpecLocator;
 import haven.purus.pbot.PBotAPI;
-import haven.purus.pbot.PBotUtils;
-import haven.sloth.gob.Type;
 
 public class MapWnd extends Window {
     public static final Resource markcurs = Resource.local().loadwait("gfx/hud/curs/flag");
@@ -450,7 +448,8 @@ public class MapWnd extends Window {
             new Pair<>("Jotun Mussel", "jotunmussel"),
             new Pair<>("Quest Givers", "qst"),
             new Pair<>("Salt Basin", "saltbasin"),
-            new Pair<>("Swirling Vortex", "watervortex")
+            new Pair<>("Swirling Vortex", "watervortex"),
+            new Pair<>("Cave", "cave")
     };
 
     @SuppressWarnings("unchecked")
@@ -486,6 +485,9 @@ public class MapWnd extends Window {
                 // reset scrollbar
                 if (list != null)
                     list.sb.val = list.sb.min;
+//                for (MapFile.SMarker marker : view.file.smarkers.values()) {
+//                    System.out.println(marker + " [" + marker.nm + "] [" + marker.oid + "] [" + marker.res + " " + marker.res.name + " " + marker.res.ver + "]");
+//                }
             }
         };
         modes.change(filters[0]);
@@ -713,13 +715,21 @@ public class MapWnd extends Window {
         }
     }
 
-    public void markobj(long gobid, final Resource res, String nm, Indir<Resource> icon) {
+    public void markobj(long gobid, Gob gob, String nm) {
         synchronized (deferred) {
             deferred.add(new Runnable() {
                 double f = 0;
 
                 public void run() {
-                    Resource resid = icon.get();
+                    GobIcon icon = gob.getattr(GobIcon.class);
+                    Resource iconRes;
+                    if (icon == null) {
+                        iconRes = Resource.local().loadwait("gfx/hud/wndmap/btns/center", 1);
+                    } else {
+                        iconRes = icon.res.get();
+                    }
+
+                    Resource res = gob.getres();
                     String rnm = nm;
                     if (rnm == null) {
                         Resource.Tooltip tt = res.layer(Resource.tooltip);
@@ -747,8 +757,9 @@ public class MapWnd extends Window {
                         Coord sc = tc.add(info.sc.sub(obg.gc).mul(cmaps));
                         long oid = Long.parseLong(Math.abs(sc.x) + "" + Math.abs(sc.y) + "" + Math.abs(sc.x * sc.y) + ""); //FIXME bring true obj id
                         SMarker prev = view.file.smarkers.get(oid);
+                        rnm = rnm + " [" + sc.x + ", " + sc.y + "]";
                         if (prev == null) {
-                            view.file.add(new SMarker(info.seg, sc, rnm, oid, new Resource.Spec(Resource.remote(), resid.name, resid.ver)));
+                            view.file.add(new SMarker(info.seg, sc, rnm, oid, new Resource.Spec(Resource.remote(), iconRes.name, iconRes.ver)));
                         } else {
                             if ((prev.seg != info.seg) || !prev.tc.equals(sc)) {
                                 prev.seg = info.seg;
