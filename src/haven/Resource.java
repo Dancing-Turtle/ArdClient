@@ -26,6 +26,8 @@
 
 package haven;
 
+import modification.configuration;
+
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -375,6 +377,7 @@ public class Resource implements Serializable {
 		}
 
 		public String toString() {
+			configuration.sysPrintStackTrace("Loading toString crash: ");
 			return ("#<Resource " + res.name + ">");
 		}
 
