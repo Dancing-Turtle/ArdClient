@@ -81,6 +81,9 @@ public class configuration {
 	public static boolean proximityspecial = Utils.getprefb("proximityspecial", false);
 	public static boolean customquality = Utils.getprefb("customquality", false);
 	public static boolean showtroughstatus = Utils.getprefb("showtroughstatus", false);
+	public static boolean morethanquility = Utils.getprefb("morethanquility", false);
+	public static int morethancolor = Utils.getprefi("morethancolor", -1);
+	public static int morethancoloroutline = Utils.getprefi("morethancoloroutline", Color.RED.hashCode());
 
 	public static boolean customMarkObj = Utils.getprefb("customMarkObj", false);
 	public static Map<String, String> customMarkObjs = new HashMap<String, String>() {{
@@ -115,16 +118,18 @@ public class configuration {
 
 
 	public static void sysPrintStackTrace(String text) {
-		StackTraceElement[] stackTraceElements = new Throwable().getStackTrace();
-		int stackTraceElementsLength = stackTraceElements.length;
+		if (logging) {
+			StackTraceElement[] stackTraceElements = new Throwable().getStackTrace();
+			int stackTraceElementsLength = stackTraceElements.length;
 
-		System.out.print(text + " || ");
-		for (int i = 1; i < stackTraceElementsLength; i++) {
-			System.out.print("{" + stackTraceElements[i].getClassName() + "(" + stackTraceElements[i].getMethodName() + ")(" + stackTraceElements[i].getLineNumber() + ")");
-			if (i != stackTraceElementsLength - 1) System.out.print(">");
+			System.out.print(text + " || ");
+			for (int i = 1; i < stackTraceElementsLength; i++) {
+				System.out.print("{" + stackTraceElements[i].getClassName() + "(" + stackTraceElements[i].getMethodName() + ")(" + stackTraceElements[i].getLineNumber() + ")");
+				if (i != stackTraceElementsLength - 1) System.out.print(">");
+			}
+
+			System.out.println();
 		}
-
-		System.out.println();
 	}
 
 	public static void Syslog(String who, Widget widget, int id, String msg, Object... args) {

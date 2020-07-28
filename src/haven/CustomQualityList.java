@@ -26,7 +26,7 @@ public class CustomQualityList extends WidgetList<CustomQualityList.Item> {
     };
 
     public CustomQualityList() {
-        super(new Coord(180, 25), 12);
+        super(new Coord(180, 25), 10);
         init();
 
         update();
@@ -127,7 +127,7 @@ public class CustomQualityList extends WidgetList<CustomQualityList.Item> {
                 }
             }
         });
-        if (qualityList == null) {
+        if (qualityList == null || qualityList.isEmpty()) {
             qualityList = new ArrayList<ColorQuality>() {{
                 add(new ColorQuality(10, Color.WHITE, true));
                 add(new ColorQuality(Config.uncommonq, Config.uncommon, true));

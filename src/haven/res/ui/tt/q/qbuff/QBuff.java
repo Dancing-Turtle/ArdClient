@@ -37,13 +37,27 @@ public class QBuff extends ItemInfo.Tip {
             if (configuration.customquality) {
                 boolean custom = false;
                 for (int i = 0; i < CustomQualityList.qualityList.size(); i++) {
-                    if (q <= CustomQualityList.qualityList.get(i).number && CustomQualityList.qualityList.get(i).a) {
-                        color = CustomQualityList.qualityList.get(i).color;
-                        custom = true;
-                        break;
+                    if (CustomQualityList.qualityList.get(i).a) {
+                        if (q <= CustomQualityList.qualityList.get(i).number) {
+                            color = CustomQualityList.qualityList.get(i).color;
+                            custom = true;
+                            break;
+                        }
                     }
                 }
-                if (!custom) color = Color.WHITE;
+                if (!custom && configuration.morethanquility)
+                    for (int i = CustomQualityList.qualityList.size(); i > 0; i--) {
+                    if (CustomQualityList.qualityList.get(i - 1).a) {
+                            if (q > CustomQualityList.qualityList.get(i - 1).number) {
+                                color = new Color(configuration.morethancolor, true);
+                                outline = new Color(configuration.morethancoloroutline, true);
+                                custom = true;
+                                break;
+                            }
+                        }
+                    }
+                if (!custom)
+                    color = Color.WHITE;
             } else {
                 if (q < 11) {
                     color = Color.white;

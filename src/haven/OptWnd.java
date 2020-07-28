@@ -3280,6 +3280,19 @@ public class OptWnd extends Window {
         final CustomQualityList list = new CustomQualityList();
         appender2.add(list);
 
+        appender2.addRow(new CheckBox("Quality color more than last") {
+            {
+                a = configuration.morethanquility;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("morethanquility", val);
+                configuration.morethanquility = val;
+                a = val;
+            }
+        }, new ColorPreview(new Coord(20, 20), new Color(configuration.morethancolor, true), val -> { configuration.morethancolor = val.hashCode(); }),
+                new ColorPreview(new Coord(20, 20), new Color(configuration.morethancoloroutline, true), val -> { configuration.morethancoloroutline = val.hashCode(); })
+        );
         final ColorPreview colPre = new ColorPreview(new Coord(20, 20), Color.WHITE, val -> { CustomQualityList.NewColor = val; });
         final TextEntry value = new TextEntry(120, "") {
             @Override
