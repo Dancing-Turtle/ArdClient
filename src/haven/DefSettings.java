@@ -69,7 +69,11 @@ public class DefSettings {
 	public static final IndirSetting<Color> NVDIFFUSECOL = new IndirSetting<>(global, "graphics.diffuse-color");             //[RGBA] Nightvision diffuse color
 	public static final IndirSetting<Color> NVSPECCOC = new IndirSetting<>(global, "graphics.specular-color");               //[RGBA] Nightvision specular color
 	public static final IndirSetting<Color> DEEPWATERCOL = new IndirSetting<>(global, "graphics.deepwater-color");           //[RGBA] Deep Ocean Water Color
-	public static final IndirSetting<Color> ALLWATERCOL = new IndirSetting<>(global, "graphics.watercol-color");             //[RGBA] Color of all other water color
+	public static final IndirSetting<Color> ALLWATERCOL = new IndirSetting<>(global, "graphics.watercol-color");
+	public static final IndirSetting<Color> SHALLOWOCEANWATERCOL = new IndirSetting(global, "graphics.shallowoceanwater-color");
+	public static final IndirSetting<Color> SHALLOWWATERCOL = new IndirSetting(global, "graphics.shallowwater-color");
+	public static final IndirSetting<Color> OCEANWATERCOL = new IndirSetting(global, "graphics.oceanwater-color");
+	public static final IndirSetting<Color> WATERCOL = new IndirSetting(global, "graphics.wwater-color");						//[RGBA] Color of all other water color
 	public static final IndirSetting<Color> CURIOTARGET = new IndirSetting<>(global, "graphics.curiotarget-color");             //[RGBA] Color of all other water color
 	public static final IndirSetting<Color> CURIOHIGH = new IndirSetting<>(global, "graphics.curiohigh-color");             //[RGBA] Color of all other water color
 	public static final IndirSetting<Color> CURIOLOW = new IndirSetting<>(global, "graphics.curiolow-color");             //[RGBA] Color of all other water color
@@ -208,6 +212,10 @@ public class DefSettings {
 		NVSPECCOC.ensure(new Color(255,255,255));
 		DEEPWATERCOL.ensure(new Color(0, 0, 0));
 		ALLWATERCOL.ensure(new Color(0, 16, 48));
+		OCEANWATERCOL.ensure(new Color(0, 16, 48));
+		WATERCOL.ensure(new Color(0, 16, 48));
+		SHALLOWOCEANWATERCOL.ensure(new Color(0, 16, 48));
+		SHALLOWWATERCOL.ensure(new Color(0, 16, 48));
 		CURIOTARGET.ensure(new Color(0,255,0));
 		CURIOHIGH.ensure(new Color(255,0,0));
 		CURIOLOW.ensure(new Color(255,182,193));

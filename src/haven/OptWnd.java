@@ -1297,6 +1297,10 @@ public class OptWnd extends Window {
         });
         appender.add(ColorPreWithLabel("Deep Ocean Color: (requires relog)", DEEPWATERCOL));
         appender.add(ColorPreWithLabel("All Other Water Color: (requires relog)", ALLWATERCOL));
+        appender.add(ColorPreWithLabel("Ocean Color: (requires relog)", DefSettings.OCEANWATERCOL));
+        appender.add(ColorPreWithLabel("Shallow Ocean Color: (requires relog)", DefSettings.SHALLOWOCEANWATERCOL));
+        appender.add(ColorPreWithLabel("Water Color: (requires relog)", DefSettings.WATERCOL));
+        appender.add(ColorPreWithLabel("Shallow Water Ocean Color: (requires relog)", DefSettings.SHALLOWWATERCOL));
         appender.add(ColorPreWithLabel("Beehive radius color: ", BEEHIVECOLOR, val ->{
             BPRadSprite.smatBeehive = new States.ColState(val);
             GameUI gui = gameui();
@@ -3290,9 +3294,13 @@ public class OptWnd extends Window {
                 configuration.morethanquility = val;
                 a = val;
             }
-        }, new ColorPreview(new Coord(20, 20), new Color(configuration.morethancolor, true), val -> { configuration.morethancolor = val.hashCode(); }),
-                new ColorPreview(new Coord(20, 20), new Color(configuration.morethancoloroutline, true), val -> { configuration.morethancoloroutline = val.hashCode(); })
-        );
+        }, new ColorPreview(new Coord(20, 20), new Color(configuration.morethancolor, true), val -> {
+            configuration.morethancolor = val.hashCode();
+            Utils.setprefi("morethancolor", val.hashCode());
+        }), new ColorPreview(new Coord(20, 20), new Color(configuration.morethancoloroutline, true), val -> {
+            configuration.morethancoloroutline = val.hashCode();
+            Utils.setprefi("morethancoloroutline", val.hashCode());
+        }));
         final ColorPreview colPre = new ColorPreview(new Coord(20, 20), Color.WHITE, val -> { CustomQualityList.NewColor = val; });
         final TextEntry value = new TextEntry(120, "") {
             @Override
@@ -3309,7 +3317,8 @@ public class OptWnd extends Window {
             @Override
             public void click() {
                 try {
-                    list.add(Double.parseDouble(value.text), Double.parseDouble(value.text), CustomQualityList.NewColor, true);
+                    if (!value.text.isEmpty())
+                        list.add(Double.parseDouble(value.text), Double.parseDouble(value.text), CustomQualityList.NewColor, true);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
