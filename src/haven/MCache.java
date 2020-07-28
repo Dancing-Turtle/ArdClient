@@ -243,12 +243,7 @@ public class MCache {
 	    if(cut.dmesh != null) {
 		if(cut.dmesh.done() || (cut.mesh == null)) {
                     MapMesh old = cut.mesh;
-                    try {
-                        cut.mesh = cut.dmesh.get();
-                    } catch (Exception e) {
-                        System.out.println("MapMesh getcut " + e);
-                        cut.mesh = old;
-                    }
+                    cut.mesh = cut.dmesh.get();
                     cut.dmesh = null;
                     cut.ols = null;
 		    if(old != null)
