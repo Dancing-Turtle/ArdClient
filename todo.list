@@ -76,4 +76,5 @@ for Jorb and Loftar:
 
 launcher rewrite:
     +autocreater files
+    log changelog and grid update everytime
 @write render client pls@

@@ -247,7 +247,7 @@ public class MCache {
                         cut.mesh = cut.dmesh.get();
                     } catch (Exception e) {
                         System.out.println("MapMesh getcut " + e);
-                        cut.mesh = null;
+                        cut.mesh = old;
                     }
                     cut.dmesh = null;
                     cut.ols = null;
