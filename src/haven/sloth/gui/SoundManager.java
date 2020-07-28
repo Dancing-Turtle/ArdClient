@@ -13,11 +13,9 @@ import haven.Resource;
 import haven.UI;
 import haven.Utils;
 import haven.Window;
-import haven.overlays.OverlayData;
 import haven.purus.pbot.PBotUtils;
 import haven.sloth.gob.Alerted;
 import haven.sloth.util.ObservableListener;
-import haven.sloth.util.ObservableMapListener;
 import modification.configuration;
 
 import java.awt.Color;
@@ -83,7 +81,8 @@ public class SoundManager extends Window implements ObservableListener<Alerted.C
             protected void drawitem(GOut g, String item, int i) {
                 String di = item;
                 if (item.contains("custom/sfx/omni/")) di = item.replace("custom/sfx/omni/", "");
-                if (item.contains(configuration.soundPath + "\\")) di = item.replace(configuration.soundPath + "\\", "");
+                if (item.contains(configuration.soundPath + "\\"))
+                    di = item.replace(configuration.soundPath + "\\", "");
                 g.text(di, new Coord(5, 1));
             }
         }, c.copy()).sz.x + 5;

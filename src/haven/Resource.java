@@ -377,7 +377,7 @@ public class Resource implements Serializable {
 		}
 
 		public String toString() {
-			configuration.sysPrintStackTrace("Loading toString crash: ");
+			configuration.sysPrintStackTrace("#<Resource " + res.name + ">");
 			return ("#<Resource " + res.name + ">");
 		}
 

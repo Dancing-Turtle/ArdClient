@@ -9,7 +9,6 @@ import haven.Storage;
 import haven.purus.pbot.PBotDiscord;
 import haven.sloth.util.ObservableCollection;
 import haven.sloth.util.ObservableListener;
-import haven.sloth.util.ObservableMapListener;
 import modification.configuration;
 
 import java.sql.PreparedStatement;
@@ -25,9 +24,9 @@ import java.util.List;
 public class Alerted {
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
     public static final HashMap<String, Boolean> customsort = new HashMap<>();
-    public static final ObservableCollection<ConnectSound> connectList =  new ObservableCollection<>(new HashSet<>());
+    public static final ObservableCollection<ConnectSound> connectList = new ObservableCollection<>(new HashSet<>());
 
-//    private static final ObservableMap<String, String> soundmap = new ObservableMap<>(new TreeMap<>());
+    //    private static final ObservableMap<String, String> soundmap = new ObservableMap<>(new TreeMap<>());
 //    private static final ObservableMap<String, String> sfxmap = new ObservableMap<>(new TreeMap<>());
 //    public static ObservableMap<String, Double> volmap = new ObservableMap<>(new TreeMap<>());
     public static final List<String> custom = new ArrayList<>();
@@ -105,7 +104,6 @@ public class Alerted {
 
     public static synchronized void remove(final String name) {
         if (containsObj(name)) {
-            removeConnect(name);
             if (isLocal(name))
                 Storage.dynamic.write(sql -> {
                     final PreparedStatement stmt = Storage.dynamic.prepare("DELETE FROM gob_localsound WHERE name = ?");
@@ -118,34 +116,36 @@ public class Alerted {
                     stmt.setString(1, name);
                     stmt.executeUpdate();
                 });
+            removeConnect(name);
         }
     }
 
     public static synchronized void add(final String name, final String sound, final Double volume) {
-
-
-            if (!(containsObj(name) && getSound(name).equals(sound) && getVolume(name).equals(volume))) {
-                //Only update if we have to.
-                connectList.add(new ConnectSound(name, sound, volume));
+        if (!(containsObj(name) && getSound(name).equals(sound) && getVolume(name).equals(volume))) {
+            //Only update if we have to.
+            connectList.add(new ConnectSound(name, sound, volume));
+        } else {
+            if (isLocal(name) != customsort.get(sound)) remove(name);
+            getConnectSound(name).edit(name, sound, volume);
+        }
 //                soundmap.put(name, sound);
 //                volmap.put(name, volume);
-                if (isLocal(name))
-                    Storage.dynamic.write(sql -> {
-                        final PreparedStatement stmt = Storage.dynamic.prepare("INSERT OR REPLACE INTO gob_localsound VALUES (?, ?, ?)");
-                        stmt.setString(1, name);
-                        stmt.setString(2, sound);
-                        stmt.setDouble(3, volume);
-                        stmt.executeUpdate();
-                    });
-                else
-                    Storage.dynamic.write(sql -> {
-                        final PreparedStatement stmt = Storage.dynamic.prepare("INSERT OR REPLACE INTO gob_sound VALUES (?, ?, ?)");
-                        stmt.setString(1, name);
-                        stmt.setString(2, sound);
-                        stmt.setDouble(3, volume);
-                        stmt.executeUpdate();
-                    });
-            }
+        if (isLocal(name))
+            Storage.dynamic.write(sql -> {
+                final PreparedStatement stmt = Storage.dynamic.prepare("INSERT OR REPLACE INTO gob_localsound VALUES (?, ?, ?)");
+                stmt.setString(1, name);
+                stmt.setString(2, sound);
+                stmt.setDouble(3, volume);
+                stmt.executeUpdate();
+            });
+        else
+            Storage.dynamic.write(sql -> {
+                final PreparedStatement stmt = Storage.dynamic.prepare("INSERT OR REPLACE INTO gob_sound VALUES (?, ?, ?)");
+                stmt.setString(1, name);
+                stmt.setString(2, sound);
+                stmt.setDouble(3, volume);
+                stmt.executeUpdate();
+            });
     }
 
     public synchronized static void listen(final ObservableListener<ConnectSound> listener) {
@@ -216,6 +216,13 @@ public class Alerted {
             this.volume = volume;
             this.local = local;
         }
+
+        public void edit(String objName, String soundName, double volume) {
+            this.objName = objName;
+            this.soundName = soundName;
+            this.volume = volume;
+            this.local = customsort.get(soundName);
+        }
     }
 
     public static boolean containsObj(String name) {
@@ -238,6 +245,13 @@ public class Alerted {
             if (name.equals(sound.objName))
                 return sound.local;
         return false;
+    }
+
+    public static ConnectSound getConnectSound(String name) {
+        for (ConnectSound sound : connectList)
+            if (name.equals(sound.objName))
+                return sound;
+        return null;
     }
 
     public static String getSound(String name) {

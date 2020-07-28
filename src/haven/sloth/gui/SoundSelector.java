@@ -60,7 +60,8 @@ public class SoundSelector extends Window {
                 //g.text(item, new Coord(5, 1));
                 String di = item;
                 if (item.contains("custom/sfx/omni/")) di = item.replace("custom/sfx/omni/", "");
-                if (item.contains(configuration.soundPath + "\\")) di = item.replace(configuration.soundPath + "\\", "");
+                if (item.contains(configuration.soundPath + "\\"))
+                    di = item.replace(configuration.soundPath + "\\", "");
                 g.text(di, new Coord(5, 1));
             }
         }, c.copy());

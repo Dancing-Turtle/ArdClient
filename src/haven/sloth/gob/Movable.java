@@ -103,6 +103,9 @@ public class Movable extends GAttrib implements Rendered {
 			    } catch (Loading l) {
 				oz = myz;
 			    }
+			    try { System.out.println(PBotAPI.gui.map.player()); } catch (Exception e) { e.printStackTrace(); }
+				try { System.out.println(gob.id); } catch (Exception e) { e.printStackTrace(); }
+				try { System.out.println(PBotAPI.gui.map.player().id); } catch (Exception e) { e.printStackTrace(); }
 			    if(PBotAPI.gui.map.player() != null && gob.id == PBotAPI.gui.map.player().id) // if this is our path, exit, we draw this in Gob class where it's more accurate.
 			    	return;
 			    pathol = new GobPathSprite(t, grc, (float) grc.dist(t), (float) (oz - myz), col);

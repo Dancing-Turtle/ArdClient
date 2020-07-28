@@ -4,11 +4,10 @@ import haven.Storage;
 import haven.sloth.util.ObservableCollection;
 import haven.sloth.util.ObservableListener;
 
-import java.awt.*;
+import java.awt.Color;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.sql.Types;
 import java.util.HashSet;
 
 public class OverlayData {
@@ -76,8 +75,9 @@ public class OverlayData {
             } else isExist = false;
         }
         if (!isExist) overlayed.add(new OverlayGob(name, text, textColor, strokeColor, fontSize, font));
-        if (withsql) upsert(name, text, textColor, strokeColor, fontSize, font);
+        if (withsql) add(name, text, textColor, strokeColor, fontSize, font);
     }
+
     public synchronized static void addHighlight(String name, Color highlightColor, boolean withsql) {
         boolean isExist = false;
         for (OverlayGob og : overlayed) {
@@ -88,10 +88,10 @@ public class OverlayData {
             } else isExist = false;
         }
         if (!isExist) overlayed.add(new OverlayGob(name, highlightColor));
-        if (withsql) upsert(name, highlightColor);
+        if (withsql) add(name, highlightColor);
     }
 
-    public static void upsert(String name, Color highlightColor) {
+    public static void add(String name, Color highlightColor) {
         boolean isExist = false;
         for (OverlayGob og : overlayed) {
             if (og.name.equals(name)) {
@@ -101,35 +101,17 @@ public class OverlayData {
             } else isExist = false;
         }
         if (!isExist) overlayed.add(new OverlayGob(name, highlightColor));
-        final boolean[] sqlExist = {false};
-        Storage.overlays.ensure(sql -> {
-            final PreparedStatement stmt = Storage.overlays.prepare("SELECT * FROM gob_highlight WHERE name = ?");
-            if (name != null) stmt.setString(1, name);
-            else stmt.setNull(1, Types.NULL);
-            try (final ResultSet res = stmt.executeQuery()) {
-                while (res.next()) {
-                    sqlExist[0] = true;
-                }
-            }
+
+        Storage.overlays.write(sql -> {
+            final PreparedStatement stmt = Storage.overlays.prepare("INSERT OR REPLACE INTO gob_highlight VALUES (? , ?)");
+            stmt.setString(1, name);
+            stmt.setInt(2, highlightColor.hashCode());
+            stmt.executeUpdate();
         });
-        if (sqlExist[0]) {
-            Storage.overlays.write(sql -> {
-                final PreparedStatement stmt = Storage.overlays.prepare("UPDATE gob_highlight SET hcolor = ? WHERE name = ?");
-                stmt.setInt(1, highlightColor.hashCode());
-                stmt.setString(2, name);
-                stmt.executeUpdate();
-            });
-        }
-        else {
-            Storage.overlays.write(sql -> {
-                final PreparedStatement stmt = Storage.overlays.prepare("INSERT INTO gob_highlight VALUES (? , ?)");
-                stmt.setString(1, name);
-                stmt.setInt(2, highlightColor.hashCode());
-                stmt.executeUpdate();
-            });
-        }
+
     }
-    public static void upsert(String name, String text, Color textColor, Color strokeColor, int fontSize, String font) {
+
+    public static void add(String name, String text, Color textColor, Color strokeColor, int fontSize, String font) {
         boolean isExist = false;
         for (OverlayGob og : overlayed) {
             if (og.name.equals(name)) {
@@ -139,39 +121,18 @@ public class OverlayData {
             } else isExist = false;
         }
         if (!isExist) overlayed.add(new OverlayGob(name, text, textColor, strokeColor, fontSize, font));
-        final boolean[] sqlExist = {false};
-        Storage.overlays.ensure(sql -> {
-            final PreparedStatement stmt = Storage.overlays.prepare("SELECT * FROM gob_text WHERE name = ?");
+
+        Storage.overlays.write(sql -> {
+            final PreparedStatement stmt = Storage.overlays.prepare("INSERT OR REPLACE INTO gob_text VALUES (? , ? , ? , ? , ? , ?)");
             stmt.setString(1, name);
-            try (final ResultSet res = stmt.executeQuery()) {
-                while (res.next()) {
-                    sqlExist[0] = true;
-                }
-            }
+            stmt.setString(2, text);
+            stmt.setInt(3, textColor.hashCode());
+            stmt.setInt(4, strokeColor.hashCode());
+            stmt.setInt(5, fontSize);
+            stmt.setString(6, font);
+            stmt.executeUpdate();
         });
-        if (sqlExist[0]) {
-            Storage.overlays.write(sql -> {
-                final PreparedStatement stmt = Storage.overlays.prepare("UPDATE gob_text SET text = ? , tcolor = ? , scolor = ? , fontSize = ? , font = ? WHERE name = ?");
-                stmt.setString(1, text);
-                stmt.setInt(2, textColor.hashCode());
-                stmt.setInt(3, strokeColor.hashCode());
-                stmt.setInt(4, fontSize);
-                stmt.setString(5, font);
-                stmt.setString(6, name);
-                stmt.executeUpdate();
-            });
-        } else {
-            Storage.overlays.write(sql -> {
-                final PreparedStatement stmt = Storage.overlays.prepare("INSERT INTO gob_text VALUES (? , ? , ? , ? , ? , ?)");
-                stmt.setString(1, name);
-                stmt.setString(2, text);
-                stmt.setInt(3, textColor.hashCode());
-                stmt.setInt(4, strokeColor.hashCode());
-                stmt.setInt(5, fontSize);
-                stmt.setString(6, font);
-                stmt.executeUpdate();
-            });
-        }
+
     }
 
     public static OverlayGob get(String name) {
@@ -201,6 +162,7 @@ public class OverlayData {
             stmt.executeUpdate();
         });
     }
+
     public synchronized static void removeText(final String name) {
         for (OverlayGob og : overlayed) {
             if (og.name.equals(name)) {
@@ -214,6 +176,7 @@ public class OverlayData {
             stmt.executeUpdate();
         });
     }
+
     public synchronized static void removeHighlight(final String name) {
         for (OverlayGob og : overlayed) {
             if (og.name.equals(name)) {
@@ -238,6 +201,7 @@ public class OverlayData {
         }
         return isExist;
     }
+
     public synchronized static boolean isTexted(final String name) {
         boolean isExist = false;
         for (OverlayGob og : overlayed) {
@@ -250,6 +214,7 @@ public class OverlayData {
         }
         return isExist;
     }
+
     public synchronized static boolean isHighlighted(final String name) {
         boolean isExist = false;
         for (OverlayGob og : overlayed) {
