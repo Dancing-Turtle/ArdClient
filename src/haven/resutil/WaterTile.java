@@ -479,7 +479,6 @@ public class WaterTile extends Tiler {
 
     public WaterTile(int id, Tiler.MCons bottom, int depth) {
         super(id);
-        System.out.println(id);
         this.bottom = bottom;
         this.depth = depth;
         /*if (id == 188) {
