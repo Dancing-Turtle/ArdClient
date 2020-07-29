@@ -27,11 +27,10 @@
 package haven;
 
 
-import haven.purus.pbot.PBotAPI;
 import haven.purus.pbot.PBotUtils;
 import haven.sloth.gob.HeldBy;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.function.Consumer;
 
 import static haven.DefSettings.AMBERMENU;
@@ -123,8 +122,8 @@ public class FlowerMenu extends Widget {
         }
 
         public boolean mousedown(Coord c, int button) {
-            if(!selected)
-               choose(this);
+            if (!selected)
+                choose(this);
             selected = true;
             return (true);
         }
@@ -154,17 +153,21 @@ public class FlowerMenu extends Widget {
                             p.name.equals(nextAutoSel) && System.currentTimeMillis() - nextAutoSelTimeout < 2000) {
                         nextAutoSel = null;
                         try {
-                            if (p.name.equals("Cargo") && PBotAPI.gui.map.player() != null && PBotAPI.gui.map.player().getattr(HeldBy.class) != null) {
-                                PBotAPI.gui.ui.root.wdgmsg("gk", 27);
+                            if (p.name.equals("Cargo") && ui.gui.map.player() != null && ui.gui.map.player().getattr(HeldBy.class) != null) {
+                                ui.root.wdgmsg("gk", 27);
                             }
-                        }catch(Exception e){e.printStackTrace();}
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         choose(p);
                         try {
                             if (p.name.contains("Giddy") && Config.horseautorun) {
-                                    horsemounter = new Thread(new FlowerMenu.horsemounter());
-                                    horsemounter.start();
+                                horsemounter = new Thread(new FlowerMenu.horsemounter());
+                                horsemounter.start();
                             }
-                        }catch(Exception e){e.printStackTrace();}
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         break;
                     }
                 }
@@ -175,23 +178,23 @@ public class FlowerMenu extends Widget {
     public class horsemounter implements Runnable {
         public void run() {
             try {
-                GameUI gui = getGUI();
                 int timeout = 0;
-               while(gui.map.player() != null && gui.map.player().getattr(HeldBy.class) == null){
-                   timeout++;
-                   if(timeout > 1000) {//if we timeout, break horsemounter
-                       return;
-                   }
-                   PBotUtils.sleep(10);
-               }
-               if(PBotAPI.gui.map.player() == null){
-                   //player now null, exit.
-                   return;
-               }
-                Speedget speedwdg = gui.speedget.get();
-                if(speedwdg != null)
+                while (ui.gui.map.player() != null && ui.gui.map.player().getattr(HeldBy.class) == null) {
+                    timeout++;
+                    if (timeout > 1000) {//if we timeout, break horsemounter
+                        return;
+                    }
+                    PBotUtils.sleep(10);
+                }
+                if (ui.gui.map.player() == null) {
+                    //player now null, exit.
+                    return;
+                }
+                Speedget speedwdg = ui.gui.speedget.get();
+                if (speedwdg != null)
                     speedwdg.set(2);
-            } catch (Exception e) { }
+            } catch (Exception e) {
+            }
         }
     }
 
@@ -201,6 +204,7 @@ public class FlowerMenu extends Widget {
 
     public class Chosen extends NormAnim {
         Petal chosen;
+
         Chosen(Petal c) {
             super(0.75);
             chosen = c;
@@ -248,214 +252,213 @@ public class FlowerMenu extends Widget {
                     }
                 }
             }
-                if (s == 1.0)
-                    ui.destroy(FlowerMenu.this);
-            }
-        }
-
-
-        public class Cancel extends NormAnim {
-            Cancel() {
-                super(0);
-            }
-
-            public void ntick(double s) {
-                if (AMBERMENU.get()) {
-                    for (Petal p : opts) {
-                        p.move(p.ta + ((s) * PI), p.rad * (1 - s));
-                        p.a = 1 - s;
-                    }
-                } else {
-                    double ival = 0.8;
-                    double off = (opts.length == 1) ? 0.0 : ((1.0 - ival) / (opts.length - 1));
-                    for (int i = 0; i < opts.length; i++) {
-                        Petal p = opts[i];
-                        double a = Utils.clip((s - (off * i)) * (1.0 / ival), 0, 1);
-                        double b = 1.0 - nxf(1.0 - a);
-                        p.move(p.ta + (b * PI), p.tr * (1 - b));
-                        p.a = 1 - a;
-                    }
-                }
-                    if (s == 1.0)
-                        ui.destroy(FlowerMenu.this);
-                }
-            }
-
-
-        public class CustomPetal extends Petal {
-            boolean h = false;
-
-            private CustomPetal(String name) {
-                super(name);
-                sz = new Coord(text.sz().x + 35, 30);
-            }
-
-            @Override
-            public void draw(GOut g) {
-                g.chcolor(new Color(DefSettings.WNDCOL.get().getRed(), DefSettings.WNDCOL.get().getGreen(), DefSettings.WNDCOL.get().getBlue(), (int) (255 * a)));
-                Coord bgc = new Coord();
-                for (bgc.y = 0; bgc.y < sz.y; bgc.y += pbg.sz().y) {
-                    for (bgc.x = 0; bgc.x < sz.x; bgc.x += pbg.sz().x)
-                        g.image(pbg, bgc, Coord.z, sz);
-                }
-                g.chcolor();
-                //
-                if (h) {
-                    g.chcolor(0, 0, 0, (int) (128 * a));
-                    g.frect(Coord.z, sz);
-                    g.chcolor(new Color(255, 255, 255, (int) (255 * a)));
-                }
-                FastText.print(g, new Coord(10, 7), Integer.toString((num + 1) % 10));
-                g.image(text.tex(), sz.sub(8, 0).sub(text.sz()).div(2).add(8, 0));
-                g.chcolor();
-            }
-
-            @Override
-            public void move(double a, double r) { }
-
-            @Override
-            public void mousemove(Coord c) {
-                h = c.isect(Coord.z, sz.sub(1, 1));
-            }
-        }
-
-        private void organize(Petal[] opts) {
-            if (AMBERMENU.get()) {
-                for (int i = 0; i < opts.length; i++) {
-                    double ta = PI / 2 - i * PI / 4;
-
-                    // slightly adjust 45 degrees angles
-                    if (ta == PI / 4 || ta == -3 * PI / 4)
-                        ta -= 0.25;
-                    if (ta == -PI / 4 || ta == -5 * PI / 4)
-                        ta += 0.25;
-
-                    opts[i].ta = ta;
-                }
-            } else {
-                int width = 80;
-                for (Petal petal : opts)
-                    width = Math.max(width, petal.sz.x);
-                Coord c = new Coord(customBoxPadding);
-                for (Petal petal : opts) {
-                    petal.c = new Coord(c);
-                    petal.resize(width, petal.sz.y);
-                    c.y += petal.sz.y - 1;
-                }
-            }
-            pack();
-            // clip to parent
-            int x = Utils.clip(this.c.x, 0, parent.sz.x - sz.x);
-            int y = Utils.clip(this.c.y, 0, parent.sz.y - sz.y);
-            this.c = new Coord(x, y);
-        }
-
-        public FlowerMenu(final Consumer<Integer> callback, final String... options) {
-            super(Coord.z);
-            this.callback = callback;
-            opts = new Petal[options.length];
-
-            for (int i = 0; i < options.length; i++) {
-                if (AMBERMENU.get()) {
-                    add(opts[i] = new Petal(options[i]));
-                }
-                else {
-                    add(opts[i] = new CustomPetal(options[i]));
-                }
-                    opts[i].num = i;
-                    if (options[i].equals("Study") || options[i].equals("Turn"))    // eatable curios & spitroasting
-                        ignoreAutoSetting = true;
-            }
-        }
-
-        public FlowerMenu(String... options) {
-            this(null, options);
-        }
-
-
-
-        protected void added() {
-            if (c.equals(-1, -1))
-                c = parent.ui.lcc;
-            mg = ui.grabmouse(this);
-            kg = ui.grabkeys(this);
-            organize(opts);
-            new Opening();
-        }
-
-        public boolean mousedown(Coord c, int button) {
-            if(selected)
-                return false;
-            if (!anims.isEmpty())
-                return (true);
-            if (!super.mousedown(c, button))
-                choose(null);
-            return (true);
-        }
-
-        public void uimsg(String msg, Object... args) {
-            switch (msg) {
-                case "cancel":
-                    new Cancel();
-                    mg.remove();
-                    kg.remove();
-                    break;
-                case "act":
-                    new Chosen(opts[(Integer) args[0]]);
-                    mg.remove();
-                    kg.remove();
-                    break;
-            }
-        }
-
-        public void draw(GOut g) {
-            super.draw(g, false);
-        }
-
-        public boolean keydown(java.awt.event.KeyEvent ev) {
-            return (true);
-        }
-
-        public boolean type(char key, java.awt.event.KeyEvent ev) {
-            if (Config.userazerty)
-                key = Utils.azerty2qwerty(key);
-
-            if ((key >= '0') && (key <= '9')) {
-                int opt = (key == '0') ? 10 : (key - '1');
-                if (opt < opts.length) {
-                    choose(opts[opt]);
-                    kg.remove();
-                }
-                return (true);
-            } else if (key == 27) {
-                choose(null);
-                kg.remove();
-                return (true);
-            }
-            return (false);
-        }
-
-        public void choose(Petal option) {
-            if (callback == null) {
-                selected = true;
-                if (option == null) {
-                    wdgmsg("cl", -1);
-                    lastSel = null;
-                } else {
-                    wdgmsg("cl", option.num, ui.modflags());
-                    lastSel = option.name;
-                    MapView.pllastcc = null;
-                }
-            } else {
-                callback.accept(option != null ? option.num : -1);
-                ui.destroy(this);
-            }
-        }
-
-        public static void setNextSelection(String name) {
-            nextAutoSel = name;
-            nextAutoSelTimeout = System.currentTimeMillis();
+            if (s == 1.0)
+                ui.destroy(FlowerMenu.this);
         }
     }
+
+
+    public class Cancel extends NormAnim {
+        Cancel() {
+            super(0);
+        }
+
+        public void ntick(double s) {
+            if (AMBERMENU.get()) {
+                for (Petal p : opts) {
+                    p.move(p.ta + ((s) * PI), p.rad * (1 - s));
+                    p.a = 1 - s;
+                }
+            } else {
+                double ival = 0.8;
+                double off = (opts.length == 1) ? 0.0 : ((1.0 - ival) / (opts.length - 1));
+                for (int i = 0; i < opts.length; i++) {
+                    Petal p = opts[i];
+                    double a = Utils.clip((s - (off * i)) * (1.0 / ival), 0, 1);
+                    double b = 1.0 - nxf(1.0 - a);
+                    p.move(p.ta + (b * PI), p.tr * (1 - b));
+                    p.a = 1 - a;
+                }
+            }
+            if (s == 1.0)
+                ui.destroy(FlowerMenu.this);
+        }
+    }
+
+
+    public class CustomPetal extends Petal {
+        boolean h = false;
+
+        private CustomPetal(String name) {
+            super(name);
+            sz = new Coord(text.sz().x + 35, 30);
+        }
+
+        @Override
+        public void draw(GOut g) {
+            g.chcolor(new Color(DefSettings.WNDCOL.get().getRed(), DefSettings.WNDCOL.get().getGreen(), DefSettings.WNDCOL.get().getBlue(), (int) (255 * a)));
+            Coord bgc = new Coord();
+            for (bgc.y = 0; bgc.y < sz.y; bgc.y += pbg.sz().y) {
+                for (bgc.x = 0; bgc.x < sz.x; bgc.x += pbg.sz().x)
+                    g.image(pbg, bgc, Coord.z, sz);
+            }
+            g.chcolor();
+            //
+            if (h) {
+                g.chcolor(0, 0, 0, (int) (128 * a));
+                g.frect(Coord.z, sz);
+                g.chcolor(new Color(255, 255, 255, (int) (255 * a)));
+            }
+            FastText.print(g, new Coord(10, 7), Integer.toString((num + 1) % 10));
+            g.image(text.tex(), sz.sub(8, 0).sub(text.sz()).div(2).add(8, 0));
+            g.chcolor();
+        }
+
+        @Override
+        public void move(double a, double r) {
+        }
+
+        @Override
+        public void mousemove(Coord c) {
+            h = c.isect(Coord.z, sz.sub(1, 1));
+        }
+    }
+
+    private void organize(Petal[] opts) {
+        if (AMBERMENU.get()) {
+            for (int i = 0; i < opts.length; i++) {
+                double ta = PI / 2 - i * PI / 4;
+
+                // slightly adjust 45 degrees angles
+                if (ta == PI / 4 || ta == -3 * PI / 4)
+                    ta -= 0.25;
+                if (ta == -PI / 4 || ta == -5 * PI / 4)
+                    ta += 0.25;
+
+                opts[i].ta = ta;
+            }
+        } else {
+            int width = 80;
+            for (Petal petal : opts)
+                width = Math.max(width, petal.sz.x);
+            Coord c = new Coord(customBoxPadding);
+            for (Petal petal : opts) {
+                petal.c = new Coord(c);
+                petal.resize(width, petal.sz.y);
+                c.y += petal.sz.y - 1;
+            }
+        }
+        pack();
+        // clip to parent
+        int x = Utils.clip(this.c.x, 0, parent.sz.x - sz.x);
+        int y = Utils.clip(this.c.y, 0, parent.sz.y - sz.y);
+        this.c = new Coord(x, y);
+    }
+
+    public FlowerMenu(final Consumer<Integer> callback, final String... options) {
+        super(Coord.z);
+        this.callback = callback;
+        opts = new Petal[options.length];
+
+        for (int i = 0; i < options.length; i++) {
+            if (AMBERMENU.get()) {
+                add(opts[i] = new Petal(options[i]));
+            } else {
+                add(opts[i] = new CustomPetal(options[i]));
+            }
+            opts[i].num = i;
+            if (options[i].equals("Study") || options[i].equals("Turn"))    // eatable curios & spitroasting
+                ignoreAutoSetting = true;
+        }
+    }
+
+    public FlowerMenu(String... options) {
+        this(null, options);
+    }
+
+
+    protected void added() {
+        if (c.equals(-1, -1))
+            c = parent.ui.lcc;
+        mg = ui.grabmouse(this);
+        kg = ui.grabkeys(this);
+        organize(opts);
+        new Opening();
+    }
+
+    public boolean mousedown(Coord c, int button) {
+        if (selected)
+            return false;
+        if (!anims.isEmpty())
+            return (true);
+        if (!super.mousedown(c, button))
+            choose(null);
+        return (true);
+    }
+
+    public void uimsg(String msg, Object... args) {
+        switch (msg) {
+            case "cancel":
+                new Cancel();
+                mg.remove();
+                kg.remove();
+                break;
+            case "act":
+                new Chosen(opts[(Integer) args[0]]);
+                mg.remove();
+                kg.remove();
+                break;
+        }
+    }
+
+    public void draw(GOut g) {
+        super.draw(g, false);
+    }
+
+    public boolean keydown(java.awt.event.KeyEvent ev) {
+        return (true);
+    }
+
+    public boolean type(char key, java.awt.event.KeyEvent ev) {
+        if (Config.userazerty)
+            key = Utils.azerty2qwerty(key);
+
+        if ((key >= '0') && (key <= '9')) {
+            int opt = (key == '0') ? 10 : (key - '1');
+            if (opt < opts.length) {
+                choose(opts[opt]);
+                kg.remove();
+            }
+            return (true);
+        } else if (key == 27) {
+            choose(null);
+            kg.remove();
+            return (true);
+        }
+        return (false);
+    }
+
+    public void choose(Petal option) {
+        if (callback == null) {
+            selected = true;
+            if (option == null) {
+                wdgmsg("cl", -1);
+                lastSel = null;
+            } else {
+                wdgmsg("cl", option.num, ui.modflags());
+                lastSel = option.name;
+                MapView.pllastcc = null;
+            }
+        } else {
+            callback.accept(option != null ? option.num : -1);
+            ui.destroy(this);
+        }
+    }
+
+    public static void setNextSelection(String name) {
+        nextAutoSel = name;
+        nextAutoSelTimeout = System.currentTimeMillis();
+    }
+}
 
 

@@ -1,18 +1,17 @@
 package haven.timers;
 
 
-import java.awt.Color;
-import java.util.List;
-
 import haven.Audio;
 import haven.Config;
 import haven.Coord;
-import haven.GameUI;
 import haven.Glob;
 import haven.Label;
 import haven.Resource;
 import haven.Text;
 import haven.Widget;
+
+import java.awt.Color;
+import java.util.List;
 
 public class TimerWdg extends Widget {
     private static final Resource timersfx = Resource.local().loadwait("sfx/timer");
@@ -91,7 +90,7 @@ public class TimerWdg extends Widget {
     }
 
     public void start() {
-        start = (long)(ui.sess.glob.globtime() * 1000 / Glob.SERVER_TIME_RATIO);
+        start = (long) (ui.sess.glob.globtime() * 1000 / Glob.SERVER_TIME_RATIO);
         btnstart.hide();
         btnstop.show();
         active = true;
@@ -110,12 +109,12 @@ public class TimerWdg extends Widget {
         Glob.timersThread.remove(this);
         reqdestroy();
         int y = this.c.y;
-       List<TimerWdg> timers = Glob.timersThread.getall();
+        List<TimerWdg> timers = Glob.timersThread.getall();
         for (TimerWdg timer : timers) {
             if (timer.c.y > y)
                 timer.c.y -= height;
         }
-        gameui().timerswnd.resize();
+        ui.gui.timerswnd.resize();
         Glob.timersThread.save();
     }
 
@@ -128,21 +127,19 @@ public class TimerWdg extends Widget {
 
     public void done() {
         stop();
-        GameUI gui = ((TimersWnd) parent.parent.parent).gui;
-        gui.add(new TimerDoneWindow(name, this), new Coord(gui.sz.x / 2 - 150, gui.sz.y / 2 - 75));
+        ui.gui.add(new TimerDoneWindow(name, this), new Coord(ui.gui.sz.x / 2 - 150, ui.gui.sz.y / 2 - 75));
         if (Config.timersalarm)
             Audio.play(timersfx, Config.timersalarmvol);
         Glob.timersThread.save();
     }
 
     public void edit() {
-        GameUI gui = ((TimersWnd) parent.parent.parent).gui;
-        gui.add(new TimerEditWnd("Edit Timer", gui, name, duration, this), new Coord(gui.sz.x / 2 - 200, gui.sz.y / 2 - 200));
+        ui.gui.add(new TimerEditWnd("Edit Timer", ui.gui, name, duration, this), new Coord(ui.gui.sz.x / 2 - 200, ui.gui.sz.y / 2 - 200));
     }
 
     private class TimerDoneWindow extends haven.Window {
         public TimerDoneWindow(String timername, TimerWdg timer) {
-            super(new Coord(300, 130), "Hooray!","Hooray!");
+            super(new Coord(300, 130), "Hooray!", "Hooray!");
 
             haven.Label lbltimer = new haven.Label(timername, Text.num12boldFnd);
             add(lbltimer, new Coord(300 / 2 - lbltimer.sz.x / 2, 20));

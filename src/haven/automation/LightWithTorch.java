@@ -1,24 +1,21 @@
 package haven.automation;
 
 
-import static haven.OCache.posres;
-
-import haven.*;
 import haven.Button;
 import haven.Label;
 import haven.Window;
-import haven.purus.pbot.PBotAPI;
+import haven.*;
 import haven.purus.pbot.PBotUtils;
-
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import static haven.OCache.posres;
+
 public class LightWithTorch extends Window implements GobSelectCallback {
     private static final Text.Foundry infof = new Text.Foundry(Text.sans, 10).aa(true);
-    private GameUI gui;
     private Gob gob;
     private static final int TIMEOUT_ACT = 6000;
     private Gob smelter;
@@ -36,7 +33,7 @@ public class LightWithTorch extends Window implements GobSelectCallback {
 
     List<Gob> list = new ArrayList<>();
 
-    public LightWithTorch(GameUI gui) {
+    public LightWithTorch(UI ui) {
         super(new Coord(270, 180), "Torch Lighter");
         this.ui = ui;
 
@@ -62,7 +59,7 @@ public class LightWithTorch extends Window implements GobSelectCallback {
             @Override
             public void click() {
                 if (list.size() == 0) {
-                    gameui().error("No Smelters/Ovens");
+                    ui.gui.error("No Smelters/Ovens");
                     return;
                 }
                 this.hide();
@@ -94,16 +91,15 @@ public class LightWithTorch extends Window implements GobSelectCallback {
     private class Runner implements Runnable {
         @Override
         public void run() {
-            GameUI gui = gameui();
             for (int i = 0; i < list.size(); i++) {
-             //   gui.error("Lighting number : " + i);
+                //   gui.error("Lighting number : " + i);
                 try {
                     if (list.get(i) == null) {
-                        gui.error("No smelters/ovens found");
+                        ui.gui.error("No smelters/ovens found");
                         return;
                     }
 
-                    Equipory e = gui.getequipory();
+                    Equipory e = ui.gui.getequipory();
                     WItem l = e.quickslots[6];
                     WItem r = e.quickslots[7];
 
@@ -134,9 +130,9 @@ public class LightWithTorch extends Window implements GobSelectCallback {
                         }
                     }
 
-                    gui.map.wdgmsg("itemact", Coord.z, list.get(i).rc.floor(posres), 0, 0, (int) list.get(i).id, list.get(i).rc.floor(posres), 0, -1);
+                    ui.gui.map.wdgmsg("itemact", Coord.z, list.get(i).rc.floor(posres), 0, 0, (int) list.get(i).id, list.get(i).rc.floor(posres), 0, -1);
 
-                    if (!Utils.waitForProgressFinish(gui, TIMEOUT_ACT, "Oops something went wrong. Timeout when trying to light with torch.")) {
+                    if (!Utils.waitForProgressFinish(ui.gui, TIMEOUT_ACT, "Oops something went wrong. Timeout when trying to light with torch.")) {
                         e.wdgmsg("drop", noltorch ? 7 : 6);
                         return;
                     }
@@ -145,17 +141,15 @@ public class LightWithTorch extends Window implements GobSelectCallback {
                 } catch (InterruptedException ie) {
                 }
             }
-            PBotUtils.sysMsg("Done", Color.white);
+            PBotUtils.sysMsg(ui, "Done", Color.white);
         }
     }
 
 
-
-
     private void registerGobSelect() {
         synchronized (GobSelectCallback.class) {
-            PBotUtils.sysMsg("Registering Gob", Color.white);
-            PBotAPI.gui.map.registerGobSelect(this);
+            PBotUtils.sysMsg(ui, "Registering Gob", Color.white);
+            ui.gui.map.registerGobSelect(this);
         }
     }
 
@@ -170,6 +164,7 @@ public class LightWithTorch extends Window implements GobSelectCallback {
             }
         }
     }
+
     @Override
     public void wdgmsg(Widget sender, String msg, Object... args) {
         if (sender == cbtn)
@@ -194,6 +189,6 @@ public class LightWithTorch extends Window implements GobSelectCallback {
             runner.interrupt();
         this.destroy();
     }
-    }
+}
 
 

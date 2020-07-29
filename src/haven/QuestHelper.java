@@ -106,8 +106,7 @@ public class QuestHelper extends Window{
         }
 
         public void tick(double dt) {
-            GameUI gui = this.gameui();
-            if (gui != null && gui.menu != null) {
+            if (ui.gui != null && ui.gui.menu != null) {
                 if (this.questHelper.active) {
                     long timesincelastupdate = System.currentTimeMillis() - this.lastUpdateTime;
                     if (timesincelastupdate < 1000L) {
@@ -120,12 +119,12 @@ public class QuestHelper extends Window{
                         this.quests.clear();
 
                         try {
-                            Iterator var6 = this.gameui().chrwdg.cqst.quests.iterator();
+                            Iterator var6 = this.ui.gui.chrwdg.cqst.quests.iterator();
 
                             while(var6.hasNext()) {
                                 CharWnd.Quest quest = (CharWnd.Quest)var6.next();
-                                if (quest.id != this.gameui().chrwdg.credos.pqid) {
-                                    this.gameui().chrwdg.wdgmsg("qsel", new Object[]{quest.id});
+                                if (quest.id != this.ui.gui.chrwdg.credos.pqid) {
+                                    this.ui.gui.chrwdg.wdgmsg("qsel", new Object[]{quest.id});
                                 }
                             }
                         } catch (NullPointerException var9) {
@@ -180,7 +179,7 @@ public class QuestHelper extends Window{
         public void change(QuestListItem item) {
             if (item != null) {
                 super.change(item);
-                this.gameui().chrwdg.wdgmsg("qsel", item.parentid);
+                this.ui.gui.chrwdg.wdgmsg("qsel", item.parentid);
             }
 
         }

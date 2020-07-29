@@ -1,7 +1,16 @@
 package haven.pathfinder;
 
 
-import haven.*;
+import haven.Coord;
+import haven.Coord2d;
+import haven.Coordf;
+import haven.Gob;
+import haven.GobHitbox;
+import haven.LinMove;
+import haven.MCache;
+import haven.MapView;
+import haven.OCache;
+import haven.Pair;
 
 import java.util.Iterator;
 import java.util.Set;
@@ -46,6 +55,7 @@ public class Pathfinder implements Runnable {
     }
 
     private final Set<PFListener> listeners = new CopyOnWriteArraySet<PFListener>();
+
     public final void addListener(final PFListener listener) {
         listeners.add(listener);
     }
@@ -139,7 +149,7 @@ public class Pathfinder implements Runnable {
             mc = new Coord2d(src.x + e.dest.x - Map.origin, src.y + e.dest.y - Map.origin).floor(posres);
 
             if (action != null && !it.hasNext())
-                mv.gameui().act(action);
+                mv.ui.gui.act(action);
 
             if (gob != null && !it.hasNext()) {
                 mv.wdgmsg("click", gob.sc, mc, clickb, modflags, 0, (int) gob.id, gob.rc.floor(posres), 0, meshid);
@@ -205,6 +215,6 @@ public class Pathfinder implements Runnable {
     static public boolean isInsideBoundBox(Coord gobRc, double gobA, GobHitbox.BBox gobBBox, Coord point) {
         final Coordf relative = new Coordf(point.sub(gobRc)).rotate(-gobA);
         return relative.x >= gobBBox.a.x && relative.x <= gobBBox.b.x &&
-               relative.y >= gobBBox.a.y && relative.y <= gobBBox.b.y;
+                relative.y >= gobBBox.a.y && relative.y <= gobBBox.b.y;
     }
 }

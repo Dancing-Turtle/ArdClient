@@ -1,12 +1,12 @@
 package haven.automation;
 
 
-import haven.*;
-import haven.Window;
-import haven.purus.pbot.PBotAPI;
+import haven.Coord;
+import haven.GameUI;
+import haven.WItem;
 import haven.purus.pbot.PBotUtils;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,31 +22,32 @@ public class SplitLogs implements Runnable {
     @Override
     public void run() {
         List<WItem> blocks = new ArrayList<>();
-            try {
-                blocks.addAll(PBotUtils.getPlayerInvContentsPartial("Block"));
-                startsize = blocks.size();
-            } catch (Exception q) {}
-        if(blocks.size() == 0){
-            PBotUtils.sysMsg("No blocks found.",Color.white);
+        try {
+            blocks.addAll(PBotUtils.getPlayerInvContentsPartial(gui.ui, "Block"));
+            startsize = blocks.size();
+        } catch (Exception q) {
+        }
+        if (blocks.size() == 0) {
+            PBotUtils.sysMsg(gui.ui, "No blocks found.", Color.white);
             return;
         }
-        int startID = PBotAPI.gui.ui.next_predicted_id;
-            int iteration = 0;
-            int freespace = PBotUtils.freeSlotsInv(PBotAPI.gui.maininv);
+        int startID = gui.ui.next_predicted_id;
+        int iteration = 0;
+        int freespace = PBotUtils.freeSlotsInv(gui.maininv);
         for (WItem item : blocks) {
             item.item.wdgmsg("iact", Coord.z, -1);
-            PBotAPI.gui.ui.wdgmsg(startID + iteration, "cl",0, 0);
-            if(freespace >= 3)
+            gui.ui.wdgmsg(startID + iteration, "cl", 0, 0);
+            if (freespace >= 3)
                 iteration = iteration + 6;
-            else if(freespace == 2)
+            else if (freespace == 2)
                 iteration = iteration + 5;
-            else if(freespace == 1)
+            else if (freespace == 1)
                 iteration = iteration + 4;
             else
                 iteration = iteration + 3;
             freespace = freespace - 3;
         }
-        PBotUtils.sysMsg("Exiting Log Splitter",Color.white);
+        PBotUtils.sysMsg(gui.ui, "Exiting Log Splitter", Color.white);
     }
 }
 

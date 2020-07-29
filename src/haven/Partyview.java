@@ -82,9 +82,9 @@ public class Partyview extends Widget {
                         public Object tooltip(Coord c, Widget prev) {
                             Gob gob = m.getgob();
                             if (gob == null) {
-                                if (gameui().map == null || gameui().map.player() == null)
+                                if (ui.gui.map == null || ui.gui.map.player() == null)
                                     return tooltip;
-                                /*Coord a = gameui().map.player().rc;
+                                /*Coord a = ui.gui.map.player().rc;
                                 Coord b = m.getc();
                                 if (b == null)
                                     return tooltip;

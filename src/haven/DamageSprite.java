@@ -2,14 +2,14 @@ package haven;
 
 import haven.purus.pbot.PBotUtils;
 
-import java.awt.*;
+import java.awt.Color;
 
 public class DamageSprite extends Sprite implements PView.Render2D {
     public static final int ID = -1000;
     private static final Text.Furnace dfrn = new PUtils.BlurFurn(new Text.Foundry(Text.sans, 14, new Color(251, 78, 78)).aa(true), 1, 1, new Color(188, 0, 0));
     private static final Text.Furnace afrn = new PUtils.BlurFurn(new Text.Foundry(Text.sans, 14, new Color(76, 202, 98)).aa(true), 1, 1, new Color(0, 142, 24));
     public int dmg, arm;
-    private GameUI gui;
+    public UI ui;
     private Tex dmgtex, armtex;
     private Gob gob;
     private static int ywinfix = Config.iswindows ? 2 : 0;
@@ -26,6 +26,7 @@ public class DamageSprite extends Sprite implements PView.Render2D {
             this.armtex = afrn.render("").tex();
         }
         this.gob = gob;
+        this.ui = gob.glob.ui.get();
     }
 
     public DamageSprite(int dmg, int arm, Gob gob) {
@@ -47,7 +48,7 @@ public class DamageSprite extends Sprite implements PView.Render2D {
         if (arm > 0)
             xoff += armsz.x / 2;
         Coord pos;
-        if(Config.showothercombatinfo)
+        if (Config.showothercombatinfo)
             pos = gob.sc.add((int) (gob.sczu.x * 15f - xoff), (int) (gob.sczu.y * 15f - 80));
         else
             pos = gob.sc.add((int) (gob.sczu.x * 15f - xoff), (int) (gob.sczu.y * 15f - 40));
@@ -77,23 +78,23 @@ public class DamageSprite extends Sprite implements PView.Render2D {
             this.arm += dmg;
             this.armtex = afrn.render(this.arm + "").tex();
         } else {
-            if(Config.logcombatactions) {
+            if (Config.logcombatactions) {
                 KinInfo kininfo = gob.getattr(KinInfo.class);
                 if (kininfo != null)
-                    PBotUtils.sysLogAppend("Hit " + kininfo.name + " For " + dmg + " Damage.", "green");
+                    PBotUtils.sysLogAppend(ui, "Hit " + kininfo.name + " For " + dmg + " Damage.", "green");
                 else if (gob.isplayer())
-                    PBotUtils.sysLogAppend("I got hit for " + dmg + " Damage.", "red");
+                    PBotUtils.sysLogAppend(ui, "I got hit for " + dmg + " Damage.", "red");
                 else if (gob.getres().basename().contains("Body"))
-                    PBotUtils.sysLogAppend("Hit Unknown player For " + dmg + " Damage.","green");
+                    PBotUtils.sysLogAppend(ui, "Hit Unknown player For " + dmg + " Damage.", "green");
                 else
-                    PBotUtils.sysLogAppend("Hit " + gob.getres().basename() + " For " + dmg + " Damage.", "green");
+                    PBotUtils.sysLogAppend(ui, "Hit " + gob.getres().basename() + " For " + dmg + " Damage.", "green");
             }
             this.dmg += dmg;
             this.dmgtex = dfrn.render(this.dmg + "").tex();
-            }
         }
-    public GameUI getGUI()
-    {
-        return this.gui;
+    }
+
+    public GameUI getGUI() {
+        return ui.gui;
     }
 }

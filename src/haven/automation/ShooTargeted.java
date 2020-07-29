@@ -1,7 +1,12 @@
 package haven.automation;
 
 
-import haven.*;
+import haven.CheckListboxItem;
+import haven.Config;
+import haven.FlowerMenu;
+import haven.GameUI;
+import haven.Gob;
+import haven.MapView;
 import haven.Utils;
 import haven.purus.pbot.PBotUtils;
 
@@ -20,9 +25,9 @@ public class ShooTargeted implements Runnable {
         Gob animal = MapView.shooanimal;
         inspect = Config.flowermenus.get("Inspect").selected;
         slaughter = Config.flowermenus.get("Slaughter").selected;
-        for(CheckListboxItem itm :Config.flowermenus.values()) {
+        for (CheckListboxItem itm : Config.flowermenus.values()) {
             if (itm.name.equals("Inspect") || itm.name.equals("Slaughter")) {
-                itm.selected =false;
+                itm.selected = false;
                 Utils.setprefchklst("flowersel", Config.flowermenus);
             }
         }
@@ -30,15 +35,15 @@ public class ShooTargeted implements Runnable {
         if (animal == null)
             return;
         FlowerMenu.setNextSelection("Shoo");
-       gui.map.wdgmsg("click", animal.sc, animal.rc.floor(posres), 3, 0, 0, (int) animal.id, animal.rc.floor(posres), 0, -1);
+        gui.map.wdgmsg("click", animal.sc, animal.rc.floor(posres), 3, 0, 0, (int) animal.id, animal.rc.floor(posres), 0, -1);
         PBotUtils.sleep(300);
-        for(CheckListboxItem itm :Config.flowermenus.values()) {
+        for (CheckListboxItem itm : Config.flowermenus.values()) {
             if (itm.name.equals("Inspect")) {
-                itm.selected =inspect;
+                itm.selected = inspect;
                 Utils.setprefchklst("flowersel", Config.flowermenus);
             }
             if (itm.name.equals("Slaughter")) {
-                itm.selected =slaughter;
+                itm.selected = slaughter;
                 Utils.setprefchklst("flowersel", Config.flowermenus);
             }
         }

@@ -28,6 +28,7 @@ package haven;
 
 import haven.purus.pbot.PBotUtils;
 import haven.res.ui.tt.q.qbuff.QBuff;
+import integrations.food.FoodService;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -47,7 +48,7 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
     public int num = -1;
     private GSprite spr;
     private ItemInfo.Raw rawinfo;
-    private List<ItemInfo> info = Collections.emptyList();
+    public List<ItemInfo> info = Collections.emptyList();
     private QBuff quality;
     public Tex metertex;
     public double studytime = 0.0;
@@ -57,10 +58,12 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
     public boolean sendttupdate = false;
     private long filtered = 0;
     private boolean postProcessed = false;
+
     public static void setFilter(ItemFilter filter) {
         GItem.filter = filter;
         lastFilter = System.currentTimeMillis();
     }
+
     @RName("item")
     public static class $_ implements Factory {
         public Widget create(UI ui, Object[] args) {
@@ -76,6 +79,7 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
 
     public interface OverlayInfo<T> {
         public T overlay();
+
         public void drawoverlay(GOut g, T data);
     }
 
@@ -93,18 +97,19 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
         }
 
         public static <S> InfoOverlay<S> create(OverlayInfo<S> inf) {
-            return(new InfoOverlay<S>(inf));
+            return (new InfoOverlay<S>(inf));
         }
     }
 
     public interface NumberInfo extends OverlayInfo<Tex> {
         public int itemnum();
+
         public default Color numcolor() {
-            return(Color.WHITE);
+            return (Color.WHITE);
         }
 
         public default Tex overlay() {
-            return(new TexI(GItem.NumberInfo.numrender(itemnum(), numcolor())));
+            return (new TexI(GItem.NumberInfo.numrender(itemnum(), numcolor())));
         }
 
         public default void drawoverlay(GOut g, Tex tex) {
@@ -112,10 +117,10 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
         }
 
         public static BufferedImage numrender(int num, Color col) {
-            if(!Config.largeqfont)
-            return Text.renderstroked(num + "", col, Color.BLACK).img;
+            if (!Config.largeqfont)
+                return Text.renderstroked(num + "", col, Color.BLACK).img;
             else
-                return Text.renderstroked(num + "", col, Color.BLACK,num12boldFnd).img;
+                return Text.renderstroked(num + "", col, Color.BLACK, num12boldFnd).img;
         }
     }
 
@@ -198,22 +203,22 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
         return (spr);
     }
 
-    public String resname(){
+    public String resname() {
         Resource res = resource();
-        if(res != null){
+        if (res != null) {
             return res.name;
         }
         return "";
     }
 
     public void tick(double dt) {
-    	super.tick(dt);
-        if(drop) {
-        	dropTimer += dt;
-        	if(dropTimer > 0.1) {
-        		dropTimer = 0;
-        		wdgmsg("drop", Coord.z);
-        	}
+        super.tick(dt);
+        if (drop) {
+            dropTimer += dt;
+            if (dropTimer > 0.1) {
+                dropTimer = 0;
+                wdgmsg("drop", Coord.z);
+            }
         }
         GSprite spr = spr();
         if (spr != null)
@@ -223,17 +228,24 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
 
     public void testMatch() {
         try {
-            if(filtered < lastFilter && spr != null) {
+            if (filtered < lastFilter && spr != null) {
                 matches = filter != null && filter.matches(info());
                 filtered = lastFilter;
             }
-        } catch (Loading ignored) {}
+        } catch (Loading ignored) {
+        }
     }
 
     public List<ItemInfo> info() {
         if (info == null && rawinfo != null) {
             info = ItemInfo.buildinfo(this, rawinfo);
-            info.add(new ItemInfo.AdHoc(this, (Config.resinfo ? ("\n" + this.getres().name) : "")));
+            if (Config.resinfo)
+                info.add(new ItemInfo.AdHoc(this, "\n" + this.getres().name));
+            try {
+                // getres() can throw Loading, ignore it
+                FoodService.checkFood(info, getres().name);
+            } catch (Exception ex) {
+            }
         }
         return (info);
     }
@@ -263,9 +275,11 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
                 quality = null;
             rawinfo = new ItemInfo.Raw(args);
             filtered = 0;
-            if(sendttupdate){wdgmsg("ttupdate");}
+            if (sendttupdate) {
+                wdgmsg("ttupdate");
+            }
         } else if (name == "meter") {
-            meter = (int)((Number)args[0]).doubleValue();
+            meter = (int) ((Number) args[0]).doubleValue();
             metertex = Text.renderstroked(String.format("%d%%", meter), Color.WHITE, Color.BLACK, num10Fnd).tex();
         }
     }
@@ -317,8 +331,8 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
                 }
             }
             if (curs != null && curs.name.equals("gfx/hud/curs/mine")) {
-                if (PBotUtils.getStamina() < 40) {
-                    PBotUtils.drink(false);
+                if (PBotUtils.getStamina(ui) < 40) {
+                    PBotUtils.drink(ui, false);
                 }
                 if (Config.dropMinedStones && Config.mineablesStone.contains(name) ||
                         Config.dropMinedOre && Config.mineablesOre.contains(name) ||
@@ -328,21 +342,24 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
                         Config.dropMinedSeaShells && this.getname().contains("Petrified Seashell"))
                     this.wdgmsg("drop", Coord.z);
             }
-        }catch(Resource.Loading e){e.printStackTrace(); }
+        } catch (Resource.Loading e) {
+            e.printStackTrace();
+        }
     }
+
     public Coord size() {
         try {
             Indir<Resource> res = getres().indir();
-            if(res.get() != null && res.get().layer(Resource.imgc) != null) {
+            if (res.get() != null && res.get().layer(Resource.imgc) != null) {
                 Tex tex = res.get().layer(Resource.imgc).tex();
-                if(tex == null)
+                if (tex == null)
                     return new Coord(1, 1);
                 else
                     return tex.sz().div(30);
             } else {
                 return new Coord(1, 1);
             }
-        } catch(Loading l) {
+        } catch (Loading l) {
 
         }
         return new Coord(1, 1);

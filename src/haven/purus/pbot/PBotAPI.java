@@ -1,10 +1,40 @@
 package haven.purus.pbot;
 
+import haven.Charlist;
 import haven.GameUI;
+import haven.MainFrame;
+import haven.UI;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class PBotAPI {
-	
-	public static GameUI gui;
+
+    public static GameUI gui;
+    public static UI ui;
+    public static Charlist charlist;
+
+    public static Map<UI, GameUI> guis = new HashMap<>();
+
+    public static GameUI gui(UI ui) {
+        checkSessions();
+        //return MainFrame.instance.p.ui.gui;
+        return guis.get(ui);
+    }
+
+    public static UI ui() {
+        return MainFrame.instance.p.ui;
+    }
+
+    public static void checkSessions() {
+        synchronized (MainFrame.instance.p.sessions) {
+            Iterator<UI> itr = MainFrame.instance.p.sessions.iterator();
+            while (itr.hasNext()) {
+                if (!guis.containsKey(itr.next())) guis.remove(itr.next());
+            }
+        }
+    }
 
 
 /*	// Null if not found

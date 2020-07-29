@@ -44,7 +44,7 @@ public class TimersWnd extends Window {
                         }
                     }
                 }
-                gameui().timerswnd.resize();
+                ui.gui.timerswnd.resize();
                 Glob.timersThread.save();
             }
         };

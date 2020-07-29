@@ -9,7 +9,7 @@ import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.List;
 
 /**
@@ -50,12 +50,12 @@ public class PBotDiscord extends ListenerAdapter {
      * Alerts a user with @name.
      * @param name
      */
-    public static void alertUser(String name){
+    public static void alertUser(String name) {
         initalize();
         for (TextChannel ch : channels) {
-            for(Member member : ch.getMembers()){
-                if(member.getUser().getName().contains(name)){
-                    ch.sendMessage("<@"+member.getUser().getId()+">").queue();
+            for (Member member : ch.getMembers()) {
+                if (member.getUser().getName().contains(name)) {
+                    ch.sendMessage("<@" + member.getUser().getId() + ">").queue();
                 }
             }
         }
@@ -67,13 +67,13 @@ public class PBotDiscord extends ListenerAdapter {
      * @param name
      * @return returns Discord alert string.
      */
-    public static String getAlertString(String name){
+    public static String getAlertString(String name) {
         initalize();
         String at = "";
         for (TextChannel ch : channels) {
-            for(Member member : ch.getMembers()){
-                if(member.getUser().getName().equals(name)){
-                    at = "<@"+member.getUser().getId()+">";
+            for (Member member : ch.getMembers()) {
+                if (member.getUser().getName().equals(name)) {
+                    at = "<@" + member.getUser().getId() + ">";
 
                 }
             }
@@ -86,9 +86,9 @@ public class PBotDiscord extends ListenerAdapter {
      * @param id
      * @param message
      */
-    public static void messageRole(String id, String message){
+    public static void messageRole(String id, String message) {
         initalize();
-        PBotDiscord.sendMessage("<@&"+id+">" + " " + message);
+        PBotDiscord.sendMessage("<@&" + id + ">" + " " + message);
     }
 
     /***
@@ -97,13 +97,13 @@ public class PBotDiscord extends ListenerAdapter {
      * @param namerole
      * @return Returns role ID.
      */
-    public static String getRoleID(String nameplayer, String namerole){
+    public static String getRoleID(String nameplayer, String namerole) {
         initalize();
         String at = "";
         for (TextChannel ch : channels) {
-            for(Member member : ch.getMembers()){
-                if(member.getUser().getName().equals(nameplayer)){
-                    for(Role r : ch.getJDA().getRolesByName(namerole, true)){
+            for (Member member : ch.getMembers()) {
+                if (member.getUser().getName().equals(nameplayer)) {
+                    for (Role r : ch.getJDA().getRolesByName(namerole, true)) {
                         at = r.getId();
                     }
                 }
@@ -117,13 +117,13 @@ public class PBotDiscord extends ListenerAdapter {
      * @param name
      * @return Returns user ID.
      */
-    public static String getUserID(String name){
+    public static String getUserID(String name) {
         initalize();
         String at = "";
         for (TextChannel ch : channels) {
-            for(Member member : ch.getMembers()){
-                if(member.getUser().getName().equals(name)){
-                     at = member.getUser().getId();
+            for (Member member : ch.getMembers()) {
+                if (member.getUser().getName().equals(name)) {
+                    at = member.getUser().getId();
                 }
             }
         }
@@ -202,14 +202,14 @@ public class PBotDiscord extends ListenerAdapter {
      * Alerts everyone in discord channel with map location and item found.
      * @param string Specific item to alert the users to.
      */
-    public static void mapAlertEveryone(String string){
+    public static void mapAlertEveryone(String string) {
         try {
             String base = MappingClient.getInstance().endpoint;
             String mod = base.split("/")[2];
             String output = String.format("@everyone " + string + " at: " + " http://" + mod
                     + "/map/#/grid/2/%d/%d/6", MappingClient.getInstance().lastMapRef.gc.x, MappingClient.getInstance().lastMapRef.gc.y);
             PBotDiscord.sendMessage(output);
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -219,14 +219,14 @@ public class PBotDiscord extends ListenerAdapter {
      * @param name The name of the user to be messaged.
      * @param string Specific item to alert the users to.
      */
-    public static void mapAlert(String name, String string){
+    public static void mapAlert(String name, String string) {
         try {
             String base = MappingClient.getInstance().endpoint;
             String mod = base.split("/")[2];
             String output = String.format(getAlertString(name) + " " + string + " at: " + " http://" + mod
-                    + "/map/#/grid/%d/%d/%d/6", MappingClient.getInstance().lastMapRef.mapID,  MappingClient.getInstance().lastMapRef.gc.x, MappingClient.getInstance().lastMapRef.gc.y);
+                    + "/map/#/grid/%d/%d/%d/6", MappingClient.getInstance().lastMapRef.mapID, MappingClient.getInstance().lastMapRef.gc.x, MappingClient.getInstance().lastMapRef.gc.y);
             PBotDiscord.sendMessage(output);
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -236,14 +236,14 @@ public class PBotDiscord extends ListenerAdapter {
      * @param id ID of the user to alert.
      * @param string Specific item to alert the users to.
      */
-    public static void mapAlertRole(String id, String string){
+    public static void mapAlertRole(String id, String string) {
         try {
             String base = MappingClient.getInstance().endpoint;
             String mod = base.split("/")[2];
             String output = String.format(string + " at: " + " http://" + mod
-                    + "/map/#/grid/%d/%d/%d/6", MappingClient.getInstance().lastMapRef.mapID,  MappingClient.getInstance().lastMapRef.gc.x, MappingClient.getInstance().lastMapRef.gc.y);
+                    + "/map/#/grid/%d/%d/%d/6", MappingClient.getInstance().lastMapRef.mapID, MappingClient.getInstance().lastMapRef.gc.x, MappingClient.getInstance().lastMapRef.gc.y);
             PBotDiscord.messageRole(id, output);
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

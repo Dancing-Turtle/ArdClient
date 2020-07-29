@@ -1,15 +1,18 @@
 package haven.automation;
 
-import static haven.OCache.posres;
-
-import java.awt.Color;
-import java.awt.event.KeyEvent;
-import java.util.*;
-
+import haven.Button;
+import haven.Label;
+import haven.Window;
 import haven.*;
-import haven.purus.pbot.PBotAPI;
 import haven.purus.pbot.PBotUtils;
 import net.dv8tion.jda.core.entities.TextChannel;
+
+import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.util.List;
+import java.util.*;
+
+import static haven.OCache.posres;
 
 
 public class SteelRefueler extends Window implements GobSelectCallback {
@@ -64,10 +67,10 @@ public class SteelRefueler extends Window implements GobSelectCallback {
             @Override
             public void click() {
                 if (crucibles.size() == 0) {
-                    gameui().error("No crucibles selected.");
+                    ui.gui.error("No crucibles selected.");
                     return;
                 } else if (stockpiles.size() == 0) {
-                    gameui().error("No stockpiles selected.");
+                    ui.gui.error("No stockpiles selected.");
                     return;
                 }
 
@@ -109,9 +112,9 @@ public class SteelRefueler extends Window implements GobSelectCallback {
     private class Runner implements Runnable {
         @Override
         public void run() {
-            GameUI gui = gameui();
-            while (!terminate || gui.getwnd("Steel Refueler") != null ) {
-                if(!ui.sess.alive()) {
+            GameUI gui = ui.gui;
+            while (!terminate || gui.getwnd("Steel Refueler") != null) {
+                if (!ui.sess.alive()) {
                     if (Discord.jdalogin != null) {
                         for (TextChannel loop : haven.automation.Discord.channels) {
                             if (loop.getName().contains("steel")) {
@@ -127,7 +130,7 @@ public class SteelRefueler extends Window implements GobSelectCallback {
                 for (Gob c : crucibles) {
                     // take fuel from stockpiles if we don't have enough in the inventory
 
-                   // int availableFuelBlock = gui.maininv.getItemPartialCount("Block");
+                    // int availableFuelBlock = gui.maininv.getItemPartialCount("Block");
                     //  int availableFuelCoal = gui.maininv.getItemPartialCount("Coal");
                     int availableFuelBranch = gui.maininv.getItemPartialCount("Branch");
                     if (availableFuelBranch < 18)
@@ -135,14 +138,14 @@ public class SteelRefueler extends Window implements GobSelectCallback {
 
                     // find one piece of fuel in the inventory
                     WItem fuel = gui.maininv.getItemPartial("Branch");
-                  //  if (fuel == null)
-                     //   continue;
+                    //  if (fuel == null)
+                    //   continue;
 
                     int fuelticks = 5; // branch
 
                     // navigate to crucible
-                  //  gui.map.pfRightClick(c, -1, 3, 1, null);
-                    PBotUtils.pfRightClick(c,0);
+                    //  gui.map.pfRightClick(c, -1, 3, 1, null);
+                    PBotUtils.pfRightClick(ui, c, 0);
 
                     if (terminate)
                         return;
@@ -155,26 +158,26 @@ public class SteelRefueler extends Window implements GobSelectCallback {
                         return;
                     }*/
                     int retry = 0;
-                    while(gui.getwnd("Steelbox") == null) {
+                    while (gui.getwnd("Steelbox") == null) {
                         retry++;
                         PBotUtils.sleep(10);
                         if (retry >= 1000) {
-                            retry=0;
-                            PBotUtils.sysLogAppend("Unstucking", "white");
+                            retry = 0;
+                            PBotUtils.sysLogAppend(ui, "Unstucking", "white");
                             Gob player = gui.map.player();
                             Coord location = player.rc.floor(posres);
                             int x = location.x + getrandom();
                             int y = location.y + getrandom();
                             Coord finalloc = new Coord(x, y);
-                            gameui().map.wdgmsg("click", Coord.z, finalloc, 1, 0);
+                            ui.gui.map.wdgmsg("click", Coord.z, finalloc, 1, 0);
                             PBotUtils.sleep(1000);
-                            PBotUtils.pfRightClick(c,0);
+                            PBotUtils.pfRightClick(ui, c, 0);
                         }
                     }
-                   // System.out.println("Grab Steelbox window");
+                    // System.out.println("Grab Steelbox window");
                     Window cwnd = gui.getwnd("Steelbox");
                     if (cwnd == null) {
-                       System.out.println("Window null, skipping");
+                        System.out.println("Window null, skipping");
                         continue;
                     }
                     VMeter vm = cwnd.getchild(VMeter.class);
@@ -185,7 +188,7 @@ public class SteelRefueler extends Window implements GobSelectCallback {
                         try {
                             for (WItem loop : ItemList)
                                 if (loop.itemmeter.get() > 0)
-                                    completepercent.add((loop.itemmeter.get()*100));
+                                    completepercent.add((loop.itemmeter.get() * 100));
                         } catch (NullPointerException qqq) {
                         }
                     }
@@ -199,7 +202,7 @@ public class SteelRefueler extends Window implements GobSelectCallback {
                     int fueltoload = (100 - vm.amount) / fuelticks;
 
                     // take fuel
-                    if(fuel == null){//this shouldn't happen, assume the worst and just close.
+                    if (fuel == null) {//this shouldn't happen, assume the worst and just close.
                         terminate = true;
                         terminate();
                         break;
@@ -217,7 +220,7 @@ public class SteelRefueler extends Window implements GobSelectCallback {
                         }
                     }
                     int curbranches = gui.maininv.getItemPartialCount("Branch");
-                    int freeslots = PBotUtils.invFreeSlots();
+                    int freeslots = PBotUtils.invFreeSlots(ui);
                     for (; fueltoload > 0; fueltoload--) {
 
                         if (terminate)
@@ -247,27 +250,27 @@ public class SteelRefueler extends Window implements GobSelectCallback {
                     // if the crucible is full already we'll end up with a stockpile on the cursor
                     if (hand != null) {
                         gui.map.wdgmsg("place", Coord.z, 0, 3, 0);
-                        Coord slot = PBotUtils.getFreeInvSlot(PBotAPI.gui.maininv);
+                        Coord slot = PBotUtils.getFreeInvSlot(ui.gui.maininv);
                         if (slot != null) {
-                            PBotUtils.dropItemToInventory(slot, PBotAPI.gui.maininv);
-                            while (PBotUtils.getItemAtHand() != null)
+                            PBotUtils.dropItemToInventory(slot, ui.gui.maininv);
+                            while (PBotUtils.getItemAtHand(ui) != null)
                                 PBotUtils.sleep(10);
                         }
                     }
-                 //   System.out.println("Refueled with "+(curbranches - gui.maininv.getItemPartialCount("Branch")));
-                 //   System.out.println("Branches in inv : "+gui.maininv.getItemPartialCount("Branch"));
+                    //   System.out.println("Refueled with "+(curbranches - gui.maininv.getItemPartialCount("Branch")));
+                    //   System.out.println("Branches in inv : "+gui.maininv.getItemPartialCount("Branch"));
                 }
 
 
-                if(reportouttimer == 4)
+                if (reportouttimer == 4)
                     reportouttimer = 1;
-                if(reportouttimer == 1) {
+                if (reportouttimer == 1) {
                     if (Discord.jdalogin != null) {
                         for (Widget w = gui.chat.lchild; w != null; w = w.prev) {
                             if (w instanceof ChatUI.DiscordChannel) {
                                 if (((ChatUI.DiscordChannel) w).name().contains("steel")) {
                                     Collections.sort(completepercent);
-                                    if(completepercent.size()>0)
+                                    if (completepercent.size() > 0)
                                         lowest = completepercent.get(0);
                                     ((ChatUI.DiscordChannel) w).send("!check");
                                     ((ChatUI.DiscordChannel) w).send("Lowest Complete % was : " + round(lowest, 2));
@@ -283,7 +286,7 @@ public class SteelRefueler extends Window implements GobSelectCallback {
                 stockpiles.clear();
                 stockpiles.addAll(Stockpiles());
                 lbls.settext(stockpiles.size() + "");
-                if(stockpiles.size() == 0){
+                if (stockpiles.size() == 0) {
                     if (Discord.jdalogin != null) {
                         for (Widget w = gui.chat.lchild; w != null; w = w.prev) {
                             if (w instanceof ChatUI.DiscordChannel) {
@@ -296,18 +299,18 @@ public class SteelRefueler extends Window implements GobSelectCallback {
                         }
                     }
                 }
-                if(stockpiles.size() < 5) {
+                if (stockpiles.size() < 5) {
                     if (Discord.jdalogin != null) {
                         for (Widget w = gui.chat.lchild; w != null; w = w.prev) {
                             if (w instanceof ChatUI.DiscordChannel) {
                                 if (((ChatUI.DiscordChannel) w).name().contains("steel")) {
-                                    ((ChatUI.DiscordChannel) w).send("Hey, by the way, I only have "+stockpiles.size()+" stockpiles of fuel left.");
+                                    ((ChatUI.DiscordChannel) w).send("Hey, by the way, I only have " + stockpiles.size() + " stockpiles of fuel left.");
                                 }
                             }
                         }
                     }
                 }
-                if(terminate)
+                if (terminate)
                     return;
                 try {
                     Thread.sleep(SLEEP);
@@ -317,6 +320,7 @@ public class SteelRefueler extends Window implements GobSelectCallback {
             }
         }
     }
+
     public double round(double value, int places) {
         if (places < 0) throw new IllegalArgumentException();
 
@@ -326,7 +330,7 @@ public class SteelRefueler extends Window implements GobSelectCallback {
         return (double) tmp / factor;
     }
 
-    public int getrandom(){
+    public int getrandom() {
         Random r = new Random();
         int randomNumber = r.ints(1, -3000, 3000).findFirst().getAsInt();
         return randomNumber;
@@ -335,8 +339,8 @@ public class SteelRefueler extends Window implements GobSelectCallback {
     private class selectingarea implements Runnable {
         @Override
         public void run() {
-            PBotUtils.sysMsg("Drag area over smelters/Ovens", Color.WHITE);
-            PBotUtils.selectArea();
+            PBotUtils.sysMsg(ui, "Drag area over smelters/Ovens", Color.WHITE);
+            PBotUtils.selectArea(ui);
             try {
                 selectedAreaA = PBotUtils.getSelectedAreaA();
                 selectedAreaB = PBotUtils.getSelectedAreaB();
@@ -344,13 +348,14 @@ public class SteelRefueler extends Window implements GobSelectCallback {
                 stockpiles.addAll(Stockpiles());
                 lbls.settext(stockpiles.size() + "");
                 lblc.settext(crucibles.size() + "");
-            }catch(NullPointerException q){PBotUtils.sysMsg("Error detected, please reopen the bot and try again.",Color.white);}
+            } catch (NullPointerException q) {
+                PBotUtils.sysMsg(ui, "Error detected, please reopen the bot and try again.", Color.white);
+            }
         }
     }
 
     private void getfuel() {
-        GameUI gui = gameui();
-        Glob glob = gui.map.glob;
+        Glob glob = ui.gui.map.glob;
         for (Gob s : stockpiles) {
             if (terminate)
                 return;
@@ -361,16 +366,16 @@ public class SteelRefueler extends Window implements GobSelectCallback {
                     continue;
             }
 
-            PBotUtils.pfRightClick(s,1);
-            while(!PBotUtils.player().isMoving())
+            PBotUtils.pfRightClick(ui, s, 1);
+            while (!PBotUtils.player(ui).isMoving())
                 PBotUtils.sleep(10); //wait to start moving
-            while(PBotUtils.player().isMoving())
+            while (PBotUtils.player(ui).isMoving())
                 PBotUtils.sleep(10); //wait till we stop moving
 
             // return if got enough fuel
-            int availableFuelCoal = gui.maininv.getItemPartialCount("Coal");
-            int availableFuelBlock = gui.maininv.getItemPartialCount("Block");
-            int availableFuelBranch = gui.maininv.getItemPartialCount("Branch");
+            int availableFuelCoal = ui.gui.maininv.getItemPartialCount("Coal");
+            int availableFuelBlock = ui.gui.maininv.getItemPartialCount("Block");
+            int availableFuelBranch = ui.gui.maininv.getItemPartialCount("Branch");
             if (availableFuelCoal >= 9 || availableFuelBlock >= 3 || availableFuelBranch >= 18)
                 return;
         }
@@ -417,6 +422,7 @@ public class SteelRefueler extends Window implements GobSelectCallback {
             runner.interrupt();
         this.destroy();
     }
+
     public ArrayList<Gob> Crucibles() {
         // Initialises list of crops to harvest between the selected coordinates
         ArrayList<Gob> gobs = new ArrayList<Gob>();
@@ -435,6 +441,7 @@ public class SteelRefueler extends Window implements GobSelectCallback {
         gobs.sort(new CoordSort());
         return gobs;
     }
+
     public ArrayList<Gob> Stockpiles() {
         // Initialises list of crops to harvest between the selected coordinates
         ArrayList<Gob> gobs = new ArrayList<Gob>();
@@ -454,6 +461,7 @@ public class SteelRefueler extends Window implements GobSelectCallback {
         gobs.sort(new CoordSort());
         return gobs;
     }
+
     class CoordSort implements Comparator<Gob> {
         public int compare(Gob a, Gob b) {
             if (a.rc.floor().x == b.rc.floor().x) {

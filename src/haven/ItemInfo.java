@@ -26,18 +26,6 @@
 
 package haven;
 
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.*;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
 import haven.factories.BackwaterFactory;
 import haven.factories.BullmythFactory;
 import haven.factories.CenteroflearningFactory;
@@ -53,16 +41,30 @@ import haven.factories.WoodlandrealmFactory;
 import haven.res.ui.tt.ArmorFactory;
 import haven.res.ui.tt.WearFactory;
 
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
 public abstract class ItemInfo {
     public static final Resource armor_hard = Resource.local().loadwait("gfx/hud/chr/custom/ahard");
     public static final Resource armor_soft = Resource.local().loadwait("gfx/hud/chr/custom/asoft");
     static final Pattern count_pattern = Pattern.compile("(?:^|[\\s])([0-9]*\\.?[0-9]+\\s*%?)");
     public final Owner owner;
 
-    public static ItemInfo make(Session sess, String resname, Object ...args) {
-	Resource res = Resource.remote().load(resname).get();
-	InfoFactory f = res.layer(Resource.CodeEntry.class).get(InfoFactory.class);
-	return f.build(new SessOwner(sess), args);
+    public static ItemInfo make(Session sess, String resname, Object... args) {
+        Resource res = Resource.remote().load(resname).get();
+        InfoFactory f = res.layer(Resource.CodeEntry.class).get(InfoFactory.class);
+        return f.build(new SessOwner(sess), args);
     }
 
     public interface Owner extends OwnerContext {
@@ -70,27 +72,28 @@ public abstract class ItemInfo {
         public default Glob glob() {
             return (context(Glob.class));
         }
+
         public List<ItemInfo> info();
     }
 
     private static class SessOwner implements ItemInfo.Owner {
-	private final OwnerContext.ClassResolver<SessOwner> ctxr;
+        private final OwnerContext.ClassResolver<SessOwner> ctxr;
 
-	public SessOwner(Session sess) {
-	    ctxr = new OwnerContext.ClassResolver<SessOwner>()
-		.add(Glob.class, x -> sess.glob)
-		.add(Session.class, x -> sess);
-	}
+        public SessOwner(Session sess) {
+            ctxr = new OwnerContext.ClassResolver<SessOwner>()
+                    .add(Glob.class, x -> sess.glob)
+                    .add(Session.class, x -> sess);
+        }
 
-	@Override
-	public List<ItemInfo> info() {
-	    return null;
-	}
+        @Override
+        public List<ItemInfo> info() {
+            return null;
+        }
 
-	@Override
-	public <T> T context(Class<T> cl) {
-	    return (ctxr.context(cl, this));
-	}
+        @Override
+        public <T> T context(Class<T> cl) {
+            return (ctxr.context(cl, this));
+        }
     }
 
     public interface ResOwner extends Owner {
@@ -100,13 +103,16 @@ public abstract class ItemInfo {
     public interface SpriteOwner extends ResOwner {
         public GSprite sprite();
     }
+
     public static class Raw {
         public final Object[] data;
         public final double time;
+
         public Raw(Object[] data, double time) {
             this.data = data;
             this.time = time;
         }
+
         public Raw(Object[] data) {
             this(data, Utils.rtime());
         }
@@ -114,37 +120,40 @@ public abstract class ItemInfo {
 
     @Resource.PublishedCode(name = "tt", instancer = FactMaker.class)
     public static interface InfoFactory {
-       // public ItemInfo build(Owner owner, Object... args);
+        // public ItemInfo build(Owner owner, Object... args);
         public default ItemInfo build(Owner owner, Raw raw, Object... args) {
-            return(build(owner, args));
+            return (build(owner, args));
         }
+
         @Deprecated
         public default ItemInfo build(Owner owner, Object... args) {
-            throw(new AbstractMethodError("info factory missing either build bmethod"));
+            throw (new AbstractMethodError("info factory missing either build bmethod"));
         }
     }
 
     public static class FactMaker implements Resource.PublishedCode.Instancer {
         public InfoFactory make(Class<?> cl) throws InstantiationException, IllegalAccessException {
-            if(InfoFactory.class.isAssignableFrom(cl))
-                return(cl.asSubclass(InfoFactory.class).newInstance());
+            if (InfoFactory.class.isAssignableFrom(cl))
+                return (cl.asSubclass(InfoFactory.class).newInstance());
             try {
                 Function<Object[], ItemInfo> make = Utils.smthfun(cl, "mkinfo", ItemInfo.class, Owner.class, Object[].class);
-                return(new InfoFactory() {
+                return (new InfoFactory() {
                     public ItemInfo build(Owner owner, Raw raw, Object... args) {
-                        return(make.apply(new Object[]{owner, args}));
+                        return (make.apply(new Object[]{owner, args}));
                     }
                 });
-            } catch(NoSuchMethodException e) {}
-                            try {
+            } catch (NoSuchMethodException e) {
+            }
+            try {
                 Function<Object[], ItemInfo> make = Utils.smthfun(cl, "mkinfo", ItemInfo.class, Owner.class, Raw.class, Object[].class);
-                return(new InfoFactory() {
+                return (new InfoFactory() {
                     public ItemInfo build(Owner owner, Raw raw, Object... args) {
-                        return(make.apply(new Object[]{owner, raw, args}));
-                        }
-                    });
-            } catch(NoSuchMethodException e) {}
-            return(null);
+                        return (make.apply(new Object[]{owner, raw, args}));
+                    }
+                });
+            } catch (NoSuchMethodException e) {
+            }
+            return (null);
         }
     }
 
@@ -178,10 +187,10 @@ public abstract class ItemInfo {
         }
 
         public BufferedImage render() {
-	    Collections.sort(tips, (a, b) -> (a.order() - b.order()));
-	    for(Tip tip : tips)
+            Collections.sort(tips, (a, b) -> (a.order() - b.order()));
+            for (Tip tip : tips)
                 tip.layout(this);
-	    return(cmp.compose());
+            return (cmp.compose());
         }
     }
 
@@ -190,10 +199,21 @@ public abstract class ItemInfo {
             super(owner);
         }
 
-	public BufferedImage tipimg() {return(null);}
-	public BufferedImage tipimg(int w) {return(tipimg());}
-	public Tip shortvar() {return(null);}
-	public void prepare(Layout l) {}
+        public BufferedImage tipimg() {
+            return (null);
+        }
+
+        public BufferedImage tipimg(int w) {
+            return (tipimg());
+        }
+
+        public Tip shortvar() {
+            return (null);
+        }
+
+        public void prepare(Layout l) {
+        }
+
         public void layout(Layout l) {
             BufferedImage t = tipimg(l.width);
             if (t != null)
@@ -227,7 +247,7 @@ public abstract class ItemInfo {
         }
 
         public Name(Owner owner, String str) {
-	    this(owner, Text.render(str));
+            this(owner, Text.render(str));
         }
 
         public BufferedImage tipimg() {
@@ -239,9 +259,14 @@ public abstract class ItemInfo {
         }
 
         public Tip shortvar() {
-	    return(new Tip(owner) {
-		    public BufferedImage tipimg() {return(str.img);}
-		    public int order() {return(0);}
+            return (new Tip(owner) {
+                public BufferedImage tipimg() {
+                    return (str.img);
+                }
+
+                public int order() {
+                    return (0);
+                }
             });
         }
     }
@@ -326,7 +351,7 @@ public abstract class ItemInfo {
     }
 
     public static BufferedImage catimgs(int margin, BufferedImage... imgs) {
-	return catimgs(margin, false, imgs);
+        return catimgs(margin, false, imgs);
     }
 
     public static BufferedImage catimgs(int margin, boolean right, BufferedImage... imgs) {
@@ -344,7 +369,7 @@ public abstract class ItemInfo {
         for (BufferedImage img : imgs) {
             if (img == null)
                 continue;
-	    g.drawImage(img, right ? w - img.getWidth() : 0, y, null);
+            g.drawImage(img, right ? w - img.getWidth() : 0, y, null);
             y += img.getHeight() + margin;
         }
         g.dispose();
@@ -409,18 +434,18 @@ public abstract class ItemInfo {
     }
 
     public static <T> List<T> findall(Class<T> cl, List<ItemInfo> il) {
-	List<T> ret = new LinkedList<>();
-	for(ItemInfo inf : il) {
-	    if(cl.isInstance(inf))
-		ret.add(cl.cast(inf));
-	}
-	return ret;
+        List<T> ret = new LinkedList<>();
+        for (ItemInfo inf : il) {
+            if (cl.isInstance(inf))
+                ret.add(cl.cast(inf));
+        }
+        return ret;
     }
 
-    public static List<ItemInfo> findall(String cl, List<ItemInfo> infos){
-	return infos.stream()
-	    .filter(inf -> Reflect.is(inf, cl))
-	    .collect(Collectors.toCollection(LinkedList::new));
+    public static List<ItemInfo> findall(String cl, List<ItemInfo> infos) {
+        return infos.stream()
+                .filter(inf -> Reflect.is(inf, cl))
+                .collect(Collectors.toCollection(LinkedList::new));
     }
 
     private static final Map<String, ItemInfo.InfoFactory> customFactories = new HashMap<>(14);
@@ -445,10 +470,10 @@ public abstract class ItemInfo {
 
     public static List<ItemInfo> buildinfo(Owner owner, Raw raw) {
         List<ItemInfo> ret = new ArrayList<ItemInfo>();
-        for(Object o : raw.data) {
+        for (Object o : raw.data) {
             if (o instanceof Object[]) {
                 Object[] a = (Object[]) o;
-                Resource ttres= null;
+                Resource ttres = null;
                 InfoFactory f = null;
                 if (a[0] instanceof Integer) {
                     ttres = owner.glob().sess.getres((Integer) a[0]).get();
@@ -479,123 +504,125 @@ public abstract class ItemInfo {
         }
         return (ret);
     }
+
     public static List<ItemInfo> buildinfo(Owner owner, Object[] rawinfo) {
-        return(buildinfo(owner, new Raw(rawinfo)));
+        return (buildinfo(owner, new Raw(rawinfo)));
     }
 
     public static String getCount(List<ItemInfo> infos) {
-	String res = null;
-	for (ItemInfo info : infos) {
-	    if(info instanceof Contents) {
-		Contents cnt = (Contents) info;
-		res = getCount(cnt.sub);
-	    } else if(info instanceof AdHoc) {
-		AdHoc ah = (AdHoc) info;
-		try {
-		    Matcher m = count_pattern.matcher(ah.str.text);
-		    if(m.find()) {
-			res = m.group(1);
-		    }
-		} catch (Exception ignored) {
-		}
-	    } else if(info instanceof Name) {
-		Name name = (Name) info;
-		try {
-		    Matcher m = count_pattern.matcher(name.str.text);
-		    if(m.find()) {
-			res = m.group(1);
-		    }
-		} catch (Exception ignored) {
-		}
-	    }
-	    if(res != null) {
-		return res.trim();
-	    }
-	}
-	return null;
+        String res = null;
+        for (ItemInfo info : infos) {
+            if (info instanceof Contents) {
+                Contents cnt = (Contents) info;
+                res = getCount(cnt.sub);
+            } else if (info instanceof AdHoc) {
+                AdHoc ah = (AdHoc) info;
+                try {
+                    Matcher m = count_pattern.matcher(ah.str.text);
+                    if (m.find()) {
+                        res = m.group(1);
+                    }
+                } catch (Exception ignored) {
+                }
+            } else if (info instanceof Name) {
+                Name name = (Name) info;
+                try {
+                    Matcher m = count_pattern.matcher(name.str.text);
+                    if (m.find()) {
+                        res = m.group(1);
+                    }
+                } catch (Exception ignored) {
+                }
+            }
+            if (res != null) {
+                return res.trim();
+            }
+        }
+        return null;
     }
 
     public static Pair<Integer, Integer> getWear(List<ItemInfo> infos) {
-	infos = findall("Wear", infos);
-	for (ItemInfo info : infos) {
-	    if(Reflect.hasField(info, "m") && Reflect.hasField(info, "d")){
-		return new Pair<>(Reflect.getFieldValueInt(info, "d"), Reflect.getFieldValueInt(info, "m"));
-	    }
-	}
-	return null;
+        infos = findall("Wear", infos);
+        for (ItemInfo info : infos) {
+            if (Reflect.hasField(info, "m") && Reflect.hasField(info, "d")) {
+                return new Pair<>(Reflect.getFieldValueInt(info, "d"), Reflect.getFieldValueInt(info, "m"));
+            }
+        }
+        return null;
     }
 
     public static Pair<Integer, Integer> getArmor(List<ItemInfo> infos) {
-	//loftar is wonderful sunshine and has same class name for wear and armor tooltips even though
-	//they are different classes with different fields :)
-	infos = findall("Wear", infos);
-	for (ItemInfo info : infos) {
-	    if(Reflect.hasField(info, "hard") && Reflect.hasField(info, "soft")){
-		return new Pair<>(Reflect.getFieldValueInt(info, "hard"), Reflect.getFieldValueInt(info, "soft"));
-	    }
-	}
-	return null;
+        //loftar is wonderful sunshine and has same class name for wear and armor tooltips even though
+        //they are different classes with different fields :)
+        infos = findall("Wear", infos);
+        for (ItemInfo info : infos) {
+            if (Reflect.hasField(info, "hard") && Reflect.hasField(info, "soft")) {
+                return new Pair<>(Reflect.getFieldValueInt(info, "hard"), Reflect.getFieldValueInt(info, "soft"));
+            }
+        }
+        return null;
     }
 
     @SuppressWarnings("unchecked")
     public static Map<Resource, Integer> getBonuses(List<ItemInfo> infos) {
-	List<ItemInfo> slotInfos = ItemInfo.findall("ISlots", infos);
-	List<ItemInfo> gilding = ItemInfo.findall("Slotted", infos);
-	Map<Resource, Integer> bonuses = new HashMap<>();
-	try {
-	    for (ItemInfo islots : slotInfos) {
-		List<Object> slots = (List<Object>) Reflect.getFieldValue(islots, "s");
-		for (Object slot : slots) {
-		    parseAttrMods(bonuses, (List) Reflect.getFieldValue(slot, "info"));
-		}
-	    }
-	    for (ItemInfo info : gilding) {
-		List<Object> slots = (List<Object>) Reflect.getFieldValue(info, "sub");
-		parseAttrMods(bonuses, slots);
-	    }
-	    parseAttrMods(bonuses, ItemInfo.findall("haven.res.ui.tt.attrmod.AttrMod", infos));
-	} catch (Exception ignored) {}
-	Pair<Integer, Integer> wear = ItemInfo.getArmor(infos);
-	if (wear != null) {
-	    bonuses.put(armor_hard, wear.a);
-	    bonuses.put(armor_soft, wear.b);
-	}
-	return bonuses;
+        List<ItemInfo> slotInfos = ItemInfo.findall("ISlots", infos);
+        List<ItemInfo> gilding = ItemInfo.findall("Slotted", infos);
+        Map<Resource, Integer> bonuses = new HashMap<>();
+        try {
+            for (ItemInfo islots : slotInfos) {
+                List<Object> slots = (List<Object>) Reflect.getFieldValue(islots, "s");
+                for (Object slot : slots) {
+                    parseAttrMods(bonuses, (List) Reflect.getFieldValue(slot, "info"));
+                }
+            }
+            for (ItemInfo info : gilding) {
+                List<Object> slots = (List<Object>) Reflect.getFieldValue(info, "sub");
+                parseAttrMods(bonuses, slots);
+            }
+            parseAttrMods(bonuses, ItemInfo.findall("haven.res.ui.tt.attrmod.AttrMod", infos));
+        } catch (Exception ignored) {
+        }
+        Pair<Integer, Integer> wear = ItemInfo.getArmor(infos);
+        if (wear != null) {
+            bonuses.put(armor_hard, wear.a);
+            bonuses.put(armor_soft, wear.b);
+        }
+        return bonuses;
     }
 
 
     @SuppressWarnings("unchecked")
     public static void parseAttrMods(Map<Resource, Integer> bonuses, List infos) {
-	for (Object inf : infos) {
-	    List<Object> mods = (List<Object>) Reflect.getFieldValue(inf, "mods");
-	    for (Object mod : mods) {
-		Resource attr = (Resource) Reflect.getFieldValue(mod, "attr");
-		int value = Reflect.getFieldValueInt(mod, "mod");
-		if (bonuses.containsKey(attr)) {
-		    bonuses.put(attr, bonuses.get(attr) + value);
-		} else {
-		    bonuses.put(attr, value);
-		}
-	    }
-	}
+        for (Object inf : infos) {
+            List<Object> mods = (List<Object>) Reflect.getFieldValue(inf, "mods");
+            for (Object mod : mods) {
+                Resource attr = (Resource) Reflect.getFieldValue(mod, "attr");
+                int value = Reflect.getFieldValueInt(mod, "mod");
+                if (bonuses.containsKey(attr)) {
+                    bonuses.put(attr, bonuses.get(attr) + value);
+                } else {
+                    bonuses.put(attr, value);
+                }
+            }
+        }
     }
 
     @SuppressWarnings("unchecked")
     private static Map<Resource, Integer> parseAttrMods2(List infos) {
-	Map<Resource, Integer> bonuses = new HashMap<>();
-	for (Object inf : infos) {
-	    List<Object> mods = (List<Object>) Reflect.getFieldValue(inf, "mods");
-	    for (Object mod : mods) {
-		Resource attr = (Resource) Reflect.getFieldValue(mod, "attr");
-		int value = Reflect.getFieldValueInt(mod, "mod");
-		if (bonuses.containsKey(attr)) {
-		    bonuses.put(attr, bonuses.get(attr) + value);
-		} else {
-		    bonuses.put(attr, value);
-		}
-	    }
-	}
-	return bonuses;
+        Map<Resource, Integer> bonuses = new HashMap<>();
+        for (Object inf : infos) {
+            List<Object> mods = (List<Object>) Reflect.getFieldValue(inf, "mods");
+            for (Object mod : mods) {
+                Resource attr = (Resource) Reflect.getFieldValue(mod, "attr");
+                int value = Reflect.getFieldValueInt(mod, "mod");
+                if (bonuses.containsKey(attr)) {
+                    bonuses.put(attr, bonuses.get(attr) + value);
+                } else {
+                    bonuses.put(attr, value);
+                }
+            }
+        }
+        return bonuses;
     }
 
     private static String dump(Object arg) {
@@ -641,29 +668,29 @@ public abstract class ItemInfo {
         }
 
         public static <I, R> Function<List<ItemInfo>, Supplier<R>> map1(Class<I> icl, Function<I, Supplier<R>> data) {
-            return(info -> {
+            return (info -> {
                 I inf = find(icl, info);
-                if(inf == null)
-                    return(() -> null);
-                return(data.apply(inf));
+                if (inf == null)
+                    return (() -> null);
+                return (data.apply(inf));
             });
         }
 
         public static <I, R> Function<List<ItemInfo>, Supplier<R>> map1s(Class<I> icl, Function<I, R> data) {
-            return(info -> {
+            return (info -> {
                 I inf = find(icl, info);
-                if(inf == null)
-                    return(() -> null);
+                if (inf == null)
+                    return (() -> null);
                 R ret = data.apply(inf);
-                return(() -> ret);
+                return (() -> ret);
             });
         }
 
-	public static <R> Function<List<ItemInfo>, Supplier<R>> cache(Function<List<ItemInfo>, R> data) {
-	    return (info -> {
-		R result = data.apply(info);
-		return (() -> result);
-	    });
-	}
+        public static <R> Function<List<ItemInfo>, Supplier<R>> cache(Function<List<ItemInfo>, R> data) {
+            return (info -> {
+                R result = data.apply(info);
+                return (() -> result);
+            });
+        }
     }
 }

@@ -1,24 +1,30 @@
 package haven.livestock;
 
 
-import static haven.OCache.posres;
+import haven.Coord;
+import haven.GOut;
+import haven.Gob;
+import haven.GobHighlight;
+import haven.Img;
+import haven.Label;
+import haven.MapView;
+import haven.Resource;
+import haven.Scrollport;
+import haven.Text;
+import haven.Widget;
 
 import java.awt.Color;
-import java.util.List;
 import java.util.Map;
-import static haven.OCache.posres;
-
-import haven.*;
 
 public class DetailsWdg extends Widget {
     public final static int HEIGHT = 25;
     private final Coord sepStart = new Coord(0, HEIGHT);
     private final Coord sepEnd = new Coord(800 - 40 - 11, HEIGHT);
     public Animal animal;
-    private GameUI gui;
     public Label del;
     public Gob animal2;
     private boolean hover = false;
+
     public DetailsWdg(Animal animal) {
         this.animal = animal;
 
@@ -73,23 +79,22 @@ public class DetailsWdg extends Widget {
 
     @Override
     public boolean mousedown(Coord c, int button) {
-        Gob gob = gameui().map.glob.oc.getgob(animal.gobid);
+        Gob gob = ui.gui.map.glob.oc.getgob(animal.gobid);
         if (gob != null) {
             if (button == 3) {
                 if (MapView.markedGobs.contains(gob.id)) {
                     MapView.markedGobs.remove(gob.id);
                     del.settext("\u2718");
                     del.setcolor(Color.BLUE);
-                }
-                else {
+                } else {
                     MapView.markedGobs.add(gob.id);
                     del.settext("\u2620");
                     del.setcolor(Color.RED);
                 }
             }
-            //gameui().map.wdgmsg("click", gob.sc, gob.rc.floor(posres), 3, 0, 0, (int) gob.id, gob.rc.floor(posres), 0, -1);
+            //ui.gui.map.wdgmsg("click", gob.sc, gob.rc.floor(posres), 3, 0, 0, (int) gob.id, gob.rc.floor(posres), 0, -1);
             if (button == 1) {
-                if(gob.isDead() == Boolean.TRUE){
+                if (gob.isDead() == Boolean.TRUE) {
                     delete();
                 }
                 gob.delattr(GobHighlight.class);
@@ -114,7 +119,7 @@ public class DetailsWdg extends Widget {
                 child.c.y -= HEIGHT;
         }
 
-        ((LivestockManager.Panel)parent.parent.parent).delete(animal);
+        ((LivestockManager.Panel) parent.parent.parent).delete(animal);
 
         ((Scrollport.Scrollcont) parent).update();
     }

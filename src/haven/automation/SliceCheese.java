@@ -1,12 +1,16 @@
 package haven.automation;
 
 
-import haven.*;
+import haven.Coord;
+import haven.FlowerMenu;
+import haven.GameUI;
+import haven.Inventory;
+import haven.WItem;
+import haven.Widget;
 import haven.Window;
 import haven.purus.pbot.PBotUtils;
-import haven.resutil.WaterTile;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,45 +44,45 @@ public class SliceCheese implements Runnable {
             }
         }
         //BotUtils.sysMsg("inv found is : "+children.size(),Color.white);
-       // BotUtils.sysMsg("trays found is : "+trays.size(),Color.white);
+        // BotUtils.sysMsg("trays found is : "+trays.size(),Color.white);
 
-        for (int l = 0 ; l < trays.size(); l++){
-            if(trays.get(l).item.getcontents() != null){
+        for (int l = 0; l < trays.size(); l++) {
+            if (trays.get(l).item.getcontents() != null) {
                 trays2.add(trays.get(l));
             }
         }
         //BotUtils.sysMsg("Number of Cheese trays found is : "+trays2.size(),Color.white);
-        gui.error("Number of Cheese trays found is : "+trays2.size());
-            for (int i = 0; i < trays2.size(); i++) {
-                    if (trays2.get(i).item.getcontents() != null) {
-                        FlowerMenu.setNextSelection("Slice up");
-                        trays2.get(i).item.wdgmsg("iact", Coord.z, -1);
-                        int timeout = 0;
-                        while(trays2.get(i).item.getcontents() != null) {
-                            timeout++;
-                            if(timeout > 500)
-                            {
-                                PBotUtils.sysMsg("Cheese Slicer interrupted, exited.",Color.white);
-                                return;
-                            }
-                            PBotUtils.sleep(10);
-                        }
+        gui.error("Number of Cheese trays found is : " + trays2.size());
+        for (int i = 0; i < trays2.size(); i++) {
+            if (trays2.get(i).item.getcontents() != null) {
+                FlowerMenu.setNextSelection("Slice up");
+                trays2.get(i).item.wdgmsg("iact", Coord.z, -1);
+                int timeout = 0;
+                while (trays2.get(i).item.getcontents() != null) {
+                    timeout++;
+                    if (timeout > 500) {
+                        PBotUtils.sysMsg(gui.ui, "Cheese Slicer interrupted, exited.", Color.white);
+                        return;
                     }
+                    PBotUtils.sleep(10);
+                }
             }
-        PBotUtils.sysMsg("Done",Color.white);
+        }
+        PBotUtils.sysMsg(gui.ui, "Done", Color.white);
     }
-    private List<WItem> getTrays (Inventory inv){
+
+    private List<WItem> getTrays(Inventory inv) {
         List<WItem> trays = inv.getItemsPartial("Cheese Tray");
         // BotUtils.sysMsg("trying to find trays", Color.WHITE);
-        if(trays == null)
+        if (trays == null)
             return null;
         return trays;
     }
 
-    private WItem getTrays2 (Inventory inv){
+    private WItem getTrays2(Inventory inv) {
         WItem trays = inv.getItemPartialTrays("Tray");
         // BotUtils.sysMsg("trying to find trays", Color.WHITE);
-        if(trays == null)
+        if (trays == null)
             return null;
         return trays;
     }

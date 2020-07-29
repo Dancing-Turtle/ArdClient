@@ -37,44 +37,50 @@ public class Charlist extends Widget {
     public int height, y, sel = 0;
     public IButton sau, sad;
     public List<Char> chars = new ArrayList<Char>();
+    public UI ui;
 
     public static class Char {
-	static Text.Foundry tf = new Text.Foundry(Text.serif, 20).aa(true);
-	public String name;
-	Text nt;
-	Avaview ava;
-	Button plb;
+        static Text.Foundry tf = new Text.Foundry(Text.serif, 20).aa(true);
+        public String name;
+        Text nt;
+        Avaview ava;
+        Button plb;
 
-	public Char(String name) {
-	    this.name = name;
-	    nt = tf.render(name);
-	}
+        public Char(String name) {
+            this.name = name;
+            nt = tf.render(name);
+        }
     }
 
     @RName("charlist")
     public static class $_ implements Factory {
-	public Widget create(UI ui, Object[] args) {
-	    return(new Charlist((Integer)args[0]));
-	}
+        public Widget create(UI ui, Object[] args) {
+            return (new Charlist(ui, (Integer) args[0]));
+        }
     }
 
-    public Charlist(int height) {
-	super(Coord.z);
-	this.height = height;
-	y = 0;
-	setcanfocus(true);
-	sau = adda(new IButton("gfx/hud/buttons/csau", "u", "d", "o") {
-		public void click() {
-		    scroll(-1);
-		}
-	    }, bg.sz().x / 2, 0, 0.5, 0);
-	sad = adda(new IButton("gfx/hud/buttons/csad", "u", "d", "o") {
-		public void click() {
-		    scroll(1);
-		}
-	    }, bg.sz().x / 2, sau.c.y + sau.sz.y + (bg.sz().y * height) + (margin * (height - 1)), 0.5, 0);
-	sau.hide(); sad.hide();
-	resize(new Coord(bg.sz().x, sad.c.y + sad.sz.y));
+    public Charlist(UI ui, int height) {
+        super(Coord.z);
+        this.height = height;
+        this.ui = ui;
+        if (ui == null) System.out.println("ui null");
+        if (this == null) System.out.println("this null");
+        try{ui.charlist = this;}catch(Exception e){e.printStackTrace();}
+        y = 0;
+        setcanfocus(true);
+        sau = adda(new IButton("gfx/hud/buttons/csau", "u", "d", "o") {
+            public void click() {
+                scroll(-1);
+            }
+        }, bg.sz().x / 2, 0, 0.5, 0);
+        sad = adda(new IButton("gfx/hud/buttons/csad", "u", "d", "o") {
+            public void click() {
+                scroll(1);
+            }
+        }, bg.sz().x / 2, sau.c.y + sau.sz.y + (bg.sz().y * height) + (margin * (height - 1)), 0.5, 0);
+        sau.hide();
+        sad.hide();
+        resize(new Coord(bg.sz().x, sad.c.y + sad.sz.y));
     }
 
     protected void added() {
@@ -82,7 +88,7 @@ public class Charlist extends Widget {
         Button btn = new Button(90, "Log out") {
             @Override
             public void click() {
-               Session sess = ((RemoteUI) ui.rcvr).sess;
+                Session sess = ((RemoteUI) ui.rcvr).sess;
                 synchronized (sess) {
                     sess.close();
                 }
@@ -92,122 +98,122 @@ public class Charlist extends Widget {
     }
 
     public void scroll(int amount) {
-	y += amount;
-	synchronized(chars) {
-	    if(y > chars.size() - height)
-		y = chars.size() - height;
-	}
-	if(y < 0)
-	    y = 0;
+        y += amount;
+        synchronized (chars) {
+            if (y > chars.size() - height)
+                y = chars.size() - height;
+        }
+        if (y < 0)
+            y = 0;
     }
 
     public void draw(GOut g) {
-	int y = sau.c.y + sau.sz.y;
-	synchronized(chars) {
-	    for(Char c : chars) {
-		c.ava.hide();
-		c.plb.hide();
-	    }
-	    for(int i = 0; (i < height) && (i + this.y < chars.size()); i++) {
-		boolean sel = (i + this.y) == this.sel;
-		Char c = chars.get(i + this.y);
-		if(hasfocus && sel) {
-		    g.chcolor(255, 255, 128, 255);
-		    g.image(bg, new Coord(0, y));
-		    g.chcolor();
-		} else {
-		    g.image(bg, new Coord(0, y));
-		}
-		c.ava.show();
-		c.plb.show();
-		int off = (bg.sz().y - c.ava.sz.y) / 2;
-		c.ava.c = new Coord(off, off + y);
-		c.plb.c = bg.sz().add(-10, y - 2).sub(c.plb.sz);
-		g.image(c.nt.tex(), new Coord(off + c.ava.sz.x + 5, off + y));
-		y += bg.sz().y + margin;
-	    }
-	}
-	super.draw(g);
+        int y = sau.c.y + sau.sz.y;
+        synchronized (chars) {
+            for (Char c : chars) {
+                c.ava.hide();
+                c.plb.hide();
+            }
+            for (int i = 0; (i < height) && (i + this.y < chars.size()); i++) {
+                boolean sel = (i + this.y) == this.sel;
+                Char c = chars.get(i + this.y);
+                if (hasfocus && sel) {
+                    g.chcolor(255, 255, 128, 255);
+                    g.image(bg, new Coord(0, y));
+                    g.chcolor();
+                } else {
+                    g.image(bg, new Coord(0, y));
+                }
+                c.ava.show();
+                c.plb.show();
+                int off = (bg.sz().y - c.ava.sz.y) / 2;
+                c.ava.c = new Coord(off, off + y);
+                c.plb.c = bg.sz().add(-10, y - 2).sub(c.plb.sz);
+                g.image(c.nt.tex(), new Coord(off + c.ava.sz.x + 5, off + y));
+                y += bg.sz().y + margin;
+            }
+        }
+        super.draw(g);
     }
 
     public boolean mousewheel(Coord c, int amount) {
-	scroll(amount);
-	return(true);
+        scroll(amount);
+        return (true);
     }
 
     public void wdgmsg(Widget sender, String msg, Object... args) {
-		if (sender instanceof Button) {
-			synchronized (chars) {
-				for (Char c : chars) {
-					if (sender == c.plb) {
-						wdgmsg("play", c.name);
-						if(Config.vendanMapv4)
-							MappingClient.getInstance().SetPlayerName(c.name);
-					}
-				}
-			}
-		} else if (sender instanceof Avaview) {
-		} else {
-			super.wdgmsg(sender, msg, args);
-		}
+        if (sender instanceof Button) {
+            synchronized (chars) {
+                for (Char c : chars) {
+                    if (sender == c.plb) {
+                        wdgmsg("play", c.name);
+                        if (Config.vendanMapv4)
+                            MappingClient.getInstance().SetPlayerName(c.name);
+                    }
+                }
+            }
+        } else if (sender instanceof Avaview) {
+        } else {
+            super.wdgmsg(sender, msg, args);
+        }
     }
 
     public void uimsg(String msg, Object... args) {
-	if(msg == "add") {
-	    Char c = new Char((String)args[0]);
-	    c.ava = add(new Avaview(Avaview.dasz, -1, "avacam"));
-	    c.ava.hide();
-	    if(args.length > 1) {
-		Composited.Desc desc = Composited.Desc.decode(ui.sess, (Object[])args[1]);
-		Resource.Resolver map = new Resource.Resolver.ResourceMap(ui.sess, (Object[])args[2]);
-		c.ava.pop(desc, map);
-	    }
-	    c.plb = add(new Button(100, "Play"));
-	    c.plb.hide();
-	    synchronized(chars) {
-		chars.add(c);
-		if(chars.size() > height) {
-		    sau.show();
-		    sad.show();
-		}
-	    }
-	} else if(msg == "ava") {
-	    String cnm = (String)args[0];
-	    Composited.Desc ava = Composited.Desc.decode(ui.sess, (Object[])args[1]);
-	    Resource.Resolver map = new Resource.Resolver.ResourceMap(ui.sess, (Object[])args[2]);
-	    synchronized(chars) {
-		for(Char c : chars) {
-		    if(c.name.equals(cnm)) {
-			c.ava.pop(ava);
-			break;
-		    }
-		}
-	    }
-	}
+        if (msg == "add") {
+            Char c = new Char((String) args[0]);
+            c.ava = add(new Avaview(Avaview.dasz, -1, "avacam"));
+            c.ava.hide();
+            if (args.length > 1) {
+                Composited.Desc desc = Composited.Desc.decode(ui.sess, (Object[]) args[1]);
+                Resource.Resolver map = new Resource.Resolver.ResourceMap(ui.sess, (Object[]) args[2]);
+                c.ava.pop(desc, map);
+            }
+            c.plb = add(new Button(100, "Play"));
+            c.plb.hide();
+            synchronized (chars) {
+                chars.add(c);
+                if (chars.size() > height) {
+                    sau.show();
+                    sad.show();
+                }
+            }
+        } else if (msg == "ava") {
+            String cnm = (String) args[0];
+            Composited.Desc ava = Composited.Desc.decode(ui.sess, (Object[]) args[1]);
+            Resource.Resolver map = new Resource.Resolver.ResourceMap(ui.sess, (Object[]) args[2]);
+            synchronized (chars) {
+                for (Char c : chars) {
+                    if (c.name.equals(cnm)) {
+                        c.ava.pop(ava);
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     private void seladj() {
-	if(sel < y)
-	    y = sel;
-	else if(sel >= y + height)
-	    y = sel - height + 1;
+        if (sel < y)
+            y = sel;
+        else if (sel >= y + height)
+            y = sel - height + 1;
     }
 
     public boolean keydown(java.awt.event.KeyEvent ev) {
-	if(ev.getKeyCode() == ev.VK_UP) {
-	    sel = Math.max(sel - 1, 0);
-	    seladj();
-	    return(true);
-	} else if(ev.getKeyCode() == ev.VK_DOWN) {
-	    sel = Math.min(sel + 1, chars.size() - 1);
-	    seladj();
-	    return(true);
-	} else if(ev.getKeyCode() == ev.VK_ENTER) {
-	    if((sel >= 0) && (sel < chars.size())) {
-		chars.get(sel).plb.click();
-	    }
-	    return(true);
-	}
-	return(false);
+        if (ev.getKeyCode() == ev.VK_UP) {
+            sel = Math.max(sel - 1, 0);
+            seladj();
+            return (true);
+        } else if (ev.getKeyCode() == ev.VK_DOWN) {
+            sel = Math.min(sel + 1, chars.size() - 1);
+            seladj();
+            return (true);
+        } else if (ev.getKeyCode() == ev.VK_ENTER) {
+            if ((sel >= 0) && (sel < chars.size())) {
+                chars.get(sel).plb.click();
+            }
+            return (true);
+        }
+        return (false);
     }
 }

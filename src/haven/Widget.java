@@ -981,6 +981,10 @@ public class Widget {
 	this.c = c;
     }
 
+    public void move(Coord c, double ax, double ay) {
+        move(new Coord(c.x - (int) (sz.x * ax), c.y - (int) (sz.y * ay)));
+    }
+
     public void resize(Coord sz) {
         this.sz = sz;
         for (Widget ch = child; ch != null; ch = ch.next)
@@ -1265,4 +1269,13 @@ public class Widget {
         }
         return null;
     }
+
+	public <T extends Widget> ArrayList<T> getchilds(Class<T> c) {
+    	ArrayList<T> widgets = new ArrayList<>();
+		for (Widget wdg = child; wdg != null; wdg = wdg.next) {
+			if (c.isInstance(wdg))
+				widgets.add(c.cast(wdg));
+		}
+		return widgets;
+	}
 }

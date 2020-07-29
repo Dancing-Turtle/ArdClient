@@ -30,7 +30,8 @@ import haven.automation.Discord;
 import haven.sloth.gob.Mark;
 import net.dv8tion.jda.core.entities.TextChannel;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.StringSelection;
@@ -49,8 +50,14 @@ import java.text.AttributedCharacterIterator;
 import java.text.AttributedCharacterIterator.Attribute;
 import java.text.CharacterIterator;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.*;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -59,7 +66,7 @@ import static haven.MCache.tilesz;
 public class ChatUI extends Widget {
     private static final Resource alarmsfx = Resource.local().loadwait("sfx/Ding");
     // public static final RichText.Foundry fnd = new RichText.Foundry(new ChatParser(TextAttribute.FONT, Text.dfont.deriveFont((float)Config.fontsizechat)));
-    public static final RichText.Foundry fnd = new RichText.Foundry(new ChatParser(TextAttribute.FONT, Text.dfont.deriveFont((float)Config.fontsizechat), TextAttribute.FOREGROUND, Color.BLACK));
+    public static final RichText.Foundry fnd = new RichText.Foundry(new ChatParser(TextAttribute.FONT, Text.dfont.deriveFont((float) Config.fontsizechat), TextAttribute.FOREGROUND, Color.BLACK));
     public static final Text.Foundry qfnd = new Text.Foundry(Text.dfont, 12, new java.awt.Color(192, 255, 192));
     public static final int selw = 130;
     public static final Coord marg = new Coord(9, 9);
@@ -90,10 +97,6 @@ public class ChatUI extends Widget {
     protected void added() {
         resize(this.sz);
     }
-
-
-
-
 
 
     public static class ChatAttribute extends Attribute {
@@ -146,10 +149,10 @@ public class ChatUI extends Widget {
                         URL url;
                         try {
                             String su = text.substring(m.start(), m.end());
-                            if(su.indexOf(':') < 0)
+                            if (su.indexOf(':') < 0)
                                 su = "http://" + su;
                             url = new URL(su);
-                        } catch(java.net.MalformedURLException e) {
+                        } catch (java.net.MalformedURLException e) {
                             p = m.end();
                             continue;
                         }
@@ -162,14 +165,15 @@ public class ChatUI extends Widget {
                 if (na == null)
                     break;
                 RichText.Part lead = new RichText.TextPart(text.substring(0, m.start()), attrs);
-                if(ret == null) ret = lead; else ret.append(lead);
+                if (ret == null) ret = lead;
+                else ret.append(lead);
                 ret.append(new RichText.TextPart(text.substring(m.start(), m.end()), na));
             }
-            if(ret == null)
+            if (ret == null)
                 ret = new RichText.TextPart(text, attrs);
             else
                 ret.append(new RichText.TextPart(text.substring(p), attrs));
-            return(ret);
+            return (ret);
         }
     }
 
@@ -445,9 +449,11 @@ public class ChatUI extends Widget {
                         dragging = true;
                     int o = poscmp.compare(selorig, ch);
                     if (o < 0) {
-                        selstart = selorig; selend = ch;
+                        selstart = selorig;
+                        selend = ch;
                     } else if (o > 0) {
-                        selstart = ch; selend = selorig;
+                        selstart = ch;
+                        selend = selorig;
                     } else {
                         selstart = selend = null;
                     }
@@ -518,7 +524,8 @@ public class ChatUI extends Widget {
                                     selstart = selend = null;
                             }
                         });
-            } catch(IllegalStateException e) {}
+            } catch (IllegalStateException e) {
+            }
         }
 
         protected void clicked(CharPos pos) {
@@ -532,10 +539,10 @@ public class ChatUI extends Widget {
                     getparent(GameUI.class).error("Could not launch web browser.");
                 }
             }
-            String hs = (String)inf.getAttribute(ChatAttribute.HEARTH_SECRET);
-            if (hs != null && gameui() != null && gameui().buddies != null) {
-                gameui().buddies.show();
-                gameui().buddies.wdgmsg("bypwd", hs);
+            String hs = (String) inf.getAttribute(ChatAttribute.HEARTH_SECRET);
+            if (hs != null && ui.gui != null && ui.gui.buddies != null) {
+                ui.gui.buddies.show();
+                ui.gui.buddies.wdgmsg("bypwd", hs);
             }
         }
 
@@ -628,7 +635,9 @@ public class ChatUI extends Widget {
             this.name = name;
         }
 
-        public String name() {return(name);}
+        public String name() {
+            return (name);
+        }
     }
 
     public static abstract class EntryChannel extends Channel {
@@ -688,13 +697,12 @@ public class ChatUI extends Widget {
         public void send(String text) {
             history.add(text);
             wdgmsg("msg", text);
-            if(Config.discordchat && this.name().equals(Config.chatalert) && Discord.jdalogin!=null){
-                GameUI gui = gameui();
-                for(TextChannel loop:haven.automation.Discord.channels)
+            if (Config.discordchat && this.name().equals(Config.chatalert) && Discord.jdalogin != null) {
+                for (TextChannel loop : haven.automation.Discord.channels)
                     if (loop.getName().equals(Config.discordchannel) && !Discord.discordmessage) {
                         //loop.sendMessage(gui.getparent(GameUI.class).buddies.getCharName() + ": " + text).queue();
                         loop.sendMessage(Config.charname + ": " + text).queue();
-                    }else
+                    } else
                         Discord.SwitchMessageFlag();
             }
         }
@@ -755,8 +763,7 @@ public class ChatUI extends Widget {
 
         public void send(String text) {
             history.add(text);
-            GameUI gui = gameui();
-            for(TextChannel loop:haven.automation.Discord.channels)
+            for (TextChannel loop : haven.automation.Discord.channels)
                 if (this.name().equals(loop.getName())) {
                     //loop.sendMessage(gui.getparent(GameUI.class).buddies.getCharName() + ": " + text).queue();
                     loop.sendMessage(Config.charname + ": " + text).queue();
@@ -873,7 +880,7 @@ public class ChatUI extends Widget {
                 if (name.equals(Resource.getLocString(Resource.BUNDLE_LABEL, "Area Chat")) && line.startsWith(CMD_PREFIX_HLIGHT)) {
                     try {
                         long gobid = Long.parseLong(line.substring(1));
-                        OCache oc = gameui().map.glob.oc;
+                        OCache oc = ui.gui.map.glob.oc;
                         Gob gob = oc.getgob(gobid);
                         if (gob != null) {
                             gob.delattr(GobHighlight.class);
@@ -894,7 +901,7 @@ public class ChatUI extends Widget {
                     append(cmsg);
                     // if (urgency > 0)
                     notify(cmsg, 1);
-                    if(Config.discordchat && this.name().equals(Config.chatalert) && Discord.jdalogin!=null && !cmsg.text().text.contains(Discord.botname)&& !Discord.discordmessage) {
+                    if (Config.discordchat && this.name().equals(Config.chatalert) && Discord.jdalogin != null && !cmsg.text().text.contains(Discord.botname) && !Discord.discordmessage) {
                         for (TextChannel loop : haven.automation.Discord.channels) {
                             if (loop.getName().equals(Config.discordchannel)) {
                                 loop.sendMessage(name + ": " + cmsg.text().text).queue();
@@ -1012,7 +1019,6 @@ public class ChatUI extends Widget {
     }
 
 
-
     public static class PartyChat extends MultiChat {
         private long lastmsg = 0;
 
@@ -1029,17 +1035,17 @@ public class ChatUI extends Widget {
 
                 try {
                     final Matcher match = Mark.CHAT_FMT_PAT.matcher(line);
-                    if(match.find()) {
+                    if (match.find()) {
                         final long gid = Long.parseLong(match.group(1));
                         final int life = Integer.parseInt(match.group(2));
                         final Gob g = ui.sess.glob.oc.getgob(gid);
-                        if(g != null) {
+                        if (g != null) {
                             g.mark(life);
                         }
                         return;
                     } else {
                         final Matcher tmatch = Mark.CHAT_TILE_FMT_PAT.matcher(line);
-                        if(tmatch.find()) {
+                        if (tmatch.find()) {
                             final long gid = Long.parseLong(tmatch.group(1));
                             final double offx = Double.parseDouble(tmatch.group(2));
                             final double offy = Double.parseDouble(tmatch.group(3));
@@ -1056,7 +1062,7 @@ public class ChatUI extends Widget {
                     //Ignore any people trying to crash the client with this
                 }
 
-                synchronized(ui.sess.glob.party) {
+                synchronized (ui.sess.glob.party) {
                     Party.Member pm = ui.sess.glob.party.memb.get((long) gobid);
                     if (pm != null)
                         col = pm.col;
@@ -1146,6 +1152,7 @@ public class ChatUI extends Widget {
                 return (b.name);
         }
     }
+
     @RName("schan")
     public static class $SChan implements Factory {
         public Widget create(UI ui, Object[] args) {
@@ -1159,7 +1166,7 @@ public class ChatUI extends Widget {
         public Widget create(UI ui, Object[] args) {
             String name = (String) args[0];
             int urgency = (Integer) args[1];
-            return(new MultiChat(false, name, urgency));
+            return (new MultiChat(false, name, urgency));
         }
     }
 
@@ -1259,7 +1266,7 @@ public class ChatUI extends Widget {
                     if (ch.chan == sel)
                         g.image(chanseld, new Coord(0, y));
                     g.chcolor(255, 255, 255, 255);
-                    if((ch.rname == null) || !ch.rname.text.equals(ch.chan.name()) || (ch.urgency != ch.chan.urgency))
+                    if ((ch.rname == null) || !ch.rname.text.equals(ch.chan.name()) || (ch.urgency != ch.chan.urgency))
                         ch.rname = nf[ch.urgency = ch.chan.urgency].render(ch.chan.name());
                     g.aimage(ch.rname.tex(), new Coord(sz.x / 2, y + 8), 0.5, 0.5);
                     g.image(chandiv, new Coord(0, y + 18));
@@ -1362,7 +1369,7 @@ public class ChatUI extends Widget {
             this.msg = msg;
             this.chnm = chansel.nf[0].render(chan.name());
             try {
-                if(haven.automation.Discord.channels != null) {
+                if (haven.automation.Discord.channels != null) {
                     for (TextChannel channel : haven.automation.Discord.channels) {
                         if (channel.getName().equals(chan.name())) {
                             if (Config.discordsounds) {
@@ -1372,10 +1379,11 @@ public class ChatUI extends Widget {
                         }
                     }
                 }
-            }catch(NullPointerException discordnull){}
+            } catch (NullPointerException discordnull) {
+            }
 
-            if(chan.name().equals(Resource.getLocString(Resource.BUNDLE_LABEL, Config.chatalert)) || chan.name().equals(Resource.getLocString(Resource.BUNDLE_LABEL, "Area Chat"))){
-                if(Config.chatsounds)
+            if (chan.name().equals(Resource.getLocString(Resource.BUNDLE_LABEL, Config.chatalert)) || chan.name().equals(Resource.getLocString(Resource.BUNDLE_LABEL, "Area Chat"))) {
+                if (Config.chatsounds)
                     Audio.play(notifsfx);
             }
         }
@@ -1426,7 +1434,9 @@ public class ChatUI extends Widget {
     public void draw(GOut g) {
         super.draw(g);
     }
+
     public static final Resource notifsfx = Resource.local().loadwait("sfx/hud/chat");
+
     public void notify(Channel chan, Channel.Message msg) {
         synchronized (notifs) {
             notifs.addFirst(new Notification(chan, msg));
@@ -1474,6 +1484,7 @@ public class ChatUI extends Widget {
     public void resize(int w) {
         resize(new Coord(w, sz.y));
     }
+
     public void move(Coord base) {
     }
 
@@ -1516,7 +1527,7 @@ public class ChatUI extends Widget {
 
     public boolean mousedown(Coord c, int button) {
         int bmfx = (sz.x - bmf.sz().x) / 2;
-        if((button == 1) && (c.y < bmf.sz().y) && (c.x >= bmfx) && (c.x <= (bmfx + bmf.sz().x))) {
+        if ((button == 1) && (c.y < bmf.sz().y) && (c.x >= bmfx) && (c.x <= (bmfx + bmf.sz().x))) {
             dm = ui.grabmouse(this);
             doff = c;
             return (true);
