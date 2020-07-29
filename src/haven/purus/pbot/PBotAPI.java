@@ -1,11 +1,12 @@
 package haven.purus.pbot;
 
+import haven.Charlist;
 import haven.GameUI;
 
 public class PBotAPI {
-	
-	public static GameUI gui;
 
+    public static GameUI gui;
+    public static Charlist charlist;
 
 /*	// Null if not found
 

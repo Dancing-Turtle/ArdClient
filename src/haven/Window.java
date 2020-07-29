@@ -29,14 +29,22 @@ package haven;
 import haven.purus.pbot.PBotUtils;
 import haven.res.ui.tt.Wear;
 import haven.resutil.Curiosity;
+import haven.sloth.io.HiddenWndData;
 
-import java.awt.*;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.*;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-import static haven.DefSettings.*;
+import static haven.DefSettings.CURIOHIGH;
+import static haven.DefSettings.CURIOLOW;
+import static haven.DefSettings.CURIOTARGET;
+import static haven.DefSettings.HUDTHEME;
 import static haven.PUtils.blurmask2;
 import static haven.PUtils.rasterimg;
 import static haven.Resource.cdec;

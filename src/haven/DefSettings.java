@@ -6,6 +6,7 @@ import haven.sloth.gob.Alerted;
 import haven.sloth.gob.Deleted;
 import haven.sloth.gob.Hidden;
 import haven.sloth.gob.Movable;
+import haven.sloth.io.HiddenWndData;
 import haven.sloth.io.HighlightData;
 
 import java.awt.*;
@@ -346,6 +347,7 @@ public class DefSettings {
 			Deleted.init();
 			Hidden.init();
 			HighlightData.init();
+			HiddenWndData.init();
 			OverlayData.init();
 			//Internal lookups are no longer needed
 			optint.get().close();

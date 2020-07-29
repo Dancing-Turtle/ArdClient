@@ -635,7 +635,7 @@ public class SeedCropFarmer extends Window implements Runnable {
 				}
 
 
-				List<PBotItem> items = PBotUtils.playerInventory().getInventoryItemsByResnames(invname);
+				List<PBotItem> items = PBotUtils.playerInventory().getInventoryItemsByResnames(String.valueOf(invname));
 				System.out.println("Stocklocs size : " + stockpileLocs.size() + " items size : " + items.size() + " " + invname);
 				lblProg2.settext("Creating Stockpiles");
 				while (stockpileLocs.size() > 0 && items.size() > 0) {//build stockpiles
@@ -643,7 +643,7 @@ public class SeedCropFarmer extends Window implements Runnable {
 						return;
 					PBotItem item = items.get(0);
 					Coord location = stockpileLocs.get(0);
-					item.takeItem();
+					item.takeItem(true);
 					while (PBotUtils.getItemAtHand() == null)
 						PBotUtils.sleep(15);
 					PBotGobAPI.makePile();
@@ -794,7 +794,7 @@ public class SeedCropFarmer extends Window implements Runnable {
 					if (PBotUtils.findObjectByNames(5000, groundname) == null)
 						break;
 				}
-				if (PBotUtils.playerInventory().getInventoryItemsByResnames(invname).size() > 0) {
+				if (PBotUtils.playerInventory().getInventoryItemsByResnames(String.valueOf(invname)).size() > 0) {
 					lblProg2.settext("Finishing Stockpiling");
 					System.out.println("In stockpile loop");
 					PBotUtils.sleep(1000);
