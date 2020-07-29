@@ -31,7 +31,7 @@ public class PBotScriptlistItem {
                 e.printStackTrace();
             }
         } else {
-            this.iconTex = configuration.imageToTex("paginae/purus/PBotMenu.png");//Resource.local().load("paginae/purus/PBotMenu").get().layer(Resource.Image.class).tex();
+            this.iconTex = configuration.imageToTex(configuration.modificationPath + "/paginae/purus/PBotMenu.png");//Resource.local().load("paginae/purus/PBotMenu").get().layer(Resource.Image.class).tex();
         }
 
         this.nameTex = Text.render(name.substring(0, name.length() - 5)).tex();

@@ -2,6 +2,7 @@ package haven.purus.pbot;
 
 import haven.Coord;
 import haven.GOut;
+import haven.GameUI;
 import haven.Listbox;
 import haven.Loading;
 import haven.MovableWidget;
@@ -16,7 +17,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class PBotScriptlist extends MovableWidget {
+public class PBotScriptlist extends GameUI.Hidewnd {
 
     private TextEntry search;
     private ScriptList list;
@@ -25,7 +26,7 @@ public class PBotScriptlist extends MovableWidget {
     PBotScriptlistItem draggedItem;
 
     public PBotScriptlist() {
-        super(Coord.z, "PBot New Scripts");
+        super(new Coord(228, 280), "PBot New Scripts");
 
         search = new TextEntry(210, "") {
             @Override
@@ -43,11 +44,6 @@ public class PBotScriptlist extends MovableWidget {
 
         list = new ScriptList(210, 10);
         add(list, new Coord(10, 35));
-    }
-
-    @Override
-    protected boolean moveHit(Coord c, int btn) {
-        return c.isect(Coord.z, sz);
     }
 
     @Override

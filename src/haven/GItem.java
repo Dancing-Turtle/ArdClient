@@ -49,7 +49,7 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
     public int num = -1;
     private GSprite spr;
     private ItemInfo.Raw rawinfo;
-    private List<ItemInfo> info = Collections.emptyList();
+    public List<ItemInfo> info = Collections.emptyList();
     private QBuff quality;
     public Tex metertex;
     public double studytime = 0.0;
