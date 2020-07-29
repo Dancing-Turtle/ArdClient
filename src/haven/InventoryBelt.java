@@ -1,10 +1,8 @@
 package haven;
 
 
-
 import haven.purus.pbot.PBotUtils;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -86,8 +84,8 @@ public class InventoryBelt extends Widget implements DTarget {
         if (msg == "sz") {
             isz = (Coord) args[0];
             resize(invsq.sz().add(new Coord(-1, -1)).mul(isz).add(new Coord(1, 1)));
-        } else if(msg == "mode") {
-            dropul = (((Integer)args[0]) == 0);
+        } else if (msg == "mode") {
+            dropul = (((Integer) args[0]) == 0);
         } else {
             super.uimsg(msg, args);
         }
@@ -95,14 +93,14 @@ public class InventoryBelt extends Widget implements DTarget {
 
     @Override
     public void wdgmsg(Widget sender, String msg, Object... args) {
-        if(!msg.endsWith("-identical"))
+        if (!msg.endsWith("-identical"))
             super.wdgmsg(sender, msg, args);
     }
 
     public WItem getItemPartial(String name) {
         for (Widget wdg = child; wdg != null; wdg = wdg.next) {
             if (wdg instanceof WItem) {
-                String wdgname = ((WItem)wdg).item.getname();
+                String wdgname = ((WItem) wdg).item.getname();
                 if (wdgname.contains(name))
                     return (WItem) wdg;
             }
@@ -116,14 +114,14 @@ public class InventoryBelt extends Widget implements DTarget {
         for (Widget wdg = child; wdg != null; wdg = wdg.next) {
             if (wdg instanceof WItem) {
                 WItem item = (WItem) wdg;
-                for(int i=0; i<item.sz.div(sqsz2).y; i++)
-                    for(int j=0; j<item.sz.div(sqsz2).x; j++)
-                        invTable[item.c.div(sqsz).x+j][i] = 1;
+                for (int i = 0; i < item.sz.div(sqsz2).y; i++)
+                    for (int j = 0; j < item.sz.div(sqsz2).x; j++)
+                        invTable[item.c.div(sqsz).x + j][i] = 1;
             }
         }
-        for(int i=0; i<(isz.y * isz.x); i++) {
-                if(invTable[i][0] == 0)
-                    return new Coord(i * 36, 0);
+        for (int i = 0; i < (isz.y * isz.x); i++) {
+            if (invTable[i][0] == 0)
+                return new Coord(i * 36, 0);
         }
         return null;
     }
@@ -134,16 +132,16 @@ public class InventoryBelt extends Widget implements DTarget {
         for (Widget wdg = child; wdg != null; wdg = wdg.next) {
             if (wdg instanceof WItem) {
                 WItem item = (WItem) wdg;
-               for(int i=0; i<item.sz.div(sqsz2).y; i++)
-                    for(int j=0; j<item.sz.div(sqsz2).x; j++) {
+                for (int i = 0; i < item.sz.div(sqsz2).y; i++)
+                    for (int j = 0; j < item.sz.div(sqsz2).x; j++) {
                         invTable[item.c.div(sqsz).x + j][i] = 1;
                     }
             }
         }
 
-        for(int i=0; i<(isz.y * isz.x); i++) {
-                if(invTable[i][0] == 0)
-                    cordlist.add(new Coord(i * 36,0));
+        for (int i = 0; i < (isz.y * isz.x); i++) {
+            if (invTable[i][0] == 0)
+                cordlist.add(new Coord(i * 36, 0));
         }
         return cordlist;
     }
@@ -154,13 +152,13 @@ public class InventoryBelt extends Widget implements DTarget {
                 String wdgname = ((WItem) wdg).item.getname();
                 if (wdgname.contains(name))
                     if (!PBotUtils.canDrinkFrom((WItem) wdg))
-                         return null;
-                        if (PBotUtils.canDrinkFrom((WItem) wdg)) {
-                            return (WItem) wdg;
-                        }
+                        return null;
+                if (PBotUtils.canDrinkFrom((WItem) wdg)) {
+                    return (WItem) wdg;
+                }
             }
         }
-          return null;
+        return null;
     }
 
 

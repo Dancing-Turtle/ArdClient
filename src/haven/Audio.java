@@ -27,7 +27,6 @@
 package haven;
 
 import dolda.xiphutil.VorbisStream;
-import haven.purus.pbot.PBotUtils;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -644,7 +643,7 @@ public class Audio {
     public static void play(String sound, double vol) {
         File file = new File(sound);
         if (!file.exists() || file.isDirectory()) {
-            PBotUtils.sysMsg("Error while playing an alarm, file " + file.getAbsolutePath() + " does not exist!");
+            System.out.println("Error while playing an alarm, file " + file.getAbsolutePath() + " does not exist!");
         } else
             try {
                 AudioInputStream in = AudioSystem.getAudioInputStream(file);
@@ -653,10 +652,10 @@ public class Audio {
                 Audio.CS klippi = new Audio.PCMClip(pcmStream, 2);
                 ((Audio.Mixer) Audio.player.stream).add(new Audio.VolAdjust(klippi, vol));
             } catch (UnsupportedAudioFileException e) {
-                PBotUtils.sysMsg("UnsupportedAudioFileException");
+                System.out.println("UnsupportedAudioFileException");
                 e.printStackTrace();
             } catch (IOException e) {
-                PBotUtils.sysMsg("IOException");
+                System.out.println("IOException");
                 e.printStackTrace();
             }
     }

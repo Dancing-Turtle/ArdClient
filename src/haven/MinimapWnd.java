@@ -2,7 +2,7 @@ package haven;
 
 import integrations.mapv4.MappingClient;
 
-import java.awt.*;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -37,8 +37,8 @@ public class MinimapWnd extends ResizableWnd {
                     DefSettings.SHOWPCLAIM.set(false);
                 }
             }
-        },new Coord(0,0));
-       final ToggleButton2 vclaim = add(new ToggleButton2("gfx/hud/wndmap/btns/vil", "gfx/hud/wndmap/btns/vil-d", DefSettings.SHOWVCLAIM.get()) {
+        }, new Coord(0, 0));
+        final ToggleButton2 vclaim = add(new ToggleButton2("gfx/hud/wndmap/btns/vil", "gfx/hud/wndmap/btns/vil-d", DefSettings.SHOWVCLAIM.get()) {
             {
                 tooltip = Text.render(Resource.getLocString(Resource.BUNDLE_LABEL, "Display village claims"));
             }
@@ -52,8 +52,8 @@ public class MinimapWnd extends ResizableWnd {
                     DefSettings.SHOWVCLAIM.set(false);
                 }
             }
-        },pclaim.c.add(pclaim.sz.x+spacer,0));
-        final ToggleButton2 realm = add(new ToggleButton2("gfx/hud/wndmap/btns/realm", "gfx/hud/wndmap/btns/realm-d",    DefSettings.SHOWKCLAIM.get()) {
+        }, pclaim.c.add(pclaim.sz.x + spacer, 0));
+        final ToggleButton2 realm = add(new ToggleButton2("gfx/hud/wndmap/btns/realm", "gfx/hud/wndmap/btns/realm-d", DefSettings.SHOWKCLAIM.get()) {
             {
                 tooltip = Text.render(Resource.getLocString(Resource.BUNDLE_LABEL, "Display realms"));
             }
@@ -67,8 +67,8 @@ public class MinimapWnd extends ResizableWnd {
                     DefSettings.SHOWKCLAIM.set(false);
                 }
             }
-        },vclaim.c.add(vclaim.sz.x+spacer,0));
-        final IButton mapwnd = add(new IButton("gfx/hud/wndmap/btns/map", "Open Map", () -> gameui().toggleMap()), realm.c.add(realm.sz.x + spacer,0));
+        }, vclaim.c.add(vclaim.sz.x + spacer, 0));
+        final IButton mapwnd = add(new IButton("gfx/hud/wndmap/btns/map", "Open Map", () -> ui.gui.toggleMap()), realm.c.add(realm.sz.x + spacer, 0));
         final IButton geoloc = new IButton("gfx/hud/wndmap/btns/geoloc", "", "", "") {
             private Coord2d locatedAC = null;
             private Coord2d detectedAC = null;
@@ -88,7 +88,7 @@ public class MinimapWnd extends ResizableWnd {
                 }
                 if (Config.vendanMapv4) {
                     MappingClient.MapRef mr = MappingClient.getInstance().lastMapRef;
-                    if(mr != null) {
+                    if (mr != null) {
                         tooltip = Text.render("Coordinates: " + mr);
                     }
                 }
@@ -100,7 +100,7 @@ public class MinimapWnd extends ResizableWnd {
                 System.out.println("Click 1");
                 if (Config.vendanMapv4) {
                     MappingClient.MapRef mr = MappingClient.getInstance().GetMapRef(true);
-                    if(mr != null) {
+                    if (mr != null) {
                         MappingClient.getInstance().OpenMap(mr);
                         return;
                     }
@@ -137,7 +137,8 @@ public class MinimapWnd extends ResizableWnd {
                 }
                 g.dispose();
             }
-        };add(geoloc,mapwnd.c.add(mapwnd.sz.x + spacer,0));
+        };
+        add(geoloc, mapwnd.c.add(mapwnd.sz.x + spacer, 0));
         final IButton oddigeoloc = new IButton("gfx/hud/wndmap/btns/geoloc", "", "", "") {
             private Pair<String, String> coords = null;
             private BufferedImage green = Resource.loadimg("hud/geoloc-green");
@@ -198,7 +199,7 @@ public class MinimapWnd extends ResizableWnd {
                 Graphics2D g = (Graphics2D) buf.getGraphics();
                 if (state) {
                     g.drawImage(green, 0, 0, null);
-                } else  {
+                } else {
                     g.drawImage(red, 0, 0, null);
                 }
                 g.dispose();
@@ -207,12 +208,13 @@ public class MinimapWnd extends ResizableWnd {
             private Pair<String, String> getCurCoords() {
                 return minimap.cur != null ? Config.gridIdsMap.get(minimap.cur.grid.id) : null;
             }
-        };add(oddigeoloc, geoloc.c.add(geoloc.sz.x + spacer,0));
+        };
+        add(oddigeoloc, geoloc.c.add(geoloc.sz.x + spacer, 0));
         final IButton center = add(new IButton("gfx/hud/wndmap/btns/center", "Center map on player", () -> mm.center()),
                 oddigeoloc.c.add(oddigeoloc.sz.x + spacer, 0));
-        final IButton grid = add(new IButton("gfx/hud/wndmap/btns/grid", "Toggle grid on minimap", () -> gameui().toggleMapGrid()),
+        final IButton grid = add(new IButton("gfx/hud/wndmap/btns/grid", "Toggle grid on minimap", () -> ui.gui.toggleMapGrid()),
                 center.c.add(center.sz.x + spacer, 0));
-        final IButton viewdist = add(new IButton("gfx/hud/wndmap/btns/viewdist", "Toggle view range", () -> gameui().toggleMapViewDist()),
+        final IButton viewdist = add(new IButton("gfx/hud/wndmap/btns/viewdist", "Toggle view range", () -> ui.gui.toggleMapViewDist()),
                 grid.c.add(grid.sz.x + spacer, 0));
 
         header = pclaim.sz.y + spacer;
@@ -221,9 +223,8 @@ public class MinimapWnd extends ResizableWnd {
     }
 
     @Override
-    public void close()
-    {
-    //    hide();
+    public void close() {
+        //    hide();
         minimize();
     }
 
@@ -238,6 +239,7 @@ public class MinimapWnd extends ResizableWnd {
         super.resize(sz);
         minimap.sz = asz.sub(0, header);
     }
+
     private void minimize() {
         minimized = !minimized;
         if (minimized) {

@@ -22,7 +22,7 @@ public class InventoryStudy extends Inventory {
         if (Config.studyhist) {
             if (histtex == null) {
                 histtex = new Tex[16];
-                String chrid = gameui().chrid;
+                String chrid = ui.gui.chrid;
                 if (chrid != "") {
                     String[] hist = Utils.getprefsa("studyhist_" + chrid, null);
                     if (hist != null) {
@@ -68,7 +68,7 @@ public class InventoryStudy extends Inventory {
         super.addchild(child, args);
 
         if (Config.studyhist) {
-            String chrid = gameui().chrid;
+            String chrid = ui.gui.chrid;
             if (chrid != "") {
                 String[] hist = Utils.getprefsa("studyhist_" + chrid, new String[16]);
                 if (histtex == null) {
@@ -125,7 +125,7 @@ public class InventoryStudy extends Inventory {
         }
 
         if (Config.studybuff && getFreeSpace() == 0) {
-            Buff tgl = gameui().buffs.gettoggle("brain");
+            Buff tgl = ui.gui.buffs.gettoggle("brain");
             if (tgl != null)
                 tgl.reqdestroy();
         }
@@ -142,14 +142,14 @@ public class InventoryStudy extends Inventory {
             if (ci != null && ((WItem) w).itemmeter.get() > 0.99) {
                 Resource.Tooltip tt = item.resource().layer(Resource.Tooltip.class);
                 if (tt != null)
-                    gameui().syslog.append(tt.t + " LP: " + ci.exp, Color.LIGHT_GRAY);
+                    ui.gui.syslog.append(tt.t + " LP: " + ci.exp, Color.LIGHT_GRAY);
 
                 if (!Config.alarmstudy.equals("None"))
                     Audio.play(Resource.local().loadwait(Config.alarmstudy), Config.studyalarmvol);
 
                 if (Config.autostudy) {
-                    Window invwnd = gameui().getwnd("Inventory");
-                    Window cupboard = gameui().getwnd("Cupboard");
+                    Window invwnd = ui.gui.getwnd("Inventory");
+                    Window cupboard = ui.gui.getwnd("Cupboard");
                     Resource res = item.resource();
                     if (res != null) {
                         if (!replacecurio(invwnd, res, ((WItem) w).c) && cupboard != null)
@@ -161,9 +161,9 @@ public class InventoryStudy extends Inventory {
         }
 
         if (Config.studybuff && getFreeSpace() > 0) {
-            Buff tgl = gameui().buffs.gettoggle("brain");
+            Buff tgl = ui.gui.buffs.gettoggle("brain");
             if (tgl == null)
-                gameui().buffs.addchild(new Buff(Bufflist.buffbrain.indir()));
+                ui.gui.buffs.addchild(new Buff(Bufflist.buffbrain.indir()));
         }
     }
 

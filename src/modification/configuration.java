@@ -85,6 +85,8 @@ public class configuration {
 	public static int morethancolor = Utils.getprefi("morethancolor", -1);
 	public static int morethancoloroutline = Utils.getprefi("morethancoloroutline", Color.RED.hashCode());
 
+	public static Tex invsq = Resource.loadtex("gfx/hud/invsq");
+
 	public static boolean customMarkObj = Utils.getprefb("customMarkObj", false);
 	public static Map<String, String> customMarkObjs = new HashMap<String, String>() {{
 		put("gfx/tiles/ridges/cavein", getDefaultTextName("gfx/tiles/ridges/cavein"));

@@ -1,13 +1,24 @@
 package haven.automation;
 
 
-import haven.*;
+import haven.AltBeltWnd;
+import haven.Config;
+import haven.Coord;
+import haven.Equipory;
+import haven.GItem;
+import haven.GameUI;
+import haven.Inventory;
+import haven.InventoryBelt;
+import haven.WItem;
+import haven.Widget;
 import haven.Window;
-import haven.purus.pbot.PBotAPI;
 import haven.purus.pbot.PBotUtils;
 
-import java.awt.*;
-import java.util.*;
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 
 public class EquipSacks implements Runnable {
@@ -32,33 +43,30 @@ public class EquipSacks implements Runnable {
 
             if (lhand != null && rhand != null) {
                 if (lhand.name.get().contains("Sack") && rhand.name.get().contains("Sack")) {
-                    PBotUtils.sysMsg("Already found traveler sacks, canceling.", Color.white);
+                    PBotUtils.sysMsg(gui.ui, "Already found traveler sacks, canceling.", Color.white);
                     return;
                 }
                 if (lhand.name.get().contains("Bindle") && rhand.name.get().contains("Bindle")) {
-                    PBotUtils.sysMsg("Already found traveler sacks, canceling.", Color.white);
+                    PBotUtils.sysMsg(gui.ui, "Already found traveler sacks, canceling.", Color.white);
                     return;
                 }
             }
             if (lhand == null && rhand == null) {//if hands are empty obviously we need to run this twice to attempt to equip 2 sacks.
                 iterations = 2;
-            }
-            else { //else figure out if we already have 1 sack equipped when we run
+            } else { //else figure out if we already have 1 sack equipped when we run
                 if (lhand != null) {
                     if (!lhand.name.get().contains("Sack") && !lhand.name.get().contains("Bindle"))
                         iterations++;
-                }
-                else
+                } else
                     iterations++;
                 if (rhand != null) {
                     if (!rhand.name.get().contains("Sack") && !rhand.name.get().contains("Bindle"))
                         iterations++;
-                }
-                else
+                } else
                     iterations++;
             }
 
-           // System.out.println("equip sack iterations : "+iterations);
+            // System.out.println("equip sack iterations : "+iterations);
 
             for (int p = 0; p < iterations; p++) {
                 wepmap.putAll(getWeapon(gui.maininv));
@@ -97,7 +105,7 @@ public class EquipSacks implements Runnable {
 
 
                 if (wepmap.size() == 0) {
-                    PBotUtils.sysMsg("No sacks found", Color.white);
+                    PBotUtils.sysMsg(gui.ui, "No sacks found", Color.white);
                     return;
                 }
 
@@ -146,12 +154,12 @@ public class EquipSacks implements Runnable {
                 }
 
 
-                GItem hand = PBotUtils.getGItemAtHand();
+                GItem hand = PBotUtils.getGItemAtHand(gui.ui);
                 if (hand != null) { //try to empty hand into belt
                     if (beltInv != null) {
                         List<Coord> slots = PBotUtils.getFreeInvSlots(beltInv);
                         for (Coord i : slots) {
-                            if(PBotUtils.getGItemAtHand() == null)
+                            if (PBotUtils.getGItemAtHand(gui.ui) == null)
                                 break;
                             PBotUtils.dropItemToInventory(i, beltInv);
                             PBotUtils.sleep(100);
@@ -159,7 +167,7 @@ public class EquipSacks implements Runnable {
                     } else if (quickBeltInv != null) {
                         List<Coord> slots = quickBeltInv.getFreeSlots();
                         for (Coord i : slots) {
-                            if(PBotUtils.getGItemAtHand() == null)
+                            if (PBotUtils.getGItemAtHand(gui.ui) == null)
                                 break;
                             Coord dc = i.add(sqsz.div(2)).div(sqsz);
                             // convert single row coordinate into multi-row
@@ -167,28 +175,28 @@ public class EquipSacks implements Runnable {
                                 dc.y = dc.x / quickBeltInv.isz.x;
                                 dc.x = dc.x % quickBeltInv.isz.x;
                             }
-                            quickBeltInv.wdgmsg("drop",dc);
+                            quickBeltInv.wdgmsg("drop", dc);
                             PBotUtils.sleep(100);
                         }
                     }
                 }
                 if (gui.vhand != null) { //hand still not empty, dump into main inventory
-                    List<Coord> slots = PBotUtils.getFreeInvSlots(PBotAPI.gui.maininv);
+                    List<Coord> slots = PBotUtils.getFreeInvSlots(gui.maininv);
                     for (Coord i : slots) {
-                        if(PBotUtils.getGItemAtHand() == null)
+                        if (PBotUtils.getGItemAtHand(gui.ui) == null)
                             break;
-                        PBotUtils.dropItemToInventory(i, PBotAPI.gui.maininv);
+                        PBotUtils.dropItemToInventory(i, gui.maininv);
                         PBotUtils.sleep(100);
                     }
                 }
                 beltInv = null;
                 quickBeltInv = null;
-                lhand = PBotAPI.gui.getequipory().quickslots[6];
-                rhand = PBotAPI.gui.getequipory().quickslots[7];
+                lhand = gui.getequipory().quickslots[6];
+                rhand = gui.getequipory().quickslots[7];
                 wepmap.clear();
             }
-        }catch(Exception e){
-            PBotUtils.sysMsg("Exception occurred in EquipSack script, ignored.", Color.white);
+        } catch (Exception e) {
+            PBotUtils.sysMsg(gui.ui, "Exception occurred in EquipSack script, ignored.", Color.white);
             e.printStackTrace();
         }//ignore all exceptions, this script will likely be used in a combat situation and crashes are unacceptable
     }
@@ -202,7 +210,7 @@ public class EquipSacks implements Runnable {
             weapon = inv.getItemPartial("Bindle");
             priority = 2;
         }
-        if(weapon!=null)
+        if (weapon != null)
             map.put(weapon, priority);
         return map;
     }
@@ -216,7 +224,7 @@ public class EquipSacks implements Runnable {
             weapon = inv.getItemPartial("Bindle");
             priority = 2;
         }
-        if(weapon!=null)
+        if (weapon != null)
             map.put(weapon, priority);
         return map;
     }

@@ -1,16 +1,15 @@
 package haven;
 
-import haven.purus.pbot.PBotAPI;
 import haven.purus.pbot.PBotUtils;
 
-import java.awt.*;
-import java.util.*;
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
-import static haven.OCache.posres;
 
 public class GobSpawner extends Window {
     private List<String> shortvers = new ArrayList<>();
+
     public GobSpawner() {
         super(Coord.z, "Gob Spawner", "Gob Spawner");
         shortvers.addAll(defaultitems.values());
@@ -35,7 +34,7 @@ public class GobSpawner extends Window {
                             try {
                                 spawnGob(k);
                             } catch (Exception e) {
-                                PBotUtils.sysMsg("Exception in gob spawner.", Color.white);
+                                PBotUtils.sysMsg(ui, "Exception in gob spawner.", Color.white);
                                 e.printStackTrace();
                             }
                         }
@@ -51,16 +50,18 @@ public class GobSpawner extends Window {
         }, c.copy()).sz.x + 5;
         pack();
     }
+
     int next = -900000;
-    public void spawnGob(final String res){
-        System.out.println("Spawn gob : "+res);
-        if(!res.startsWith("gfx")){
-            System.out.println("has pose of : "+posemap.get(res));
-            String type = res.substring(0,res.indexOf(" "));
-            defaultitems.forEach((k,v)->{
-                if(v.equals(type)) {
+
+    public void spawnGob(final String res) {
+        System.out.println("Spawn gob : " + res);
+        if (!res.startsWith("gfx")) {
+            System.out.println("has pose of : " + posemap.get(res));
+            String type = res.substring(0, res.indexOf(" "));
+            defaultitems.forEach((k, v) -> {
+                if (v.equals(type)) {
                     final Gob g = ui.sess.glob.oc.getgob(next--, 0);
-                    ui.sess.glob.oc.move(g, PBotUtils.player().rc, Math.toRadians(130));
+                    ui.sess.glob.oc.move(g, PBotUtils.player(ui).rc, Math.toRadians(130));
                     ui.sess.glob.oc.composite(g, Resource.remote().load(k));
                     final List<ResData> data = new ArrayList<>();
                     data.add(new ResData(Resource.remote().load(k), Message.nil));
@@ -72,9 +73,9 @@ public class GobSpawner extends Window {
                     ui.sess.glob.oc.cmppose(g, 11, pose, null, false, 0);
                 }
             });
-        }else {
+        } else {
             final Gob g = ui.sess.glob.oc.getgob(next--, 0);
-            ui.sess.glob.oc.move(g, PBotUtils.player().rc, Math.toRadians(130));
+            ui.sess.glob.oc.move(g, PBotUtils.player(ui).rc, Math.toRadians(130));
             ui.sess.glob.oc.composite(g, Resource.remote().load(res));
             final List<ResData> data = new ArrayList<>();
             data.add(new ResData(Resource.remote().load(res), Message.nil));
@@ -90,25 +91,26 @@ public class GobSpawner extends Window {
     public void close() {
         ui.destroy(this);
     }
+
     public final static HashMap<String, String> posemap = new HashMap<String, String>(3) {{
-        put("Whale Knocked","gfx/kritter/spermwhale/knock");
-        put("Whale Dead","gfx/kritter/spermwhale/waterdead");
-        put("Whale Swimming","gfx/kritter/spermwhale/swimming");
+        put("Whale Knocked", "gfx/kritter/spermwhale/knock");
+        put("Whale Dead", "gfx/kritter/spermwhale/waterdead");
+        put("Whale Swimming", "gfx/kritter/spermwhale/swimming");
 
-        put("Bear Knocked","gfx/kritter/bear/knock");
-        put("Bear Fight","gfx/kritter/bear/fgtidle");
-        put("Bear Idle","gfx/kritter/bear/idle");
+        put("Bear Knocked", "gfx/kritter/bear/knock");
+        put("Bear Fight", "gfx/kritter/bear/fgtidle");
+        put("Bear Idle", "gfx/kritter/bear/idle");
 
-        put("Troll Knocked","gfx/kritter/troll/knock");
-        put("Troll Fight","gfx/kritter/troll/fgtidle");
-        put("Troll Idle","gfx/kritter/troll/idle");
+        put("Troll Knocked", "gfx/kritter/troll/knock");
+        put("Troll Fight", "gfx/kritter/troll/fgtidle");
+        put("Troll Idle", "gfx/kritter/troll/idle");
 
-        put("Nidbane Fight","gfx/kritter/nidbane/atk");
-        put("Nidbane Idle","gfx/kritter/nidbane/idle");
+        put("Nidbane Fight", "gfx/kritter/nidbane/atk");
+        put("Nidbane Idle", "gfx/kritter/nidbane/idle");
 
-        put("Mammoth Knocked","gfx/kritter/mammoth/knock");
-        put("Mammoth Fight","gfx/kritter/mammoth/fgtidle");
-        put("Mammoth Idle","gfx/kritter/mammoth/idle");
+        put("Mammoth Knocked", "gfx/kritter/mammoth/knock");
+        put("Mammoth Fight", "gfx/kritter/mammoth/fgtidle");
+        put("Mammoth Idle", "gfx/kritter/mammoth/idle");
     }};
 
     public final static HashMap<String, String> defaultitems = new HashMap<String, String>(45) {{
@@ -126,36 +128,36 @@ public class GobSpawner extends Window {
         put("gfx/kritter/opiumdragon/opiumdragon", "Opium Dragon");
         put("gfx/kritter/forestsnail/forestsnail", "Forest Snail");
         put("gfx/kritter/forestlizard/forestlizard", "Forest Lizard");
-        put("gfx/kritter/bear/bear","Bear");
-        put("gfx/kritter/adder/adder","Snake");
-        put("gfx/kritter/lynx/lynx","Lynx");
-        put("gfx/kritter/walrus/walrus","Walrus");
-        put("gfx/kritter/greyseal/greyseal","Seal");
-        put("gfx/kritter/troll/troll","Troll");
-        put("gfx/kritter/mammoth/mammoth","Mammoth");
-        put("gfx/kritter/goldeneagle/goldeneagle","Eagle");
-        put("gfx/kritter/nidbane/nidbane","Nidbane");
-        put("gfx/kritter/horse/horse","Wild Horse");
-        put("gfx/kritter/moose/moose","Moose");
-        put("gfx/kritter/wolverine/wolverine","Wolverine");
-        put("gfx/kritter/badger/badger","Badger");
-        put("gfx/kritter/fox/fox","Fox");
-        put("gfx/kritter/wolf/wolf","Wolves");
-        put("gfx/kritter/mole/mole","Moles");
-        put("gfx/kritter/spermwhale/spermwhale","Whale");
-        put("Whale Knocked","Whale Knocked");
-        put("Whale Dead","Whale Dead");
-        put("Whale Swimming","Whale Swimming");
-        put("Bear Knocked","Bear Knocked");
-        put("Bear Fight","Bear Fight");
-        put("Bear Idle","Bear Idle");
-        put("Troll Knocked","Troll Knocked");
-        put("Troll Fight","Troll Fight");
-        put("Troll Idle","Troll Idle");
-        put("Nidbane Fight","Nidbane Fight");
-        put("Nidbane Idle","Nidbane Idle");
-        put("Mammoth Knocked","Mammoth Knocked");
-        put("Mammoth Fight","Mammoth Fight");
-        put("Mammoth Idle","Mammoth Idle");
+        put("gfx/kritter/bear/bear", "Bear");
+        put("gfx/kritter/adder/adder", "Snake");
+        put("gfx/kritter/lynx/lynx", "Lynx");
+        put("gfx/kritter/walrus/walrus", "Walrus");
+        put("gfx/kritter/greyseal/greyseal", "Seal");
+        put("gfx/kritter/troll/troll", "Troll");
+        put("gfx/kritter/mammoth/mammoth", "Mammoth");
+        put("gfx/kritter/goldeneagle/goldeneagle", "Eagle");
+        put("gfx/kritter/nidbane/nidbane", "Nidbane");
+        put("gfx/kritter/horse/horse", "Wild Horse");
+        put("gfx/kritter/moose/moose", "Moose");
+        put("gfx/kritter/wolverine/wolverine", "Wolverine");
+        put("gfx/kritter/badger/badger", "Badger");
+        put("gfx/kritter/fox/fox", "Fox");
+        put("gfx/kritter/wolf/wolf", "Wolves");
+        put("gfx/kritter/mole/mole", "Moles");
+        put("gfx/kritter/spermwhale/spermwhale", "Whale");
+        put("Whale Knocked", "Whale Knocked");
+        put("Whale Dead", "Whale Dead");
+        put("Whale Swimming", "Whale Swimming");
+        put("Bear Knocked", "Bear Knocked");
+        put("Bear Fight", "Bear Fight");
+        put("Bear Idle", "Bear Idle");
+        put("Troll Knocked", "Troll Knocked");
+        put("Troll Fight", "Troll Fight");
+        put("Troll Idle", "Troll Idle");
+        put("Nidbane Fight", "Nidbane Fight");
+        put("Nidbane Idle", "Nidbane Idle");
+        put("Mammoth Knocked", "Mammoth Knocked");
+        put("Mammoth Fight", "Mammoth Fight");
+        put("Mammoth Idle", "Mammoth Idle");
     }};
 }

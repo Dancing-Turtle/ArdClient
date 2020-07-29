@@ -1,6 +1,10 @@
 package haven.purus.pbot;
 
-import haven.*;
+import haven.Coord;
+import haven.Inventory;
+import haven.UI;
+import haven.WItem;
+import haven.Widget;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,9 +15,11 @@ import java.util.stream.Collectors;
 public class PBotInventory {
 
     public Inventory inv;
+    public final UI ui;
 
     public PBotInventory(Inventory inv) {
         this.inv = inv;
+        this.ui = inv.ui;
     }
 
     /**
@@ -109,8 +115,8 @@ public class PBotInventory {
         WItem item = itm.witem;
         int[][] d = new int[inventoryMatrix.length][inventoryMatrix[0].length];
 
-		int sizeX = item.item.size().x;
-		int sizeY = item.item.size().y;
+        int sizeX = item.item.size().x;
+        int sizeY = item.item.size().y;
         for (int i = 0; i < inventoryMatrix.length; i++) {
             for (int j = 0; j < inventoryMatrix[0].length; j++) {
                 if (inventoryMatrix[i][j] == 1)

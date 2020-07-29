@@ -167,9 +167,9 @@ public class Inventory extends Widget implements DTarget {
                 }
             }
         } else if (msg.startsWith("transfer-identical")) {
-            Window stockpile = gameui().getwnd("Stockpile");
-            Window smelter = gameui().getwnd("Ore Smelter");
-            Window kiln = gameui().getwnd("Kiln");
+            Window stockpile = ui.gui.getwnd("Stockpile");
+            Window smelter = ui.gui.getwnd("Ore Smelter");
+            Window kiln = ui.gui.getwnd("Kiln");
             if (stockpile == null || smelter != null || kiln != null) {
                 List<WItem> items = getIdenticalItems((GItem) args[0]);
                 Collections.sort(items, (a, b) -> {
@@ -366,7 +366,7 @@ public class Inventory extends Widget implements DTarget {
     }
 
     public boolean drink(int threshold) {
-        IMeter.Meter stam = gameui().getmeter("stam", 0);
+        IMeter.Meter stam = ui.gui.getmeter("stam", 0);
         if (stam == null || stam.a > threshold)
             return false;
 

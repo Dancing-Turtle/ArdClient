@@ -1,23 +1,20 @@
 package haven;
 
-import java.awt.*;
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.Optional;
-import haven.DefSettings;
-import haven.BeltData;
 
 /**
  * Hotkeys are stored in dnyamic.sqlite only for custom items not stored on server-side
  * Table: beltslot
  * Columns:
- * 	character_id
- * 	slot_id
- * 	pagina_key
- *
+ * character_id
+ * slot_id
+ * pagina_key
  */
 public class BeltWnd extends MovableWidget {
-    private static final Coord offc = new Coord(1,1);
+    private static final Coord offc = new Coord(1, 1);
 
     public class BeltBtn extends Widget implements DTarget, DropTarget {
         //Key to activate
@@ -39,21 +36,21 @@ public class BeltWnd extends MovableWidget {
             this.key = key;
             cancancel = false;
             final String nm;
-            if(key >= 96 && key <= 105)
-                nm = "N"+KeyEvent.getKeyText(key).substring(KeyEvent.getKeyText(key).length()-1);
+            if (key >= 96 && key <= 105)
+                nm = "N" + KeyEvent.getKeyText(key).substring(KeyEvent.getKeyText(key).length() - 1);
             else
-            nm = KeyEvent.getKeyText(key).replace("NumPad-", "N");
+                nm = KeyEvent.getKeyText(key).replace("NumPad-", "N");
             this.tkey = new TexI(Utils.outline2(Text.render(nm).img, Color.BLACK));
         }
 
         private Optional<Tex> img() {
-            if(res != null) {
+            if (res != null) {
                 try {
                     return Optional.of(res.get().layer(Resource.imgc).tex());
                 } catch (Loading e) {
                     return Optional.empty();
                 }
-            } else if(pag != null) {
+            } else if (pag != null) {
                 return Optional.of(pag.img.get());
             }
             return Optional.empty();
@@ -61,12 +58,12 @@ public class BeltWnd extends MovableWidget {
 
         @Override
         public void draw(GOut g) {
-            if(TexGL.disableall)
+            if (TexGL.disableall)
                 return;
             g.image(Inventory.invsq, Coord.z);
             //if we have something draw it
             img().ifPresent(tex -> {
-                if(!dragging) {
+                if (!dragging) {
                     g.image(tex, offc);
                 } else {
                     ui.drawafter(g2 -> g2.image(tex, ui.mc.sub(tex.sz().div(2))));
@@ -92,7 +89,7 @@ public class BeltWnd extends MovableWidget {
             tt = null;
             res = null;
             pag = null;
-            if(ui.gui.belt[slot] != null) {
+            if (ui.gui.belt[slot] != null) {
                 res = ui.gui.belt[slot];
                 data.remove(slot);
             } else {
@@ -111,10 +108,10 @@ public class BeltWnd extends MovableWidget {
 
         @Override
         public Object tooltip(Coord c, Widget prev) {
-            if(tt != null) {
+            if (tt != null) {
                 //cached tt
                 return tt;
-            } else if(pag != null && pag.act() != null) {
+            } else if (pag != null && pag.act() != null) {
                 tt = pag.button().rendertt(true);
                 return tt;
             }
@@ -122,7 +119,7 @@ public class BeltWnd extends MovableWidget {
         }
 
         private void use() {
-            if(res != null) {
+            if (res != null) {
                 if (Config.confirmmagic && res.get().name.startsWith("paginae/seid/") && !res.get().name.equals("paginae/seid/rawhide")) {
                     Window confirmwnd = new Window(new Coord(225, 100), "Confirm") {
                         @Override
@@ -163,21 +160,19 @@ public class BeltWnd extends MovableWidget {
                     confirmwnd.add(nobtn, new Coord(confirmwnd.sz.x / 2 + 20, 60));
                     confirmwnd.pack();
 
-                    GameUI gui = gameui();
-                    gui.add(confirmwnd, new Coord(gui.sz.x / 2 - confirmwnd.sz.x / 2, gui.sz.y / 2 - 200));
+                    ui.gui.add(confirmwnd, new Coord(ui.gui.sz.x / 2 - confirmwnd.sz.x / 2, ui.gui.sz.y / 2 - 200));
                     confirmwnd.show();
-                }
-                else
-                ui.gui.wdgmsg("belt", slot, 1, ui.modflags());
-            } else if(pag != null)
-                 pag.use();
+                } else
+                    ui.gui.wdgmsg("belt", slot, 1, ui.modflags());
+            } else if (pag != null)
+                pag.use();
         }
 
         @Override
         public boolean globtype(char k, KeyEvent ev) {
-            if(k != 0)
+            if (k != 0)
                 return false;
-            if(ev.getKeyCode() == this.key) {
+            if (ev.getKeyCode() == this.key) {
                 use();
                 return true;
             } else {
@@ -187,7 +182,7 @@ public class BeltWnd extends MovableWidget {
 
         @Override
         public boolean mousedown(Coord c, int button) {
-            if(((res != null && res.get() != null) || pag != null) && ui.modflags() == 0) {
+            if (((res != null && res.get() != null) || pag != null) && ui.modflags() == 0) {
                 dm = ui.grabmouse(this);
                 return true;
             }
@@ -196,25 +191,25 @@ public class BeltWnd extends MovableWidget {
 
         @Override
         public boolean mouseup(Coord c, int button) {
-            if(dm != null) {
+            if (dm != null) {
                 dm.remove();
                 dm = null;
-                if(dragging) {
-                    if(res != null) {
-                        if(ui.dropthing(ui.root, ui.mc, res.get())) {
+                if (dragging) {
+                    if (res != null) {
+                        if (ui.dropthing(ui.root, ui.mc, res.get())) {
                             reset();
                             //delete anything that might already belong to this slot
                             ui.gui.wdgmsg("setbelt", slot, 1);
                         }
                     } else {
-                        if(ui.dropthing(ui.root, ui.mc, pag)) {
+                        if (ui.dropthing(ui.root, ui.mc, pag)) {
                             reset();
                         }
                     }
                     dragging = false;
-		} else if(button == 1 && c.isect(Coord.z, sz)) {
+                } else if (button == 1 && c.isect(Coord.z, sz)) {
                     use();
-                } else if(button == 3) {
+                } else if (button == 3) {
                     ui.gui.wdgmsg("setbelt", slot, 1);
                     reset();
                 }
@@ -226,7 +221,7 @@ public class BeltWnd extends MovableWidget {
         @Override
         public void mousemove(Coord c) {
             super.mousemove(c);
-	    if(dm != null && !BeltWnd.this.locked) {
+            if (dm != null && !BeltWnd.this.locked) {
                 dragging = true;
             }
         }
@@ -248,7 +243,7 @@ public class BeltWnd extends MovableWidget {
         @Override
         public boolean dropthing(Coord cc, Object thing) {
             //don't drop things on yourself..
-            if(!dragging) {
+            if (!dragging) {
                 //Dropping "things" on us, mainly menugrid items
                 if (thing instanceof Resource) {
                     //Normal server-side menu items
@@ -297,10 +292,10 @@ public class BeltWnd extends MovableWidget {
         super(name);
         this.name = name;
         this.data = data;
-        style = Style.valueOf(DefSettings.global.get("belt."+name+".style", String.class));
-        visible = DefSettings.global.get("belt."+name+".show", Boolean.class);
-        page = DefSettings.global.get("belt."+name+".page", Integer.class);
-        locked = DefSettings.global.get("belt."+name+".locked", Boolean.class);
+        style = Style.valueOf(DefSettings.global.get("belt." + name + ".style", String.class));
+        visible = DefSettings.global.get("belt." + name + ".show", Boolean.class);
+        page = DefSettings.global.get("belt." + name + ".page", Integer.class);
+        locked = DefSettings.global.get("belt." + name + ".locked", Boolean.class);
 
         rotate = add(new IButton("custom/belt/default/rotate", "Rotate belt", () -> {
             switch (style) {
@@ -314,15 +309,15 @@ public class BeltWnd extends MovableWidget {
                     style = Style.HORIZONTAL;
                     break;
             }
-            DefSettings.global.set("belt."+name+".style", style.toString());
+            DefSettings.global.set("belt." + name + ".style", style.toString());
             reposition();
         }));
         lock = add(new IButton("custom/belt/default/lock", "Lock belt", () -> {
             locked = !locked;
-            DefSettings.global.set("belt."+name+".locked", locked);
+            DefSettings.global.set("belt." + name + ".locked", locked);
             BeltWnd.this.lock.hover = locked ? BeltWnd.this.on : BeltWnd.this.off;
             BeltWnd.this.lock.up = locked ? BeltWnd.this.off : BeltWnd.this.on;
-	}));
+        }));
         on = lock.up;
         off = lock.hover;
         lock.hover = locked ? on : off;
@@ -330,29 +325,28 @@ public class BeltWnd extends MovableWidget {
 
         up = add(new IButton("custom/belt/default/up", "Go up a page", () -> {
             page++;
-            if(page >= pagecount)
+            if (page >= pagecount)
                 page = 0;
             upd_page();
         }));
         down = add(new IButton("custom/belt/default/down", "Go down a page", () -> {
             page--;
-            if(page < 0)
-                page = pagecount-1;
+            if (page < 0)
+                page = pagecount - 1;
             upd_page();
         }));
     }
 
     public BeltWnd(final String name, final BeltData data, int sk, final int ek, final int pages, final int start) {
         this(name, data);
-        final int[] keys = new int[ek-sk+1];
+        final int[] keys = new int[ek - sk + 1];
         int i = 0;
         //48 to 57 vk 0 to vk 9
-        if(!name.equals("n")) {
+        if (!name.equals("n")) {
             while (sk != ek + 1) {
                 keys[i++] = sk++;
             }
-        }
-        else{//messy as fuck but it reverts back to ambers 1/2/3/4/5/6/7/8/9/0 system.
+        } else {//messy as fuck but it reverts back to ambers 1/2/3/4/5/6/7/8/9/0 system.
             keys[0] = 49;
             keys[1] = 50;
             keys[2] = 51;
@@ -383,9 +377,9 @@ public class BeltWnd extends MovableWidget {
 
     @Override
     protected boolean moveHit(Coord c, int btn) {
-        if(btn == 1 && ui.modctrl) {
-            for(BeltBtn bbtn : btns) {
-                if(c.isect(bbtn.c, bbtn.sz))
+        if (btn == 1 && ui.modctrl) {
+            for (BeltBtn bbtn : btns) {
+                if (c.isect(bbtn.c, bbtn.sz))
                     return true;
             }
         }
@@ -393,9 +387,9 @@ public class BeltWnd extends MovableWidget {
     }
 
     public void upd_page() {
-        DefSettings.global.set("belt."+name+".page", page);
+        DefSettings.global.set("belt." + name + ".page", page);
         int i = 0;
-        for(BeltBtn btn : btns) {
+        for (BeltBtn btn : btns) {
             btn.setSlot(start_slot + i + (page * 10));
             i++;
         }
@@ -403,21 +397,21 @@ public class BeltWnd extends MovableWidget {
 
     public void update(int slot) {
         int idx = (slot % 10);
-        if(btns[idx].slot == slot)
+        if (btns[idx].slot == slot)
             btns[idx].setSlot(slot);
     }
 
-    private void makebtns(int [] keys) {
+    private void makebtns(int[] keys) {
         int i = 0;
-        for(int k : keys) {
-            btns[i++] = add(new BeltBtn(k), new Coord(0,0));
+        for (int k : keys) {
+            btns[i++] = add(new BeltBtn(k), new Coord(0, 0));
         }
         reposition();
     }
 
     private void reposition_grid() {
-        int x = 0 , y = 0;
-        if(!this.name.equals("np")) {
+        int x = 0, y = 0;
+        if (!this.name.equals("np")) {
             for (BeltBtn btn : btns) {
                 btn.c = new Coord(x * (Inventory.invsq.sz().x + 2),
                         y * (Inventory.invsq.sz().y + 2));
@@ -427,30 +421,30 @@ public class BeltWnd extends MovableWidget {
                     y++;
                 }
             }
-        }else {
+        } else {
             for (BeltBtn btn : btns) {
-                if(btn.key == 96)
-                    btn.c = new Coord(0,108);
-                if(btn.key == 97)
-                    btn.c = new Coord(0,72);
-                if(btn.key == 98)
-                    btn.c = new Coord(36,72);
-                if(btn.key == 99)
-                    btn.c = new Coord(72,72);
-                if(btn.key == 100)
-                    btn.c = new Coord(0,36);
-                if(btn.key == 101)
-                    btn.c = new Coord(36,36);
-                if(btn.key == 102)
-                    btn.c = new Coord(72,36);
-                if(btn.key == 103)
-                    btn.c = new Coord(0,0);
-                if(btn.key == 104)
-                    btn.c = new Coord(36,0);
-                if(btn.key == 105)
-                    btn.c = new Coord(72,0);
+                if (btn.key == 96)
+                    btn.c = new Coord(0, 108);
+                if (btn.key == 97)
+                    btn.c = new Coord(0, 72);
+                if (btn.key == 98)
+                    btn.c = new Coord(36, 72);
+                if (btn.key == 99)
+                    btn.c = new Coord(72, 72);
+                if (btn.key == 100)
+                    btn.c = new Coord(0, 36);
+                if (btn.key == 101)
+                    btn.c = new Coord(36, 36);
+                if (btn.key == 102)
+                    btn.c = new Coord(72, 36);
+                if (btn.key == 103)
+                    btn.c = new Coord(0, 0);
+                if (btn.key == 104)
+                    btn.c = new Coord(36, 0);
+                if (btn.key == 105)
+                    btn.c = new Coord(72, 0);
             }
-            x =  1;
+            x = 1;
             y = 3;
         }
 
@@ -458,17 +452,17 @@ public class BeltWnd extends MovableWidget {
                 y * (Inventory.invsq.sz().y + 2));
         down.c = new Coord(x * (Inventory.invsq.sz().x + 2) + up.sz.x + 2,
                 y * (Inventory.invsq.sz().y + 2));
-	rotate.c = up.c.add(0, up.sz.y + 2);
-	lock.c = rotate.c.add(rotate.sz.x + 2, 0);
+        rotate.c = up.c.add(0, up.sz.y + 2);
+        lock.c = rotate.c.add(rotate.sz.x + 2, 0);
     }
 
     private void reposition() {
-        if(style == Style.GRID)
+        if (style == Style.GRID)
             reposition_grid();
         else {
             int n = 0;
-            for(BeltBtn btn : btns) {
-                switch(style) {
+            for (BeltBtn btn : btns) {
+                switch (style) {
                     case VERTICAL:
                         btn.c = new Coord(0, n);
                         n += Inventory.invsq.sz().y + 2;
@@ -479,12 +473,12 @@ public class BeltWnd extends MovableWidget {
                         break;
                 }
             }
-            switch(style) {
+            switch (style) {
                 case VERTICAL:
                     up.c = new Coord(0, n);
                     down.c = new Coord(up.sz.x + 2, n);
                     rotate.c = up.c.add(0, up.sz.y + 2);
-		    lock.c = rotate.c.add(rotate.sz.x + 2, 2);
+                    lock.c = rotate.c.add(rotate.sz.x + 2, 2);
                     break;
                 case HORIZONTAL:
                     up.c = new Coord(n, 0);
@@ -500,6 +494,6 @@ public class BeltWnd extends MovableWidget {
 
     public void setVisibile(final boolean vis) {
         visible = vis;
-        DefSettings.global.set("belt."+name+".show", visible);
+        DefSettings.global.set("belt." + name + ".show", visible);
     }
 }

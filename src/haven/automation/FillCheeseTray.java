@@ -1,17 +1,16 @@
 package haven.automation;
 
 
-import haven.*;
-import haven.purus.pbot.PBotAPI;
+import haven.Coord;
+import haven.GameUI;
+import haven.Inventory;
+import haven.WItem;
+import haven.Widget;
 import haven.purus.pbot.PBotUtils;
-import net.dv8tion.jda.client.entities.Application;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-
-import static haven.OCache.posres;
 
 public class FillCheeseTray implements Runnable {
     private GameUI gui;
@@ -33,66 +32,69 @@ public class FillCheeseTray implements Runnable {
                         tray = getTrays2((Inventory) q);
                         if (tray != null) {
                             trays = getTrays((Inventory) q);
-                            System.out.println("trays size : "+trays.size());
+                            System.out.println("trays size : " + trays.size());
                         }
                     }
                 }
-                for (WItem item : trays){
-                    if(item.item.getcontents() != null)
-                    System.out.println("contents not null");
+                for (WItem item : trays) {
+                    if (item.item.getcontents() != null)
+                        System.out.println("contents not null");
                     else
                         System.out.println("contents null");
-                    if(item.item.getcontents() == null)
+                    if (item.item.getcontents() == null)
                         trays2.add(item);
-                    else if(item.item.getcontents().iscurds)
+                    else if (item.item.getcontents().iscurds)
                         trays2.add(item);
-                    }
-            } catch (NullPointerException q) {q.printStackTrace();}
+                }
+            } catch (NullPointerException q) {
+                q.printStackTrace();
+            }
         }
-        if(trays2.size() == 0){
-            PBotUtils.sysMsg("No trays with space found, not running.",Color.white);
+        if (trays2.size() == 0) {
+            PBotUtils.sysMsg(gui.ui, "No trays with space found, not running.", Color.white);
             return;
         }
-            if(PBotUtils.getItemAtHand() == null) {
-                WItem curd = gui.maininv.getItemPartial("Curd");
-                try {
-                    PBotUtils.takeItem(curd.item);
-                }catch(NullPointerException q){
-                    PBotUtils.sysMsg("Don't appear to have curds, stopping.",Color.white);
-                    return;
-                }
-                PBotUtils.sleep(250);
+        if (PBotUtils.getItemAtHand(gui.ui) == null) {
+            WItem curd = gui.maininv.getItemPartial("Curd");
+            try {
+                PBotUtils.takeItem(gui.ui, curd.item);
+            } catch (NullPointerException q) {
+                PBotUtils.sysMsg(gui.ui, "Don't appear to have curds, stopping.", Color.white);
+                return;
             }
-            System.out.println("Number of Cheese trays found is : "+trays2.size());
-            for (int i = 0; i < trays2.size(); i++) {
-                if(gui.maininv.getItemPartial("Curd") == null)
+            PBotUtils.sleep(250);
+        }
+        System.out.println("Number of Cheese trays found is : " + trays2.size());
+        for (int i = 0; i < trays2.size(); i++) {
+            if (gui.maininv.getItemPartial("Curd") == null)
+                break;
+            System.out.println("Tray number " + i);
+            for (int l = 0; l < 5; l++) {
+                if (gui.maininv.getItemPartial("Curd") == null)
                     break;
-                System.out.println("Tray number "+i);
-                    for(int l=0;l<5;l++) {
-                        if(gui.maininv.getItemPartial("Curd") == null)
-                            break;
-                        trays2.get(i).item.wdgmsg("itemact", 1);
-                        PBotUtils.sleep(50);
-                    }
-                }
-                Coord slot = PBotUtils.getFreeInvSlot(PBotAPI.gui.maininv);
-                if(PBotUtils.getItemAtHand()!=null)
-                    PBotUtils.dropItemToInventory(slot,PBotAPI.gui.maininv);
-        PBotUtils.sysMsg("Done",Color.white);
+                trays2.get(i).item.wdgmsg("itemact", 1);
+                PBotUtils.sleep(50);
+            }
         }
-        private java.util.List<WItem> getTrays (Inventory inv){
-            List<WItem> trays = inv.getItemsPartial("Cheese Tray");
-            // BotUtils.sysMsg("trying to find trays", Color.WHITE);
-            if(trays == null)
-                return null;
-            return trays;
-        }
+        Coord slot = PBotUtils.getFreeInvSlot(gui.maininv);
+        if (PBotUtils.getItemAtHand(gui.ui) != null)
+            PBotUtils.dropItemToInventory(slot, gui.maininv);
+        PBotUtils.sysMsg(gui.ui, "Done", Color.white);
+    }
 
-        private WItem getTrays2 (Inventory inv){
-            WItem trays = inv.getItemPartialTrays("Tray");
-            // BotUtils.sysMsg("trying to find trays", Color.WHITE);
-            if(trays == null)
-                return null;
-            return trays;
-        }
+    private java.util.List<WItem> getTrays(Inventory inv) {
+        List<WItem> trays = inv.getItemsPartial("Cheese Tray");
+        // BotUtils.sysMsg("trying to find trays", Color.WHITE);
+        if (trays == null)
+            return null;
+        return trays;
+    }
+
+    private WItem getTrays2(Inventory inv) {
+        WItem trays = inv.getItemPartialTrays("Tray");
+        // BotUtils.sysMsg("trying to find trays", Color.WHITE);
+        if (trays == null)
+            return null;
+        return trays;
+    }
 }

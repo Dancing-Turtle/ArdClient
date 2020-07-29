@@ -3,6 +3,7 @@ package haven.purus.pbot;
 import haven.Coord2d;
 import haven.Gob;
 import haven.Loading;
+import haven.UI;
 import haven.automation.GobSelectCallback;
 
 import java.util.ArrayList;
@@ -47,10 +48,10 @@ public class PBotGobAPI {
      *
      * @return List of all gobs
      */
-    public static List<PBotGob> getAllGobs() {
+    public static List<PBotGob> getAllGobs(UI ui) {
         List<PBotGob> list = new ArrayList<PBotGob>();
-        synchronized (PBotAPI.gui.ui.sess.glob.oc) {
-            for (Gob gob : PBotAPI.gui.ui.sess.glob.oc) {
+        synchronized (ui.sess.glob.oc) {
+            for (Gob gob : ui.sess.glob.oc) {
                 list.add(new PBotGob(gob));
             }
         }
@@ -63,11 +64,11 @@ public class PBotGobAPI {
      * @param x
      * @param y
      */
-    public static void waitForGob(double x, double y) {
+    public static void waitForGob(UI ui, double x, double y) {
         Coord2d expected = new Coord2d(x, y);
         while (true) {
-            for (PBotGob gob : getAllGobs()) {
-                if (gob.getRcCoords().equals(expected) && player().getGobId() != gob.getGobId())
+            for (PBotGob gob : getAllGobs(ui)) {
+                if (gob.getRcCoords().equals(expected) && player(ui).getGobId() != gob.getGobId())
                     return;
             }
             PBotUtils.sleep(25);
@@ -81,13 +82,13 @@ public class PBotGobAPI {
      * @param pattern Regex pattern(s) to match resnames of the gobs
      * @return Gob of the object, or null if not found
      */
-    public static PBotGob findGobByNames(double radius, String... pattern) {
-        Coord2d plc = player().getRcCoords();
+    public static PBotGob findGobByNames(UI ui, double radius, String... pattern) {
+        Coord2d plc = player(ui).getRcCoords();
         double min = radius;
         Gob nearest = null;
         List<Pattern> patterns = Arrays.stream(pattern).map(Pattern::compile).collect(Collectors.toList());
-        synchronized (PBotAPI.gui.ui.sess.glob.oc) {
-            for (Gob gob : PBotAPI.gui.ui.sess.glob.oc) {
+        synchronized (ui.sess.glob.oc) {
+            for (Gob gob : ui.sess.glob.oc) {
                 double dist = gob.rc.dist(plc);
                 if (dist < min) {
                     boolean matches = false;
@@ -119,9 +120,9 @@ public class PBotGobAPI {
      * @param c Coords of gob
      * @return Gob with coordinates or null
      */
-    public static PBotGob getGobWithCoords(Coord2d c) {
-        synchronized (PBotAPI.gui.ui.sess.glob.oc) {
-            for (Gob gob : PBotAPI.gui.ui.sess.glob.oc) {
+    public static PBotGob getGobWithCoords(UI ui, Coord2d c) {
+        synchronized (ui.sess.glob.oc) {
+            for (Gob gob : ui.sess.glob.oc) {
                 if (gob.rc.x == c.x && gob.rc.y == c.y)
                     return new PBotGob(gob);
             }
@@ -134,8 +135,8 @@ public class PBotGobAPI {
      *
      * @return Player gob
      */
-    public static PBotGob player() {
-        return new PBotGob(PBotAPI.gui.map.player());
+    public static PBotGob player(UI ui) {
+        return new PBotGob(ui.gui.map.player());
     }
 
 
@@ -145,27 +146,27 @@ public class PBotGobAPI {
      * @param id ID of the object to look for
      * @return Object, or null if not found
      */
-    public static PBotGob findGobById(long id) {
-        Gob gob = PBotAPI.gui.ui.sess.glob.oc.getgob(id);
+    public static PBotGob findGobById(UI ui, long id) {
+        Gob gob = ui.sess.glob.oc.getgob(id);
         if (gob == null)
             return null;
         else
-            return new PBotGob(PBotAPI.gui.ui.sess.glob.oc.getgob(id));
+            return new PBotGob(ui.sess.glob.oc.getgob(id));
     }
 
 
     /**
      * Next alt+click to gob returns the gob, the function will wait until this happens
      */
-    public static PBotGob selectGob() {
+    public static PBotGob selectGob(UI ui) {
         gobSelectWait = true;
         synchronized (GobSelectCallback.class) {
-            PBotAPI.gui.map.registerGobSelect(new GobCb());
+            ui.gui.map.registerGobSelect(new GobCb());
         }
         while (gobSelectWait) {
             PBotUtils.sleep(25);
         }
-        PBotAPI.gui.map.unregisterGobSelect();
+        ui.gui.map.unregisterGobSelect();
         return new PBotGob(selectedGob);
     }
 
@@ -184,8 +185,8 @@ public class PBotGobAPI {
     /**
      * Itemact with item in hand, for example, to make a stockpile
      */
-    public static void makePile() {
-        PBotAPI.gui.map.wdgmsg("itemact", PBotUtils.getCenterScreenCoord(), player().getRcCoords().floor(posres), 0);
+    public static void makePile(UI ui) {
+        ui.gui.map.wdgmsg("itemact", PBotUtils.getCenterScreenCoord(ui), player(ui).getRcCoords().floor(posres), 0);
     }
 
     /**
@@ -194,14 +195,14 @@ public class PBotGobAPI {
      * @param x x place stockpile to
      * @param y y place stockpile to
      */
-    public static void placeThing(double x, double y) {
-        PBotAPI.gui.map.wdgmsg("place", new Coord2d(x, y).floor(posres), 0, 1, 0);
+    public static void placeThing(UI ui, double x, double y) {
+        ui.gui.map.wdgmsg("place", new Coord2d(x, y).floor(posres), 0, 1, 0);
     }
 
     /**
      * Use to cancel stockpile placing for example
      */
-    public static void cancelPlace() {
-        PBotAPI.gui.map.wdgmsg("place", new Coord2d(0, 0).floor(posres), 0, 3, 0);
+    public static void cancelPlace(UI ui) {
+        ui.gui.map.wdgmsg("place", new Coord2d(0, 0).floor(posres), 0, 3, 0);
     }
 }

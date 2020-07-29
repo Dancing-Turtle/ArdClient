@@ -240,7 +240,7 @@ public class SoundManager extends Window implements ObservableListener<Alerted.C
     }
 
     public void loadDefaults() {
-        PBotUtils.sysMsg("Default alarms loaded.", Color.white);
+        PBotUtils.sysMsg(ui, "Default alarms loaded.", Color.white);
         for (String sound : Alerted.custom) {
             if (sound.contains("BearRoar"))
                 Alerted.add("gfx/kritter/bear/bear", sound, .8);

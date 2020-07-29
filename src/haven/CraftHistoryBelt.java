@@ -51,7 +51,7 @@ public class CraftHistoryBelt extends Widget {
                     MenuGrid g = ui.gui.menu;
                     g.lastCraft = g.getPagina(ad[1]);
                 }
-                gameui().act(ad);
+                ui.gui.act(ad);
             } else if (button == 1 && belt[slot] == null) {
                 if (ui.modshift) {
                     if (vertical) {

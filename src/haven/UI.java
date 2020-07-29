@@ -32,7 +32,12 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.lang.ref.WeakReference;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.TreeMap;
 
 
 public class UI {
@@ -58,6 +63,7 @@ public class UI {
     public WeakReference<FightWnd> fightwnd;
     private final Context uictx;
     public ActAudio audio = new ActAudio();
+    public Charlist charlist;
 
     {
         lastevent = lasttick = Utils.rtime();
@@ -184,6 +190,7 @@ public class UI {
     //ids go sequential, 2^16 limit judging by parent != 65535...
     //At 65535 wrap back around? Can we break the game by hitting that limit.............
     public int next_predicted_id = 2;
+
     public void newwidget(int id, String type, int parent, Object[] pargs, Object... cargs) throws InterruptedException {
 
         // System.out.println("Widget ID : "+id+" Type : "+type+" Parent : "+parent);
@@ -197,7 +204,7 @@ public class UI {
         }
 
         Widget.Factory f = Widget.gettype2(type);
-        synchronized(this) {
+        synchronized (this) {
             if (parent == beltWndId)
                 f = Widget.gettype2("inv-belt");
 
@@ -205,8 +212,8 @@ public class UI {
             wdg.attach(this);
             if (parent != 65535) {
                 Widget pwdg = widgets.get(parent);
-                if(pwdg == null)
-                    throw(new UIException("Null parent widget " + parent + " for " + id, type, cargs));
+                if (pwdg == null)
+                    throw (new UIException("Null parent widget " + parent + " for " + id, type, cargs));
                 pwdg.addchild(wdg, pargs);
 
                 if (pwdg instanceof Window) {
@@ -234,23 +241,23 @@ public class UI {
                 }
             }
             bind(wdg, id);
-            if(type.contains("rchan"))
+            if (type.contains("rchan"))
                 realmchat = new WeakReference<>(wdg);
-            if(wdg instanceof FightWnd){
-                fightwnd = new WeakReference<>((FightWnd)wdg);
+            if (wdg instanceof FightWnd) {
+                fightwnd = new WeakReference<>((FightWnd) wdg);
             }
         }
         next_predicted_id = id + 1;
     }
 
     public void addwidget(int id, int parent, Object[] pargs) {
-        synchronized(this) {
+        synchronized (this) {
             Widget wdg = widgets.get(id);
-            if(wdg == null)
-                throw(new UIException("Null child widget " + id + " added to " + parent, null, pargs));
+            if (wdg == null)
+                throw (new UIException("Null child widget " + id + " added to " + parent, null, pargs));
             Widget pwdg = widgets.get(parent);
-            if(pwdg == null)
-                throw(new UIException("Null parent widget " + parent + " for " + id, null, pargs));
+            if (pwdg == null)
+                throw (new UIException("Null parent widget " + parent + " for " + id, null, pargs));
             pwdg.addchild(wdg, pargs);
         }
     }
@@ -372,7 +379,7 @@ public class UI {
             if (g.wdg.hasparent(wdg))
                 i.remove();
         }
-        if(wdg != null) {
+        if (wdg != null) {
             removeid(wdg);
             wdg.reqdestroy();
         }
@@ -395,25 +402,24 @@ public class UI {
      * For scripting only
      */
     public void wdgmsg(final int id, final String msg, Object... args) {
-        if(rcvr != null)
+        if (rcvr != null)
             rcvr.rcvmsg(id, msg, args);
     }
 
     public void wdgmsg(Widget sender, String msg, Object... args) {
         int id;
-        synchronized(this) {
+        synchronized (this) {
 
             if (msg.endsWith("-identical"))
                 return;
 
             //  try { for(Object obj:args) if(!sender.toString().contains("Camera")) System.out.println("Sender : " + sender + " msg = " + msg + " arg 1 : " + obj); }catch(ArrayIndexOutOfBoundsException q){}
 
-            if(!rwidgets.containsKey(sender)) {
-                if(msg.equals("close")) {
+            if (!rwidgets.containsKey(sender)) {
+                if (msg.equals("close")) {
                     sender.reqdestroy();
                     return;
-                }
-                else
+                } else
                     System.err.printf("Wdgmsg sender (%s) is not in rwidgets, message is %s\n", sender.getClass().getName(), msg);
                 //   System.out.println("Args:"+args[0]);
                 // System.out.println("Sender is : "+sender);
@@ -422,7 +428,7 @@ public class UI {
             id = rwidgets.get(sender);
         }
         configuration.Syslog(configuration.clientSender, sender, id, msg, args);
-        if(rcvr != null)
+        if (rcvr != null)
             rcvr.rcvmsg(id, msg, args);
     }
 
@@ -430,21 +436,23 @@ public class UI {
         synchronized (this) {
             Widget wdg = widgets.get(id);
             configuration.Syslog(configuration.serverSender, wdg, id, msg, args);
-            if(realmchat != null){
-                try{
-                    if(realmchat.get() != null && id == realmchat.get().wdgid()) {
+            if (realmchat != null) {
+                try {
+                    if (realmchat.get() != null && id == realmchat.get().wdgid()) {
                         if (msg.contains("msg") && wdg.toString().contains("Realm")) {
                             ((ChatUI.EntryChannel) realmchat.get()).updurgency(1);
                             if (Config.realmchatalerts)
                                 Audio.play(ChatUI.notifsfx);
                         }
                     }
-                }catch(NullPointerException e){e.printStackTrace();}
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
             }
             if (wdg != null) {
                 // try { for(Object obj:args) if(!wdg.toString().contains("CharWnd")) System.out.println("UI Wdg : " + wdg + " msg : "+msg+" id = " + id + " arg 1 : " + obj); }catch(ArrayIndexOutOfBoundsException qq){}
-                wdg.uimsg(msg.intern(), args); }
-            else throw (new UIException("Uimsg to non-existent widget " + id, msg, args));
+                wdg.uimsg(msg.intern(), args);
+            } else throw (new UIException("Uimsg to non-existent widget " + id, msg, args));
         }
     }
 
@@ -577,28 +585,28 @@ public class UI {
         // should synchronize instead, but we are not looking for proper ways here!
         // thus, just iterate over an array copy to avoid concurrent modification exception
         Grab[] mousegrabCopy = mousegrab.toArray(new Grab[mousegrab.size()]);
-        for(Grab g : mousegrabCopy) {
+        for (Grab g : mousegrabCopy) {
             if (g == null || g.wdg == null)
                 continue;
             Resource ret = g.wdg.getcurs(wdgxlate(c, g.wdg));
-            if(ret != null)
-                return(ret);
+            if (ret != null)
+                return (ret);
         }
-        return(root.getcurs(c));
+        return (root.getcurs(c));
     }
 
     public static int modflags(InputEvent ev) {
         int mod = ev.getModifiersEx();
-        return((((mod & InputEvent.SHIFT_DOWN_MASK) != 0) ? MOD_SHIFT : 0) |
-                (((mod & InputEvent.CTRL_DOWN_MASK) != 0)  ? MOD_CTRL : 0) |
+        return ((((mod & InputEvent.SHIFT_DOWN_MASK) != 0) ? MOD_SHIFT : 0) |
+                (((mod & InputEvent.CTRL_DOWN_MASK) != 0) ? MOD_CTRL : 0) |
                 (((mod & (InputEvent.META_DOWN_MASK | InputEvent.ALT_DOWN_MASK)) != 0) ? MOD_META : 0)
                 /* (((mod & InputEvent.SUPER_DOWN_MASK) != 0) ? MOD_SUPER : 0) */);
     }
 
     public int modflags() {
-        return((modshift ? MOD_SHIFT : 0) |
-                (modctrl  ? MOD_CTRL  : 0) |
-                (modmeta  ? MOD_META  : 0) |
+        return ((modshift ? MOD_SHIFT : 0) |
+                (modctrl ? MOD_CTRL : 0) |
+                (modmeta ? MOD_META : 0) |
                 (modsuper ? MOD_SUPER : 0));
     }
 

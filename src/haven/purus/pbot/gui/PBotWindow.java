@@ -37,7 +37,7 @@ public class PBotWindow extends Window {
                         try {
                             PBotScriptmanager.getScript(id).context.eval("js", name + "();");
                         } catch (Exception e) {
-                            PBotError.handleException(e);
+                            PBotError.handleException(ui, e);
                         }
                     }
                 });

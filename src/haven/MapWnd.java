@@ -26,15 +26,6 @@
 
 package haven;
 
-import static haven.MCache.cmaps;
-import static haven.MCache.tilesz;
-
-import java.awt.Color;
-import java.awt.event.KeyEvent;
-import java.util.*;
-import java.util.function.Function;
-import java.util.function.Predicate;
-
 import haven.BuddyWnd.GroupSelector;
 import haven.MapFile.Marker;
 import haven.MapFile.PMarker;
@@ -42,7 +33,26 @@ import haven.MapFile.SMarker;
 import haven.MapFileWidget.Locator;
 import haven.MapFileWidget.MapLocator;
 import haven.MapFileWidget.SpecLocator;
-import haven.purus.pbot.PBotAPI;
+
+import java.awt.Color;
+import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Predicate;
+
+import static haven.MCache.cmaps;
+import static haven.MCache.tilesz;
 
 public class MapWnd extends Window {
     public static final Resource markcurs = Resource.local().loadwait("gfx/hud/curs/flag");
@@ -65,8 +75,8 @@ public class MapWnd extends Window {
     private boolean domark = false;
     public Tex zoomtex = null;
     private final Collection<Runnable> deferred = new LinkedList<>();
-    private static final Tex plx = Text.renderstroked("\u2716",  Color.red, Color.BLACK, Text.num12boldFnd).tex();
-    private  Predicate<Marker> filter = (m -> true);
+    private static final Tex plx = Text.renderstroked("\u2716", Color.red, Color.BLACK, Text.num12boldFnd).tex();
+    private Predicate<Marker> filter = (m -> true);
     private final static Comparator<Marker> namecmp = ((a, b) -> a.nm.compareTo(b.nm));
     private Map<Color, Tex> xmap = new HashMap<Color, Tex>(6);
     private Map<Long, Tex> namemap = new HashMap<>(50);
@@ -74,7 +84,7 @@ public class MapWnd extends Window {
 
 
     public MapWnd(MapFile file, MapView mv, Coord sz, String title) {
-        super(sz, title,title, true);
+        super(sz, title, title, true);
         this.mv = mv;
         this.player = new MapLocator(mv);
         viewf = add(new Frame(Coord.z, true));
@@ -115,6 +125,7 @@ public class MapWnd extends Window {
 
     public class ZoomBar extends Widget {
         private final static int btnsz = 21;
+
         public ZoomBar() {
             super(new Coord(btnsz * 2 + 20, btnsz));
             add(new IButton("gfx/hud/worldmap/minus", "", "", "") {
@@ -193,7 +204,6 @@ public class MapWnd extends Window {
         }
 
 
-
         private Set<Long> drawparty(GOut g, final Location ploc) {
             final Set<Long> ignore = new HashSet<>();
             final Coord pc = new Coord2d(mv.getcc()).floor(tilesz);
@@ -207,57 +217,57 @@ public class MapWnd extends Window {
                         if (ppc == null) // chars are located in different worlds
                             continue;
 
-                        if(ui.sess.glob.party.memb.size() == 1) //don't do anything if you don't have a party
+                        if (ui.sess.glob.party.memb.size() == 1) //don't do anything if you don't have a party
                             continue;
 
 
-                            final Coord mc = new Coord2d(ppc).floor(tilesz);
-                            final Coord gc = xlate(new Location(ploc.seg, ploc.tc.add(mc.sub(pc).div(MapFileWidget.scalef()))));
-                            ignore.add(m.gobid);
-                            if (gc != null) {
-                                Gob gob = m.getgob();
+                        final Coord mc = new Coord2d(ppc).floor(tilesz);
+                        final Coord gc = xlate(new Location(ploc.seg, ploc.tc.add(mc.sub(pc).div(MapFileWidget.scalef()))));
+                        ignore.add(m.gobid);
+                        if (gc != null) {
+                            Gob gob = m.getgob();
 
-                                if (gob == null){//party member not in draw distance, draw a party colored X instead.
-                                    Tex tex = xmap.get(m.col);
-                                    if(tex == null){
-                                        tex = Text.renderstroked("\u2716",  m.col, m.col, Text.num12boldFnd).tex();
-                                        xmap.put(m.col, tex);
-                                    }
-                                    g.chcolor(m.col);
-                                    g.image(tex, gc.sub(psz.div(2)), psz);
-                                    Tex nametex = namemap.get(m.gobid);
-                                    if(nametex != null) { //if we have a nametex for this gobid because we've seen them before, go ahead and apply it
-                                        g.chcolor(Color.WHITE);
-                                        g.image(nametex, gc.sub(psz.div(2).add(new Coord(-5,-10))));
-                                    }
-                                    continue;
+                            if (gob == null) {//party member not in draw distance, draw a party colored X instead.
+                                Tex tex = xmap.get(m.col);
+                                if (tex == null) {
+                                    tex = Text.renderstroked("\u2716", m.col, m.col, Text.num12boldFnd).tex();
+                                    xmap.put(m.col, tex);
                                 }
-                                angle = gob.geta();
-                                final Coord front = new Coord(8, 0).rotate(angle).add(gc);
-                                final Coord right = new Coord(-5, 5).rotate(angle).add(gc);
-                                final Coord left = new Coord(-5, -5).rotate(angle).add(gc);
-                                final Coord notch = new Coord(-2, 0).rotate(angle).add(gc);
-                                KinInfo kin = gob.getattr(KinInfo.class);
-
-                                    Tex tex = namemap.get(m.gobid);
-                                    if (tex == null && kin != null) { //if we don't already have this nametex in memory, set one up.
-                                        System.out.println("tex null kin not null");
-                                        tex = Text.renderstroked(kin.name, Color.WHITE, Color.BLACK, Text.delfnd2).tex();
-                                       // tex = kin.rendered();
-                                        namemap.put(m.gobid, tex);
-                                    }
-                                    if(tex != null) { //apply texture if it's been successfully setup.
-                                        g.chcolor(Color.WHITE);
-                                        g.image(tex, gc.sub(psz.div(2).add(new Coord(-5,-10))));
-                                    }
-
-
                                 g.chcolor(m.col);
-                                g.poly(front, right, notch, left);
-                                g.chcolor(Color.BLACK);
-                                g.polyline(1, front, right, notch, left);
-                                g.chcolor();
+                                g.image(tex, gc.sub(psz.div(2)), psz);
+                                Tex nametex = namemap.get(m.gobid);
+                                if (nametex != null) { //if we have a nametex for this gobid because we've seen them before, go ahead and apply it
+                                    g.chcolor(Color.WHITE);
+                                    g.image(nametex, gc.sub(psz.div(2).add(new Coord(-5, -10))));
+                                }
+                                continue;
                             }
+                            angle = gob.geta();
+                            final Coord front = new Coord(8, 0).rotate(angle).add(gc);
+                            final Coord right = new Coord(-5, 5).rotate(angle).add(gc);
+                            final Coord left = new Coord(-5, -5).rotate(angle).add(gc);
+                            final Coord notch = new Coord(-2, 0).rotate(angle).add(gc);
+                            KinInfo kin = gob.getattr(KinInfo.class);
+
+                            Tex tex = namemap.get(m.gobid);
+                            if (tex == null && kin != null) { //if we don't already have this nametex in memory, set one up.
+                                System.out.println("tex null kin not null");
+                                tex = Text.renderstroked(kin.name, Color.WHITE, Color.BLACK, Text.delfnd2).tex();
+                                // tex = kin.rendered();
+                                namemap.put(m.gobid, tex);
+                            }
+                            if (tex != null) { //apply texture if it's been successfully setup.
+                                g.chcolor(Color.WHITE);
+                                g.image(tex, gc.sub(psz.div(2).add(new Coord(-5, -10))));
+                            }
+
+
+                            g.chcolor(m.col);
+                            g.poly(front, right, notch, left);
+                            g.chcolor(Color.BLACK);
+                            g.polyline(1, front, right, notch, left);
+                            g.chcolor();
+                        }
 
                     }
                 }
@@ -284,12 +294,12 @@ public class MapWnd extends Window {
                 g.chcolor(Color.MAGENTA);
                 final Coord cloc = xlate(ploc);
                 last = xlate(new Location(ploc.seg, ploc.tc.add(movingto.floor(tilesz).sub(pc).div(scalef()))));
-                if(last != null && cloc != null) {
+                if (last != null && cloc != null) {
                     g.dottedline(cloc, last, 2);
                     if (queue.hasNext()) {
                         while (queue.hasNext()) {
                             final Coord next = xlate(new Location(ploc.seg, ploc.tc.add(queue.next().floor(tilesz).sub(pc).div(scalef()))));
-                            if(next != null) {
+                            if (next != null) {
                                 g.dottedline(last, next, 2);
                                 last = next;
                             } else {
@@ -302,7 +312,7 @@ public class MapWnd extends Window {
         }
 
 
-        private void questgiverLines(GOut g, final Location ploc){
+        private void questgiverLines(GOut g, final Location ploc) {
             List<Coord2d> questQueue = new ArrayList<>();
             final Coord pc = new Coord2d(mv.getcc()).floor(tilesz);
             final double dist = 90000.0D;
@@ -310,9 +320,9 @@ public class MapWnd extends Window {
             try {
                 if (questQueue.size() > 0) {
                     for (Coord2d coord : questQueue) {
-                        PBotAPI.gui.mapfile.view.follow = false;
-                        final Gob player = PBotAPI.gui.map.player();
-                        double angle = PBotAPI.gui.map.player().rc.angle(coord);
+                        ui.gui.mapfile.view.follow = false;
+                        final Gob player = ui.gui.map.player();
+                        double angle = ui.gui.map.player().rc.angle(coord);
                         final Coord mc = new Coord2d(player.rc).floor(tilesz);
                         final Coord lc = mc.add((int) (Math.cos(angle) * dist), (int) (Math.sin(angle) * dist));
                         final Coord gc = xlate(new Location(ploc.seg, ploc.tc.add(mc.sub(pc))));
@@ -322,14 +332,16 @@ public class MapWnd extends Window {
                     questQueue.clear();
                     mv.questQueue().clear();
                 }
-                if(questlinemap.size() > 0){
-                    for(Map.Entry<Coord, Coord> entry : questlinemap.entrySet()) {
+                if (questlinemap.size() > 0) {
+                    for (Map.Entry<Coord, Coord> entry : questlinemap.entrySet()) {
                         g.chcolor(Color.MAGENTA);
                         g.dottedline(entry.getKey(), entry.getValue(), 2);
                         g.chcolor();
                     }
                 }
-            }catch(Exception e){e.printStackTrace();}
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
 
@@ -345,7 +357,7 @@ public class MapWnd extends Window {
                     g.chcolor(255, 0, 0, 255);
                     g.image(plx, ploc.sub(plx.sz().div(2)));
                     final Set<Long> ignore;
-                    if(Config.mapdrawparty)
+                    if (Config.mapdrawparty)
                         ignore = drawparty(g, loc);
                     g.chcolor();
                     drawmovement(g.reclip(view.c, view.sz), loc);
@@ -363,17 +375,17 @@ public class MapWnd extends Window {
         }
     }
 
-    public void resolveNames(){//used to load name textures even while the map is closed
+    public void resolveNames() {//used to load name textures even while the map is closed
         try {
             synchronized (ui.sess.glob.party) {
                 for (Party.Member m : ui.sess.glob.party.memb.values()) {
                     Coord2d ppc = m.getc();
                     if (ppc == null) // chars are located in different worlds
                         continue;
-                    if(ui.sess.glob.party.memb.size() == 1) //don't do anything if you don't have a party
+                    if (ui.sess.glob.party.memb.size() == 1) //don't do anything if you don't have a party
                         continue;
                     Gob gob = m.getgob();
-                    if (gob != null){
+                    if (gob != null) {
                         KinInfo kin = gob.getattr(KinInfo.class);
                         Tex tex = namemap.get(m.gobid);
                         if (tex == null && kin != null) { //if we don't already have this nametex in memory, set one up.
@@ -390,7 +402,7 @@ public class MapWnd extends Window {
 
     public void tick(double dt) {
         super.tick(dt);
-        if(Config.mapdrawparty)
+        if (Config.mapdrawparty)
             resolveNames();
         synchronized (deferred) {
             for (Iterator<Runnable> i = deferred.iterator(); i.hasNext(); ) {
@@ -417,8 +429,8 @@ public class MapWnd extends Window {
         }
     }
 
-    public void selectMarker(String name){
-        if(markers != null && markers.size() > 0) {
+    public void selectMarker(String name) {
+        if (markers != null && markers.size() > 0) {
             for (Marker marker : markers) {
                 if (marker.nm.equals(name)) {
                     list.change2(marker);
@@ -430,7 +442,7 @@ public class MapWnd extends Window {
 
     public static final Color every = new Color(255, 255, 255, 16), other = new Color(255, 255, 255, 32);
 
-    private static final Pair[] filters = new Pair[] {
+    private static final Pair[] filters = new Pair[]{
             new Pair<>("-- All --", null),
             new Pair<>("--- Custom ---", "flg"),
             new Pair<>("Abyssal Chasm", "abyssalchasm"),
@@ -478,9 +490,9 @@ public class MapWnd extends Window {
                 else if (item.b.equals("flg"))
                     filter = (m -> m instanceof PMarker);
                 else if (item.b.equals("qst"))
-                    filter = (m -> m instanceof SMarker && ((SMarker)m).res.name.startsWith("gfx/invobjs/small"));
+                    filter = (m -> m instanceof SMarker && ((SMarker) m).res.name.startsWith("gfx/invobjs/small"));
                 else
-                    filter = (m -> m instanceof SMarker && ((SMarker)m).res.name.endsWith(item.b));
+                    filter = (m -> m instanceof SMarker && ((SMarker) m).res.name.endsWith(item.b));
                 markerseq = -1;
                 // reset scrollbar
                 if (list != null)
@@ -776,7 +788,7 @@ public class MapWnd extends Window {
     }
 
     @Override
-    public void close(){
+    public void close() {
         show(false);
         mv.questQueue().clear();
         questlinemap.clear();
@@ -786,8 +798,7 @@ public class MapWnd extends Window {
     public void wdgmsg(Widget sender, String msg, Object... args) {
         if (sender == cbtn) {
             show(false);
-        }
-        else
+        } else
             super.wdgmsg(sender, msg, args);
     }
 

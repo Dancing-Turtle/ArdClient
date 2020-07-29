@@ -26,7 +26,6 @@
 
 package haven;
 
-import haven.purus.pbot.PBotAPI;
 import integrations.mapv4.MappingClient;
 
 import java.util.ArrayList;
@@ -38,6 +37,7 @@ public class Charlist extends Widget {
     public int height, y, sel = 0;
     public IButton sau, sad;
     public List<Char> chars = new ArrayList<Char>();
+    public UI ui;
 
     public static class Char {
         static Text.Foundry tf = new Text.Foundry(Text.serif, 20).aa(true);
@@ -55,14 +55,17 @@ public class Charlist extends Widget {
     @RName("charlist")
     public static class $_ implements Factory {
         public Widget create(UI ui, Object[] args) {
-            return (new Charlist((Integer) args[0]));
+            return (new Charlist(ui, (Integer) args[0]));
         }
     }
 
-    public Charlist(int height) {
+    public Charlist(UI ui, int height) {
         super(Coord.z);
         this.height = height;
-        PBotAPI.charlist = this;
+        this.ui = ui;
+        if (ui == null) System.out.println("ui null");
+        if (this == null) System.out.println("this null");
+        try{ui.charlist = this;}catch(Exception e){e.printStackTrace();}
         y = 0;
         setcanfocus(true);
         sau = adda(new IButton("gfx/hud/buttons/csau", "u", "d", "o") {

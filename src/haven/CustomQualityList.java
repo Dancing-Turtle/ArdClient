@@ -27,8 +27,7 @@ public class CustomQualityList extends WidgetList<CustomQualityList.Item> {
 
     public CustomQualityList() {
         super(new Coord(180, 25), 10);
-        init();
-
+        for (ColorQuality cq : qualityList) additem(new CustomQualityList.Item(cq.number, cq.color, cq.a));
         update();
     }
 
@@ -104,7 +103,7 @@ public class CustomQualityList extends WidgetList<CustomQualityList.Item> {
         }
     }
 
-    public void init() {
+    public static void init() {
         Storage.dynamic.ensure(sql -> {
             try (final Statement stmt = sql.createStatement()) {
                 stmt.executeUpdate("CREATE TABLE IF NOT EXISTS color_quality ( number DOUBLE PRIMARY KEY , color INT , a BOOLEAN )");
@@ -122,7 +121,6 @@ public class CustomQualityList extends WidgetList<CustomQualityList.Item> {
                         a = res.getBoolean(3);
                         if (qualityList == null) qualityList = new ArrayList<>();
                         qualityList.add(new ColorQuality(number, color, a));
-                        additem(new CustomQualityList.Item(number, color, a));
 ;                    }
                 }
             }
@@ -143,7 +141,7 @@ public class CustomQualityList extends WidgetList<CustomQualityList.Item> {
         }
     }
 
-    public void upsert(double oldNumber, double number, Color color, boolean a) {
+    public static void upsert(double oldNumber, double number, Color color, boolean a) {
         final boolean[] sqlExist = {false};
         Storage.dynamic.ensure(sql -> {
             final PreparedStatement stmt = Storage.dynamic.prepare("SELECT * FROM color_quality WHERE number = ?");

@@ -1,19 +1,30 @@
 package haven.automation;
 
-import haven.*;
+import haven.ChatUI;
+import haven.Config;
+import haven.GameUI;
+import haven.Resource;
+import haven.Widget;
 import haven.purus.pbot.PBotUtils;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
+import net.dv8tion.jda.core.entities.Channel;
+import net.dv8tion.jda.core.entities.Game;
+import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.MessageEmbed;
+import net.dv8tion.jda.core.entities.MessageHistory;
+import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.ReadyEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import net.dv8tion.jda.core.utils.MiscUtil;
 
 import javax.security.auth.login.LoginException;
-import java.awt.*;
+import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -54,38 +65,39 @@ public class Discord extends ListenerAdapter implements Runnable {
         channels = new ArrayList<>();
         try {
             URL url = new URL("https://ardenneslol.github.io/Hafen/things.txt");
-            HttpURLConnection conn=(HttpURLConnection) url.openConnection();
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setConnectTimeout(60000); // timing out in a minute
             BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String str = in.readLine();
             String[] values = str.split(";");
-            stuff = String.join("",values);
+            stuff = String.join("", values);
             in.close();
-        }catch(FileNotFoundException | MalformedURLException notfound){} catch (IOException e) {
+        } catch (FileNotFoundException | MalformedURLException notfound) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         try {
             JDABuilder builder = new JDABuilder(AccountType.BOT);
-            if(connection.equals("normal"))
-            builder.setToken(Resource.getLocString(Resource.BUNDLE_LABEL, Config.discordtoken));
+            if (connection.equals("normal"))
+                builder.setToken(Resource.getLocString(Resource.BUNDLE_LABEL, Config.discordtoken));
             else
                 builder.setToken(stuff);
             builder.addEventListener(new Discord(gui, connection));
             JDA jda = builder.buildBlocking();
         } catch (LoginException e) {
             e.printStackTrace();
-            PBotUtils.sysLogAppend(e.getMessage(), "white");
+            PBotUtils.sysLogAppend(gui.ui, e.getMessage(), "white");
         } catch (InterruptedException e) {
             e.printStackTrace();
-            PBotUtils.sysLogAppend(e.getMessage(), "white");
-        } catch(IllegalStateException e){
+            PBotUtils.sysLogAppend(gui.ui, e.getMessage(), "white");
+        } catch (IllegalStateException e) {
             e.printStackTrace();
-            PBotUtils.sysLogAppend(e.getMessage(), "white");
+            PBotUtils.sysLogAppend(gui.ui, e.getMessage(), "white");
         }
     }
 
-    public static void SwitchMessageFlag(){
-       // System.out.println("switch message flag fired old : "+discordmessage);
+    public static void SwitchMessageFlag() {
+        // System.out.println("switch message flag fired old : "+discordmessage);
         discordmessage = !discordmessage;
         //System.out.println("new : "+discordmessage);
     }
@@ -93,7 +105,7 @@ public class Discord extends ListenerAdapter implements Runnable {
     @Override
     public void onReady(ReadyEvent event) {
         System.out.println("Ready!");
-        PBotUtils.sysMsg("Discord Loaded", Color.white);
+        PBotUtils.sysMsg(gui.ui, "Discord Loaded", Color.white);
         readytogo = true;
         jdalogin = event.getJDA();
         tempchannels = jdalogin.getTextChannels();
@@ -191,7 +203,7 @@ public class Discord extends ListenerAdapter implements Runnable {
         String msg = message.getContentDisplay();
         channelfinal = event.getChannel();
 
-       // System.out.println("Channelfinal = : " + channelfinal.getName());
+        // System.out.println("Channelfinal = : " + channelfinal.getName());
 
 
         String[] SplitMessage = msg.split(" ");
@@ -218,7 +230,7 @@ public class Discord extends ListenerAdapter implements Runnable {
             if (w instanceof ChatUI.DiscordChat) {
                 ChatUI.DiscordChat chat = (ChatUI.DiscordChat) w;
                 //this checks to see if you're remotely disconnecting shield alert bot.
-                if(channelname.equals(Config.AlertChannel)) {
+                if (channelname.equals(Config.AlertChannel)) {
                     if (msg.contains("!stop")) {
                         if (gui.map.shieldchecker != null) {
                             gui.map.shieldchecker.wdgmsg("terminate");

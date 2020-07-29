@@ -4,6 +4,7 @@ import haven.Coord;
 import haven.GItem;
 import haven.ItemInfo;
 import haven.Loading;
+import haven.UI;
 import haven.WItem;
 import haven.res.ui.tt.q.qbuff.QBuff;
 
@@ -13,15 +14,18 @@ public class PBotItem {
 
     public GItem gitem;
     public WItem witem;
+    public final UI ui;
 
     public PBotItem(GItem gitem, WItem witem) {
         this.gitem = gitem;
         this.witem = witem;
+        this.ui = witem.ui;
     }
 
     public PBotItem(WItem witem) {
         this.gitem = witem.item;
         this.witem = witem;
+        this.ui = witem.ui;
     }
 
     /**
@@ -30,7 +34,7 @@ public class PBotItem {
      * @return Contents of the item
      */
     public ItemInfo.Contents getContents() {
-        synchronized (gitem.ui) {
+        synchronized (ui) {
             try {
                 for (ItemInfo info : gitem.info())
                     if (info instanceof ItemInfo.Contents)
@@ -50,7 +54,7 @@ public class PBotItem {
     public void takeItem(boolean wait) {
         gitem.wdgmsg("take", getInvLoc());
         if (wait) {
-            while (PBotUtils.getItemAtHand() == null) {
+            while (PBotUtils.getItemAtHand(ui) == null) {
                 PBotUtils.sleep(25);
             }
         }
@@ -88,7 +92,7 @@ public class PBotItem {
      */
     public int getAmount() {
         int ret = -1;
-        synchronized (gitem.ui) {
+        synchronized (ui) {
             for (ItemInfo o : gitem.info()) {
                 if (o instanceof GItem.Amount)
                     ret = ((GItem.Amount) o).itemnum();
@@ -112,7 +116,7 @@ public class PBotItem {
      * @return Name of item or null
      */
     public String getName() {
-        synchronized (gitem.ui) {
+        synchronized (ui) {
             try {
                 for (Object o : gitem.info().toArray()) {
                     if (o instanceof ItemInfo.Name)

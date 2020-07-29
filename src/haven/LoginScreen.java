@@ -26,19 +26,24 @@
 
 package haven;
 
-import haven.purus.pbot.PBotAPI;
 import modification.configuration;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.event.KeyEvent;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Scanner;
 
 public class LoginScreen extends Widget {
-	boolean serverStatus;
+    boolean serverStatus;
     Login cur;
     Text error;
     IButton btn;
@@ -65,10 +70,10 @@ public class LoginScreen extends Widget {
 //        super(new Coord(800, 600));
         setfocustab(true);
         background = add(new Img(bg), Coord.z);
-        optbtn = adda(new Button(100, "Options"), sz.x-110, 40, 0, 1);
+        optbtn = adda(new Button(100, "Options"), sz.x - 110, 40, 0, 1);
 //        new UpdateChecker().start();
         loginList = adda(new LoginList(200, 29), new Coord(10, 10), 0, 0);
-        statusbtn = adda(new Button(200, "Initializing..."), sz.x-210, 80, 0, 1);
+        statusbtn = adda(new Button(200, "Initializing..."), sz.x - 210, 80, 0, 1);
         StartUpdaterThread();
         GameUI.swimon = false;
         GameUI.trackon = false;
@@ -89,7 +94,7 @@ public class LoginScreen extends Widget {
             FileOutputStream out = new FileOutputStream(f);
             String strLine;
             int count = 0;
-            while((count < maxlines) && (strLine = br.readLine()) != null) {
+            while ((count < maxlines) && (strLine = br.readLine()) != null) {
                 txt.append(strLine);
                 out.write((strLine + Config.LINE_SEPARATOR).getBytes());
                 count++;
@@ -97,7 +102,7 @@ public class LoginScreen extends Widget {
             br.close();
             out.close();
             in.close();
-        } catch(IOException ignored) {
+        } catch (IOException ignored) {
         }
         txt.setprog(0);
     }
@@ -109,13 +114,17 @@ public class LoginScreen extends Widget {
     }
 
     private class Pwbox extends Login {
-        TextEntry  pass;
+        TextEntry pass;
 
         private Pwbox(String username, boolean save) {
             setfocustab(true);
-            add(new Label("User name", textf){{setstroked(Color.BLACK);}}, Coord.z);
+            add(new Label("User name", textf) {{
+                setstroked(Color.BLACK);
+            }}, Coord.z);
             add(user = new TextEntry(150, username), new Coord(0, 20));
-            add(new Label("Password", textf){{setstroked(Color.BLACK);}}, new Coord(0, 50));
+            add(new Label("Password", textf) {{
+                setstroked(Color.BLACK);
+            }}, new Coord(0, 50));
             add(pass = new TextEntry(150, ""), new Coord(0, 70));
             pass.pw = true;
             if (user.text.equals(""))
@@ -339,7 +348,7 @@ public class LoginScreen extends Widget {
             if (opts == null) {
                 opts = adda(new OptWnd(false) {
                     public void hide() {
-                /* XXX */
+                        /* XXX */
                         reqdestroy();
                     }
                 }, sz.div(2), 0.5, 0.5);
@@ -351,17 +360,17 @@ public class LoginScreen extends Widget {
         } else if (sender == opts) {
             opts.reqdestroy();
             opts = null;
-        } else if(sender == statusbtn) {
-        		Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
-        		if(desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
-        			try {
+        } else if (sender == statusbtn) {
+            Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
+            if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
+                try {
                     desktop.browse(new URI("http://www.havenandhearth.com/portal/"));
-					} catch (IOException | URISyntaxException e) {
-						e.printStackTrace();
-					}
-        		}
+                } catch (IOException | URISyntaxException e) {
+                    e.printStackTrace();
+                }
+            }
         } else
-        	super.wdgmsg(sender, msg, args);
+            super.wdgmsg(sender, msg, args);
     }
 
     public void cdestroy(Widget ch) {
@@ -406,6 +415,7 @@ public class LoginScreen extends Widget {
     }
 
     Coord oldsz;
+
     public void draw(GOut g) {
         super.draw(g);
         int szx = Math.min(MainFrame.instance.p.getSize().width, sz.x);
@@ -443,36 +453,36 @@ public class LoginScreen extends Widget {
         }
         return (super.type(k, ev));
     }
-    
+
     private void StartUpdaterThread() {
         Thread statusupdaterthread = new Thread(new Runnable() {
             public void run() {
-				try {
+                try {
 
-					URL url = new URL("http://www.havenandhearth.com/portal/index/status");
-	        		while(true) {
-						Scanner scan = new Scanner(url.openStream());
-						while(scan.hasNextLine()) {
-							String line = scan.nextLine();
-							if(line.contains("h2")) {
-								statusbtn.change(line.substring(line.indexOf("<h2>")+4, line.indexOf("</h2>")), Color.WHITE);
-		        				}
-	        				}
-                        GameUI gui = PBotAPI.gui;
-	        				if(gui != null) {
-                                if (gui.ui.sess.alive()) {
-                                   break;
-                                }
+                    URL url = new URL("http://www.havenandhearth.com/portal/index/status");
+                    while (true) {
+                        Scanner scan = new Scanner(url.openStream());
+                        while (scan.hasNextLine()) {
+                            String line = scan.nextLine();
+                            if (line.contains("h2")) {
+                                statusbtn.change(line.substring(line.indexOf("<h2>") + 4, line.indexOf("</h2>")), Color.WHITE);
                             }
-						Thread.sleep(5000);
-	        		}
-				} catch(IOException e) {
-					e.printStackTrace();
-				} catch(InterruptedException e) {
-					//e.printStackTrace();
-				} 
+                        }
+
+                        if (ui.gui != null) {
+                            if (ui.sess.alive()) {
+                                break;
+                            }
+                        }
+                        Thread.sleep(5000);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    //e.printStackTrace();
+                }
             }
         });
         statusupdaterthread.start();
-}
+    }
 }

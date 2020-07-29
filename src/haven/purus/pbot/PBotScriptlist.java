@@ -5,7 +5,6 @@ import haven.GOut;
 import haven.GameUI;
 import haven.Listbox;
 import haven.Loading;
-import haven.MovableWidget;
 import haven.TextEntry;
 import haven.UI;
 import haven.Widget;
@@ -159,7 +158,7 @@ public class PBotScriptlist extends GameUI.Hidewnd {
                 scriptDirectory.mkdir();
             for (File f : scriptDirectory.listFiles()) {
                 if (f.getName().endsWith(".PBot")) {
-                    itemList.add(new PBotScriptlistItem(f.getName(), f));
+                    itemList.add(new PBotScriptlistItem(ui, f.getName(), f));
                 }
             }
             itemList = itemList.stream()

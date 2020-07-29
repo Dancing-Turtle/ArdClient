@@ -1,11 +1,14 @@
 package haven.automation;
 
 
-import haven.*;
+import haven.Coord;
+import haven.GameUI;
+import haven.Inventory;
+import haven.WItem;
+import haven.Widget;
 import haven.Window;
 import haven.purus.pbot.PBotUtils;
 
-import java.awt.*;
 import java.util.List;
 
 
@@ -16,6 +19,7 @@ public class PlaceTrays implements Runnable {
     public PlaceTrays(GameUI gui) {
         this.gui = gui;
     }
+
     @Override
     public void run() {
         Thread t = new Thread(new OpenRacks(gui), "OpenRacks");
@@ -25,30 +29,30 @@ public class PlaceTrays implements Runnable {
         }
 
         WItem trays = null;
-            try {
-                if ((trays = Utils.findItemByPrefixInInv(gui.maininv, "gfx/invobjs/cheesetray")) != null) {
-                    for (Widget w = gui.lchild; w != null; w = w.prev) {
-                        if (!(w instanceof Window))
+        try {
+            if ((trays = Utils.findItemByPrefixInInv(gui.maininv, "gfx/invobjs/cheesetray")) != null) {
+                for (Widget w = gui.lchild; w != null; w = w.prev) {
+                    if (!(w instanceof Window))
+                        continue;
+                    for (Widget wdg = w.lchild; wdg != null; wdg = wdg.prev) {
+                        if (!(wdg instanceof Inventory))
                             continue;
-                        for (Widget wdg = w.lchild; wdg != null; wdg = wdg.prev) {
-                            if (!(wdg instanceof Inventory))
-                                continue;
-                            if (trays == null)
-                                break;
-                        }
+                        if (trays == null)
+                            break;
                     }
-                    List<WItem> items = gui.maininv.getIdenticalItems(trays.item);
-                    for (WItem item : items)
-                        item.item.wdgmsg("transfer", Coord.z);
-                    // trays.item.wdgmsg("transfer", Coord.z);
                 }
-
-
-            } catch (NullPointerException fa) {
+                List<WItem> items = gui.maininv.getIdenticalItems(trays.item);
+                for (WItem item : items)
+                    item.item.wdgmsg("transfer", Coord.z);
+                // trays.item.wdgmsg("transfer", Coord.z);
             }
 
+
+        } catch (NullPointerException fa) {
         }
 
-
     }
+
+
+}
 

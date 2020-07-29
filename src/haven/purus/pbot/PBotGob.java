@@ -13,6 +13,7 @@ import haven.MapView;
 import haven.ResData;
 import haven.ResDrawable;
 import haven.Resource;
+import haven.UI;
 import haven.purus.gobText;
 
 import java.util.ArrayList;
@@ -23,9 +24,11 @@ import static haven.OCache.posres;
 public class PBotGob {
 
     public Gob gob;
+    public final UI ui;
 
     PBotGob(Gob gob) {
         this.gob = gob;
+        this.ui = gob.glob.ui.get();
     }
 
 
@@ -48,7 +51,7 @@ public class PBotGob {
      * @param mod 1 = shift, 2 = ctrl, 4 = alt
      */
     public void itemClick(int mod) {
-        PBotAPI.gui.map.wdgmsg("itemact", Coord.z, gob.rc.floor(posres), mod, 0, (int) gob.id, gob.rc.floor(posres), 0, -1);
+        ui.gui.map.wdgmsg("itemact", Coord.z, gob.rc.floor(posres), mod, 0, (int) gob.id, gob.rc.floor(posres), 0, -1);
     }
 
     /**
@@ -71,7 +74,7 @@ public class PBotGob {
      */
     public void removeGobText(int id) {
         gob.ols.remove(gob.findol(id));
-        PBotAPI.gui.map.glob.oc.changed(gob);
+        ui.gui.map.glob.oc.changed(gob);
     }
 
     /**
@@ -82,7 +85,7 @@ public class PBotGob {
      * @param meshId can be a door, roasting spit etc.
      */
     public void doClick(int button, int mod, int meshId) {
-        PBotAPI.gui.map.wdgmsg("click", Coord.z, gob.rc.floor(posres), button, 0, mod, (int) gob.id, gob.rc.floor(posres), 0,
+        ui.gui.map.wdgmsg("click", Coord.z, gob.rc.floor(posres), button, 0, mod, (int) gob.id, gob.rc.floor(posres), 0,
                 meshId);
     }
 
@@ -93,7 +96,7 @@ public class PBotGob {
      * @param mod    0 = no modifier, 1 = shift, 2 = ctrl, 4 = alt
      */
     public void doClick(int button, int mod) {
-        PBotAPI.gui.map.wdgmsg("click", Coord.z, gob.rc.floor(posres), button, 0, mod, (int) gob.id, gob.rc.floor(posres), 0,
+        ui.gui.map.wdgmsg("click", Coord.z, gob.rc.floor(posres), button, 0, mod, (int) gob.id, gob.rc.floor(posres), 0,
                 -1);
     }
 
@@ -166,7 +169,7 @@ public class PBotGob {
             MapView.markedGobs.remove(gob.id);
         else
             MapView.markedGobs.add(gob.id);
-        PBotAPI.gui.map.glob.oc.changed(gob);
+        ui.gui.map.glob.oc.changed(gob);
     }
 
     /**
@@ -178,14 +181,14 @@ public class PBotGob {
      * @return True if path was found, or false if not
      */
     public boolean pfClick(int btn, int mod, int meshId) {
-        PBotAPI.gui.map.purusPfRightClick(gob, meshId, btn, mod, null);
+        ui.gui.map.purusPfRightClick(gob, meshId, btn, mod, null);
         try {
-            PBotAPI.gui.map.pastaPathfinder.join();
+            ui.gui.map.pastaPathfinder.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        synchronized (PBotAPI.gui.map) {
-            return PBotAPI.gui.map.foundPath;
+        synchronized (ui.gui.map) {
+            return ui.gui.map.foundPath;
         }
     }
 
@@ -315,7 +318,7 @@ public class PBotGob {
      */
     public void itemClickAll() {
         Object[] args = {Coord.z, gob.rc.floor(posres), 1, 0, (int) gob.id, gob.rc.floor(posres), 0, -1};
-        PBotAPI.gui.map.lastItemactClickArgs = args;
-        PBotAPI.gui.map.wdgmsg("itemact", Coord.z, gob.rc.floor(posres), 1, 0, (int) gob.id, gob.rc.floor(posres), 0, -1);
+        ui.gui.map.lastItemactClickArgs = args;
+        ui.gui.map.wdgmsg("itemact", Coord.z, gob.rc.floor(posres), 1, 0, (int) gob.id, gob.rc.floor(posres), 0, -1);
     }
 }

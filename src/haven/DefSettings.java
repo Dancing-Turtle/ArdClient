@@ -349,6 +349,7 @@ public class DefSettings {
 			HighlightData.init();
 			HiddenWndData.init();
 			OverlayData.init();
+			CustomQualityList.init();
 			//Internal lookups are no longer needed
 			optint.get().close();
 		} else {

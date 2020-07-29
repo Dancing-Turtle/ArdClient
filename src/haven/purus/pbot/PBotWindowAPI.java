@@ -3,6 +3,7 @@ package haven.purus.pbot;
 import haven.ISBox;
 import haven.Inventory;
 import haven.Text;
+import haven.UI;
 import haven.VMeter;
 import haven.Widget;
 import haven.Window;
@@ -18,10 +19,10 @@ public class PBotWindowAPI {
      * @param timeout    Timeout in milliseconds to wait for the window to appear
      * @return Returns the window or null if not found
      */
-    public static Window waitForWindow(String windowName, long timeout) {
+    public static Window waitForWindow(UI ui, String windowName, long timeout) {
         Window window;
         int retries = 0;
-        while ((window = PBotAPI.gui.getwnd(windowName)) == null) {
+        while ((window = ui.gui.getwnd(windowName)) == null) {
             if (retries * 25 >= timeout) {
                 return null;
             }
@@ -37,9 +38,9 @@ public class PBotWindowAPI {
      * @param windowName Name of the window
      * @return Returns the window or null if not found
      */
-    public static Window waitForWindow(String windowName) {
+    public static Window waitForWindow(UI ui, String windowName) {
         Window window;
-        while ((window = PBotAPI.gui.getwnd(windowName)) == null) {
+        while ((window = ui.gui.getwnd(windowName)) == null) {
             PBotUtils.sleep(25);
         }
         return window;
@@ -52,9 +53,9 @@ public class PBotWindowAPI {
      * @param windowName Name of the window
      * @return false if the window did not close before the timeout (it may or may not still close in the future)
      */
-    public static boolean waitForWindowClose(String windowName, long timeout) {
+    public static boolean waitForWindowClose(UI ui, String windowName, long timeout) {
         int retries = 0;
-        while (PBotAPI.gui.getwnd(windowName) != null) {
+        while (ui.gui.getwnd(windowName) != null) {
             if (retries * 25 >= timeout) {
                 return false;
             }
@@ -70,8 +71,8 @@ public class PBotWindowAPI {
      * @param name Name of the window
      * @return The window or null if not found
      */
-    public static Window getWindow(String name) {
-        return PBotAPI.gui.getwnd(name);
+    public static Window getWindow(UI ui, String name) {
+        return ui.gui.getwnd(name);
     }
 
     /**
@@ -120,8 +121,8 @@ public class PBotWindowAPI {
      *
      * @return Total capacity, or -1 if stockpile window could not be found
      */
-    public static int getStockpileTotalCapacity() {
-        Window wnd = getWindow("Stockpile");
+    public static int getStockpileTotalCapacity(UI ui) {
+        Window wnd = getWindow(ui, "Stockpile");
         if (wnd == null) {
             return -1;
         } else {
@@ -140,8 +141,8 @@ public class PBotWindowAPI {
      *
      * @return Used capacity, or -1 if stockpile window could not be found
      */
-    public static int getStockpileUsedCapacity() {
-        Window wnd = getWindow("Stockpile");
+    public static int getStockpileUsedCapacity(UI ui) {
+        Window wnd = getWindow(ui, "Stockpile");
         if (wnd == null) {
             return -1;
         } else {
@@ -160,8 +161,8 @@ public class PBotWindowAPI {
      *
      * @param count How many items to take
      */
-    public static void takeItemsFromStockpile(int count) {
-        Window wnd = getWindow("Stockpile");
+    public static void takeItemsFromStockpile(UI ui, int count) {
+        Window wnd = getWindow(ui, "Stockpile");
         if (wnd != null) {
             for (Widget w = wnd.child; w != null; w = w.next) {
                 if (w instanceof ISBox) {
@@ -177,8 +178,8 @@ public class PBotWindowAPI {
     /**
      * Put an item from the hand to a stockpile window that is currently open
      */
-    public static void putItemFromHandToStockpile() {
-        Window wnd = getWindow("Stockpile");
+    public static void putItemFromHandToStockpile(UI ui) {
+        Window wnd = getWindow(ui, "Stockpile");
         if (wnd != null) {
             for (Widget w = wnd.child; w != null; w = w.next) {
                 if (w instanceof ISBox) {
@@ -237,8 +238,8 @@ public class PBotWindowAPI {
      *
      * @param count How many items to put into the stockpile
      */
-    public static void putItemFromInventoryToStockpile(int count) {
-        Window wnd = getWindow("Stockpile");
+    public static void putItemFromInventoryToStockpile(UI ui, int count) {
+        Window wnd = getWindow(ui, "Stockpile");
         if (wnd != null) {
             for (Widget w = wnd.child; w != null; w = w.next) {
                 if (w instanceof ISBox) {

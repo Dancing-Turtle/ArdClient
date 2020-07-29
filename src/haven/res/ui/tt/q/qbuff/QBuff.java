@@ -2,6 +2,7 @@ package haven.res.ui.tt.q.qbuff;
 
 import haven.Config;
 import haven.CustomQualityList;
+import haven.GItem;
 import haven.ItemInfo;
 import haven.Resource;
 import haven.Tex;
@@ -47,7 +48,7 @@ public class QBuff extends ItemInfo.Tip {
                 }
                 if (!custom && configuration.morethanquility)
                     for (int i = CustomQualityList.qualityList.size(); i > 0; i--) {
-                    if (CustomQualityList.qualityList.get(i - 1).a) {
+                        if (CustomQualityList.qualityList.get(i - 1).a) {
                             if (q > CustomQualityList.qualityList.get(i - 1).number) {
                                 color = new Color(configuration.morethancolor, true);
                                 outline = new Color(configuration.morethancoloroutline, true);
@@ -71,7 +72,7 @@ public class QBuff extends ItemInfo.Tip {
                     color = Config.legendary;
                 } else {
                     if (Config.insaneitem) {
-                        PBotUtils.sysMsg("What a nice item!");
+                        //PBotUtils.sysMsg(ui, "What a nice item!");
                     }
                     color = Color.orange;
                     outline = Color.RED;

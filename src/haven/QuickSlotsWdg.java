@@ -21,7 +21,7 @@ public class QuickSlotsWdg extends Widget implements DTarget {
 
     @Override
     public void draw(GOut g) {
-        Equipory e = gameui().getequipory();
+        Equipory e = ui.gui.getequipory();
         if (e != null) {
             g.image(sbg, Coord.z);
             WItem left = e.quickslots[6];
@@ -114,7 +114,7 @@ public class QuickSlotsWdg extends Widget implements DTarget {
 
     @Override
     public boolean drop(Coord cc, Coord ul) {
-        Equipory e = gameui().getequipory();
+        Equipory e = ui.gui.getequipory();
         if (e != null) {
             e.wdgmsg("drop", cc.x <= 47 ? 6 : 7);
             return true;
@@ -124,7 +124,7 @@ public class QuickSlotsWdg extends Widget implements DTarget {
 
     @Override
     public boolean iteminteract(Coord cc, Coord ul) {
-        Equipory e = gameui().getequipory();
+        Equipory e = ui.gui.getequipory();
         if (e != null) {
             WItem w = e.quickslots[cc.x <= 47 ? 6 : 7];
             if (w != null) {
@@ -140,7 +140,7 @@ public class QuickSlotsWdg extends Widget implements DTarget {
             return true;
        if(ui.modctrl && button == 1 && Config.disablequickslotdrop)
            return true;
-        Equipory e = gameui().getequipory();
+        Equipory e = ui.gui.getequipory();
         if (e != null) {
             WItem w = e.quickslots[c.x <= 47 ? 6 : 7];
             if (w != null) {
@@ -157,7 +157,7 @@ public class QuickSlotsWdg extends Widget implements DTarget {
     }
 
     public void simulateclick(Coord c) {
-        Equipory e = gameui().getequipory();
+        Equipory e = ui.gui.getequipory();
         if (e != null) {
             WItem w = e.quickslots[c.x <= 47 ? 6 : 7];
             if (w != null)

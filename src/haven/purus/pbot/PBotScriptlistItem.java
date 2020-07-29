@@ -3,6 +3,7 @@ package haven.purus.pbot;
 import haven.Tex;
 import haven.TexI;
 import haven.Text;
+import haven.UI;
 import modification.configuration;
 
 import javax.imageio.ImageIO;
@@ -15,13 +16,15 @@ public class PBotScriptlistItem {
     private File scriptFile;
     private Tex iconTex, nameTex;
     public String filename;
+    public final UI ui;
 
-    public PBotScriptlistItem(String name, File scriptFile) {
+    public PBotScriptlistItem(UI ui, String name, File scriptFile) {
         if (name.length() == 0)
             name = scriptFile.getName();
         this.name = name;
         this.scriptFile = scriptFile;
         this.filename = scriptFile.getName();
+        this.ui = ui;
 
         File icon = new File("scripts/" + scriptFile.getName().substring(0, scriptFile.getName().lastIndexOf(".")) + ".png");
         if (icon.exists()) {
@@ -38,7 +41,7 @@ public class PBotScriptlistItem {
     }
 
     public void runScript() {
-        PBotScriptmanager.startScript(scriptFile);
+        PBotScriptmanager.startScript(ui, scriptFile);
     }
 
     public Tex getIconTex() {

@@ -26,18 +26,28 @@
 
 package haven;
 
-import haven.MapFile.*;
-import haven.purus.pbot.PBotAPI;
+import haven.MapFile.Grid;
+import haven.MapFile.GridInfo;
+import haven.MapFile.Marker;
+import haven.MapFile.PMarker;
+import haven.MapFile.SMarker;
+import haven.MapFile.Segment;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Objects;
 
 import static haven.MCache.cmaps;
 
@@ -71,7 +81,8 @@ public class MapFileWidget extends Widget {
         public Location(Segment seg, Coord tc) {
             Objects.requireNonNull(seg);
             Objects.requireNonNull(tc);
-            this.seg = seg; this.tc = tc;
+            this.seg = seg;
+            this.tc = tc;
         }
     }
 
@@ -82,20 +93,22 @@ public class MapFileWidget extends Widget {
     public static class MapLocator implements Locator {
         public final MapView mv;
 
-        public MapLocator(MapView mv) {this.mv = mv;}
+        public MapLocator(MapView mv) {
+            this.mv = mv;
+        }
 
         public Location locate(MapFile file) {
             Coord mc = new Coord2d(mv.getcc()).floor(MCache.tilesz);
-            if(mc == null)
-                throw(new Loading("Waiting for initial location"));
+            if (mc == null)
+                throw (new Loading("Waiting for initial location"));
             MCache.Grid plg = mv.ui.sess.glob.map.getgrid(mc.div(cmaps));
             GridInfo info = file.gridinfo.get(plg.id);
-            if(info == null)
-                throw(new Loading("No grid info, probably coming soon"));
+            if (info == null)
+                throw (new Loading("No grid info, probably coming soon"));
             Segment seg = file.segments.get(info.seg);
-            if(seg == null)
-                throw(new Loading("No segment info, probably coming soon"));
-            return(new Location(seg, info.sc.mul(cmaps.div(scalef())).add(mc.sub(plg.ul).div(scalef()))));
+            if (seg == null)
+                throw (new Loading("No segment info, probably coming soon"));
+            return (new Location(seg, info.sc.mul(cmaps.div(scalef())).add(mc.sub(plg.ul).div(scalef()))));
         }
     }
 
@@ -103,13 +116,16 @@ public class MapFileWidget extends Widget {
         public final long seg;
         public final Coord tc;
 
-        public SpecLocator(long seg, Coord tc) {this.seg = seg; this.tc = tc;}
+        public SpecLocator(long seg, Coord tc) {
+            this.seg = seg;
+            this.tc = tc;
+        }
 
         public Location locate(MapFile file) {
             Segment seg = file.segments.get(this.seg);
-            if(seg == null)
-                return(null);
-            return(new Location(seg, tc.div(scalef())));
+            if (seg == null)
+                return (null);
+            return (new Location(seg, tc.div(scalef())));
         }
     }
 
@@ -118,23 +134,23 @@ public class MapFileWidget extends Widget {
     }
 
     public Location resolve(Locator loc) {
-        if(!file.lock.readLock().tryLock())
-            throw(new Loading("Map file is busy"));
+        if (!file.lock.readLock().tryLock())
+            throw (new Loading("Map file is busy"));
         try {
-            return(loc.locate(file));
+            return (loc.locate(file));
         } finally {
             file.lock.readLock().unlock();
         }
     }
 
     public void tick(double dt) {
-        if(setloc != null) {
+        if (setloc != null) {
             try {
                 Location loc = resolve(setloc);
                 center(loc);
-                if(!follow)
+                if (!follow)
                     setloc = null;
-            } catch(Loading l) {
+            } catch (Loading l) {
             }
         }
     }
@@ -154,13 +170,13 @@ public class MapFileWidget extends Widget {
 
         public Tex img() {
             Grid grid = gref.get();
-            if(grid != cgrid) {
-                if(img != null)
+            if (grid != cgrid) {
+                if (img != null)
                     img.cancel();
                 img = Defer.later(() -> new TexI(grid.render(sc.mul(cmaps.div(scalef())))));
                 cgrid = grid;
             }
-            return((img == null)?null:img.get());
+            return ((img == null) ? null : img.get());
         }
     }
 
@@ -183,44 +199,44 @@ public class MapFileWidget extends Widget {
         public DisplayMarker(Marker marker) {
             this.m = marker;
             this.tip = Text.render(m.nm);
-            if(marker instanceof PMarker)
+            if (marker instanceof PMarker)
                 this.hit = Area.sized(flagcc.inv(), flagbg.sz);
         }
 
         public void draw(GOut g, Coord c) {
-            if(m instanceof PMarker) {
+            if (m instanceof PMarker) {
                 Coord ul = c.sub(flagcc);
-                g.chcolor(((PMarker)m).color);
+                g.chcolor(((PMarker) m).color);
                 g.image(flagfg, ul);
                 g.chcolor();
                 g.image(flagbg, ul);
                 if (Config.mapdrawflags) {
-                   Tex tex = Text.renderstroked(m.nm, Color.white, Color.BLACK, Text.num12boldFnd).tex();
-                   if(tex!=null)
-                     g.image(tex, ul.add(flagfg.sz.x / 2, -20).sub(tex.sz().x / 2, 0));
+                    Tex tex = Text.renderstroked(m.nm, Color.white, Color.BLACK, Text.num12boldFnd).tex();
+                    if (tex != null)
+                        g.image(tex, ul.add(flagfg.sz.x / 2, -20).sub(tex.sz().x / 2, 0));
                 }
-            } else if(m instanceof SMarker) {
-                SMarker sm = (SMarker)m;
+            } else if (m instanceof SMarker) {
+                SMarker sm = (SMarker) m;
                 try {
-                    if(cc == null) {
+                    if (cc == null) {
                         Resource res = MapFile.loadsaved(Resource.remote(), sm.res);
                         img = res.layer(Resource.imgc);
                         Resource.Neg neg = res.layer(Resource.negc);
-                        cc = (neg != null)?neg.cc:img.sz.div(2);
-                        if(hit == null)
+                        cc = (neg != null) ? neg.cc : img.sz.div(2);
+                        if (hit == null)
                             hit = Area.sized(cc.inv(), img.sz);
                     }
-                } catch(Loading l) {
-                } catch(Exception e) {
+                } catch (Loading l) {
+                } catch (Exception e) {
                     cc = Coord.z;
                 }
-                if(img != null) {
+                if (img != null) {
                     //((SMarker)m).res.name.startsWith("gfx/invobjs/small"));
                     if (Config.mapdrawquests) {
-                    if (sm.res != null && sm.res.name.startsWith("gfx/invobjs/small")) {
-                        Tex tex = Text.renderstroked(sm.nm, Color.white, Color.BLACK, Text.num12boldFnd).tex();
-                        g.image(tex, c.sub(cc).add(img.sz.x / 2, -20).sub(tex.sz().x / 2, 0));
-                    }
+                        if (sm.res != null && sm.res.name.startsWith("gfx/invobjs/small")) {
+                            Tex tex = Text.renderstroked(sm.nm, Color.white, Color.BLACK, Text.num12boldFnd).tex();
+                            g.image(tex, c.sub(cc).add(img.sz.x / 2, -20).sub(tex.sz().x / 2, 0));
+                        }
                     }
                     g.image(img, c.sub(cc));
                 }
@@ -229,12 +245,12 @@ public class MapFileWidget extends Widget {
     }
 
     private void remark(Location loc, Area ext) {
-        if(file.lock.readLock().tryLock()) {
+        if (file.lock.readLock().tryLock()) {
             try {
                 Collection<DisplayMarker> marks = new ArrayList<>();
                 Area mext = ext.margin(cmaps);
-                for(Marker mark : file.markers) {
-                    if((mark.seg == loc.seg.id) && mext.contains(mark.tc.div(cmaps)))
+                for (Marker mark : file.markers) {
+                    if ((mark.seg == loc.seg.id) && mext.contains(mark.tc.div(cmaps)))
                         marks.add(new DisplayMarker(mark));
                 }
                 markers = marks;
@@ -249,11 +265,11 @@ public class MapFileWidget extends Widget {
         Coord hsz = sz.div(2);
         Area next = Area.sized(loc.tc.sub(hsz).div(cmaps.div(scalef())),
                 sz.add(cmaps.div(scalef())).sub(1, 1).div(cmaps.div(scalef())).add(1, 1));
-        if((display == null) || (loc.seg != dseg) || !next.equals(dext)) {
+        if ((display == null) || (loc.seg != dseg) || !next.equals(dext)) {
             DisplayGrid[] nd = new DisplayGrid[next.rsz()];
-            if((display != null) && (loc.seg == dseg)) {
-                for(Coord c : dext) {
-                    if(next.contains(c))
+            if ((display != null) && (loc.seg == dseg)) {
+                for (Coord c : dext) {
+                    if (next.contains(c))
                         nd[next.ri(c)] = display[dext.ri(c)];
                 }
             }
@@ -266,59 +282,59 @@ public class MapFileWidget extends Widget {
 
     public Coord xlate(Location loc) {
         Location curloc = this.curloc;
-        if((curloc == null) || (curloc.seg != loc.seg))
-            return(null);
-        return(loc.tc.add(sz.div(2)).sub(curloc.tc));
+        if ((curloc == null) || (curloc.seg != loc.seg))
+            return (null);
+        return (loc.tc.add(sz.div(2)).sub(curloc.tc));
     }
 
     public void draw(GOut g) {
         Location loc = this.curloc;
-        if(loc == null)
+        if (loc == null)
             return;
         Coord hsz = sz.div(2);
         redisplay(loc);
-        if(file.lock.readLock().tryLock()) {
+        if (file.lock.readLock().tryLock()) {
             try {
-                for(Coord c : dext) {
-                    if(display[dext.ri(c)] == null)
+                for (Coord c : dext) {
+                    if (display[dext.ri(c)] == null)
                         display[dext.ri(c)] = new DisplayGrid(loc.seg, c, loc.seg.grid(c));
                 }
             } finally {
                 file.lock.readLock().unlock();
             }
         }
-        for(Coord c : dext) {
+        for (Coord c : dext) {
             Tex img;
             try {
                 DisplayGrid disp = display[dext.ri(c)];
-                if((disp == null) || ((img = disp.img()) == null))
+                if ((disp == null) || ((img = disp.img()) == null))
                     continue;
-            } catch(Loading l) {
+            } catch (Loading l) {
                 continue;
             }
             Coord ul = hsz.add(c.mul(cmaps.div(scalef()))).sub(loc.tc);
             g.image(img, ul, cmaps.div(scalef()));
         }
-        if((markers == null) || (file.markerseq != markerseq))
+        if ((markers == null) || (file.markerseq != markerseq))
             remark(loc, dext);
-        if(markers != null) {
-            for(DisplayMarker mark : markers) {
+        if (markers != null) {
+            for (DisplayMarker mark : markers) {
                 mark.draw(g, hsz.sub(loc.tc).add(mark.m.tc.div(scalef())));
             }
         }
     }
 
     public void dumpTiles() {
-        gameui().msg("Dumping map. Please wait...");
+        ui.gui.msg("Dumping map. Please wait...");
 
         Location loc = this.curloc;
         if (loc == null)
             return;
 
         LinkedList<DisplayGrid> grids = new LinkedList<>();
-        if(file.lock.readLock().tryLock()) {
+        if (file.lock.readLock().tryLock()) {
             try {
-                for (Map.Entry<Coord, Long> entry: loc.seg.map.entrySet())
+                for (Map.Entry<Coord, Long> entry : loc.seg.map.entrySet())
                     grids.add(new DisplayGrid(loc.seg, entry.getKey(), loc.seg.grid(entry.getKey())));
             } finally {
                 file.lock.readLock().unlock();
@@ -337,7 +353,7 @@ public class MapFileWidget extends Widget {
             while (grids.size() > 0) {
                 // just a fail-safe
                 if (c-- == 0) {
-                    gameui().error("WARNING: map dumper timed out");
+                    ui.gui.error("WARNING: map dumper timed out");
                     break;
                 }
 
@@ -361,7 +377,7 @@ public class MapFileWidget extends Widget {
                 }
             }
         } catch (IOException e) {
-            gameui().error("ERROR: map dumper failure. See console for more info.");
+            ui.gui.error("ERROR: map dumper failure. See console for more info.");
             e.printStackTrace();
             return;
         } finally {
@@ -373,7 +389,7 @@ public class MapFileWidget extends Widget {
             }
         }
 
-        gameui().msg("Finished dumping map");
+        ui.gui.msg("Finished dumping map");
     }
 
     public void center(Locator loc) {
@@ -387,21 +403,21 @@ public class MapFileWidget extends Widget {
     }
 
     public boolean clickloc(Location loc, int button) {
-        return(false);
+        return (false);
     }
 
     public boolean clickmarker(DisplayMarker mark, int button) {
-        return(false);
+        return (false);
     }
 
     private DisplayMarker markerat(Coord tc) {
-        if(markers != null) {
-            for(DisplayMarker mark : markers) {
-                if((mark.hit != null) && mark.hit.contains(tc.sub(mark.m.tc.div(scalef()))))
-                    return(mark);
+        if (markers != null) {
+            for (DisplayMarker mark : markers) {
+                if ((mark.hit != null) && mark.hit.contains(tc.sub(mark.m.tc.div(scalef()))))
+                    return (mark);
             }
         }
-        return(null);
+        return (null);
     }
 
     public boolean mousedown(Coord c, int button) {
@@ -431,7 +447,7 @@ public class MapFileWidget extends Widget {
                             ui.gui.map.queuemove(mc);
                         } else if (ui.modshift && !ui.modmeta && !ui.modctrl)
                             ui.gui.map.pathto(mc);
-                        else if(ui.modctrl && !ui.modmeta && !ui.modshift){
+                        else if (ui.modctrl && !ui.modmeta && !ui.modshift) {
                             ui.gui.map.moveto(mc);
                         }
                     }
@@ -441,7 +457,7 @@ public class MapFileWidget extends Widget {
                 return true;
             }
         }
-        if(button == 1 && ui.modflags() == 0) {
+        if (button == 1 && ui.modflags() == 0) {
             Location loc = curloc;
             if ((drag == null) && (loc != null)) {
                 drag = ui.grabmouse(this);
@@ -456,12 +472,12 @@ public class MapFileWidget extends Widget {
     }
 
     public void mousemove(Coord c) {
-        if(drag != null) {
-            if(dragging) {
+        if (drag != null) {
+            if (dragging) {
                 setloc = null;
                 follow = false;
                 curloc = new Location(curloc.seg, dmc.add(dsc.sub(c)));
-            } else if(c.dist(dsc) > 5) {
+            } else if (c.dist(dsc) > 5) {
                 dragging = true;
             }
         }
@@ -469,17 +485,17 @@ public class MapFileWidget extends Widget {
     }
 
     public boolean mouseup(Coord c, int button) {
-        if((drag != null) && (button == 1)) {
+        if ((drag != null) && (button == 1)) {
             drag.remove();
             drag = null;
         }
-        return(super.mouseup(c, button));
+        return (super.mouseup(c, button));
     }
 
     public boolean mousewheel(Coord c, int amount) {
-        if(amount > 0) {
+        if (amount > 0) {
             if (MapFileWidget.zoom < zoomlvls - 1) {
-                PBotAPI.gui.mapfile.zoomtex = null;
+                ui.gui.mapfile.zoomtex = null;
                 Coord tc = curloc.tc.mul(MapFileWidget.scalef());
                 MapFileWidget.zoom++;
                 tc = tc.div(MapFileWidget.scalef());
@@ -488,7 +504,7 @@ public class MapFileWidget extends Widget {
             }
         } else {
             if (MapFileWidget.zoom > 0) {
-                PBotAPI.gui.mapfile.zoomtex = null;
+                ui.gui.mapfile.zoomtex = null;
                 Coord tc = curloc.tc.mul(MapFileWidget.scalef());
                 MapFileWidget.zoom--;
                 tc = tc.div(MapFileWidget.scalef());
@@ -496,22 +512,22 @@ public class MapFileWidget extends Widget {
                 curloc.tc.y = tc.y;
             }
         }
-        return(true);
+        return (true);
     }
 
     //All Ardennes's code
 
     public Object tooltip(Coord c, Widget prev) {
-        if(curloc != null) {
+        if (curloc != null) {
             Coord tc = c.sub(sz.div(2)).add(curloc.tc);
             DisplayMarker mark = markerat(tc);
-            if(mark != null) {
-                return(mark.tip);
-            }else{
+            if (mark != null) {
+                return (mark.tip);
+            } else {
                 return (biomeat(c));
             }
         }
-        return(super.tooltip(c, prev));
+        return (super.tooltip(c, prev));
     }
 
     public static double scalef() {
@@ -519,17 +535,16 @@ public class MapFileWidget extends Widget {
     }
 
 
-
-    private Object biomeat(Coord c){
+    private Object biomeat(Coord c) {
         final Coord tc = c.sub(sz.div(2)).mul(zoom == 0 ? 1 : scalef()).add(curloc.tc.mul(zoom == 0 ? 1 : scalef()));
         final Coord gc = tc.div(cmaps);
         String newbiome;
-        try{
-            newbiome = prettybiome(curloc.seg.gridtilename(tc,gc));
-        }catch(Exception e){
+        try {
+            newbiome = prettybiome(curloc.seg.gridtilename(tc, gc));
+        } catch (Exception e) {
             newbiome = "Void";
         }
-        if(!newbiome.equals(biome)) {
+        if (!newbiome.equals(biome)) {
             biome = newbiome;
             return Text.render(newbiome);
         }

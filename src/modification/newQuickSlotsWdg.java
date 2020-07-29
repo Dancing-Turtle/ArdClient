@@ -75,7 +75,7 @@ public class newQuickSlotsWdg extends MovableWidget implements DTarget {
     }
 
     public void draw(GOut g) {
-        Equipory e = gameui().getequipory();
+        Equipory e = ui.gui.getequipory();
         if (e != null) {
             g.image(sbg, Coord.z);
             new Item(4, 14);
@@ -191,7 +191,7 @@ public class newQuickSlotsWdg extends MovableWidget implements DTarget {
     }
 
     public boolean drop(Coord cc, Coord ul) {
-        Equipory e = this.gameui().getequipory();
+        Equipory e = this.ui.gui.getequipory();
         if (e != null) {
             int sl = -1;
 
@@ -212,7 +212,7 @@ public class newQuickSlotsWdg extends MovableWidget implements DTarget {
     }
 
     public boolean iteminteract(Coord cc, Coord ul) {
-        Equipory e = this.gameui().getequipory();
+        Equipory e = this.ui.gui.getequipory();
         if (e != null) {
             WItem w = null;
 
@@ -237,7 +237,7 @@ public class newQuickSlotsWdg extends MovableWidget implements DTarget {
         } else if (this.ui.modctrl && button == 1 && Config.disablequickslotdrop) {
             return true;
         } else {
-            Equipory e = this.gameui().getequipory();
+            Equipory e = this.ui.gui.getequipory();
             if (e != null) {
                 WItem w = null;
 
@@ -266,7 +266,7 @@ public class newQuickSlotsWdg extends MovableWidget implements DTarget {
     }
 
     public void simulateclick(Coord c) {
-        Equipory e = this.gameui().getequipory();
+        Equipory e = this.ui.gui.getequipory();
         if (e != null) {
             WItem w = null;
 
@@ -412,7 +412,7 @@ public class newQuickSlotsWdg extends MovableWidget implements DTarget {
         Text tts;
 
         public Item(int slot, int eqslot) {
-            Equipory e = gameui().getequipory();
+            Equipory e = ui.gui.getequipory();
             if (e != null) {
                 this.slot = slot;
                 this.eqslot = eqslot;

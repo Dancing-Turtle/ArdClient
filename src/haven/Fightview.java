@@ -123,19 +123,19 @@ public class Fightview extends Widget {
                     Resource.Tooltip tt = res.layer(Resource.tooltip);
                     ttretaincur = tt.t;
                     if (tt == null) {
-                        gameui().syslog.append("Combat: WARNING! tooltip is missing for " + res.name + ". Notify Jorb/Loftar about this.", combatLogOpClr);
+                        ui.gui.syslog.append("Combat: WARNING! tooltip is missing for " + res.name + ". Notify Jorb/Loftar about this.", combatLogOpClr);
                         return;
                     }
-                    OCache oc = gameui().map.glob.oc;
+                    OCache oc = ui.gui.map.glob.oc;
                     Gob gob = oc.getgob(gobid);
                     KinInfo kininfo = gob.getattr(KinInfo.class);
                     if(kininfo != null)
-                    gameui().syslog.append(String.format("%s, %s, ip %d - %d", kininfo.name, tt.t, ip, oip), combatLogOpClr);
+                    ui.gui.syslog.append(String.format("%s, %s, ip %d - %d", kininfo.name, tt.t, ip, oip), combatLogOpClr);
                     else
                         if(gob.getres().basename().contains("body"))
-                        gameui().syslog.append(String.format("Enemy Player, %s, ip %d - %d", tt.t, ip, oip), combatLogOpClr);
+                        ui.gui.syslog.append(String.format("Enemy Player, %s, ip %d - %d", tt.t, ip, oip), combatLogOpClr);
                     else
-                            gameui().syslog.append(String.format("Enemy :%s, %s, ip %d - %d",gob.getres().basename(), tt.t, ip, oip), combatLogOpClr);
+                            ui.gui.syslog.append(String.format("Enemy :%s, %s, ip %d - %d",gob.getres().basename(), tt.t, ip, oip), combatLogOpClr);
                 }
             } catch (Loading | NullPointerException l) { }
         }
@@ -155,16 +155,16 @@ public class Fightview extends Widget {
                 Resource.Tooltip tt = res.layer(Resource.tooltip);
                 ttretain = tt.t;
                 if (tt == null) {
-                    gameui().syslog.append("Combat: WARNING! tooltip is missing for " + res.name + ". Notify Jorb/Loftar about this.", combatLogMeClr);
+                    ui.gui.syslog.append("Combat: WARNING! tooltip is missing for " + res.name + ". Notify Jorb/Loftar about this.", combatLogMeClr);
                     return;
                 }
                 String cd = Utils.fmt1DecPlace(atkct - lastuse);
                 double cdadvantage = checkcd(cd,tt);
                 unarmed = getUnarmed();
                 if(cdadvantage != 0.0)
-                    gameui().syslog.append(String.format("me: %s, ip %d - %d, cd %ss, Agi Delta %s", tt.t, current.ip, current.oip, cd,cdadvantage), combatLogMeClr);
+                    ui.gui.syslog.append(String.format("me: %s, ip %d - %d, cd %ss, Agi Delta %s", tt.t, current.ip, current.oip, cd,cdadvantage), combatLogMeClr);
                 else
-                    gameui().syslog.append(String.format("me: %s, ip %d - %d, cd %ss", tt.t, current.ip, current.oip, cd), combatLogMeClr);
+                    ui.gui.syslog.append(String.format("me: %s, ip %d - %d, cd %ss", tt.t, current.ip, current.oip, cd), combatLogMeClr);
             } catch (Loading l) {
             }
         }

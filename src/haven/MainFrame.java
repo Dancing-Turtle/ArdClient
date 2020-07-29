@@ -27,20 +27,27 @@
 package haven;
 
 import com.google.common.flogger.FluentLogger;
-import haven.purus.pbot.PBotAPI;
 import modification.configuration;
 
 import javax.swing.JOptionPane;
-import java.awt.*;
-import java.awt.event.KeyEvent;
+import java.awt.Dimension;
+import java.awt.DisplayMode;
+import java.awt.GraphicsDevice;
+import java.awt.Image;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintStream;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.List;
 
 
 public class MainFrame extends java.awt.Frame implements Runnable, Console.Directory {
@@ -60,7 +67,7 @@ public class MainFrame extends java.awt.Frame implements Runnable, Console.Direc
             // resources from the server, we enable "cache forever" policy so to overcome sporadic UnknownHostException
             // due to flaky DNS. Bad practice, but still better than forcing the user to modify hosts file.
             // NOTE: this needs to be done early as possible before InetAddressCachePolicy is initialized.
-            java.security.Security.setProperty("networkaddress.cache.ttl" , "-1");
+            java.security.Security.setProperty("networkaddress.cache.ttl", "-1");
         } catch (Exception e) {
         }
     }
@@ -253,18 +260,19 @@ public class MainFrame extends java.awt.Frame implements Runnable, Console.Direc
     private void savewndstate() {
         if (prefs == null) {
             if (getExtendedState() == NORMAL)
-        /* Apparent, getSize attempts to return the "outer
-         * size" of the window, including WM decorations, even
-		 * though setSize sets the "inner size" of the
-		 * window. Therefore, use the Panel's size instead; it
-		 * ought to correspond to the inner size at all
-		 * times. */ {
+                /* Apparent, getSize attempts to return the "outer
+                 * size" of the window, including WM decorations, even
+                 * though setSize sets the "inner size" of the
+                 * window. Therefore, use the Panel's size instead; it
+                 * ought to correspond to the inner size at all
+                 * times. */ {
                 Dimension dim = p.getSize();
                 Utils.setprefc("wndsz", new Coord(dim.width, dim.height));
             }
             Utils.setprefb("wndmax", (getExtendedState() & MAXIMIZED_BOTH) != 0);
         }
     }
+
     private final List<Thread> sessionThreads = new ArrayList<>();
 
     public void makeNewSession() {
@@ -381,7 +389,7 @@ public class MainFrame extends java.awt.Frame implements Runnable, Console.Direc
     }
 
     private static void javabughack() throws InterruptedException {
-	    /* Work around a stupid deadlock bug in AWT. */
+        /* Work around a stupid deadlock bug in AWT. */
         try {
             javax.swing.SwingUtilities.invokeAndWait(new Runnable() {
                 public void run() {
@@ -391,7 +399,7 @@ public class MainFrame extends java.awt.Frame implements Runnable, Console.Direc
                 }
             });
         } catch (java.lang.reflect.InvocationTargetException e) {
-	        /* Oh, how I love Swing! */
+            /* Oh, how I love Swing! */
             throw (new Error(e));
         }
     }
@@ -436,7 +444,7 @@ public class MainFrame extends java.awt.Frame implements Runnable, Console.Direc
     }
 
     public static void main(final String[] args) {
-	    /* Set up the error handler as early as humanly possible. */
+        /* Set up the error handler as early as humanly possible. */
         final haven.error.ErrorHandler hg = new haven.error.ErrorHandler();
         hg.sethandler(new haven.error.ErrorGui(null) {
             public void errorsent() {
