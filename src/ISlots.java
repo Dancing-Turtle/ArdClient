@@ -98,31 +98,34 @@ public class ISlots extends Tip implements NumberInfo {
         layout.cmp.add(totalString, new Coord(0, layout.cmp.sz.y));
 
         Map<Resource, Integer> totalAttrs = new HashMap<>();
-        GItem[] gItems = new GItem[]{(GItem) owner};
-        totalAttrs = Arrays.stream(gItems)
-                .map(GItem::info)
-                .map(ItemInfo::getBonuses)
-                .map(Map::entrySet)
-                .flatMap(Collection::stream)
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Integer::sum));
-        for (Resource r : totalAttrs.keySet()) {
-            System.out.println(r + " " + totalAttrs.get(r));
-        }
-        List<ItemInfo> info = null;
-        if (totalAttrs != null) {
-            ItemInfo compiled = make(totalAttrs.entrySet().stream().sorted(this::BY_PRIORITY).collect(Collectors.toList()));
-            info = compiled != null ? Collections.singletonList(compiled) : null;
-        }
+        GItem[] gItems = null;
+        if (owner instanceof GItem) gItems = new GItem[]{(GItem) owner};
+        if (gItems != null) {
+            totalAttrs = Arrays.stream(gItems)
+                    .map(GItem::info)
+                    .map(ItemInfo::getBonuses)
+                    .map(Map::entrySet)
+                    .flatMap(Collection::stream)
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Integer::sum));
+            for (Resource r : totalAttrs.keySet()) {
+                System.out.println(r + " " + totalAttrs.get(r));
+            }
+            List<ItemInfo> info = null;
+            if (totalAttrs != null) {
+                ItemInfo compiled = make(totalAttrs.entrySet().stream().sorted(this::BY_PRIORITY).collect(Collectors.toList()));
+                info = compiled != null ? Collections.singletonList(compiled) : null;
+            }
 
-        BufferedImage tip = null;
+            BufferedImage tip = null;
 
-        if (info != null && !info.isEmpty()) {
-            tip = ItemInfo.longtip(info);
-        } else {
-            tip = null;
+            if (info != null && !info.isEmpty()) {
+                tip = ItemInfo.longtip(info);
+            } else {
+                tip = null;
+            }
+
+            layout.cmp.add(tip, new Coord(10, layout.cmp.sz.y));
         }
-
-        layout.cmp.add(tip, new Coord(10, layout.cmp.sz.y));
 
     }
 

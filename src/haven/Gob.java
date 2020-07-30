@@ -460,6 +460,7 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
 
     public String details() {
         StringBuilder sb = new StringBuilder();
+        sb.append("["); sb.append(this); sb.append("]\n");
         sb.append("Res: " ); sb.append(resname().orElse(""));
         sb.append(" ["); sb.append(id); sb.append("]\n");
         sb.append("Type: " );sb.append(type);
