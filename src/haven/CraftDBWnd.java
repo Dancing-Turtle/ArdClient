@@ -4,22 +4,29 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import haven.MenuGrid.Pagina;
-import haven.Reactor;
 import rx.Subscription;
 
-import java.awt.*;
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.*;
+import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static haven.CraftDBWnd.Mode.*;
-import static haven.ItemFilter.*;
+import static haven.CraftDBWnd.Mode.All;
+import static haven.CraftDBWnd.Mode.Favourites;
+import static haven.CraftDBWnd.Mode.History;
 
-public class CraftDBWnd extends Window implements DTarget2, ObservableListener<MenuGrid.Pagina>{
+public class CraftDBWnd extends Window implements DTarget2, ObservableListener<MenuGrid.Pagina> {
     private static final int PANEL_H = 52;
     private static final Coord WND_SZ = new Coord(635, 360 + PANEL_H);
     private static final Coord ICON_SZ = new Coord(20, 20);
@@ -59,8 +66,9 @@ public class CraftDBWnd extends Window implements DTarget2, ObservableListener<M
             Type type = new TypeToken<Map<String, List<String>>>() {
             }.getType();
             cfg = gson.fromJson(Config.loadFile(CONFIG_JSON), type);
-        } catch (Exception ignore) {}
-        if(cfg == null) {
+        } catch (Exception ignore) {
+        }
+        if (cfg == null) {
             cfg = new HashMap<>();
         }
         config = cfg;
@@ -72,7 +80,7 @@ public class CraftDBWnd extends Window implements DTarget2, ObservableListener<M
 
     @Override
     public void init(Collection<MenuGrid.Pagina> base) {
-            all.addAll(base);
+        all.addAll(base);
     }
 
     @Override
@@ -116,15 +124,16 @@ public class CraftDBWnd extends Window implements DTarget2, ObservableListener<M
     }
 
     public CraftDBWnd() {
-      //  super(WND_SZ.add(0, 20), "Craft window", "Craft window");
+        //  super(WND_SZ.add(0, 20), "Craft window", "Craft window");
         super(Coord.z, "Craft window", "Craft window");
-       // CFG.REAL_TIME_CURIO.observe(cfg -> updateDescription(descriptionPagina));
-       // CFG.SHOW_CURIO_LPH.observe(cfg -> updateDescription(descriptionPagina));
+        init();
+        // CFG.REAL_TIME_CURIO.observe(cfg -> updateDescription(descriptionPagina));
+        // CFG.SHOW_CURIO_LPH.observe(cfg -> updateDescription(descriptionPagina));
     }
 
     private void loadFavourites(String player) {
         Favourites.items.clear();
-        if(!config.containsKey(player) || config.get(player) == null) {
+        if (!config.containsKey(player) || config.get(player) == null) {
             config.put(player, new LinkedList<>());
         }
         favourites = config.get(player);
@@ -163,7 +172,7 @@ public class CraftDBWnd extends Window implements DTarget2, ObservableListener<M
         }, 0, 2);
         Coord icon_sz = new Coord(20, 20);
         Mode[] modes = Mode.values();
-        for(int i = 0; i< modes.length; i++) {
+        for (int i = 0; i < modes.length; i++) {
             Resource res = modes[i].res.get();
             tabStrip.insert(i,
                     new TexI(PUtils.convolvedown(res.layer(Resource.imgc).img, icon_sz, CharWnd.iconfilter)),
@@ -173,8 +182,8 @@ public class CraftDBWnd extends Window implements DTarget2, ObservableListener<M
         box = add(new RecipeListBox(200, LIST_SIZE) {
             @Override
             protected void itemclick(Recipe recipe, int button) {
-		Pagina item = recipe.p;
-                if(button == 1) {
+                Pagina item = recipe.p;
+                if (button == 1) {
                     try {
                         if (item == ui.gui.menu.bk.pag) {
                             item = current;
@@ -188,8 +197,8 @@ public class CraftDBWnd extends Window implements DTarget2, ObservableListener<M
                         } else {
                             select(item, true, true);
                         }
-                    }catch(Exception e){
-                        if(makewnd != null) {
+                    } catch (Exception e) {
+                        if (makewnd != null) {
                             makewnd.wdgmsg("close");
                             makewnd = null;
                         }
@@ -206,8 +215,8 @@ public class CraftDBWnd extends Window implements DTarget2, ObservableListener<M
             }
         }));*/
         addBtn_base("gfx/hud/helpbtn", "Show Filter Help", () -> ItemFilter.showHelp(ui, ItemFilter.FILTER_HELP));
-        add(new Label("To search, simply start typing your search query."), new Coord(tabStrip.sz.x,0));
-        add(new Label("Click the ? in the upper right for details on search options."), new Coord(tabStrip.sz.x,12));
+        add(new Label("To search, simply start typing your search query."), new Coord(tabStrip.sz.x, 0));
+        add(new Label("Click the ? in the upper right for details on search options."), new Coord(tabStrip.sz.x, 12));
         btnFavourite = add(new ToggleButton(
                 "gfx/hud/btn-star-e", "", "-d", "-h",
                 "gfx/hud/btn-star-f", "", "-d", "-h"
@@ -216,10 +225,10 @@ public class CraftDBWnd extends Window implements DTarget2, ObservableListener<M
         btnFavourite.action(this::toggleFavourite);
 
         menu = ui.gui.menu;
-	breadcrumbs = add(new Breadcrumbs<Pagina>(new Coord(WND_SZ.x, ICON_SZ.y)) {
+        breadcrumbs = add(new Breadcrumbs<Pagina>(new Coord(WND_SZ.x, ICON_SZ.y)) {
             @Override
-	    public void selected(Pagina data) {
-                if(data == HISTORY) {
+            public void selected(Pagina data) {
+                if (data == HISTORY) {
                     showHistory();
                     return;
                 }
@@ -227,10 +236,10 @@ public class CraftDBWnd extends Window implements DTarget2, ObservableListener<M
                 ui.gui.menu.use(data.button(), false);
             }
         }, new Coord(0, 28));
-	Pagina selected = current;
-        if(selected == null) {
+        Pagina selected = current;
+        if (selected == null) {
             selected = menu.cur;
-            if(selected == null || !menu.isCrafting(selected)) {
+            if (selected == null || !menu.isCrafting(selected)) {
                 selected = CRAFT;
             }
         }
@@ -241,7 +250,7 @@ public class CraftDBWnd extends Window implements DTarget2, ObservableListener<M
     }
 
     private void toggleFavourite(Boolean aBoolean) {
-        if(Favourites.items.contains(current)) {
+        if (Favourites.items.contains(current)) {
             removeFromFavourites(current);
         } else {
             addToFavourites(current);
@@ -250,7 +259,7 @@ public class CraftDBWnd extends Window implements DTarget2, ObservableListener<M
 
     @Override
     public void cdestroy(Widget w) {
-        if(w == makewnd) {
+        if (w == makewnd) {
             makewnd = null;
         }
         super.cdestroy(w);
@@ -258,10 +267,10 @@ public class CraftDBWnd extends Window implements DTarget2, ObservableListener<M
 
     @Override
     public void wdgmsg(Widget sender, String msg, Object... args) {
-        if((sender == this) && msg.equals("close")) {
+        if ((sender == this) && msg.equals("close")) {
             close();
             return;
-        } else if((sender == makewnd) && msg.equals("make")) {
+        } else if ((sender == makewnd) && msg.equals("make")) {
             addToHistory(current);
         }
         super.wdgmsg(sender, msg, args);
@@ -298,25 +307,25 @@ public class CraftDBWnd extends Window implements DTarget2, ObservableListener<M
     private void addToHistory(Pagina action) {
         History.items.remove(action);
         History.items.addFirst(action);
-        if(History.items.size() > LIST_SIZE) {
+        if (History.items.size() > LIST_SIZE) {
             History.items.removeLast();
         }
-        if(mode == History) {
+        if (mode == History) {
             box.sort();
         }
     }
 
     private void removeFromFavourites(MenuGrid.Pagina action) {
-        if(Favourites.items.contains(action)) {
+        if (Favourites.items.contains(action)) {
             Favourites.items.remove(action);
-            if(favourites.remove(action.res().name)) {
+            if (favourites.remove(action.res().name)) {
                 save();
             }
         }
     }
 
     private void addToFavourites(MenuGrid.Pagina action) {
-        if(!Favourites.items.contains(action)) {
+        if (!Favourites.items.contains(action)) {
             Favourites.items.add(action);
             favourites.add(action.res().name);
             save();
@@ -324,7 +333,7 @@ public class CraftDBWnd extends Window implements DTarget2, ObservableListener<M
     }
 
     public void close() {
-        if(makewnd != null) {
+        if (makewnd != null) {
             makewnd.wdgmsg("close");
             makewnd = null;
         }
@@ -350,11 +359,13 @@ public class CraftDBWnd extends Window implements DTarget2, ObservableListener<M
     }
 
     public void select(Pagina p, boolean use) {
-        if(mode != All) {changeMode(All);}
-        if(!filter.line.isEmpty()) {
+        if (mode != All) {
+            changeMode(All);
+        }
+        if (!filter.line.isEmpty()) {
             filter.setline("");
             changeMode(All);
-            if(p == ui.gui.menu.bk.pag) {
+            if (p == ui.gui.menu.bk.pag) {
                 p = CRAFT;
             }
         }
@@ -362,31 +373,31 @@ public class CraftDBWnd extends Window implements DTarget2, ObservableListener<M
     }
 
     private void select(Pagina p, boolean use, boolean skipReparent) {
-	Pagina BACK = ui.gui.menu.bk.pag;
+        Pagina BACK = ui.gui.menu.bk.pag;
         boolean isBack = p == BACK;
-        if(!menu.isCrafting(p) && !isBack) {
+        if (!menu.isCrafting(p) && !isBack) {
             return;
         }
-        if(box != null) {
-            if(!p.isAction()){
+        if (box != null) {
+            if (!p.isAction()) {
                 closemake();
             }
-            if(!skipReparent) {
+            if (!skipReparent) {
                 List<Pagina> children = getPaginaChildren(p);
-                if(children.size() == 0) {
+                if (children.size() == 0) {
                     children = getPaginaChildren(menu.getParent(p));
                 }
                 children.sort(MenuGrid.sorter);
-                if(p != CRAFT) {
+                if (p != CRAFT) {
                     children.add(0, BACK);
                 }
                 filter.setline("");
                 box.setitems(children);
             }
             box.change(p);
-            if(isBack) {
+            if (isBack) {
                 p = null;
-                if(box.listitems() > 1) {
+                if (box.listitems() > 1) {
                     p = menu.getParent(box.listitem(1).p);
                 }
                 setCurrent(p != null ? p : CRAFT);
@@ -394,13 +405,13 @@ public class CraftDBWnd extends Window implements DTarget2, ObservableListener<M
                 setCurrent(p);
             }
         }
-        if(use && !isBack) {
+        if (use && !isBack) {
             this.senduse = p;
         }
     }
 
     private void closemake() {
-        if(makewnd != null) {
+        if (makewnd != null) {
             makewnd.wdgmsg("close");
         }
         senduse = null;
@@ -410,8 +421,8 @@ public class CraftDBWnd extends Window implements DTarget2, ObservableListener<M
     public void cdraw(GOut g) {
         super.cdraw(g);
 
-        if(senduse != null) {
-	    Pagina p = senduse;
+        if (senduse != null) {
+            Pagina p = senduse;
             closemake();
             p.button().use();
         }
@@ -419,15 +430,16 @@ public class CraftDBWnd extends Window implements DTarget2, ObservableListener<M
     }
 
     private void drawDescription(GOut g) {
-        if(descriptionPagina == null) {
+        if (descriptionPagina == null) {
             return;
         }
-        if(description == null) {
+        if (description == null) {
             try {
                 description = ItemData.longtip(descriptionPagina, ui.sess, 20, 5);
-            } catch (Loading ignored) {}
+            } catch (Loading ignored) {
+            }
         }
-        if(description != null) {
+        if (description != null) {
             g.image(description, new Coord(box.c.x + box.sz.x + 10, PANEL_H + 5));
         }
     }
@@ -440,16 +452,16 @@ public class CraftDBWnd extends Window implements DTarget2, ObservableListener<M
     }
 
     private void updateBreadcrumbs(Pagina p) {
-	List<Breadcrumbs.Crumb<Pagina>> crumbs = new LinkedList<>();
+        List<Breadcrumbs.Crumb<Pagina>> crumbs = new LinkedList<>();
         if (filter.line.isEmpty()) {
-            if(mode == All) {
-		List<Pagina> parents = getParents(p);
+            if (mode == All) {
+                List<Pagina> parents = getParents(p);
                 Collections.reverse(parents);
-		for(Pagina item : parents) {
+                for (Pagina item : parents) {
                     BufferedImage img = item.res().layer(Resource.imgc).img;
                     Resource.AButton act = item.act();
                     String name = "...";
-                    if(act != null) {
+                    if (act != null) {
                         name = act.name;
                     }
                     crumbs.add(new Breadcrumbs.Crumb<>(img, name, item));
@@ -466,11 +478,11 @@ public class CraftDBWnd extends Window implements DTarget2, ObservableListener<M
     }
 
     private List<Pagina> getParents(Pagina p) {
-	List<Pagina> list = new LinkedList<>();
-        if(getPaginaChildren(p).size() > 0) {
+        List<Pagina> list = new LinkedList<>();
+        if (getPaginaChildren(p).size() > 0) {
             list.add(p);
         }
-	Pagina parent;
+        Pagina parent;
         while ((parent = menu.getParent(p)) != null) {
             list.add(parent);
             p = parent;
@@ -479,11 +491,11 @@ public class CraftDBWnd extends Window implements DTarget2, ObservableListener<M
     }
 
     private void updateDescription(Pagina p) {
-        if(description != null) {
+        if (description != null) {
             description.dispose();
             description = null;
         }
-        if(p != null) {
+        if (p != null) {
             descriptionPagina = p;
         } else {
             descriptionPagina = null;
@@ -498,7 +510,7 @@ public class CraftDBWnd extends Window implements DTarget2, ObservableListener<M
         return ui.gui.menu.paginafor(res);
     }
 
-    private void updateInfo(WItem item){
+    private void updateInfo(WItem item) {
         ItemData.actualize(item.item, current);
         updateDescription(current);
     }
@@ -520,17 +532,17 @@ public class CraftDBWnd extends Window implements DTarget2, ObservableListener<M
         super.tick(dt);
         MenuGrid menu = ui.gui.menu;
         synchronized (menu.paginae) {
-            if(pagseq != menu.pagseq) {
+            if (pagseq != menu.pagseq) {
                 synchronized (All.items) {
                     All.items.clear();
                     All.items.addAll(
-                    all.stream().filter(p -> category.matcher(MenuGrid.Pagina.name(p)).matches()).collect(Collectors.toList()));
+                            all.stream().filter(p -> category.matcher(MenuGrid.Pagina.name(p)).matches()).collect(Collectors.toList()));
                     pagseq = menu.pagseq;
                     needfilter();
                 }
             }
         }
-        if(needfilter) {
+        if (needfilter) {
             filter();
         }
     }
@@ -547,7 +559,7 @@ public class CraftDBWnd extends Window implements DTarget2, ObservableListener<M
         }
         ItemFilter itemFilter = ItemFilter.create(filter);
         synchronized (mode.items) {
-	    List<Pagina> filtered = mode.items.stream().filter(p -> {
+            List<Pagina> filtered = mode.items.stream().filter(p -> {
                 try {
                     Resource res = p.res.get();
                     String name = res.layer(Resource.action).name.toLowerCase();
@@ -558,8 +570,10 @@ public class CraftDBWnd extends Window implements DTarget2, ObservableListener<M
                 return false;
             }).sorted(new ItemComparator(filter)).collect(Collectors.toList());
             box.setitems(filtered);
-            if(filtered.isEmpty()) {
-                if(!needfilter) {closemake();}
+            if (filtered.isEmpty()) {
+                if (!needfilter) {
+                    closemake();
+                }
                 box.change((Recipe) null);
                 setCurrent(null);
             } else {
@@ -570,7 +584,7 @@ public class CraftDBWnd extends Window implements DTarget2, ObservableListener<M
 
     @Override
     public boolean keydown(KeyEvent ev) {
-        if(ignoredKey(ev)) {
+        if (ignoredKey(ev)) {
             return false;
         }
         switch (ev.getKeyCode()) {
@@ -581,11 +595,11 @@ public class CraftDBWnd extends Window implements DTarget2, ObservableListener<M
                 select(box.listitem((Math.max(box.selindex, 0) - 1 + box.listitems()) % box.listitems()).p, true, true);
                 return true;
             case KeyEvent.VK_ENTER:
-                if(box.sel != null) {
-                    if(!box.sel.p.isAction()) {
+                if (box.sel != null) {
+                    if (!box.sel.p.isAction()) {
                         box.itemclick(box.sel, 1);
-                    } else if(makewnd != null) {
-                        makewnd.wdgmsg("make", ui.modctrl?1:0);
+                    } else if (makewnd != null) {
+                        makewnd.wdgmsg("make", ui.modctrl ? 1 : 0);
                     }
                 }
                 return true;
@@ -599,8 +613,8 @@ public class CraftDBWnd extends Window implements DTarget2, ObservableListener<M
 
     @Override
     public boolean type(char key, KeyEvent ev) {
-        if(key == 27) {
-            if(!filter.line.isEmpty()) {
+        if (key == 27) {
+            if (!filter.line.isEmpty()) {
                 changeMode(mode);
             } else {
                 close();
@@ -608,13 +622,13 @@ public class CraftDBWnd extends Window implements DTarget2, ObservableListener<M
             return true;
         }
 
-        if(ignoredKey(ev)) {
+        if (ignoredKey(ev)) {
             return false;
         }
         String before = filter.line;
-        if(filter.key(ev) && !before.equals(filter.line)) {
+        if (filter.key(ev) && !before.equals(filter.line)) {
             needfilter();
-            if(filter.line.isEmpty()) {
+            if (filter.line.isEmpty()) {
                 changeMode(mode);
             }
             return true;
@@ -624,7 +638,7 @@ public class CraftDBWnd extends Window implements DTarget2, ObservableListener<M
         return true;
     }
 
-    private static boolean ignoredKey(KeyEvent ev){
+    private static boolean ignoredKey(KeyEvent ev) {
         int code = ev.getKeyCode();
         int mods = ev.getModifiersEx();
         //any modifier except SHIFT pressed alone is ignored, TAB is also ignored
@@ -636,22 +650,22 @@ public class CraftDBWnd extends Window implements DTarget2, ObservableListener<M
     }
 
     private static class Recipe {
-	public final Pagina p;
+        public final Pagina p;
         private Tex tex = null;
 
-	public Recipe(Pagina p) {
+        public Recipe(Pagina p) {
             this.p = p;
         }
 
         public Tex tex() {
-            if(tex == null) {
+            if (tex == null) {
                 Resource res = p.res();
-                if(res != null) {
+                if (res != null) {
                     BufferedImage icon = PUtils.convolvedown(res.layer(Resource.imgc).img, ICON_SZ, CharWnd.iconfilter);
 
                     Resource.AButton act = p.act();
                     String name = "...";
-                    if(act != null) {
+                    if (act != null) {
                         name = act.name;
                     }
                     BufferedImage text = Text.render(name).img;
@@ -666,7 +680,7 @@ public class CraftDBWnd extends Window implements DTarget2, ObservableListener<M
 
     private static class RecipeListBox extends Listbox<Recipe> {
         private static final Color BGCOLOR = new Color(0, 0, 0, 113);
-	    private List<Pagina> list;
+        private List<Pagina> list;
         private List<Recipe> recipes;
 
         public RecipeListBox(int w, int h) {
@@ -676,21 +690,21 @@ public class CraftDBWnd extends Window implements DTarget2, ObservableListener<M
 
         @Override
         protected Recipe listitem(int i) {
-            if(list == null) {
+            if (list == null) {
                 return null;
             }
             return recipes.get(i);
         }
 
-	public void setitems(List<Pagina> list) {
-            if(list.equals(this.list)) {
+        public void setitems(List<Pagina> list) {
+            if (list.equals(this.list)) {
                 return;
             }
             this.list = list;
             recipes = list.stream().map(Recipe::new).collect(Collectors.toList());
             sb.max = listitems() - h;
             sb.val = 0;
-            if(!recipes.contains(sel)){
+            if (!recipes.contains(sel)) {
                 selindex = -1;
             }
         }
@@ -699,9 +713,9 @@ public class CraftDBWnd extends Window implements DTarget2, ObservableListener<M
             recipes.sort(Comparator.comparingInt(o -> this.list.indexOf(o.p)));
         }
 
-	public void change(Pagina p) {
+        public void change(Pagina p) {
             for (Recipe r : recipes) {
-                if(r.p == p) {
+                if (r.p == p) {
                     change(r);
                     return;
                 }
@@ -712,11 +726,11 @@ public class CraftDBWnd extends Window implements DTarget2, ObservableListener<M
         public void change(Recipe item) {
             super.change(item);
             int k = recipes.indexOf(item);
-            if(k >= 0) {
-                if(k < sb.val) {
+            if (k >= 0) {
+                if (k < sb.val) {
                     sb.val = k;
                 }
-                if(k >= sb.val + h) {
+                if (k >= sb.val + h) {
                     sb.val = Math.min(sb.max, k - h + 1);
                 }
             }
@@ -724,7 +738,7 @@ public class CraftDBWnd extends Window implements DTarget2, ObservableListener<M
 
         @Override
         protected int listitems() {
-            if(list == null) {
+            if (list == null) {
                 return 0;
             }
             return list.size();
@@ -732,11 +746,11 @@ public class CraftDBWnd extends Window implements DTarget2, ObservableListener<M
 
         @Override
         protected void drawitem(GOut g, Recipe item, int i) {
-            if(item == null) {
+            if (item == null) {
                 return;
             }
             Tex tex = item.tex();
-            if(tex != null) {
+            if (tex != null) {
                 g.image(tex, Coord.z);
             }
         }
@@ -750,19 +764,27 @@ public class CraftDBWnd extends Window implements DTarget2, ObservableListener<M
         }
 
         @Override
-	public int compare(Pagina a, Pagina b) {
+        public int compare(Pagina a, Pagina b) {
             String an = a.act().name.toLowerCase();
             String bn = b.act().name.toLowerCase();
-            if(filter != null && !filter.isEmpty()) {
+            if (filter != null && !filter.isEmpty()) {
                 boolean ai = an.startsWith(filter);
                 boolean bi = bn.startsWith(filter);
-                if(ai && !bi) {return -1;}
-                if(!ai && bi) {return 1;}
+                if (ai && !bi) {
+                    return -1;
+                }
+                if (!ai && bi) {
+                    return 1;
+                }
             }
             boolean ac = !a.isAction();
             boolean bc = !b.isAction();
-            if(ac && !bc) {return -1;}
-            if(!ac && bc) {return 1;}
+            if (ac && !bc) {
+                return -1;
+            }
+            if (!ac && bc) {
+                return 1;
+            }
             return an.compareTo(bn);
         }
     }
