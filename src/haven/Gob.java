@@ -467,6 +467,10 @@ public class Gob implements Sprite.Owner, Skeleton.ModOwner, Rendered {
             int stage = getattr(ResDrawable.class).sdt.peekrbuf(0);
             sb.append(" Stage: " ); sb.append(stage);
         }
+        if (resname().get().endsWith("stonepillar")) {
+            int stage = getattr(ResDrawable.class).sdt.peekrbuf(0);
+            sb.append(" Stage: " ); sb.append(stage);
+        }
         sb.append("\n");
         sb.append("staticp: "); sb.append(staticp() != null ? "static" : "dynamic"); sb.append("\n");
         final Holding holding = getattr(Holding.class);

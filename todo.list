@@ -1,13 +1,13 @@
-pbot session - короче добавить для пбота атрибут номер сессии и тогда можно разпараллелить старых ботов и создать мультисессионую ботоводню
-    PBot(int session)   PBot[]
++pbot session - короче добавить для пбота атрибут номер сессии и тогда можно разпараллелить старых ботов и создать мультисессионую ботоводню
+    +PBot(int session)   PBot[]
 
 +MenuGrid -  //ADD custom size == work
 MusselPicker - //FIXME name, how ender, shift click
 PickForageable - //FIXME custom menu
 
-fix multisession freeze     fix?????
-fix logout crash            fix?????
-fix text с обводкой         added???
++fix multisession freeze     fix?????
++fix logout crash            fix?????
++fix text с обводкой         added???
 sounds
     +add pack gachi sounds
     +and pack dark souls sounds
@@ -70,6 +70,8 @@ session widget to up
 prepare map and mapmarkers for render client
 
 notifications+ in the corner
+
+more big animals - customize
 
 
 for Jorb and Loftar:

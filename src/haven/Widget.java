@@ -26,6 +26,8 @@
 
 package haven;
 
+import haven.purus.pbot.PBotAPI;
+
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.lang.annotation.ElementType;
@@ -241,6 +243,7 @@ public class Widget {
     }
 
     public Widget(Coord sz) {
+        this.ui = PBotAPI.ui();
         this.c = Coord.z;
         this.sz = sz;
     }
