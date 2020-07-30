@@ -237,7 +237,7 @@ public class Glob {
         long secintoday = secs % secinday;
         long hours = secintoday / 3600;
         long mins = (secintoday % 3600) / 60;
-        int nextseason = (int)Math.ceil((1 - ast.sp) * (ast.is == 1 ? 30 : 10));
+        int nextseason = (int)Math.ceil((1 - ast.sp) * (ast.is == 1 ? 30 : ast.is == 3 ? 5 : 10 ));
 
         String fmt;
         switch (ast.is) {
