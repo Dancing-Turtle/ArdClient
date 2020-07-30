@@ -271,7 +271,8 @@ public class configuration {
 
 	public static Coord getAutoSize(int w, int h) {
 		Coord minSize = new Coord(800, 600);
-		Coord maxSize = new Coord(9999, 9999);
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		Coord maxSize = new Coord(screenSize);
 		Coord chosenSize = new Coord(w, h);
 
 		if ((w < minSize.x && h > maxSize.y) || (w > maxSize.x && h < minSize.y) || (w < minSize.x && h < minSize.y)) {
