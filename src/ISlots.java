@@ -93,12 +93,11 @@ public class ISlots extends Tip implements NumberInfo {
             layout.cmp.add(Text.slotFnd.render(left > 1 ? String.format(gildStr, Integer.valueOf(left)) : gild2Str).img, new Coord(10, layout.cmp.sz.y));
         }
 
-        GItem[] gItems = null; //FIXME I don't like the way it looks
         if (owner instanceof GItem) {
             BufferedImage totalString = RichText.render(Resource.getLocString(Resource.BUNDLE_LABEL, "Total:")).img;
             layout.cmp.add(totalString, new Coord(0, layout.cmp.sz.y));
 
-            gItems = new GItem[]{(GItem) owner};
+            GItem[] gItems = new GItem[]{(GItem) owner}; //FIXME I don't like the way it looks
             Map<Resource, Integer> totalAttrs = new HashMap<>();
 
             totalAttrs = Arrays.stream(gItems)
@@ -117,12 +116,8 @@ public class ISlots extends Tip implements NumberInfo {
 
             if (info != null && !info.isEmpty()) {
                 tip = ItemInfo.longtip(info);
-            } else {
-                tip = null;
+                layout.cmp.add(tip, new Coord(10, layout.cmp.sz.y));
             }
-
-            layout.cmp.add(tip, new Coord(10, layout.cmp.sz.y));
-
         }
     }
 
