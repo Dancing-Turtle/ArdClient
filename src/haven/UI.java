@@ -26,6 +26,7 @@
 
 package haven;
 
+import haven.purus.pbot.PBotAPI;
 import modification.configuration;
 
 import java.awt.event.InputEvent;
@@ -132,6 +133,7 @@ public class UI {
         widgets.put(0, root);
         rwidgets.put(root, 0);
         setSession(sess);
+        PBotAPI.ui = this;
     }
 
     public UI(Context uictx, Coord sz) {

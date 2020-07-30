@@ -4,13 +4,29 @@ import haven.GameUI;
 import haven.MainFrame;
 import haven.UI;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 public class PBotAPI {
 
-    public static GameUI gui;
-    public static UI ui;
+    public static GameUI gui;  //old gui init => just last new session
+    public static UI ui;       //old new ui init => just last new session
 
     public static UI ui() {
         return MainFrame.instance.p.ui;
+    }
+    public static GameUI gui() {
+        return MainFrame.instance.p.ui.gui;
+    }
+
+    public static List<UI> uis() {
+        List<UI> uiList = new ArrayList<UI>();
+        synchronized (MainFrame.instance.p.sessions) {
+            Iterator<UI> itr = MainFrame.instance.p.sessions.iterator();
+            while (itr.hasNext()) uiList.add(itr.next());
+        }
+        return uiList;
     }
 
 
