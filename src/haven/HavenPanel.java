@@ -46,7 +46,7 @@ public class HavenPanel extends GLCanvas implements Runnable, Console.Directory,
     //The UI for the next frame, or null of no change
     private UI nextUI;
     //The current active UI
-    UI ui;
+    public UI ui;
 
     boolean inited = false;
     public static int w, h;

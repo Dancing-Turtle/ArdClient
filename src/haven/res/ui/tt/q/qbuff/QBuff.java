@@ -1,7 +1,6 @@
 package haven.res.ui.tt.q.qbuff;
 
 import haven.*;
-import haven.purus.pbot.PBotUtils;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -38,7 +37,7 @@ public class QBuff extends ItemInfo.Tip {
                 color = Config.legendary;
             } else {
                 if(Config.insaneitem){
-                    PBotUtils.sysMsg("What a nice item!");
+                    //PBotUtils.sysMsg("What a nice item!");
                 }
                 color = Color.orange;
                 outline = Color.RED;

@@ -659,7 +659,7 @@ public class OptWnd extends Window {
                 public void click() {
                     gameui().discordconnected = false;
                     if(Discord.jdalogin != null) {
-                        PBotUtils.sysMsg("Discord Disconnected",Color.white);
+                        PBotUtils.sysMsg(ui, "Discord Disconnected",Color.white);
                         gameui().discordconnected = false;
                         Discord.jdalogin.shutdownNow();
                         Discord.jdalogin = null;
@@ -670,7 +670,7 @@ public class OptWnd extends Window {
                             }
                         }
                     }else
-                        PBotUtils.sysMsg("Not currently connected.",Color.white);
+                        PBotUtils.sysMsg(ui, "Not currently connected.",Color.white);
                 }
             }, new Coord(210, 150));
             main.add(new Button(200, "Join Village Discord") {
@@ -681,15 +681,15 @@ public class OptWnd extends Window {
                             gameui().discordconnected = true;
                         }
                         else
-                            PBotUtils.sysMsg("No Key Detected, if there is one in chat settings you might need to relog.",Color.white);
+                            PBotUtils.sysMsg(ui, "No Key Detected, if there is one in chat settings you might need to relog.",Color.white);
                     }else if(gameui().discordconnected)
-                        PBotUtils.sysMsg("Already connected.",Color.white);
+                        PBotUtils.sysMsg(ui, "Already connected.",Color.white);
                 }
             }, new Coord(210, 180));
             main.add(new Button(200, "Join Ingame Discord") {
                 public void click() {
                     if(gameui().discordconnected)
-                        PBotUtils.sysMsg("Already Connected.",Color.white);
+                        PBotUtils.sysMsg(ui, "Already Connected.",Color.white);
                     else {
                         new Thread(new Discord(PBotAPI.gui, "ard")).start();
                         gameui().discordconnected = true;
@@ -1562,9 +1562,9 @@ public class OptWnd extends Window {
         Button OutputSettings = new Button(220, "Output Light Settings to System Tab") {
             @Override
             public void click() {
-                PBotUtils.sysLogAppend("Ambient Red "+DefSettings.NVAMBIENTCOL.get().getRed() + " Green - "+DefSettings.NVAMBIENTCOL.get().getGreen()+ " Blue - "+NVAMBIENTCOL.get().getBlue(),"white");
-                PBotUtils.sysLogAppend("Diffuse Red "+DefSettings.NVDIFFUSECOL.get().getRed() + " Green - "+DefSettings.NVDIFFUSECOL.get().getGreen()+ " Blue - "+NVDIFFUSECOL.get().getBlue(),"white");
-                PBotUtils.sysLogAppend("Specular Red "+DefSettings.NVSPECCOC.get().getRed() + " Green - "+DefSettings.NVSPECCOC.get().getGreen()+ " Blue - "+NVSPECCOC.get().getBlue(),"white");
+                PBotUtils.sysLogAppend(ui, "Ambient Red "+DefSettings.NVAMBIENTCOL.get().getRed() + " Green - "+DefSettings.NVAMBIENTCOL.get().getGreen()+ " Blue - "+NVAMBIENTCOL.get().getBlue(),"white");
+                PBotUtils.sysLogAppend(ui, "Diffuse Red "+DefSettings.NVDIFFUSECOL.get().getRed() + " Green - "+DefSettings.NVDIFFUSECOL.get().getGreen()+ " Blue - "+NVDIFFUSECOL.get().getBlue(),"white");
+                PBotUtils.sysLogAppend(ui, "Specular Red "+DefSettings.NVSPECCOC.get().getRed() + " Green - "+DefSettings.NVSPECCOC.get().getGreen()+ " Blue - "+NVSPECCOC.get().getBlue(),"white");
             }
         };
         appender.add(OutputSettings);

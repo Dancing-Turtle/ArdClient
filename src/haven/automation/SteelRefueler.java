@@ -29,10 +29,12 @@ public class SteelRefueler extends Window implements GobSelectCallback {
     private static final int HAND_DELAY = 8;
     private static final int SLEEP = 30 * 60 * 1000; // 30 min
     private Thread runner;
+    UI ui;
 
 
-    public SteelRefueler() {
+    public SteelRefueler(UI ui) {
         super(new Coord(270, 180), "Steel Refueler");
+        this.ui = ui;
 
         final Label lbl = new Label("Click select and select your area with crucibles/stockpiles.", infof);
         add(lbl, new Coord(0, 20));

@@ -194,7 +194,7 @@ public class SoundManager extends Window implements ObservableMapListener<String
     }
 
     public void loadDefaults(){
-        PBotUtils.sysMsg("Default alarms loaded.",Color.white);
+        PBotUtils.sysMsg(ui, "Default alarms loaded.",Color.white);
 		for(Resource.Named sound : Alerted.sounds){
 			if (sound.name.contains("BearRoar"))
 				Alerted.add("gfx/kritter/bear/bear",sound,.8);

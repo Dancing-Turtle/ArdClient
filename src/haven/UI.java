@@ -56,6 +56,8 @@ public class UI {
     public WeakReference<FightWnd> fightwnd;
     private final Context uictx;
     public ActAudio audio = new ActAudio();
+    public Charlist charlist;
+
 
     {
         lastevent = lasttick = Utils.rtime();

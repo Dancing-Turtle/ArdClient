@@ -886,18 +886,18 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
 
             if(curcamera.equals("follow")) {
                 cam = "ortho";
-                PBotUtils.sysMsg("Switched to Ortho Cam",Color.white);
+                PBotUtils.sysMsg(ui, "Switched to Ortho Cam",Color.white);
             }
             else if(curcamera.equals("ortho")) {
                 cam = "bad";
-                PBotUtils.sysMsg("Switched to Bad Cam",Color.white);
+                PBotUtils.sysMsg(ui, "Switched to Bad Cam",Color.white);
             }
             else if(curcamera.equals("bad")) {
                 cam = "topdown";
-                PBotUtils.sysMsg("Switched to Topdown Cam",Color.white);
+                PBotUtils.sysMsg(ui, "Switched to Topdown Cam",Color.white);
             }else if(curcamera.equals("topdown")){
                 cam = "follow";
-                PBotUtils.sysMsg("Switched to Follow Cam",Color.white);
+                PBotUtils.sysMsg(ui, "Switched to Follow Cam",Color.white);
             }
 
            // String cam = camera instanceof MapView.OrthoCam ? "bad" : "ortho";
@@ -2849,7 +2849,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                     wdgmsg("sel", sc, ec, modflags);
                     sc = null;
                     if(PBotAPISelect) {
-                    	PBotUtils.areaSelect(ol.getc1(), ol.getc2());
+                        PBotUtils.areaSelect(ui, ol.getc1(), ol.getc2());
                     	PBotAPISelect = false;
                         selection.destroy();
                         selection = null;}
@@ -3118,7 +3118,7 @@ public class MapView extends PView implements DTarget, Console.Directory, PFList
                         break;
                     case 4: //Delete all gobs like this one
                         if(g.type == Type.TAMEDANIMAL){
-                            PBotUtils.sysMsg("I know you tried to delete this, but it's basically just a bad idea. Not adding to delete. Deleting livestock can/will lead to game crashes. If you really want them gone, hide them.",Color.white);
+                            PBotUtils.sysMsg(ui, "I know you tried to delete this, but it's basically just a bad idea. Not adding to delete. Deleting livestock can/will lead to game crashes. If you really want them gone, hide them.",Color.white);
                             break;
                         }
                         Deleted.add(name);

@@ -58,6 +58,7 @@ public class CoalToSmelters extends Window implements GobSelectCallback {
     List<Gob> biglist = new ArrayList<>();
     List<Gob> activelist = new ArrayList<>();
     List<Gob> torchlist = new ArrayList<>();
+    UI ui;
 
 
 
@@ -65,6 +66,7 @@ public class CoalToSmelters extends Window implements GobSelectCallback {
 
 
         super(new Coord(270, 265), "Add Coal To Smelters");
+        this.ui = ui;
 
         final Label lbl = new Label("Alt + Click to select Ovens or Smelters", infof);
         add(lbl, new Coord(53, 0));

@@ -31,12 +31,14 @@ public class LightWithTorch extends Window implements GobSelectCallback {
     private static final int HAND_DELAY = 8;
     private Thread runner;
     public Gob selection;
+    UI ui;
 
 
     List<Gob> list = new ArrayList<>();
 
     public LightWithTorch(GameUI gui) {
         super(new Coord(270, 180), "Torch Lighter");
+        this.ui = ui;
 
         final Label lbl = new Label("Alt + Click to select Ovens or Smelters", infof);
         add(lbl, new Coord(50, 20));
