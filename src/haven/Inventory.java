@@ -39,22 +39,22 @@ public class Inventory extends Widget implements DTarget {
     public boolean dropul = true;
     public Coord isz;
     public static final Comparator<WItem> ITEM_COMPARATOR_ASC = new Comparator<WItem>() {
-	@Override
-	public int compare(WItem o1, WItem o2) {
-	    QualityList ql1 = o1.itemq.get();
-	    double q1 = (ql1 != null && !ql1.isEmpty()) ? ql1.single(QualityList.SingleType.Average).value : 0;
+        @Override
+        public int compare(WItem o1, WItem o2) {
+            QualityList ql1 = o1.itemq.get();
+            double q1 = (ql1 != null && !ql1.isEmpty()) ? ql1.single(QualityList.SingleType.Average).value : 0;
 
-	    QualityList ql2 = o2.itemq.get();
-	    double q2 = (ql2 != null && !ql2.isEmpty()) ? ql2.single(QualityList.SingleType.Average).value : 0;
+            QualityList ql2 = o2.itemq.get();
+            double q2 = (ql2 != null && !ql2.isEmpty()) ? ql2.single(QualityList.SingleType.Average).value : 0;
 
-	    return Double.compare(q1, q2);
-	}
+            return Double.compare(q1, q2);
+        }
     };
     public static final Comparator<WItem> ITEM_COMPARATOR_DESC = new Comparator<WItem>() {
-	@Override
-	public int compare(WItem o1, WItem o2) {
-	    return ITEM_COMPARATOR_ASC.compare(o2, o1);
-	}
+        @Override
+        public int compare(WItem o1, WItem o2) {
+            return ITEM_COMPARATOR_ASC.compare(o2, o1);
+        }
     };
 
     public boolean locked = false;
@@ -96,7 +96,7 @@ public class Inventory extends Widget implements DTarget {
 
     @Override
     public boolean mousedown(Coord c, int button) {
-	return !locked && super.mousedown(c, button);
+        return !locked && super.mousedown(c, button);
     }
 
     public void addchild(Widget child, Object... args) {
@@ -279,7 +279,7 @@ public class Inventory extends Widget implements DTarget {
                 String wdgname = ((WItem) wdg).item.getname();
                 if (wdgname.contains(name))
                     if (!PBotUtils.canDrinkFrom((WItem) wdg))
-                return null;
+                        return null;
                 if (PBotUtils.canDrinkFrom((WItem) wdg)) {
                     return (WItem) wdg;
                 }
@@ -311,20 +311,20 @@ public class Inventory extends Widget implements DTarget {
 
     // Null if no free slots found
     public Coord getFreeSlot() {
-    	int[][] invTable = new int[isz.x][isz.y];
+        int[][] invTable = new int[isz.x][isz.y];
         for (Widget wdg = child; wdg != null; wdg = wdg.next) {
             if (wdg instanceof WItem) {
-            	WItem item = (WItem) wdg;
-            	for(int i=0; i<item.sz.div(sqsz).y; i++)
-            		for(int j=0; j<item.sz.div(sqsz).x; j++)
-            			invTable[item.c.div(sqsz).x+j][item.c.div(sqsz).y+i] = 1;
+                WItem item = (WItem) wdg;
+                for(int i=0; i<item.sz.div(sqsz).y; i++)
+                    for(int j=0; j<item.sz.div(sqsz).x; j++)
+                        invTable[item.c.div(sqsz).x+j][item.c.div(sqsz).y+i] = 1;
             }
         }
         for(int i=0; i<isz.y; i++) {
-        	for(int j=0; j<isz.x; j++) {
-        		if(invTable[j][i] == 0)
-        			return new Coord(j, i);
-        	}
+            for(int j=0; j<isz.x; j++) {
+                if(invTable[j][i] == 0)
+                    return new Coord(j, i);
+            }
         }
         return null;
     }
