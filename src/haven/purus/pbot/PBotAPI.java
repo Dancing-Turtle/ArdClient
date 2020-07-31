@@ -3,6 +3,7 @@ package haven.purus.pbot;
 import haven.GameUI;
 import haven.MainFrame;
 import haven.UI;
+import modification.configuration;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -13,13 +14,39 @@ public class PBotAPI {
     public static GameUI gui;  //old gui init => just last new session
     public static UI ui;       //old new ui init => just last new session
 
+    /**
+     * Get the current UI in a multisession
+     *
+     * @return GameUI
+     */
     public static UI ui() {
         return MainFrame.instance.p.ui;
     }
+
+    /**
+     * Get UI in a monosession
+     * For lazy users who don't want to change scripts
+     *
+     * @return UI
+     */
+    public static UI modeui() {
+        return configuration.pbotmode ? ui : MainFrame.instance.p.ui;
+    }
+
+    /**
+     * Get GameUI in a monosession
+     *
+     * @return GameUI
+     */
     public static GameUI gui() {
         return MainFrame.instance.p.ui.gui;
     }
 
+    /**
+     * Get List of all Sessions
+     *
+     * @return List<UI>
+     */
     public static List<UI> uis() {
         List<UI> uiList = new ArrayList<UI>();
         synchronized (MainFrame.instance.p.sessions) {

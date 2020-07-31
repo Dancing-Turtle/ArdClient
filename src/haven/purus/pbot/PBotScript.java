@@ -12,7 +12,7 @@ public class PBotScript extends Thread {
     public Context context;
     private File scriptFile;
     private String name, id;
-    public UI ui;
+    public final UI ui;
 
     public PBotScript(UI ui, File scriptFile, String id) {
         this.scriptFile = scriptFile;

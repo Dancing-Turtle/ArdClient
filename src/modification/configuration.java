@@ -85,6 +85,8 @@ public class configuration {
 	public static int morethancolor = Utils.getprefi("morethancolor", -1);
 	public static int morethancoloroutline = Utils.getprefi("morethancoloroutline", Color.RED.hashCode());
 
+	public static boolean pbotmode = Utils.getprefb("pbotmode", false); //off - latest ui, on - current ui
+
 	public static Tex invsq = Resource.loadtex("gfx/hud/invsq");
 
 	public static boolean customMarkObj = Utils.getprefb("customMarkObj", false);

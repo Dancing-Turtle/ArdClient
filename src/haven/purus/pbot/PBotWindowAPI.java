@@ -13,6 +13,11 @@ import java.util.ArrayList;
 public class PBotWindowAPI {
 
     /**
+     * Description for all method
+     * @param ui    UI for this script
+     */
+
+    /**
      * Wait for a window with a specific name to appear
      *
      * @param windowName Name of the window
@@ -32,6 +37,10 @@ public class PBotWindowAPI {
         return window;
     }
 
+    public static Window waitForWindow(String windowName, long timeout) {
+        return waitForWindow(PBotAPI.modeui(), windowName, timeout);
+    }
+
     /**
      * Wait for a window with a specific name to appear
      *
@@ -44,6 +53,10 @@ public class PBotWindowAPI {
             PBotUtils.sleep(25);
         }
         return window;
+    }
+
+    public static Window waitForWindow(String windowName) {
+        return waitForWindow(PBotAPI.modeui(), windowName);
     }
 
     /**
@@ -65,6 +78,10 @@ public class PBotWindowAPI {
         return true;
     }
 
+    public static boolean waitForWindowClose(String windowName, long timeout) {
+        return waitForWindowClose(PBotAPI.modeui(), windowName, timeout);
+    }
+
     /**
      * Get a window with name
      *
@@ -73,6 +90,10 @@ public class PBotWindowAPI {
      */
     public static Window getWindow(UI ui, String name) {
         return ui.gui.getwnd(name);
+    }
+
+    public static Window getWindow(String name) {
+        return getWindow(PBotAPI.modeui(), name);
     }
 
     /**
@@ -136,6 +157,10 @@ public class PBotWindowAPI {
         return -1;
     }
 
+    public static int getStockpileTotalCapacity() {
+        return getStockpileTotalCapacity(PBotAPI.modeui());
+    }
+
     /**
      * Returns used capacity of the stockpile window which is currently open
      *
@@ -154,6 +179,10 @@ public class PBotWindowAPI {
             }
         }
         return -1;
+    }
+
+    public static int getStockpileUsedCapacity() {
+        return getStockpileUsedCapacity(PBotAPI.modeui());
     }
 
     /**
@@ -175,6 +204,10 @@ public class PBotWindowAPI {
         }
     }
 
+    public static void takeItemsFromStockpile(int count) {
+        takeItemsFromStockpile(PBotAPI.modeui(), count);
+    }
+
     /**
      * Put an item from the hand to a stockpile window that is currently open
      */
@@ -189,6 +222,10 @@ public class PBotWindowAPI {
                 }
             }
         }
+    }
+
+    public static void putItemFromHandToStockpile() {
+        putItemFromHandToStockpile(PBotAPI.modeui());
     }
 
     /**
@@ -250,5 +287,9 @@ public class PBotWindowAPI {
                 }
             }
         }
+    }
+
+    public static void putItemFromInventoryToStockpile(int count) {
+        putItemFromInventoryToStockpile(PBotAPI.modeui(), count);
     }
 }
