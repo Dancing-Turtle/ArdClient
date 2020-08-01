@@ -1,11 +1,3 @@
-
-import java.awt.Color;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-
 import haven.CharWnd;
 import haven.Coord;
 import haven.GItem.NumberInfo;
@@ -88,6 +80,58 @@ public class ISlots extends Tip implements NumberInfo {
             var1.cmp.add(Text.slotFnd.render(this.left > 1 ? String.format(gildStr, Integer.valueOf(this.left)) : gild2Str).img, new Coord(10, var1.cmp.sz.y));
         }
 
+        if (owner instanceof GItem) {
+            BufferedImage totalString = RichText.render(Resource.getLocString(Resource.BUNDLE_LABEL, "Total:")).img;
+            var1.cmp.add(totalString, new Coord(0, var1.cmp.sz.y));
+
+            GItem[] gItems = new GItem[]{(GItem) owner}; //FIXME I don't like the way it looks
+            Map<Resource, Integer> totalAttrs = new HashMap<>();
+
+            totalAttrs = Arrays.stream(gItems)
+                    .map(GItem::info)
+                    .map(ItemInfo::getBonuses)
+                    .map(Map::entrySet)
+                    .flatMap(Collection::stream)
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Integer::sum));
+            List<ItemInfo> info = null;
+            if (totalAttrs != null) {
+                ItemInfo compiled = make(totalAttrs.entrySet().stream().sorted(this::BY_PRIORITY).collect(Collectors.toList()));
+                info = compiled != null ? Collections.singletonList(compiled) : null;
+            }
+
+            BufferedImage tip = null;
+
+            if (info != null && !info.isEmpty()) {
+                tip = ItemInfo.longtip(info);
+                var1.cmp.add(tip, new Coord(10, var1.cmp.sz.y));
+            }
+        }
+    }
+
+    private ItemInfo make(Collection<Map.Entry<Resource, Integer>> mods) {
+        if (mods.isEmpty()) {
+            return null;
+        }
+        Resource res = Resource.remote().load("ui/tt/attrmod").get();
+        ItemInfo.InfoFactory f = res.layer(Resource.CodeEntry.class).get(ItemInfo.InfoFactory.class);
+        Object[] args = new Object[mods.size() * 2 + 1];
+        int i = 1;
+        for (Map.Entry<Resource, Integer> entry : mods) {
+            args[i] = PBotAPI.ui().sess.getresid(entry.getKey());
+            args[i + 1] = entry.getValue();
+            i += 2;
+        }
+        return f.build(owner, args);
+    }
+
+    private int BY_PRIORITY(Map.Entry<Resource, Integer> o1, Map.Entry<Resource, Integer> o2) {
+        Resource r1 = o1.getKey();
+        Resource r2 = o2.getKey();
+
+        if (PBotAPI.ui().gui.chrwdg != null) {
+            return PBotAPI.ui().gui.chrwdg.BY_PRIORITY(r1, r2);
+        }
+        return r1.name.compareTo(r2.name);
     }
 
     public int order() {

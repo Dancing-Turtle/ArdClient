@@ -125,6 +125,18 @@ public class Config {
     public static int epicq =  Utils.getprefi("epicq", 160);
     public static int legendaryq =  Utils.getprefi("legendaryq", 250);
 
+    //autodrink
+    public static List<String> liquids = new ArrayList<String>(Arrays.asList("Water", "Milk", "Aurochs Milk", "Cowsmilk", "Sheepsmilk", "Goatsmilk", "Piping Hot Tea", "Tea", "Applejuice", "Pearjuice", "Grapejuice", "Cider", "Perry", "Wine", "Beer", "Weißbier", "Mead")) {{
+        sort(new Comparator<String>() {
+            @Override
+            public int compare(String l1, String l2) {
+                return l1.compareTo(l2);
+            }
+        });
+    }};
+    public static String autoDrinkLiquid = Utils.getpref("autoDrinkLiquid", "Water");
+    public static boolean autoDrinkWhatever = Utils.getprefb("autoDrinkWhatever", false);
+
 
     public static boolean quickslots = Utils.getprefb("quickslots", true);
     public static boolean disablequickslotdrop = Utils.getprefb("disablequickslotdrop", true);
