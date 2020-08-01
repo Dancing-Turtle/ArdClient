@@ -1817,7 +1817,7 @@ public class OptWnd extends Window {
                 a = val;
             }
         });
-        appender.add(new CheckBox("Autodrink below threshold") {
+        appender.addRow(new CheckBox("Autodrink below threshold") {
             {
                 a = Config.autodrink;
             }
@@ -1825,6 +1825,17 @@ public class OptWnd extends Window {
             public void set(boolean val) {
                 Utils.setprefb("autodrink", val);
                 Config.autodrink = val;
+                a = val;
+            }
+        }, makeSelectAutoDrinkLiquid());
+        appender.add(new CheckBox("Autodrink whatever i find") {
+            {
+                a = Config.autoDrinkWhatever;
+            }
+
+            public void set(boolean val) {
+                Utils.setprefb("autoDrinkWhatever", val);
+                Config.autoDrinkWhatever = val;
                 a = val;
             }
         });
@@ -3882,6 +3893,36 @@ public class OptWnd extends Window {
                 super.change(item);
                 Config.autodrinktime = Integer.parseInt(item);
                 Utils.setpref("autodrinktime", item);
+            }
+        };
+    }
+
+    private Dropbox<String> makeSelectAutoDrinkLiquid() {
+        return new Dropbox<String>(Config.liquids.size(), Config.liquids) {
+            {
+                super.change(Config.autoDrinkLiquid);
+            }
+
+            @Override
+            protected String listitem(int i) {
+                return Config.liquids.get(i);
+            }
+
+            @Override
+            protected int listitems() {
+                return Config.liquids.size();
+            }
+
+            @Override
+            protected void drawitem(GOut g, String item, int i) {
+                g.text(item, Coord.z);
+            }
+
+            @Override
+            public void change(String item) {
+                super.change(item);
+                Config.autoDrinkLiquid = item;
+                Utils.setpref("autoDrinkLiquid", item);
             }
         };
     }
