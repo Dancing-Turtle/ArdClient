@@ -1,20 +1,17 @@
-import haven.CharWnd;
-import haven.Coord;
+import haven.*;
 import haven.GItem.NumberInfo;
-import haven.GSprite;
 import haven.GSprite.ImageSprite;
-import haven.Glob;
-import haven.ItemInfo;
 import haven.ItemInfo.Tip;
-import haven.PUtils;
-import haven.ResData;
-import haven.Resource;
 import haven.Resource.Image;
-import haven.RichText;
-import haven.Text;
-import haven.Utils;
+import haven.purus.pbot.PBotAPI;
 import haven.res.lib.tspec.Spec;
 import haven.res.ui.tt.defn.DefName;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class ISlots extends Tip implements NumberInfo {
