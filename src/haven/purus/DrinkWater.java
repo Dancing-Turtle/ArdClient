@@ -2,6 +2,8 @@ package haven.purus;
 
 import haven.*;
 
+import java.util.regex.Pattern;
+
 public class DrinkWater implements Runnable {
 
 	GameUI gui;
@@ -75,13 +77,19 @@ public class DrinkWater implements Runnable {
 	}
 
 	private boolean canDrinkFrom(WItem item) {
+        Pattern liquidPattern = Pattern.compile(String.format("[0-9.]+ l of (%s)",
+                //	String.join("|", new String[] { "Water", "Piping Hot Tea", "Tea" }), Pattern.CASE_INSENSITIVE));
+                String.join("|", Config.liquids), Pattern.CASE_INSENSITIVE));
 		ItemInfo.Contents contents = getContents(item);
 		if (contents != null && contents.sub != null) {
 			synchronized(item.item.ui) {
 				for(ItemInfo info : contents.sub) {
 					if(info instanceof ItemInfo.Name) {
 						ItemInfo.Name name = (ItemInfo.Name) info;
-						if(name.str != null && name.str.text.contains(Config.autoDrinkLiquid)) //"Water"
+                        if (name.str != null)
+                            if (Config.autoDrinkWhatever && liquidPattern.matcher(name.str.text).matches())
+                                return true;
+                            else if (name.str.text.contains(Config.autoDrinkLiquid)) //"Water"
 							return true;
 					}
 				}
